@@ -3,14 +3,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.systoss.stp</groupId>
+    <groupId>com.systoss.csm</groupId>
     <artifactId>sytosstraineeplatform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
+    <modules>
+        <module>tsp-domain</module>
+        <module>tsp-common</module>
+        <module>tsp-ms-check-task</module>
+        <module>tsp-ms-check-task-shared</module>
+        <module>tsp-ms-test-producer</module>
+    </modules>
 
     <name>sytoss trainee platform</name>
 
