@@ -13,12 +13,13 @@ name: string
 entity Task {
 id: long
 question: string
-answer: string
+etalon: string
 }
 
 entity Condition {
 id: long
 name: string
+value: string
 }
 
 entity TaskDomain {
@@ -41,17 +42,22 @@ duration: datetime
 attempt: int
 answers: List<Task>
 }
+entity Answer{
+id: long
+answer: string
+question: string
+}
 
 Task "1" o-- "N conditions" Condition
 Task "N tasks" o--o "N topics" Topic
 Task "1" o-- "1" TaskDomain
-Task "N tasks" --o "1" PersonalTest
+Task "1" --o "1" Answer
 
+Answer "N answers" --o "1" PersonalTest
 Topic "N topics" --o "1" Test
 
 Test "1" --o "N personalTests" PersonalTest
 
 Discipline "1" o-- "N topics" Topic
-Discipline "1" o-- "N tests" Test
 
 @enduml
