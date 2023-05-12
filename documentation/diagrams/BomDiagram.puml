@@ -1,34 +1,33 @@
 @startuml
 
-entity Discipline {
+entity Discipline #red{
 id: long
 name: string
 }
 
-entity Topic {
+entity Topic #red{
 id: long
 name: string
 }
 
-entity Task {
+entity Task  #red{
 id: long
 question: string
-etalon: string
+answer: string
 }
 
-entity Condition {
+entity Condition  #red{
 id: long
 name: string
-value: string
 }
 
-entity TaskDomain {
+entity TaskDomain  #red{
 id: long
 name: string
 script: string
 }
 
-entity Test {
+entity Test  #red{
 id: long
 name: string
 }
@@ -36,25 +35,50 @@ name: string
 entity PersonalTest {
 id: long
 name: string
-studentId: long
 date: date
-duration: datetime
-attempt: int
-answers: List<Task>
-}
-entity Answer{
-id: long
-answer: string
-question: string
 }
 
+entity Answer {
+id: long
+quastion: string
+answer: string
+}
+
+enum Status{
+In Progress,
+Not Started,
+Finished
+}
+
+entity Grade{
+id: long
+grade: int
+comment: string
+}
+
+entity Student{
+id: long
+name: string
+}
+
+entity TestParameter #red{
+id: long
+countOfTask: int
+}
+
+TestParameter "N testParameter" --o "1" Test
+Topic "1" --o "1" TestParameter
+Answer o-- Status
+PersonalTest o-- Status
+PersonalTest "1" o-- "N answers" Answer
+Task "1" --o "1" Answer
+Grade "1" --o "1" Answer
+Student "1" --o "1" PersonalTest
 Task "1" o-- "N conditions" Condition
 Task "N tasks" o--o "N topics" Topic
 Task "1" o-- "1" TaskDomain
-Task "1" --o "1" Answer
+Task "N tasks" --o "1" PersonalTest
 
-Answer "N answers" --o "1" PersonalTest
-Topic "N topics" --o "1" Test
 
 Test "1" --o "N personalTests" PersonalTest
 
