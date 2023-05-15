@@ -40,19 +40,26 @@ date: date
 
 entity Answer {
 id: long
-quastion: string
-answer: string
+question: string
+value: string
 }
 
-enum Status{
+enum PersonalExamStatus{
 In Progress,
 Not Started,
 Finished
 }
 
+enum AnswerStatus{
+In Progress,
+Not Started,
+Answered,
+Graded
+}
+
 entity Grade{
 id: long
-grade: int
+value: int
 comment: string
 }
 
@@ -68,8 +75,8 @@ countOfTask: int
 
 ExamParameter "N examParameter" --o "1" Exam
 Topic "1" --o "1" ExamParameter
-Answer o-- Status
-PersonalExam o-- Status
+Answer o-- AnswerStatus
+PersonalExam o-- PersonalExamStatus
 PersonalExam "1" o-- "N answers" Answer
 Task "1" --o "1" Answer
 Grade "1" --o "1" Answer
