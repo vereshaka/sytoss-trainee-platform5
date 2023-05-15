@@ -4,9 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CSMApplication {
+public class CheckTaskApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CSMApplication.class, args);
+        SpringApplication.run(CheckTaskApplication.class, args);
     }
-
 }
