@@ -1,7 +1,7 @@
 package bom;
 
 public enum PersonalExamStatus {
-    InProgress,
-    NotStarted,
-    Finished
+    IN_PROGRESS,
+    NOT_STARTED,
+    FINISHED
 }

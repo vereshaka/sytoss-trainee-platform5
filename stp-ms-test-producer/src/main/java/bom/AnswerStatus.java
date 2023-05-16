@@ -1,8 +1,8 @@
 package bom;
 
 public enum AnswerStatus {
-    InProgress,
-    NotStarted,
-    Answered,
-    Graded
+    IN_PROGRESS,
+    NOT_STARTED,
+    ANSWERED,
+    GRADED
 }
