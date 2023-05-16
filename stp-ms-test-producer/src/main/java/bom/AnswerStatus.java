@@ -3,6 +3,6 @@ package bom;
 public enum AnswerStatus {
     IN_PROGRESS,
     NOT_STARTED,
-    NOT_ANSWERED,
+    ANSWERED,
     NOT_GRADED
 }
