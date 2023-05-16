@@ -1,7 +1,18 @@
 package bom;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public enum PersonalExamStatus {
-    InProgress,
-    NotStarted,
-    Finished
+    STATUS_IN_PROGRESS(0),
+    STATUS_NOT_STARTED(1),
+    STATUS_FINISHED(2);
+
+    @Setter
+    @Getter
+    private Integer status;
+
+    PersonalExamStatus(Integer status) {
+        this.status = status;
+    }
 }
