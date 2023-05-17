@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.producer.bom;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +12,8 @@ public class ExamConfiguration {
     private Long disciplineId;
 
     private List<Long> topics;
+
+    private String examName;
 
     private int quantityOfTask;
 
