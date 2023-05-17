@@ -25,7 +25,7 @@ public class PersonalExamService {
         int numberOfTasks = examConfiguration.getQuantityOfTask();
         List<Answer> personalTestTask = new ArrayList<>();
         List<Task> allTaskList = new ArrayList<>();
-        for (int j = 0; j <= examConfiguration.getTopics().size(); j++) {
+        for (int j = 0; j <= examConfiguration.getTopics().size()-1; j++) {
             List<Task> taskList = metadataConnector.getTasksForTopic(examConfiguration.getTopics().get(j));
             allTaskList.addAll(taskList);
         }

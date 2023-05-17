@@ -21,7 +21,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
-    @PostMapping("/{customerId}")
+    @PostMapping("/personalExam/create")
     public PersonalExam getCustomer(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }

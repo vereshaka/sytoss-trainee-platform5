@@ -11,10 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -33,5 +29,13 @@ public abstract class AbstractSTPProducerApplicationTest {
 
     protected long getPort() {
         return ((AnnotationConfigServletWebServerApplicationContext) applicationContext).getWebServer().getPort();
+    }
+
+    protected URI getEndpoint(String uriPath) {
+        try {
+            return new URI("http://localhost:" + getPort() + uriPath);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
