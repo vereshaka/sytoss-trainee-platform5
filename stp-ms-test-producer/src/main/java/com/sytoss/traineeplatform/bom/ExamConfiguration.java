@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.traineeplatform.bom;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.traineeplatform.bom;
 
 public enum AnswerStatus {
     IN_PROGRESS,
