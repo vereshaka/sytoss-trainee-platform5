@@ -34,7 +34,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         Mockito.doAnswer((Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
             PersonalExam result = (PersonalExam) args[0];
-            result.setId(1L);
+            result.setId("1ada");
             return result;
         }).when(personalExamConnector).save(any());
 
@@ -77,6 +77,6 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         examConfiguration.setStudentId(1L);
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
-        assertEquals(1L, personalExam.getId());
+        assertEquals("1L", personalExam.getId());
     }
 }

@@ -53,12 +53,20 @@ public class MetadataConnectorImpl implements MetadataConnector {
         if(id == 1L){
             Task task = new Task();
             task.setTaskDomain(getTaskDomain(1L));
-            task.setQuestion("Inner Join?");
+            task.setQuestion("Inner Join");
             List<Topic> topics = new ArrayList<>();
             topics.add(getTopic(1L));
             task.setTopics(topics);
             task.setEtalonAnswer("Yes");
+            Task taskSecond = new Task();
+            taskSecond.setTaskDomain(getTaskDomain(1L));
+            taskSecond.setQuestion("Inner Join");
+            List<Topic> topicsSecond = new ArrayList<>();
+            topicsSecond.add(getTopic(1L));
+            taskSecond.setTopics(topicsSecond);
+            taskSecond.setEtalonAnswer("Yes");
             tasks.add(task);
+            tasks.add(taskSecond);
         } else if(id == 2L){
             Task task = new Task();
             task.setTaskDomain(getTaskDomain(1L));

@@ -25,11 +25,11 @@ public class PersonalExamService {
         int numberOfTasks = examConfiguration.getQuantityOfTask();
         List<Answer> personalTestTask = new ArrayList<>();
         List<Task> allTaskList = new ArrayList<>();
-        for (int j = 0; j <= examConfiguration.getTopics().size()-1; j++) {
+        for (int j = 0; j <= examConfiguration.getTopics().size() - 1; j++) {
             List<Task> taskList = metadataConnector.getTasksForTopic(examConfiguration.getTopics().get(j));
             allTaskList.addAll(taskList);
         }
-        for (int i = 0; i <= numberOfTasks; i++) {
+        for (int i = 0; i <= numberOfTasks - 1; i++) {
             Random random = new Random();
             int numTask = random.nextInt(allTaskList.size());
             Task task = allTaskList.get(numTask);
@@ -48,7 +48,12 @@ public class PersonalExamService {
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAnswers(personalTestTask);
         personalExam.setStudentId(examConfiguration.getStudentId());
-        personalExam = personalExamConnector.save(personalExam);
+        try {
+            personalExam = personalExamConnector.save(personalExam);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         return personalExam;
     }
 }
