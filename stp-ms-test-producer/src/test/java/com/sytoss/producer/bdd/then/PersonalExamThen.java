@@ -1,7 +1,10 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sytoss.domain.bom.*;
+import com.sytoss.domain.bom.Answer;
+import com.sytoss.domain.bom.PersonalExam;
+import com.sytoss.domain.bom.PersonalExamStatus;
+import com.sytoss.domain.bom.Task;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.DataTableType;
@@ -25,19 +28,19 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Given("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
-    public void thisCustomerHasProjects(String examName, String disciplineName, String topic,String studentId, List<Answer> answers) throws JsonProcessingException {
+    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
         assertEquals(Long.getLong(studentId), personalExamAnswer.getStudentId());
         int quantityOfTasks = 0;
-            for (Answer answer : answers) {
-                for (Answer answerFromResponse : personalExamAnswer.getAnswers())
-                    if (answer.getTask().getQuestion().equals(answerFromResponse.getTask().getQuestion())) {
-                        quantityOfTasks++;
-                    }
-            }
-            assertEquals(quantityOfTasks, personalExamAnswer.getAnswers().size());
+        for (Answer answer : answers) {
+            for (Answer answerFromResponse : personalExamAnswer.getAnswers())
+                if (answer.getTask().getQuestion().equals(answerFromResponse.getTask().getQuestion())) {
+                    quantityOfTasks++;
+                }
+        }
+        assertEquals(quantityOfTasks, personalExamAnswer.getAnswers().size());
     }
 }
