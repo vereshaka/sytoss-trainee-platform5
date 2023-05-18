@@ -15,25 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonalExamThen extends CucumberIntegrationTest {
 
-    //    @Given("^\"(.*)\" exam for student with 1L id should have tasks$")
-//    public void thisCustomerHasProjects(String examName, DataTable table) throws JsonProcessingException {
-//        List<Map<String, String>> rows = table.asMaps();
-//        //TODO dmitriyK: need to rewrite when metadata microservice would be exist
-//        PersonalExam personalExam = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
-//        assertEquals(examName, personalExam.getName());
-//        assertEquals(PersonalExamStatus.NOT_STARTED, personalExam.getStatus());
-//        List<Answer> answers = personalExam.getAnswers();
-//        int quantityOfTasks = 0;
-//        for (Map<String, String> column : rows) {
-//            for (int i = 0; i < answers.size(); i++) {
-//                if (answers.get(i).getTask().getQuestion().equals(column.get("task"))) {
-//                    quantityOfTasks++;
-//                    assertEquals(AnswerStatus.NOT_STARTED, answers.get(i).getStatus());
-//                }
-//            }
-//        }
-//        assertEquals(rows.size(), quantityOfTasks);
-//    }
     @DataTableType
     public PersonalExam mapPersonalExam(Map<String, String> entry) {
         PersonalExam personalExam = new PersonalExam();
