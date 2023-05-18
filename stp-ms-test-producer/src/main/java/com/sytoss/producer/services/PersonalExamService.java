@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class PersonalExamService {
 
-    @Autowired
-    private MetadataConnectorImpl metadataConnector;
+    private MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
 
     @Autowired
     private PersonalExamConnector personalExamConnector;
@@ -27,13 +26,13 @@ public class PersonalExamService {
         personalExam.setName(examConfiguration.getExamName());
         personalExam.setDate(new Date());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
-        personalExam.setAnswers(generateTasks(examConfiguration.getQuantityOfTask(), examConfiguration));
+        personalExam.setAnswers(generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration));
         personalExam.setStudentId(examConfiguration.getStudentId());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
 
-    private List<Answer> generateTasks(int numberOfTasks, ExamConfiguration examConfiguration) {
+    private List<Answer> generateAnswers(int numberOfTasks, ExamConfiguration examConfiguration) {
         List<Task> tasks = examConfiguration.getTopics().stream()
                 .flatMap(topic -> metadataConnector.getTasksForTopic(topic).stream())
                 .collect(Collectors.toList());
