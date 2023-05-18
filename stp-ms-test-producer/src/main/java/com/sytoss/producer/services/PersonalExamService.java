@@ -46,7 +46,6 @@ public class PersonalExamService {
             answer.setTask(task);
             answers.add(answer);
             tasks.remove(task);
-
         }
         return answers;
     }

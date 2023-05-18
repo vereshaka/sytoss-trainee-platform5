@@ -16,39 +16,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PersonalExamThen extends CucumberIntegrationTest {
 
     @DataTableType
-    public PersonalExam mapPersonalExam(Map<String, String> entry) {
-        PersonalExam personalExam = new PersonalExam();
-        Answer answerFirst = new Answer();
-        Answer answerSecond = new Answer();
-        Discipline discipline = new Discipline();
+    public Answer mapAnswer(Map<String, String> entry) {
+        Answer answer = new Answer();
         Task taskOne = new Task();
-        Task taskSecond = new Task();
-        discipline.setName(entry.get("discipline"));
-        taskOne.setQuestion(entry.get("task one"));
-        taskSecond.setQuestion(entry.get("task two"));
-        answerFirst.setTask(taskOne);
-        answerSecond.setTask(taskSecond);
-        personalExam.setDiscipline(discipline);
-        personalExam.setAnswers(List.of(answerFirst, answerSecond));
-        return personalExam;
+        taskOne.setQuestion(entry.get("task"));
+        answer.setTask(taskOne);
+        return answer;
     }
 
-    @Given("^\"(.*)\" exam for student with (.*) id should have tasks$")
-    public void thisCustomerHasProjects(String examName, String studentId, List<PersonalExam> personalExams) throws JsonProcessingException {
+    @Given("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
+    public void thisCustomerHasProjects(String examName, String disciplineName, String topic,String studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+        assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
         assertEquals(Long.getLong(studentId), personalExamAnswer.getStudentId());
         int quantityOfTasks = 0;
-        for (PersonalExam personalExam : personalExams) {
-            for (Answer answer : personalExam.getAnswers()) {
+            for (Answer answer : answers) {
                 for (Answer answerFromResponse : personalExamAnswer.getAnswers())
                     if (answer.getTask().getQuestion().equals(answerFromResponse.getTask().getQuestion())) {
                         quantityOfTasks++;
                     }
             }
             assertEquals(quantityOfTasks, personalExamAnswer.getAnswers().size());
-        }
     }
-
 }
