@@ -1,15 +1,15 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDomain {
+public class Topic {
 
     private Long id;
 
     private String name;
 
-    private String script;
+    private Discipline discipline;
 }

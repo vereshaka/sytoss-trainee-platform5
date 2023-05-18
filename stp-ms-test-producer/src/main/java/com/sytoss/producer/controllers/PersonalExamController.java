@@ -1,10 +1,9 @@
 package com.sytoss.producer.controllers;
 
-import com.sytoss.producer.bom.ExamConfiguration;
-import com.sytoss.producer.bom.PersonalExam;
+import com.sytoss.domain.bom.ExamConfiguration;
+import com.sytoss.domain.bom.PersonalExam;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +24,4 @@ public class PersonalExamController {
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }
-
 }

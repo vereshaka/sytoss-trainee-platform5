@@ -4,12 +4,3 @@ spring:
       uri: ${DB_URI:mongodb://admin:pwd@127.0.0.1:27017/stp?authSource=admin}
 server:
    port: 9101
-management:
-  jmx:
-    ena: true
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-springdoc:
-  show-actuator: true

@@ -1,7 +1,10 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.Discipline;
+import com.sytoss.domain.bom.ExamConfiguration;
+import com.sytoss.domain.bom.PersonalExam;
+import com.sytoss.domain.bom.Task;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
-import com.sytoss.producer.bom.*;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Test;
@@ -45,30 +48,8 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         discipline.setId(1L);
         discipline.setName("SQL");
         when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
-        List<Task> tasksOne = new ArrayList<>();
-        List<Task> tasksTwo = new ArrayList<>();
-        Task task = new Task();
-        task.setQuestion("Left Join?");
-        task.setEtalonAnswer("Yes");
-        Task taskSecond = new Task();
-        taskSecond.setQuestion("Is SQL cool?");
-        List<Topic> topicsSecond = new ArrayList<>();
-        taskSecond.setTopics(topicsSecond);
-        taskSecond.setEtalonAnswer("Yes");
-        Task taskThird = new Task();
-        taskThird.setQuestion("SELECT?");
-        List<Topic> topicsThird = new ArrayList<>();
-        taskThird.setTopics(topicsThird);
-        taskThird.setEtalonAnswer("Yes");
-        Task taskFour = new Task();
-        taskFour.setQuestion("SELECT?");
-        taskFour.setEtalonAnswer("Yes");
-        tasksOne.add(task);
-        tasksOne.add(taskSecond);
-        tasksTwo.add(taskThird);
-        tasksTwo.add(taskFour);
-        when(metadataConnector.getTasksForTopic(1L)).thenReturn(tasksOne);
-        when(metadataConnector.getTasksForTopic(2L)).thenReturn(tasksTwo);
+        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
+        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
         List<Long> topics = new ArrayList<>();
         topics.add(1L);
         topics.add(2L);
@@ -78,5 +59,11 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
         assertEquals("1ada", personalExam.getId());
+    }
+
+    private Task createTask(String question) {
+        Task task = new Task();
+        task.setQuestion(question);
+        return task;
     }
 }

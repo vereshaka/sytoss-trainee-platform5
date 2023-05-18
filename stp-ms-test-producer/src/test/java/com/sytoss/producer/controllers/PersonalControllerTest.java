@@ -1,7 +1,7 @@
 package com.sytoss.producer.controllers;
 
-import com.sytoss.producer.bom.ExamConfiguration;
-import com.sytoss.producer.bom.PersonalExam;
+import com.sytoss.domain.bom.ExamConfiguration;
+import com.sytoss.domain.bom.PersonalExam;
 import com.sytoss.producer.services.PersonalExamService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

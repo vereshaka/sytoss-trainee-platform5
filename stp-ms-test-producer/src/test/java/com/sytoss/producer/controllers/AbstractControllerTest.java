@@ -19,13 +19,6 @@ public class AbstractControllerTest extends AbstractSTPProducerApplicationTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Bean
-    public RestTemplate restTemplate() {
-        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(600000);
-        return new RestTemplate(requestFactory);
-    }
-
     protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
         HttpHeaders headers = new HttpHeaders();
         if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
@@ -39,21 +32,5 @@ public class AbstractControllerTest extends AbstractSTPProducerApplicationTest {
 
     public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
-    }
-
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
-        return perform(uri, HttpMethod.GET, requestEntity, responseType);
-    }
-
-    public <T> ResponseEntity<T> doPatch(String uri, Object requestEntity, Class<T> responseType) {
-        return perform(uri, HttpMethod.PATCH, requestEntity, responseType);
-    }
-
-    public <T> ResponseEntity<T> doPut(String uri, Object requestEntity, Class<T> responseType) {
-        return perform(uri, HttpMethod.PUT, requestEntity, responseType);
-    }
-
-    public <T> ResponseEntity<T> doDelete(String uri, Object requestEntity, Class<T> responseType) {
-        return perform(uri, HttpMethod.DELETE, requestEntity, responseType);
     }
 }

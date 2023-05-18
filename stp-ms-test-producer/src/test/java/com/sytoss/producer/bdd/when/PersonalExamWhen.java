@@ -2,7 +2,7 @@ package com.sytoss.producer.bdd.when;
 
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
-import com.sytoss.producer.bom.ExamConfiguration;
+import com.sytoss.domain.bom.ExamConfiguration;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

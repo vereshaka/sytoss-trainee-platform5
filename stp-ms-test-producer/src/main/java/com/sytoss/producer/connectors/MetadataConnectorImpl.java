@@ -1,12 +1,11 @@
 package com.sytoss.producer.connectors;
 
-import com.sytoss.producer.bom.Discipline;
-import com.sytoss.producer.bom.Task;
-import com.sytoss.producer.bom.TaskDomain;
-import com.sytoss.producer.bom.Topic;
+import com.sytoss.domain.bom.Discipline;
+import com.sytoss.domain.bom.Task;
+import com.sytoss.domain.bom.TaskDomain;
+import com.sytoss.domain.bom.Topic;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -49,68 +48,49 @@ public class MetadataConnectorImpl implements MetadataConnector {
 
     @Override
     public List<Task> getTasksForTopic(Long id) {
-        List<Task> tasks = new ArrayList<>();
         if (id == 1L) {
             Task task = new Task();
             task.setTaskDomain(getTaskDomain(1L));
             task.setQuestion("Inner Join");
-            List<Topic> topics = new ArrayList<>();
-            topics.add(getTopic(1L));
-            task.setTopics(topics);
+            task.setTopics(List.of(getTopic(1L)));
             task.setEtalonAnswer("Yes");
             Task taskSecond = new Task();
             taskSecond.setTaskDomain(getTaskDomain(1L));
             taskSecond.setQuestion("Left Join");
-            List<Topic> topicsSecond = new ArrayList<>();
-            topicsSecond.add(getTopic(1L));
-            taskSecond.setTopics(topicsSecond);
+            taskSecond.setTopics(List.of(getTopic(1L)));
             taskSecond.setEtalonAnswer("Yes");
-            tasks.add(task);
-            tasks.add(taskSecond);
+            return List.of(task, taskSecond);
         } else if (id == 2L) {
             Task task = new Task();
             task.setTaskDomain(getTaskDomain(1L));
             task.setQuestion("Left Join?");
-            List<Topic> topics = new ArrayList<>();
-            topics.add(getTopic(1L));
-            task.setTopics(topics);
+            task.setTopics(List.of(getTopic(2L)));
             task.setEtalonAnswer("Yes");
             Task taskSecond = new Task();
             taskSecond.setTaskDomain(getTaskDomain(1L));
             taskSecond.setQuestion("Is SQL cool?");
-            List<Topic> topicsSecond = new ArrayList<>();
-            topicsSecond.add(getTopic(1L));
-            taskSecond.setTopics(topicsSecond);
+            taskSecond.setTopics(List.of(getTopic(2L)));
             taskSecond.setEtalonAnswer("Yes");
-            tasks.add(task);
-            tasks.add(taskSecond);
+            return List.of(task, taskSecond);
         } else {
             Task task = new Task();
             task.setTaskDomain(getTaskDomain(1L));
             task.setQuestion("Inner Join?");
-            List<Topic> topics = new ArrayList<>();
-            topics.add(getTopic(1L));
-            task.setTopics(topics);
+            task.setTopics(List.of(getTopic(3L)));
             task.setEtalonAnswer("Yes");
             Task taskSecond = new Task();
             taskSecond.setTaskDomain(getTaskDomain(1L));
             taskSecond.setQuestion("Left Join?");
-            List<Topic> topicsSecond = new ArrayList<>();
-            topicsSecond.add(getTopic(1L));
-            taskSecond.setTopics(topicsSecond);
+            taskSecond.setTopics(List.of(getTopic(3L)));
             taskSecond.setEtalonAnswer("Yes");
             Task taskThird = new Task();
             taskThird.setTaskDomain(getTaskDomain(1L));
             taskThird.setQuestion("SELECT?");
-            List<Topic> topicsThird = new ArrayList<>();
-            topicsSecond.add(getTopic(1L));
-            taskThird.setTopics(topicsThird);
+            taskThird.setTopics(List.of(getTopic(3L)));
             taskThird.setEtalonAnswer("Yes");
-            tasks.add(task);
-            tasks.add(taskThird);
-            tasks.add(taskSecond);
+            return List.of(task, taskSecond, taskThird);
+
         }
-        return tasks;
     }
 
     @Override
