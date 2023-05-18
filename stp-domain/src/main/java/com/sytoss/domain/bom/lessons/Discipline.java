@@ -1,15 +1,13 @@
-package com.sytoss.traineeplatform.bom.lessons;
+package com.sytoss.domain.bom.lessons;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class TaskDomain {
+public class Discipline {
 
     private Long id;
 
     private String name;
-
-    private String script;
 }

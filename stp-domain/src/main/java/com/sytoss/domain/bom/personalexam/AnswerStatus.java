@@ -1,4 +1,4 @@
-package com.sytoss.traineeplatform.bom.personalexam;
+package com.sytoss.domain.bom.personalexam;
 
 public enum AnswerStatus {
     IN_PROGRESS,

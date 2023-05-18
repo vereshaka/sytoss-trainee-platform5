@@ -1,8 +1,9 @@
-package com.sytoss.traineeplatform.bom.personalexam;
+package com.sytoss.domain.bom.personalexam;
 
-import com.sytoss.traineeplatform.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.List;
 @Setter
 public class PersonalExam {
 
-    private Long id;
+    @MongoId
+    private String id;
 
     private String name;
 
