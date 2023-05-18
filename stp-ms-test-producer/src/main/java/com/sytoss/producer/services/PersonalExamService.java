@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonalExamService {
@@ -24,11 +25,9 @@ public class PersonalExamService {
         PersonalExam personalExam = new PersonalExam();
         int numberOfTasks = examConfiguration.getQuantityOfTask();
         List<Answer> personalTestTask = new ArrayList<>();
-        List<Task> allTaskList = new ArrayList<>();
-        for (int j = 0; j <= examConfiguration.getTopics().size() - 1; j++) {
-            List<Task> taskList = metadataConnector.getTasksForTopic(examConfiguration.getTopics().get(j));
-            allTaskList.addAll(taskList);
-        }
+        List<Task> allTaskList = examConfiguration.getTopics().stream()
+                .flatMap(topic -> metadataConnector.getTasksForTopic(topic).stream())
+                .collect(Collectors.toList());
         for (int i = 0; i <= numberOfTasks - 1; i++) {
             Random random = new Random();
             int numTask = random.nextInt(allTaskList.size());

@@ -35,6 +35,6 @@ public class PersonalExamThen extends CucumberIntegrationTest {
                 }
             }
         }
-        assertEquals(2, quantityOfTasks);
+        assertEquals(rows.size(), quantityOfTasks);
     }
 }
