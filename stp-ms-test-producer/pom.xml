@@ -10,6 +10,11 @@
     <artifactId>stp-ms-test-producer</artifactId>
     <dependencies>
         <dependency>
+            <groupId>com.systoss.stp</groupId>
+            <artifactId>stp-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.0.0</version>
@@ -20,11 +25,5 @@
             <version>6.1.0.Final</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
-
 
 </project>

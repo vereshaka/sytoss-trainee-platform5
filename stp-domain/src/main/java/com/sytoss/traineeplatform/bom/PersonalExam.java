@@ -1,6 +1,5 @@
 package com.sytoss.traineeplatform.bom;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -13,7 +12,6 @@ import java.util.List;
 public class PersonalExam {
 
     @Id
-//    @GeneratedValue(strategy = LongIdGenerator.class)
     private Long id;
 
     private String name;
