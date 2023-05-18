@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.producer.bom;
 
 import lombok.Getter;
 import lombok.Setter;
