@@ -1,5 +1,6 @@
-package com.sytoss.traineeplatform.bom;
+package com.sytoss.traineeplatform.bom.personalexam;
 
+import com.sytoss.traineeplatform.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;

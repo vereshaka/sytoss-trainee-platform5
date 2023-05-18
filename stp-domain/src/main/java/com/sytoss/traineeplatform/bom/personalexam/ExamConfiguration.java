@@ -1,4 +1,4 @@
-package com.sytoss.traineeplatform.bom;
+package com.sytoss.traineeplatform.bom.personalexam;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,5 +1,6 @@
-package com.sytoss.traineeplatform.bom;
+package com.sytoss.traineeplatform.bom.personalexam;
 
+import com.sytoss.traineeplatform.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;
 

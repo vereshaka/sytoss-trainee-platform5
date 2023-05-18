@@ -5,8 +5,9 @@ services:
     image: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_USERNAME: stp
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: stp
     ports:
+      - 27007:27007
       - 27017:27017
