@@ -89,7 +89,6 @@ public class MetadataConnectorImpl implements MetadataConnector {
             taskThird.setTopics(List.of(getTopic(3L)));
             taskThird.setEtalonAnswer("Yes");
             return List.of(task, taskSecond, taskThird);
-
         }
     }
 
