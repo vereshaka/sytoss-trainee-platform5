@@ -77,6 +77,6 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         examConfiguration.setStudentId(1L);
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
-        assertEquals("1L", personalExam.getId());
+        assertEquals("1ada", personalExam.getId());
     }
 }

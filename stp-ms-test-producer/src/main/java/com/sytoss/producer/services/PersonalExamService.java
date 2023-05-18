@@ -48,12 +48,7 @@ public class PersonalExamService {
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAnswers(personalTestTask);
         personalExam.setStudentId(examConfiguration.getStudentId());
-        try {
-            personalExam = personalExamConnector.save(personalExam);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
 }

@@ -22,7 +22,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
     @PostMapping("/personalExam/create")
-    public PersonalExam getCustomer(@RequestBody ExamConfiguration examConfiguration) {
+    public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }
 

@@ -10,8 +10,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -25,7 +23,7 @@ public class PersonalControllerTest extends AbstractControllerTest {
     private PersonalExamService personalExamService;
 
     @Test
-    public void shouldCreateExam(){
+    public void shouldCreateExam() {
         when(personalExamService.create(any())).thenReturn(new PersonalExam());
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), headers);
