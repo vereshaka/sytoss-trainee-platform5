@@ -17,12 +17,4 @@ public class Answer {
     private AnswerStatus status;
 
     private Grade grade;
-
-    public void changeStatus() {
-        if (status.equals(AnswerStatus.NOT_STARTED)) {
-            status = AnswerStatus.IN_PROGRESS;
-        } else if (status.equals(AnswerStatus.IN_PROGRESS)) {
-            status = AnswerStatus.ANSWERED;
-        }
-    }
 }
