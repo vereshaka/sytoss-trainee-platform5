@@ -1,5 +1,6 @@
-package bom;
+package com.sytoss.producer.bom;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ public class Task {
 
     private Long id;
 
+    @JsonView(PersonalExam.Public.class)
     private String question;
 
     private String etalonAnswer;
