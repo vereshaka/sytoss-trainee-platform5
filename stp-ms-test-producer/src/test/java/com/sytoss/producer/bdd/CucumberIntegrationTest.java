@@ -2,7 +2,7 @@ package com.sytoss.producer.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
-import com.sytoss.producer.commonConnectors.PersonalExamConnectorForTest;
+import com.sytoss.producer.commonConnectors.PersonalExamConnectorTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +38,7 @@ public class CucumberIntegrationTest extends AbstractSTPProducerApplicationTest 
     private int applicationPort;
 
     @Autowired
-    private PersonalExamConnectorForTest personalExamConnector;
+    private PersonalExamConnectorTest personalExamConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

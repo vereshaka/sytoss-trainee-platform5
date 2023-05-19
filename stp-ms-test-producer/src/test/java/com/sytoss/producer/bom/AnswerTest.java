@@ -1,6 +1,5 @@
 package com.sytoss.producer.bom;
 
-import com.sytoss.producer.AbstractSTPJunitTest;
 import com.sytoss.producer.exceptions.businessException.AnswerInProgressException;
 import com.sytoss.producer.exceptions.businessException.AnswerIsAnsweredException;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AnswerTest extends AbstractSTPJunitTest {
+public class AnswerTest {
 
     @Test
     public void shouldChangeStatusOnInProgress() {

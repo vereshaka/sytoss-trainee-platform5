@@ -1,6 +1,5 @@
 package com.sytoss.producer.bom;
 
-import com.sytoss.producer.AbstractSTPJunitTest;
 import com.sytoss.producer.exceptions.businessException.PersonalExamAlreadyStartedException;
 import com.sytoss.producer.exceptions.businessException.PersonalExamIsFinishedException;
 import org.junit.jupiter.api.Test;
@@ -8,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PersonalExamTest extends AbstractSTPJunitTest {
+public class PersonalExamTest {
 
     @Test
     public void shouldStartPersonalExam() {
