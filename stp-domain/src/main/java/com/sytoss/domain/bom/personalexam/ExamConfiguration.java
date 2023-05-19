@@ -13,6 +13,8 @@ public class ExamConfiguration {
 
     private List<Long> topics;
 
+    private String examName;
+
     private int quantityOfTask;
 
     private Long studentId;
