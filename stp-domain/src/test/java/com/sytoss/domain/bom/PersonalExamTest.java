@@ -1,4 +1,4 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class PersonalExamTest {
 
         personalExam.summary();
 
-        assertEquals(personalExam.getSummaryGrade(), 3.7);
+        assertEquals(personalExam.getSummaryGrade(), 3.7f);
     }
 
     private Answer createNewAnswerWithGrade(float value) {
@@ -24,6 +24,7 @@ public class PersonalExamTest {
 
         Answer answer = new Answer();
         answer.setGrade(grade);
+        answer.setStatus(AnswerStatus.Graded);
 
         return answer;
     }

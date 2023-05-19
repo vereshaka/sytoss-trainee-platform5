@@ -1,4 +1,6 @@
 spring:
   data:
     mongodb:
-      uri: ${DB_URI:mongodb://admin:pwd@127.0.0.1:27017/stp?connectTimeoutMS=10000&authSource=admin&authMechanism=SCRAM-SHA-256}
+      uri: ${DB_URI:mongodb://admin:pwd@127.0.0.1:27017/stp?authSource=admin}
+server:
+  port: 9101

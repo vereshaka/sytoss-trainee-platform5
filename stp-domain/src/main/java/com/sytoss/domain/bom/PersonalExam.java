@@ -1,8 +1,9 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Setter
 public class PersonalExam {
 
+    @MongoId
     private String id;
 
     @JsonView(PersonalExam.Public.class)
@@ -33,8 +35,14 @@ public class PersonalExam {
     private float summaryGrade;
 
     public void summary() {
+        answers.forEach((answer) -> {
+            if (answer.getStatus().equals(AnswerStatus.Graded)) {
+                summaryGrade += answer.getGrade().getValue();
+            }
+        });
     }
 
     public static class Public {
+
     }
 }

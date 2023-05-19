@@ -1,7 +1,7 @@
 package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.producer.bom.*;
+import com.sytoss.domain.bom.PersonalExam;
 import com.sytoss.producer.services.PersonalExamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;

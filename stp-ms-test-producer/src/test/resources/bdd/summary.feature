@@ -32,8 +32,10 @@ Scenario: student path to summary when all tasks are graded
     Then operation is successful
     And summary grade should be 2
     And response should return personal exam with exam name "SQL exam" and studentID 7 and date 11.05.2023
-      | question                    | answer                    | status | grade  | comment          |
-      | get all from tasks table    | SELECT * FROM tasks       | Graded | 1      | answer correct   |
-      | get all from students table | SELECT * FROM students    | Graded | 1      | answer correct   |
-      | get all from tests table    | SELECT * FROM programmers | Graded | 0      | answer uncorrect |
-      | get all from houses table   | SELECT * FROM trees       | Graded | 0      | answer uncorrect |
+      | question                    | answer                    | status   | grade  | comment          |
+      | get all from tasks table    | SELECT * FROM tasks       | Graded   | 1      | answer correct   |
+      | get all from students table | SELECT * FROM students    | Graded   | 1      | answer correct   |
+      | get all from tests table    | SELECT * FROM programmers | Graded   | 0      | answer uncorrect |
+      | get all from houses table   | SELECT * FROM trees       | Graded   | 0      | answer uncorrect |
+      | get all from orders table   | SELECT * FROM orders      | Answered | 0      | not checked      |
+

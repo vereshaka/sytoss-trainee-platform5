@@ -1,4 +1,4 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom;
 
 public enum AnswerStatus {
     InProgress,

@@ -1,9 +1,10 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.producer.bom.Answer;
-import com.sytoss.producer.bom.AnswerStatus;
-import com.sytoss.producer.bom.Grade;
-import com.sytoss.producer.bom.PersonalExam;
+import com.sytoss.domain.bom.Answer;
+import com.sytoss.domain.bom.AnswerStatus;
+import com.sytoss.domain.bom.Grade;
+import com.sytoss.domain.bom.PersonalExam;
+import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PersonalExamServiceTest {
+public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest {
 
     @MockBean
     private PersonalExamConnector personalExamConnector;
@@ -40,12 +41,14 @@ public class PersonalExamServiceTest {
         firstAnswer.setValue("SELECT * FROM Products");
         firstAnswer.setStatus(AnswerStatus.Answered);
         firstAnswer.setGrade(firstGrade);
+        firstAnswer.setStatus(AnswerStatus.Graded);
 
         Answer secondAnswer = new Answer();
-        firstAnswer.setId(2L);
-        firstAnswer.setValue("SELECT * FROM Owners");
-        firstAnswer.setStatus(AnswerStatus.Answered);
+        secondAnswer.setId(2L);
+        secondAnswer.setValue("SELECT * FROM Owners");
+        secondAnswer.setStatus(AnswerStatus.Answered);
         secondAnswer.setGrade(secondGrade);
+        secondAnswer.setStatus(AnswerStatus.Graded);
 
         PersonalExam personalExam = new PersonalExam();
 

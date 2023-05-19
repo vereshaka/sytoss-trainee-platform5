@@ -1,8 +1,7 @@
 package com.sytoss.producer.bdd.given;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sytoss.domain.bom.*;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bom.*;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
@@ -16,10 +15,17 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
     @DataTableType
     public Answer mapAnswer(Map<String, String> entry) {
         Topic topic = new Topic();
-        topic.setName(entry.get("listOfSubjects"));
+
+        if (entry.containsKey("listOfSubjects")) {
+            topic.setName(entry.get("listOfSubjects"));
+        }
 
         Task task = new Task();
-        task.setId(Long.parseLong(entry.get("taskId")));
+
+        if (entry.containsKey("taskId")) {
+            task.setId(Long.parseLong(entry.get("taskId")));
+        }
+
         task.setQuestion(entry.get("question"));
         task.setTopics(List.of(topic));
 
