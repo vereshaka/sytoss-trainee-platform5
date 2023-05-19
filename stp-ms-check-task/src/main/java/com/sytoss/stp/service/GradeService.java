@@ -15,10 +15,10 @@ public class GradeService {
     private final QueryResultConvertor queryResultConvertor;
 
     public void checkAndGrade(String answer, String etalon, String databaseScript) throws Exception {
-        Connection connection = databaseHelperService.generateDatabase(databaseScript);
-        databaseHelperService.executeQuery("Insert into Answer(answer) values ("+answer+")");
-        databaseHelperService.executeQuery("Insert into Etalon(etalon) values ("+etalon+")");
-        queryResultConvertor.getExecuteQueryResult(connection);
+       databaseHelperService.generateDatabase(databaseScript);
+        databaseHelperService.executeQuery("Insert into Answer(answer) values ('"+answer+"')");
+        databaseHelperService.executeQuery("Insert into Etalon(etalon) values ('"+etalon+"')");
+        //databaseHelperService.getExecuteQueryResult();
         databaseHelperService.dropDatabase();
     }
 }

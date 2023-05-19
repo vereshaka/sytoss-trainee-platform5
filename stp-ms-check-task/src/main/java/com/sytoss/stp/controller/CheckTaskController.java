@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/task/check/{answer}/{etalon}/{databaseScript}")
+@RequestMapping(value = "/api/task/check/{answer}/{etalon}")
 public class CheckTaskController {
 
     private final GradeService gradeService;
@@ -15,7 +15,7 @@ public class CheckTaskController {
     @RequestMapping(method = RequestMethod.POST)
     public void checkTask(@PathVariable String answer,
                           @PathVariable String etalon,
-                          @PathVariable String databaseScript) throws Exception {
+                          @RequestBody String databaseScript) throws Exception {
         gradeService.checkAndGrade(answer,etalon,databaseScript);
     }
 }

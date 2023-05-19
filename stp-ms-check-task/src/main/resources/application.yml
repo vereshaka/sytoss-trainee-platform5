@@ -1,6 +1,6 @@
 database:
-  url: jdbc:h2:mem:db
+  url: jdbc:h2:~/
   username: SA
-  password:
+  password: ~
 server:
   port: 9010

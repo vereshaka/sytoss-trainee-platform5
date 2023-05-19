@@ -1,6 +1,10 @@
 package com.sytoss.stp.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import liquibase.Liquibase;
+import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
@@ -10,9 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.sql.*;
 import java.util.Random;
 
 @Service
@@ -20,7 +26,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DatabaseHelperService {
 
-    private String url = " jdbc:h2:mem:";
+    @Value("${database.url}")
+    private String url;
 
     @Value("${database.username}")
     private String username;
@@ -28,27 +35,33 @@ public class DatabaseHelperService {
     @Value("${database.password}")
     private String password;
 
-    public Connection generateDatabase(String databaseScript) throws Exception {
+    private final QueryResultConvertor queryResultConvertor;
+
+    public void generateDatabase(String databaseScript) throws Exception {
+        Connection conn = null;
+        Statement stmt = null;
         try {
+            url+=generateDatabaseName();
             Class.forName("org.h2.Driver");
-            String name = generateDatabaseName();
-            url += name;
-            Connection connection = DriverManager.getConnection(url, username, password);
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            Liquibase liquibase = new Liquibase(databaseScript, new ClassLoaderResourceAccessor(), database);
+            conn = DriverManager.getConnection(url, username, password);
+            writeDatabaseScriptFile(databaseScript);
+            DatabaseChangeLog databaseChangeLog = new DatabaseChangeLog("scripts/databaseScript.yml");
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
+            Liquibase liquibase = new Liquibase(databaseChangeLog, new ClassLoaderResourceAccessor(), database);
             liquibase.update();
-            log.info("Database with the name" + name + "was created");
-            return connection;
+            stmt.close();
+            conn.close();
+
         } catch (Exception e) {
-            log.error("Error occurred during generating database", e);
-            throw e;
+            e.printStackTrace();
         }
     }
 
     public void executeQuery(String sqlQuery) throws Exception {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
-            statement.executeQuery(sqlQuery);
+            statement.executeUpdate(sqlQuery);
+            log.info("Update query was executed");
         } catch (Exception e) {
             log.error("Error occurred during execution query: {}", sqlQuery);
             log.error("Error: ", e);
@@ -58,6 +71,7 @@ public class DatabaseHelperService {
 
     public void dropDatabase() throws Exception {
         executeQuery("DROP ALL OBJECTS DELETE FILES;");
+        log.info("database was dropped");
     }
 
     private String generateDatabaseName() {
@@ -71,4 +85,29 @@ public class DatabaseHelperService {
         }
         return name.toString();
     }
+
+    private void writeDatabaseScriptFile(String databaseScript) throws IOException {
+        JsonNode jsonNodeTree = new ObjectMapper().readTree(databaseScript);
+        String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"","");
+        File databaseFile = new File("stp-ms-check-task/src/main/resources/scripts/databaseScript.yml");
+        OutputStreamWriter myWriter = new FileWriter(databaseFile);
+        myWriter.write(jsonAsYaml);
+        myWriter.flush();
+        myWriter.close();
+    }
+
+    /*public QueryResult getExecuteQueryResult() throws SQLException {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            QueryResult queryResult = new QueryResult();
+            Statement statement = connection.createStatement();
+           ResultSet resultSet = statement.executeQuery("select * from answer");
+           queryResultConvertor.convert(resultSet, "answer", queryResult);
+            resultSet = statement.executeQuery("select * from etalon");
+           queryResultConvertor.convert(resultSet, "etalon", queryResult);
+            return queryResult;
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }*/
 }

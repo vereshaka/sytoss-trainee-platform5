@@ -23,7 +23,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>2.1.214</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -36,6 +35,11 @@
             <artifactId>stp-domain</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.15.1</version>
         </dependency>
         <!--TEST-->
         <dependency>
