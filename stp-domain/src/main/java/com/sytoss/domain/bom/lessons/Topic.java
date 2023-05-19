@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.domain.bom.lessons;
 
 import lombok.Getter;
 import lombok.Setter;
