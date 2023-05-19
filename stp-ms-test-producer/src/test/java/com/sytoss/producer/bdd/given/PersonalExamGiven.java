@@ -1,6 +1,5 @@
 package com.sytoss.producer.bdd.given;
 
-import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 

@@ -1,10 +1,10 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sytoss.domain.bom.Answer;
-import com.sytoss.domain.bom.PersonalExam;
-import com.sytoss.domain.bom.PersonalExamStatus;
-import com.sytoss.domain.bom.Task;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.DataTableType;

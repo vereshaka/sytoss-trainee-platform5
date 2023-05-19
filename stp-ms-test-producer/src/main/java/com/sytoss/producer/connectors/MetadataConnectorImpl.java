@@ -1,9 +1,9 @@
 package com.sytoss.producer.connectors;
 
-import com.sytoss.domain.bom.Discipline;
-import com.sytoss.domain.bom.Task;
-import com.sytoss.domain.bom.TaskDomain;
-import com.sytoss.domain.bom.Topic;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 
 import java.util.List;
 

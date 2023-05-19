@@ -62,7 +62,7 @@
             <version>1.18.26</version>
         </dependency>
 
-        <!-- Spring Boot -->
+        <!-- SWAGGER -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>

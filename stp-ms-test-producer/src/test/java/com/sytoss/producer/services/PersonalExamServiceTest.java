@@ -1,9 +1,9 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.Discipline;
-import com.sytoss.domain.bom.ExamConfiguration;
-import com.sytoss.domain.bom.PersonalExam;
-import com.sytoss.domain.bom.Task;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
