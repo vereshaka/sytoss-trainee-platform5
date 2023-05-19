@@ -1,7 +1,8 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom.personalexam;
 
-import com.sytoss.producer.exceptions.businessException.AnswerInProgressException;
-import com.sytoss.producer.exceptions.businessException.AnswerIsAnsweredException;
+import com.sytoss.domain.bom.exceptions.businessException.AnswerInProgressException;
+import com.sytoss.domain.bom.exceptions.businessException.AnswerIsAnsweredException;
+import com.sytoss.domain.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;
 

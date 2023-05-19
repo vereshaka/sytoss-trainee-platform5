@@ -1,15 +1,13 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom.lessons;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Topic {
+public class Discipline {
 
     private Long id;
 
     private String name;
-
-    private Discipline discipline;
 }

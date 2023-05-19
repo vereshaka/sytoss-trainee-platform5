@@ -1,6 +1,7 @@
 package com.sytoss.producer.bdd.common;
 
 public class IntegrationTest {
+
     private static final ThreadLocal<TestContext> testContext = new ThreadLocal<>();
 
     public static TestContext getTestContext() {

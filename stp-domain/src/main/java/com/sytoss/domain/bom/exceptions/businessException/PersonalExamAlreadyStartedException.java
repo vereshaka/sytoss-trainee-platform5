@@ -1,4 +1,4 @@
-package com.sytoss.producer.exceptions.businessException;
+package com.sytoss.domain.bom.exceptions.businessException;
 
 public class PersonalExamAlreadyStartedException extends BusinessException {
 

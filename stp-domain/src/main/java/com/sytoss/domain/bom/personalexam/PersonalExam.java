@@ -1,7 +1,8 @@
-package com.sytoss.producer.bom;
+package com.sytoss.domain.bom.personalexam;
 
-import com.sytoss.producer.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.producer.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;

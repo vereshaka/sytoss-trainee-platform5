@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 @ExtendWith({MockitoExtension.class})
 public abstract class AbstractSTPProducerApplicationTest {
+
     @Autowired
     private AbstractApplicationContext applicationContext;
 

@@ -1,9 +1,9 @@
 package com.sytoss.producer.controllers;
 
-import com.sytoss.producer.exceptions.businessException.AnswerInProgressException;
-import com.sytoss.producer.exceptions.businessException.AnswerIsAnsweredException;
-import com.sytoss.producer.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.producer.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.businessException.AnswerInProgressException;
+import com.sytoss.domain.bom.exceptions.businessException.AnswerIsAnsweredException;
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

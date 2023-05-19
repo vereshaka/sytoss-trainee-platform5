@@ -1,6 +1,6 @@
-package com.sytoss.producer.exceptions.businessException;
+package com.sytoss.domain.bom.exceptions.businessException;
 
-import com.sytoss.producer.exceptions.ApplicationException;
+import com.sytoss.domain.bom.exceptions.ApplicationException;
 
 public abstract class BusinessException extends ApplicationException {
 

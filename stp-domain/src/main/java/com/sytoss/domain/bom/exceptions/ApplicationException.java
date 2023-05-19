@@ -1,4 +1,4 @@
-package com.sytoss.producer.exceptions;
+package com.sytoss.domain.bom.exceptions;
 
 public abstract class ApplicationException extends RuntimeException {
 
