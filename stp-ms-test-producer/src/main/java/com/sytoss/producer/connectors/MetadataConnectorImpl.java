@@ -4,7 +4,6 @@ import com.sytoss.domain.bom.Discipline;
 import com.sytoss.domain.bom.Task;
 import com.sytoss.domain.bom.TaskDomain;
 import com.sytoss.domain.bom.Topic;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -48,46 +47,15 @@ public class MetadataConnectorImpl implements MetadataConnector {
     @Override
     public List<Task> getTasksForTopic(Long id) {
         if (id == 1L) {
-            Task task = new Task();
-            task.setTaskDomain(getTaskDomain(1L));
-            task.setQuestion("Inner Join");
-            task.setTopics(List.of(getTopic(1L)));
-            task.setEtalonAnswer("Yes");
-            Task taskSecond = new Task();
-            taskSecond.setTaskDomain(getTaskDomain(1L));
-            taskSecond.setQuestion("Left Join");
-            taskSecond.setTopics(List.of(getTopic(1L)));
-            taskSecond.setEtalonAnswer("Yes");
-            return List.of(task, taskSecond);
+            return List.of(createTask("Inner Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)),
+                    createTask("Left Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)));
         } else if (id == 2L) {
-            Task task = new Task();
-            task.setTaskDomain(getTaskDomain(1L));
-            task.setQuestion("Left Join?");
-            task.setTopics(List.of(getTopic(2L)));
-            task.setEtalonAnswer("Yes");
-            Task taskSecond = new Task();
-            taskSecond.setTaskDomain(getTaskDomain(1L));
-            taskSecond.setQuestion("Is SQL cool?");
-            taskSecond.setTopics(List.of(getTopic(2L)));
-            taskSecond.setEtalonAnswer("Yes");
-            return List.of(task, taskSecond);
+            return List.of(createTask("Left Join?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)),
+                    createTask("Is SQL cool?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)));
         } else {
-            Task task = new Task();
-            task.setTaskDomain(getTaskDomain(1L));
-            task.setQuestion("Inner Join?");
-            task.setTopics(List.of(getTopic(3L)));
-            task.setEtalonAnswer("Yes");
-            Task taskSecond = new Task();
-            taskSecond.setTaskDomain(getTaskDomain(1L));
-            taskSecond.setQuestion("Left Join?");
-            taskSecond.setTopics(List.of(getTopic(3L)));
-            taskSecond.setEtalonAnswer("Yes");
-            Task taskThird = new Task();
-            taskThird.setTaskDomain(getTaskDomain(1L));
-            taskThird.setQuestion("SELECT?");
-            taskThird.setTopics(List.of(getTopic(3L)));
-            taskThird.setEtalonAnswer("Yes");
-            return List.of(task, taskSecond, taskThird);
+            return List.of(createTask("Inner Join?", "Yes", List.of(getTopic(3L)), getTaskDomain(1L)),
+                    createTask("Left Join?", "Yes", List.of(getTopic(3L)), getTaskDomain(1L)),
+                    createTask("SELECT?", "Yes", List.of(getTopic(3L)), getTaskDomain(1L)));
         }
     }
 
@@ -106,5 +74,14 @@ public class MetadataConnectorImpl implements MetadataConnector {
             taskDomain.setScript("ScriptThird");
         }
         return taskDomain;
+    }
+
+    public Task createTask(String question, String etalonAnswer, List<Topic> topics, TaskDomain taskDomain) {
+        Task task = new Task();
+        task.setTaskDomain(taskDomain);
+        task.setQuestion(question);
+        task.setTopics(topics);
+        task.setEtalonAnswer(etalonAnswer);
+        return task;
     }
 }
