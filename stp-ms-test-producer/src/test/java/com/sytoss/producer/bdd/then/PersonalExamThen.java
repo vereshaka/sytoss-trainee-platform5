@@ -9,6 +9,7 @@ import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         return answer;
     }
 
-    @Given("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
+    @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
     public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
