@@ -1,5 +1,5 @@
 database:
-  url: jdbc:h2:mem:test
+  url: jdbc:h2:mem:db
   username: SA
   password:
 server:

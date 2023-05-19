@@ -1,20 +1,24 @@
 package com.sytoss.stp.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+
 @Service
+@RequiredArgsConstructor
 public class GradeService {
 
-    @Autowired
-    private DatabaseHelperService databaseHelperService;
+    private final DatabaseHelperService databaseHelperService;
 
-    public void checkAndGrade() throws Exception {
-        String sqlAnswer = "select * from Person";
-        String sqlEtalon = "select * from Person";
-        databaseHelperService.generateDatabase();
-        databaseHelperService.executeQuery(sqlAnswer);
-        databaseHelperService.executeQuery(sqlEtalon);
+    private final QueryResultConvertor queryResultConvertor;
+
+    public void checkAndGrade(String answer, String etalon, String databaseScript) throws Exception {
+        Connection connection = databaseHelperService.generateDatabase(databaseScript);
+        databaseHelperService.executeQuery("Insert into Answer(answer) values ("+answer+")");
+        databaseHelperService.executeQuery("Insert into Etalon(etalon) values ("+etalon+")");
+        queryResultConvertor.getExecuteQueryResult(connection);
         databaseHelperService.dropDatabase();
     }
 }

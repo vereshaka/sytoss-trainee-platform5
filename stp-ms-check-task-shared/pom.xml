@@ -5,6 +5,20 @@
         <groupId>com.systoss.stp</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
+    <dependencies>
+        <dependency>
+            <groupId>com.systoss.stp</groupId>
+            <artifactId>stp-domain</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.systoss.stp</groupId>
+            <artifactId>stp-ms-check-task</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>stp-ms-check-task-shared</artifactId>

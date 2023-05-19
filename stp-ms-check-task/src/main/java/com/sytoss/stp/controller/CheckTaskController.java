@@ -1,20 +1,21 @@
 package com.sytoss.stp.controller;
 
 import com.sytoss.stp.service.GradeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/task/check")
+@RequiredArgsConstructor
+@RequestMapping(value = "/api/task/check/{answer}/{etalon}/{databaseScript}")
 public class CheckTaskController {
 
-    @Autowired
-    private GradeService gradeService;
+    private final GradeService gradeService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public void checkTask() throws Exception {
-        gradeService.checkAndGrade();
+    public void checkTask(@PathVariable String answer,
+                          @PathVariable String etalon,
+                          @PathVariable String databaseScript) throws Exception {
+        gradeService.checkAndGrade(answer,etalon,databaseScript);
     }
 }

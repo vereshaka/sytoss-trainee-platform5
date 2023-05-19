@@ -5,33 +5,40 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Random;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class DatabaseHelperService {
 
-    @Value("${database.url}")
-    private String url;
+    private String url = " jdbc:h2:mem:";
+
     @Value("${database.username}")
     private String username;
+
     @Value("${database.password}")
     private String password;
 
-    public void generateDatabase() throws Exception {
+    public Connection generateDatabase(String databaseScript) throws Exception {
         try {
             Class.forName("org.h2.Driver");
+            String name = generateDatabaseName();
+            url += name;
             Connection connection = DriverManager.getConnection(url, username, password);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            Liquibase liquibase = new Liquibase("/test.xml", new ClassLoaderResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase(databaseScript, new ClassLoaderResourceAccessor(), database);
             liquibase.update();
+            log.info("Database with the name" + name + "was created");
+            return connection;
         } catch (Exception e) {
             log.error("Error occurred during generating database", e);
             throw e;
@@ -40,13 +47,8 @@ public class DatabaseHelperService {
 
     public void executeQuery(String sqlQuery) throws Exception {
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sqlQuery)) {
-
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("name"));
-            }
-
+             Statement statement = connection.createStatement()) {
+            statement.executeQuery(sqlQuery);
         } catch (Exception e) {
             log.error("Error occurred during execution query: {}", sqlQuery);
             log.error("Error: ", e);
@@ -54,7 +56,19 @@ public class DatabaseHelperService {
         }
     }
 
-    public void dropDatabase() {
+    public void dropDatabase() throws Exception {
+        executeQuery("DROP ALL OBJECTS DELETE FILES;");
+    }
 
+    private String generateDatabaseName() {
+        int databaseNameLength = 30;
+        Random r = new Random();
+        char letter;
+        StringBuilder name = new StringBuilder();
+        for (int i = 0; i < databaseNameLength; i++) {
+            letter = (char) (r.nextInt(26) + 'a');
+            name.append(letter);
+        }
+        return name.toString();
     }
 }
