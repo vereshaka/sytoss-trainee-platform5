@@ -8,14 +8,17 @@ import org.mockito.Mock;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class GradeServiceTest {
+class GradeServiceTest extends DatabaseInitHelper {
 
-    @Mock
     private final GradeService gradeService = mock(GradeService.class);
     @Test
     void checkAndGrade() throws Exception {
-        verify(gradeService,times(1)).checkAndGrade("select all from Person",
+        String script = initDatabase();
+        gradeService.checkAndGrade("select all from Person",
                 "select * from Person",
-                "stp-ms-check-task/src/test/resources/databaseTest.yml");
+                script);
+        verify(gradeService).checkAndGrade("select all from Person",
+                "select * from Person",
+                script);
     }
 }

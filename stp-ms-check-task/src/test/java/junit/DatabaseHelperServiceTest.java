@@ -5,27 +5,37 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-@RequiredArgsConstructor
-class DatabaseHelperServiceTest {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.net.URISyntaxException;
+import java.util.Scanner;
 
-    @Mock
-    private final DatabaseHelperService databaseHelperService;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+
+class DatabaseHelperServiceTest extends DatabaseInitHelper{
+
+    private final DatabaseHelperService databaseHelperService = mock(DatabaseHelperService.class);
+
 
     @Test
     void generateDatabase() throws Exception {
-        verify(databaseHelperService,times(1)).generateDatabase("databaseTest.yml");
+        String script = initDatabase();
+        databaseHelperService.generateDatabase(script);
+        verify(databaseHelperService).generateDatabase(script);
     }
 
     @Test
     void executeQuery() throws Exception {
-    //    verify(databaseHelperService,times(1)).executeQuery("select * from answer");
+        databaseHelperService.executeQuery("select * from answer");
+        verify(databaseHelperService).executeQuery("select * from answer");
     }
 
     @Test
     void dropDatabase() throws Exception {
-   //     verify(databaseHelperService,times(1)).dropDatabase();
+        databaseHelperService.dropDatabase();
+        verify(databaseHelperService,times(1)).dropDatabase();
     }
 }
