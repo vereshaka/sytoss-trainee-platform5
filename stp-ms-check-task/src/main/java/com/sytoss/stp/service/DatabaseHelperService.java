@@ -1,5 +1,6 @@
 package com.sytoss.stp.service;
 
+import bom.QueryResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
@@ -38,8 +39,7 @@ public class DatabaseHelperService {
     private final QueryResultConvertor queryResultConvertor;
 
     public void generateDatabase(String databaseScript) throws Exception {
-        Connection conn = null;
-        Statement stmt = null;
+        Connection conn;
         try {
             url+=generateDatabaseName();
             Class.forName("org.h2.Driver");
@@ -49,7 +49,6 @@ public class DatabaseHelperService {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
             Liquibase liquibase = new Liquibase(databaseChangeLog, new ClassLoaderResourceAccessor(), database);
             liquibase.update();
-            stmt.close();
             conn.close();
 
         } catch (Exception e) {
@@ -96,7 +95,7 @@ public class DatabaseHelperService {
         myWriter.close();
     }
 
-    /*public QueryResult getExecuteQueryResult() throws SQLException {
+    public QueryResult getExecuteQueryResult() throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             QueryResult queryResult = new QueryResult();
             Statement statement = connection.createStatement();
@@ -109,5 +108,5 @@ public class DatabaseHelperService {
             throw e;
         }
 
-    }*/
+    }
 }

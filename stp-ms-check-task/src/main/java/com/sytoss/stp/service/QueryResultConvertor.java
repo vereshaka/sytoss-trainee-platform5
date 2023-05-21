@@ -15,14 +15,16 @@ public class QueryResultConvertor {
 
 
     public QueryResult convert(ResultSet resultSet, String parameter,QueryResult queryResult) throws SQLException {
-        String answer = resultSet.getString(1);
-        if (Objects.equals(parameter, "answer")) {
-            queryResult.setAnswer(answer);
-        } else {
-            queryResult.setEtalon("etalon");
+        while(resultSet.next()){
+            String answer = resultSet.getString(1);
+            if (Objects.equals(parameter, "answer")) {
+                queryResult.setAnswer(answer);
+            } else {
+                queryResult.setEtalon(answer);
+            }
+            //resultSet.close();
+            System.out.println(queryResult);
         }
-        resultSet.close();
-        System.out.println(queryResult.toString());
         return queryResult;
     }
 }

@@ -18,7 +18,7 @@ public class GradeService {
        databaseHelperService.generateDatabase(databaseScript);
         databaseHelperService.executeQuery("Insert into Answer(answer) values ('"+answer+"')");
         databaseHelperService.executeQuery("Insert into Etalon(etalon) values ('"+etalon+"')");
-        //databaseHelperService.getExecuteQueryResult();
+        databaseHelperService.getExecuteQueryResult();
         databaseHelperService.dropDatabase();
     }
 }
