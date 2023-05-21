@@ -1,18 +1,18 @@
 ---
 databaseChangeLog:
-- changeSet:
-    id: test
-    author: ivan_larin
-    changes:
-    - createTable:
-        tableName: Answer
-        columns:
-        - column:
-            name: Answer
-            type: varchar(100)
-    - createTable:
-        tableName: Etalon
-        columns:
-        - column:
-            name: Etalon
-            type: varchar(100)
+  - changeSet:
+      id: test
+      author: ivan_larin
+      changes:
+        - createTable:
+            tableName: Answer
+            columns:
+              - column:
+                  name: Answer
+                  type: varchar(100)
+        - createTable:
+            tableName: Etalon
+            columns:
+              - column:
+                  name: Etalon
+                  type: varchar(100)

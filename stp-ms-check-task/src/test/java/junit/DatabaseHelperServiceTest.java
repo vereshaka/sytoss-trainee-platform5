@@ -1,21 +1,12 @@
 package junit;
 
 import com.sytoss.stp.service.DatabaseHelperService;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.net.URISyntaxException;
-import java.util.Scanner;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-class DatabaseHelperServiceTest extends DatabaseInitHelper{
+class DatabaseHelperServiceTest extends DatabaseInitHelper {
 
     private final DatabaseHelperService databaseHelperService = mock(DatabaseHelperService.class);
 
@@ -36,6 +27,6 @@ class DatabaseHelperServiceTest extends DatabaseInitHelper{
     @Test
     void dropDatabase() throws Exception {
         databaseHelperService.dropDatabase();
-        verify(databaseHelperService,times(1)).dropDatabase();
+        verify(databaseHelperService, times(1)).dropDatabase();
     }
 }

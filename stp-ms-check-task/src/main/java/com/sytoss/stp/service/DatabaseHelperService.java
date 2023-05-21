@@ -27,6 +27,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DatabaseHelperService {
 
+    private final QueryResultConvertor queryResultConvertor;
+
     @Value("${database.url}")
     private String url;
 
@@ -36,12 +38,10 @@ public class DatabaseHelperService {
     @Value("${database.password}")
     private String password;
 
-    private final QueryResultConvertor queryResultConvertor;
-
     public void generateDatabase(String databaseScript) throws Exception {
         Connection conn;
         try {
-            url+=generateDatabaseName();
+            url += generateDatabaseName();
             Class.forName("org.h2.Driver");
             conn = DriverManager.getConnection(url, username, password);
             writeDatabaseScriptFile(databaseScript);
@@ -87,7 +87,7 @@ public class DatabaseHelperService {
 
     private void writeDatabaseScriptFile(String databaseScript) throws IOException {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(databaseScript);
-        String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"","");
+        String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"", "");
         File databaseFile = new File("stp-ms-check-task/src/main/resources/scripts/databaseScript.yml");
         OutputStreamWriter myWriter = new FileWriter(databaseFile);
         myWriter.write(jsonAsYaml);
@@ -99,10 +99,10 @@ public class DatabaseHelperService {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             QueryResult queryResult = new QueryResult();
             Statement statement = connection.createStatement();
-           ResultSet resultSet = statement.executeQuery("select * from answer");
-           queryResultConvertor.convert(resultSet, "answer", queryResult);
+            ResultSet resultSet = statement.executeQuery("select * from answer");
+            queryResultConvertor.convert(resultSet, "answer", queryResult);
             resultSet = statement.executeQuery("select * from etalon");
-           queryResultConvertor.convert(resultSet, "etalon", queryResult);
+            queryResultConvertor.convert(resultSet, "etalon", queryResult);
             return queryResult;
         } catch (Exception e) {
             throw e;

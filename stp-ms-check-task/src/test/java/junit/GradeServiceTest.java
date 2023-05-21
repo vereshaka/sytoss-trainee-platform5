@@ -1,16 +1,15 @@
 package junit;
 
 import com.sytoss.stp.service.GradeService;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class GradeServiceTest extends DatabaseInitHelper {
 
     private final GradeService gradeService = mock(GradeService.class);
+
     @Test
     void checkAndGrade() throws Exception {
         String script = initDatabase();
