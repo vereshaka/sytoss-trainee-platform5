@@ -1,4 +1,4 @@
-package com.sytoss.domain.bom;
+package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;

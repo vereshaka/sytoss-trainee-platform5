@@ -9,4 +9,5 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: pwd
       MONGO_INITDB_DATABASE: stp
     ports:
+      - 27007:27007
       - 27017:27017

@@ -5,6 +5,31 @@ pipelines:
   branches:
     develop:
       - step:
-          name: Build and Test
+          name: Build
           script:
             - mvn clean install
+    deploy_to_dev:
+      - step:
+          name: Deploy to develop
+          script:
+            - mvn clean install
+            - cd .. && ls -l
+            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
+            - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
+            - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
+            - cd server
+            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
+            - git add . && git commit -m "build [skip ci]" && git push
+    deploy_to_prod:
+      - step:
+          name: Deploy to prod
+          script:
+            - mvn clean install
+            - cd .. && ls -l
+            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
+            - cd server && git checkout master && cd ..
+            - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
+            - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
+            - cd server
+            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
+            - git add . && git commit -m "build [skip ci]" && git push

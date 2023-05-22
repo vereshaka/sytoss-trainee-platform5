@@ -1,8 +1,9 @@
 package com.sytoss.producer.bdd.given;
 
-import com.sytoss.domain.bom.*;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import io.cucumber.java.DataTableType;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
 import java.text.ParseException;
@@ -12,45 +13,21 @@ import java.util.Map;
 
 public class PersonalExamGiven extends CucumberIntegrationTest {
 
-    @DataTableType
-    public Answer mapAnswer(Map<String, String> entry) {
-        Topic topic = new Topic();
-
-        if (entry.containsKey("listOfSubjects")) {
-            topic.setName(entry.get("listOfSubjects"));
-        }
-
-        Task task = new Task();
-
-        if (entry.containsKey("taskId")) {
-            task.setId(Long.parseLong(entry.get("taskId")));
-        }
-
-        task.setQuestion(entry.get("question"));
-        task.setTopics(List.of(topic));
-
-        Grade grade = new Grade();
-        grade.setValue(Float.parseFloat(entry.get("grade")));
-        grade.setComment(entry.get("comment"));
-
-        Answer answer = new Answer();
-        answer.setTask(task);
-        answer.setValue(entry.get("answer"));
-        answer.setGrade(grade);
-        answer.setStatus(AnswerStatus.valueOf(entry.get("status")));
-
-        return answer;
+    @Given("tasks exist")
+    public void thisCustomerHasProjects(DataTable table) {
+        List<Map<String, String>> rows = table.asMaps();
+        //TODO dmitriyK: need to rewrite when metadata microservice would be exist
     }
 
     @Given("personal exam exists with id {word} and exam name {string} and studentID {long} and date {word}")
     public void thisExamHasAnswers(String examId, String examName, Long studentId, String date, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
+
         personalExam.setId(examId);
         personalExam.setName(examName);
         personalExam.setStudentId(studentId);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-
         try {
             personalExam.setDate(dateFormat.parse(date));
         } catch (ParseException e) {

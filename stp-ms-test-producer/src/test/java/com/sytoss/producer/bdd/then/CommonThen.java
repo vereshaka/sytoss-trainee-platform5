@@ -1,12 +1,11 @@
 package com.sytoss.producer.bdd.then;
 
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.Then;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CommonThen extends CucumberIntegrationTest {
+public class CommonThen {
 
     @Then("^operation is successful$")
     public void status() {

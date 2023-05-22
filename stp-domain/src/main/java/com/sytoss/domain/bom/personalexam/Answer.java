@@ -1,6 +1,7 @@
-package com.sytoss.domain.bom;
+package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class Answer {
     @JsonView(PersonalExam.Public.class)
     private Task task;
 
+    @JsonView(PersonalExam.Public.class)
     private AnswerStatus status;
 
     @JsonView(PersonalExam.Public.class)

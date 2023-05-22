@@ -1,6 +1,7 @@
-package com.sytoss.domain.bom;
+package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -36,13 +37,11 @@ public class PersonalExam {
 
     public void summary() {
         answers.forEach((answer) -> {
-            if (answer.getStatus().equals(AnswerStatus.Graded)) {
+            if (answer.getStatus().equals(AnswerStatus.GRADED)) {
                 summaryGrade += answer.getGrade().getValue();
             }
         });
     }
 
-    public static class Public {
-
-    }
+    public static class Public {}
 }

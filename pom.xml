@@ -13,7 +13,6 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring.boot.version>3.0.6</spring.boot.version>
-        <spring.boot.version>3.0.6</spring.boot.version>
         <logback.version>1.4.7</logback.version>
         <cucumber.version>7.11.0</cucumber.version>
     </properties>
@@ -63,7 +62,7 @@
             <version>1.18.26</version>
         </dependency>
 
-        <!-- Spring Boot -->
+        <!-- SWAGGER -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
