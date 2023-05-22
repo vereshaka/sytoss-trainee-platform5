@@ -10,6 +10,9 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import liquibase.resource.DirectoryResourceAccessor;
+import liquibase.resource.SearchPathResourceAccessor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,19 +41,22 @@ public class DatabaseHelperService {
     @Value("${database.password}")
     private String password;
 
-    public void generateDatabase(String databaseScript) throws Exception {
+    @Getter
+    private QueryResult queryResult = new QueryResult();
+
+    public void generateDatabase(String databaseScript) {
         Connection conn;
         try {
             url += generateDatabaseName();
             Class.forName("org.h2.Driver");
             conn = DriverManager.getConnection(url, username, password);
-            writeDatabaseScriptFile(databaseScript);
-            DatabaseChangeLog databaseChangeLog = new DatabaseChangeLog("scripts/databaseScript.yml");
+            File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
-            Liquibase liquibase = new Liquibase(databaseChangeLog, new ClassLoaderResourceAccessor(), database);
+            Liquibase liquibase = new Liquibase(databaseFile.getName(),
+                    new SearchPathResourceAccessor("stp-ms-check-task/src/main/resources/scripts"), database);
             liquibase.update();
+            databaseFile.deleteOnExit();
             conn.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +66,7 @@ public class DatabaseHelperService {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(sqlQuery);
-            log.info("Update query was executed");
+            log.info("Query was executed");
         } catch (Exception e) {
             log.error("Error occurred during execution query: {}", sqlQuery);
             log.error("Error: ", e);
@@ -85,28 +91,24 @@ public class DatabaseHelperService {
         return name.toString();
     }
 
-    private void writeDatabaseScriptFile(String databaseScript) throws IOException {
+    private File writeDatabaseScriptFile(String databaseScript) throws IOException {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(databaseScript);
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"", "");
-        File databaseFile = new File("stp-ms-check-task/src/main/resources/scripts/databaseScript.yml");
-        OutputStreamWriter myWriter = new FileWriter(databaseFile);
+        File scriptFile = File.createTempFile("script",".yml", new File("stp-ms-check-task/src/main/resources/scripts/"));
+        OutputStreamWriter myWriter = new FileWriter(scriptFile);
         myWriter.write(jsonAsYaml);
         myWriter.flush();
         myWriter.close();
+        return scriptFile;
     }
 
-    public QueryResult getExecuteQueryResult() throws SQLException {
+    public void getExecuteQueryResult(String answer,String etalon) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            QueryResult queryResult = new QueryResult();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from answer");
+            ResultSet resultSet = statement.executeQuery(answer);
             queryResultConvertor.convert(resultSet, "answer", queryResult);
-            resultSet = statement.executeQuery("select * from etalon");
+            resultSet = statement.executeQuery(etalon);
             queryResultConvertor.convert(resultSet, "etalon", queryResult);
-            return queryResult;
-        } catch (Exception e) {
-            throw e;
         }
-
     }
 }

@@ -10,9 +10,6 @@ import java.util.Objects;
 @Component
 public class QueryResultConvertor {
 
-    // private QueryResult queryResult = new QueryResult();
-
-
     public QueryResult convert(ResultSet resultSet, String parameter, QueryResult queryResult) throws SQLException {
         while (resultSet.next()) {
             String answer = resultSet.getString(1);

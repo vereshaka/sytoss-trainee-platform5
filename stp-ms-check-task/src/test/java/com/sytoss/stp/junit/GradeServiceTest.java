@@ -1,4 +1,4 @@
-package junit;
+package com.sytoss.stp.junit;
 
 import com.sytoss.stp.service.GradeService;
 import org.junit.jupiter.api.Test;
