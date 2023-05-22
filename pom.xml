@@ -20,6 +20,7 @@
     <modules>
         <module>stp-domain</module>
         <module>stp-common</module>
+        <module>stp-lessons</module>
         <module>stp-ms-check-task</module>
         <module>stp-ms-check-task-shared</module>
         <module>stp-ms-test-producer</module>
