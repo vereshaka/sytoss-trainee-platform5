@@ -21,11 +21,12 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @DataTableType
     public Answer mapAnswer(Map<String, String> entry) {
+        String taskStatus = entry.get("task status");
         Answer answer = new Answer();
         Task task = new Task();
         task.setQuestion(entry.get("task"));
-        if (entry.get("task status") != null) {
-            answer.setStatus(AnswerStatus.valueOf(entry.get("task status")));
+        if (taskStatus != null) {
+            answer.setStatus(AnswerStatus.valueOf(taskStatus));
         }
         answer.setTask(task);
         return answer;
