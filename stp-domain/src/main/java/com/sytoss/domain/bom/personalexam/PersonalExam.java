@@ -36,6 +36,8 @@ public class PersonalExam {
     private float summaryGrade;
 
     public void summary() {
+        summaryGrade = 0;
+
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
                 summaryGrade += answer.getGrade().getValue();
