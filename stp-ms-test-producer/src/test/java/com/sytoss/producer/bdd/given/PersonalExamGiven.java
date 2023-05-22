@@ -34,4 +34,3 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
         getPersonalExamConnector().save(personalExam);
     }
 }
-
