@@ -62,7 +62,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
     }
 
     @Test
-    public void shouldReturnSummery() {
+    public void shouldReturnSummary() {
         PersonalExam personalExam = new PersonalExam();
 
         personalExam.setId("12345");
@@ -83,7 +83,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
     }
 
     @Test
-    public void shouldReturnSummeryIfAnswerNotGraded() {
+    public void shouldReturnSummaryIfAnswerNotGraded() {
         PersonalExam personalExam = new PersonalExam();
 
         personalExam.setId("12345");
