@@ -85,18 +85,14 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Then("response should return personal exam with exam name {string} and studentID {long} and date {word}")
-    public void responseShouldReturnPersonalExam(String examName, Long studentId, String date, List<Answer> answers) throws JsonProcessingException {
+    public void responseShouldReturnPersonalExam(String examName, Long studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
         PersonalExam personalExam = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
 
         assertEquals(examName, personalExam.getName());
         assertEquals(studentId, personalExam.getStudentId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        try {
-            assertEquals(dateFormat.parse(date), personalExam.getDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        assertEquals(dateFormat.parse(date), personalExam.getDate());
 
         List<Answer> listAnswer = personalExam.getAnswers();
         listAnswer.forEach(answer -> {
