@@ -1,5 +1,6 @@
-package bom;
+package com.sytoss.domain.bom.personalexam;
 
+import com.sytoss.domain.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;
 

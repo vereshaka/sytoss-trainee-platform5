@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stp-common</artifactId>
-
+    <artifactId>stp-ms-lessons</artifactId>
 
 </project>

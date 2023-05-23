@@ -1,4 +1,4 @@
-package com.sytoss.stp;
+package com.sytoss.checktask;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
