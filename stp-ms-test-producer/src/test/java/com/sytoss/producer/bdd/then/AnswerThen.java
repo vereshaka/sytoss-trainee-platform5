@@ -9,6 +9,7 @@ import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.Then;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AnswerThen extends CucumberIntegrationTest {
 
@@ -22,6 +23,7 @@ public class AnswerThen extends CucumberIntegrationTest {
     @Then("^status of first answer of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
     public void answerShouldHaveStatus(String examName, String studentId, String answerStatus) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, Long.parseLong(studentId));
+        assertNotNull(personalExam.getAnswers());
         assertEquals(answerStatus, personalExam.getAnswers().get(0).getStatus().toString());
     }
 }

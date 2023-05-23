@@ -33,12 +33,12 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
-    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
+    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, Long studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
-        assertEquals(Long.getLong(studentId), personalExamAnswer.getStudentId());
+        assertEquals(studentId, personalExamAnswer.getStudentId());
         int quantityOfTasks = 0;
         for (Answer answer : answers) {
             for (Answer answerFromResponse : personalExamAnswer.getAnswers())

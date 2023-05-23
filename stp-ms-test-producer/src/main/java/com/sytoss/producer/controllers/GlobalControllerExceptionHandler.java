@@ -1,9 +1,6 @@
 package com.sytoss.producer.controllers;
 
-import com.sytoss.domain.bom.exceptions.businessException.AnswerInProgressException;
-import com.sytoss.domain.bom.exceptions.businessException.AnswerIsAnsweredException;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.businessException.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,5 +29,10 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({AnswerIsAnsweredException.class})
     public ResponseEntity<?> handleValidationException(AnswerIsAnsweredException answerIsAnsweredException, WebRequest request) {
         return ResponseEntity.status(409).body(answerIsAnsweredException.getMessage());
+    }
+
+    @ExceptionHandler({PersonalExamHasNoAnswerException.class})
+    public ResponseEntity<?> handleValidationException(PersonalExamHasNoAnswerException personalExamHasNoAnswerException, WebRequest request) {
+        return ResponseEntity.status(404).body(personalExamHasNoAnswerException.getMessage());
     }
 }

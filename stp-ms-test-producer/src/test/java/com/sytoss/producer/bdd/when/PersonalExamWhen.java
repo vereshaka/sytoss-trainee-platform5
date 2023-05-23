@@ -18,11 +18,11 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     private final String URI = "/api/";
 
     @When("^system create \"(.*)\" personal exam by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id$")
-    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, String studentId) {
+    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ExamConfiguration examConfiguration = new ExamConfiguration();
-        examConfiguration.setStudentId(Long.getLong(studentId));
+        examConfiguration.setStudentId(studentId);
         examConfiguration.setExamName(examName);
         examConfiguration.setQuantityOfTask(quantityOfTask);
         examConfiguration.setTopics(getTopicId(topicName));

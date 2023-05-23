@@ -83,6 +83,12 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         PersonalExam input = new PersonalExam();
         input.setId("5");
         input.setStatus(PersonalExamStatus.IN_PROGRESS);
+        Task task = new Task();
+        task.setId(1L);
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.NOT_STARTED);
+        answer.setTask(task);
+        input.setAnswers(Arrays.asList(answer));
         when(personalExamConnector.getById("5")).thenReturn(input);
         assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
     }

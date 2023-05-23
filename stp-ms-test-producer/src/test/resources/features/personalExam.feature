@@ -7,9 +7,9 @@ Feature: PersonalExam
       | SQL        | Join            | Left Join  |
       | SQL        | Sorting results | SELECT     |
       | Java       | Sorting results | SELECT     |
-    When system create "First" personal exam by "SQL" discipline and "Join" topic with 2 tasks for student with 1L id
+    When system create "First" personal exam by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id
     Then operation is successful
-    And "First" exam by "SQL" discipline and "Join" topic for student with 1L id should have tasks
+    And "First" exam by "SQL" discipline and "Join" topic for student with 1 id should have tasks
       | task       |
       | Inner Join |
       | Left Join  |
