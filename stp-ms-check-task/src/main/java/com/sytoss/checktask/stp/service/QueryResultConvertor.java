@@ -1,4 +1,4 @@
-package com.sytoss.stp.service;
+package com.sytoss.checktask.stp.service;
 
 import com.sytoss.domain.bom.QueryResult;
 import org.springframework.stereotype.Component;

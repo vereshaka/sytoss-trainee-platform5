@@ -1,4 +1,4 @@
-package com.sytoss.stp.service;
+package com.sytoss.checktask.stp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

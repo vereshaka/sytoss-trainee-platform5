@@ -1,6 +1,6 @@
-package com.sytoss.stp.controller;
+package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.stp.service.GradeService;
+import com.sytoss.checktask.stp.service.GradeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

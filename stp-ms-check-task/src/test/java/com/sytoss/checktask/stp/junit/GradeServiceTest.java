@@ -1,12 +1,12 @@
-package com.sytoss.stp.junit;
+package com.sytoss.checktask.stp.junit;
 
-import com.sytoss.stp.service.GradeService;
+import com.sytoss.checktask.stp.service.GradeService;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class GradeServiceTest extends DatabaseInitHelper {
+class GradeServiceTest extends com.sytoss.stp.junit.DatabaseInitHelper {
 
     private final GradeService gradeService = mock(GradeService.class);
 

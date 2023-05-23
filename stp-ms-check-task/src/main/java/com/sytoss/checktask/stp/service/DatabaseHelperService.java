@@ -1,9 +1,9 @@
-package com.sytoss.stp.service;
+package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.QueryResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.sytoss.domain.bom.QueryResult;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -22,8 +22,9 @@ import java.io.OutputStreamWriter;
 import java.sql.*;
 import java.util.Random;
 
-@Service
+
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class DatabaseHelperService {
 

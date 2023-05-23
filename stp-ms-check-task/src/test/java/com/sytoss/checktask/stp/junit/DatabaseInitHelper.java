@@ -1,14 +1,12 @@
 package com.sytoss.stp.junit;
 
-import com.sytoss.stp.AbstractJunitTest;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
-public class DatabaseInitHelper extends AbstractJunitTest {
+public class DatabaseInitHelper {
 
     protected String initDatabase() throws FileNotFoundException, URISyntaxException {
         File file = new File(Thread.currentThread().getContextClassLoader().getResource("databaseTest.yml").toURI());

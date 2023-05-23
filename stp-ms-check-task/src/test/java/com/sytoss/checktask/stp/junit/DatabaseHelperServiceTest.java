@@ -1,6 +1,7 @@
-package com.sytoss.stp.junit;
+package com.sytoss.checktask.stp.junit;
 
-import com.sytoss.stp.service.DatabaseHelperService;
+import com.sytoss.checktask.stp.service.DatabaseHelperService;
+import com.sytoss.stp.junit.DatabaseInitHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;

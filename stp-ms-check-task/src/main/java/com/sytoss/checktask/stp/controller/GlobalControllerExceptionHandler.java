@@ -1,4 +1,4 @@
-package com.sytoss.stp.controller;
+package com.sytoss.checktask.stp.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
