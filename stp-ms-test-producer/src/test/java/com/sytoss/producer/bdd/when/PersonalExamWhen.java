@@ -32,25 +32,25 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 
-    private List<Long> getTopicId(String name) {
-        List<Long> topicsId = new ArrayList<>();
+    private List<String> getTopicId(String name) {
+        List<String> topicsId = new ArrayList<>();
         if ("Join".equals(name)) {
-            topicsId.add(1L);
+            topicsId.add("1L");
         } else if ("SELECT".equals(name)) {
-            topicsId.add(2L);
+            topicsId.add("2L");
         } else {
-            topicsId.add(3L);
+            topicsId.add("3L");
         }
         return topicsId;
     }
 
-    private Long getDisciplineId(String name) {
+    private String getDisciplineId(String name) {
         if ("SQL".equals(name)) {
-            return 1L;
+            return "1L";
         } else if ("ORACLE".equals(name)) {
-            return 2L;
+            return "2L";
         } else {
-            return 3L;
+            return "3L";
         }
     }
 }
