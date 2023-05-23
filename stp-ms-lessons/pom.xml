@@ -8,5 +8,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>stp-ms-lessons</artifactId>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.systoss.stp</groupId>
+            <artifactId>stp-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Discipline {
 
-    private Long id;
+    private String id;
 
     private String name;
 }

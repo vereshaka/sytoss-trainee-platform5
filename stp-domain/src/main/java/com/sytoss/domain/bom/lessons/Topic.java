@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Topic {
 
-    private Long id;
+    private String id;
 
     private String name;
 
