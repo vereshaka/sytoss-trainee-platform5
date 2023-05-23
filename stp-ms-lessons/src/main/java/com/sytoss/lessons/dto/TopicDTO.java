@@ -19,7 +19,7 @@ public class TopicDTO {
     @Column(name = "NAME")
     private String name;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
 }
