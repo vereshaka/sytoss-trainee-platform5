@@ -24,7 +24,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() {
-        when(groupService.findByDisciplineId(any())).thenReturn(new  ArrayList<>());
+        when(groupService.findByDiscipline(any())).thenReturn(new  ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> result = doGet("/api/discipline/123/groups", requestEntity, String.class);

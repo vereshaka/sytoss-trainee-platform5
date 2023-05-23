@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class Group {
 
-    private String id;
+    private Long id;
 
     private String name;
 

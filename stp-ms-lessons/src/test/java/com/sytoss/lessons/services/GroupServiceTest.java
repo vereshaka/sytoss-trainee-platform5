@@ -1,17 +1,18 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractSTPLessonsApplicationTest;
 import com.sytoss.lessons.connectors.GroupConnector;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -25,16 +26,18 @@ public class GroupServiceTest extends AbstractSTPLessonsApplicationTest {
 
     @Test
     public void findGroups() {
-        Group group = new Group();
-        group.setId("11");
+        GroupDTO group = new GroupDTO();
+        group.setId(11L);
         group.setName("Test");
-        Discipline discipline = new Discipline();
+        DisciplineDTO discipline = new DisciplineDTO();
+        discipline.setId(11L);
         discipline.setName("SQL");
         group.setDiscipline(discipline);
-        List<Group> input = new ArrayList<>();
+        List<GroupDTO> input = new ArrayList<>();
         input.add(group);
-        //when(groupConnector.findByDiscipline_Id(any())).then(input);
-
-
+        input.add(group);
+        when(groupConnector.findByDiscipline(any())).thenReturn(input);
+        List<Group> result = groupService.findByDiscipline(11L);
+        assertEquals(input.size(), result.size());
     }
 }

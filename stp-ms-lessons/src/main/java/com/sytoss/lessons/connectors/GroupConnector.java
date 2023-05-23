@@ -1,11 +1,11 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.dto.GroupDTO;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface GroupConnector extends MongoRepository<Group, String> {
+public interface GroupConnector extends MongoRepository<GroupDTO, String> {
 
-    List<Group> findByDiscipline_Id(Long disciplineId);
+    List<GroupDTO> findByDiscipline(Long disciplineId);
 }

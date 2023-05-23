@@ -30,6 +30,6 @@ public class DisciplineController {
     public List<Group> findGroupByDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                                  @PathVariable("disciplineId")
                                                  Long disciplineId) {
-        return groupService.findByDisciplineId(disciplineId);
+        return groupService.findByDiscipline(disciplineId);
     }
 }
