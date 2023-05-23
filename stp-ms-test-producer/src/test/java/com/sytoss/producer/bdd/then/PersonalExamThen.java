@@ -111,8 +111,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Then("^status of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
-    public void personalExamShouldHaveStatus(String examName, String studentId, String personalExamStatus) {
-        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, Long.parseLong(studentId));
+    public void personalExamShouldHaveStatus(String examName, Long studentId, String personalExamStatus) {
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, studentId);
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
     }
 }
