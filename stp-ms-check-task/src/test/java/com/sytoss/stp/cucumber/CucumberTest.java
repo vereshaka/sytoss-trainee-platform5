@@ -15,20 +15,22 @@ import static org.mockito.Mockito.when;
 
 @Log4j2
 public class CucumberTest extends CucumberIntegrationTest {
+
     @Given("database with script: {string}")
-    public void givenDatabaseScript(String script){
+    public void givenDatabaseScript(String script) {
         databaseHelperService.generateDatabase(script);
     }
 
     @When("student's answer is checking with {string}, {string}")
-    public void studentsAnswerIsCheckingWith(String answer,String etalon) throws SQLException {
-        when(databaseHelperService.getQueryResult()).thenReturn(new QueryResult(answer,etalon));
+    public void studentsAnswerIsCheckingWith(String answer, String etalon) throws SQLException {
+        when(databaseHelperService.getQueryResult()).thenReturn(new QueryResult(answer, etalon));
         databaseHelperService.getExecuteQueryResult(answer, etalon);
 
     }
+
     @Then("answer and etalon should be got from database as QueryResult")
     public void answerAndEtalonShouldBeGotFromDatabase() {
-        Assertions.assertEquals(QueryResult.class,databaseHelperService.getQueryResult().getClass());
+        Assertions.assertEquals(QueryResult.class, databaseHelperService.getQueryResult().getClass());
     }
 
     @And("database should be dropped")

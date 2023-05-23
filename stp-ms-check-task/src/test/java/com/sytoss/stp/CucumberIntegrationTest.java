@@ -1,9 +1,6 @@
 package com.sytoss.stp;
 
 import com.sytoss.stp.service.DatabaseHelperService;
-import io.cucumber.junit.CucumberOptions;
-import io.cucumber.spring.CucumberContextConfiguration;
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -21,7 +18,7 @@ import static org.mockito.Mockito.mock;
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.stp")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
 @ExtendWith(SpringExtension.class)
-public class CucumberIntegrationTest extends CucumberConfiguration{
+public class CucumberIntegrationTest extends CucumberConfiguration {
 
     protected final DatabaseHelperService databaseHelperService = mock(DatabaseHelperService.class);
 

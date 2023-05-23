@@ -11,7 +11,7 @@ public class GradeService {
 
     public void checkAndGrade(String answer, String etalon, String databaseScript) throws Exception {
         databaseHelperService.generateDatabase(databaseScript);
-        databaseHelperService.getExecuteQueryResult(answer,etalon);
+        databaseHelperService.getExecuteQueryResult(answer, etalon);
         databaseHelperService.dropDatabase();
     }
 }

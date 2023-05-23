@@ -5,12 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import liquibase.Liquibase;
-import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import liquibase.resource.DirectoryResourceAccessor;
 import liquibase.resource.SearchPathResourceAccessor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -94,7 +91,7 @@ public class DatabaseHelperService {
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(databaseScript);
         String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"", "");
-        File scriptFile = File.createTempFile("script",".yml", new File("stp-ms-check-task/src/main/resources/scripts/"));
+        File scriptFile = File.createTempFile("script", ".yml", new File("stp-ms-check-task/src/main/resources/scripts/"));
         OutputStreamWriter myWriter = new FileWriter(scriptFile);
         myWriter.write(jsonAsYaml);
         myWriter.flush();
@@ -102,7 +99,7 @@ public class DatabaseHelperService {
         return scriptFile;
     }
 
-    public void getExecuteQueryResult(String answer,String etalon) throws SQLException {
+    public void getExecuteQueryResult(String answer, String etalon) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(answer);
