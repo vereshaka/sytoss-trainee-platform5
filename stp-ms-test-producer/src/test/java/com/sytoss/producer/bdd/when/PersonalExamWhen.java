@@ -33,6 +33,14 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 
+    @When("the exam with id {word} is done")
+    public void theExamIsDoneOnTask(String examId) {
+        String url = URI + "personalExam/" + examId + "/summary";
+
+        ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
+        IntegrationTest.getTestContext().setResponse(responseEntity);
+    }
+
     private List<Long> getTopicId(String name) {
         List<Long> topicsId = new ArrayList<>();
         if ("Join".equals(name)) {

@@ -33,6 +33,12 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldSummaryExam() {
+        ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", Void.class, PersonalExam.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
     public void shouldStartTest() {
         when(personalExamService.start(any())).thenReturn(new Task());
         HttpHeaders headers = new HttpHeaders();

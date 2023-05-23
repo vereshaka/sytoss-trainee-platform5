@@ -57,6 +57,12 @@ public class PersonalExamService {
         return metadataConnector.getDiscipline(disciplineId);
     }
 
+    public PersonalExam summary(String id) {
+        PersonalExam personalExam = personalExamConnector.getById(id);
+        personalExam.summary();
+        return personalExam;
+    }
+
     public Task start(String personalExamId) {
         PersonalExam personalExam = getById(personalExamId);
         if (personalExam.getAnswers() == null) {
