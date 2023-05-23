@@ -9,9 +9,9 @@ import java.util.List;
 @Setter
 public class ExamConfiguration {
 
-    private String disciplineId;
+    private Long disciplineId;
 
-    private List<String> topics;
+    private List<Long> topics;
 
     private String examName;
 

@@ -1,13 +1,9 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;

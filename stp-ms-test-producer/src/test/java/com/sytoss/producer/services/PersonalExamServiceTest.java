@@ -42,16 +42,16 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
 
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setExamName("Exam First");
-        examConfiguration.setDisciplineId("1L");
+        examConfiguration.setDisciplineId(1L);
         Discipline discipline = new Discipline();
-        discipline.setId("1L");
+        discipline.setId(1L);
         discipline.setName("SQL");
-        when(metadataConnector.getDiscipline(anyString())).thenReturn(discipline);
-        when(metadataConnector.getTasksForTopic("1L")).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
-        when(metadataConnector.getTasksForTopic("2L")).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
-        List<String> topics = new ArrayList<>();
-        topics.add("1L");
-        topics.add("2L");
+        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
+        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
+        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
+        List<Long> topics = new ArrayList<>();
+        topics.add(1L);
+        topics.add(2L);
         examConfiguration.setTopics(topics);
         examConfiguration.setQuantityOfTask(2);
         examConfiguration.setStudentId(1L);

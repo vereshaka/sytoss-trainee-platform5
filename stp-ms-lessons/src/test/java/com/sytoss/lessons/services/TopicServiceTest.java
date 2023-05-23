@@ -3,6 +3,9 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.AbstractLessonsApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,9 +25,12 @@ public class TopicServiceTest extends AbstractLessonsApplicationTest {
     @InjectMocks
     private TopicService topicService;
 
+    @MockBean
+    private TopicConvertor topicConvertor;
+
     @Test
     public void createExam() {
-        List<Topic> topics = new ArrayList<>();
+        List<TopicDTO> topics = new ArrayList<>();
         topics.add(createTopic("topic first"));
         topics.add(createTopic("topic second"));
         topics.add(createTopic("topic third"));
@@ -33,8 +39,8 @@ public class TopicServiceTest extends AbstractLessonsApplicationTest {
         assertEquals(3, topicAnswer.size());
     }
 
-    private Topic createTopic(String name) {
-        Topic topic = new Topic();
+    private TopicDTO createTopic(String name) {
+        TopicDTO topic = new TopicDTO();
         topic.setName(name);
         return topic;
     }

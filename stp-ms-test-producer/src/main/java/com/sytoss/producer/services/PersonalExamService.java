@@ -53,7 +53,7 @@ public class PersonalExamService {
         return answers;
     }
 
-    private Discipline getDiscipline(String disciplineId) {
+    private Discipline getDiscipline(Long disciplineId) {
         return metadataConnector.getDiscipline(disciplineId);
     }
 }

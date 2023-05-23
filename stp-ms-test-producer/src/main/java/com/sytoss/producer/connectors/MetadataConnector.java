@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface MetadataConnector {
 
-    Discipline getDiscipline(String id);
+    Discipline getDiscipline(Long id);
 
-    Topic getTopic(String id);
+    Topic getTopic(Long id);
 
-    List<Task> getTasksForTopic(String id);
+    List<Task> getTasksForTopic(Long id);
 
     TaskDomain getTaskDomain(Long id);
 }
