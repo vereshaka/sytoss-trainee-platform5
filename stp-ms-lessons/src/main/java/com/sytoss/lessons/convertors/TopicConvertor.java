@@ -22,9 +22,6 @@ public class TopicConvertor {
     }
 
     public void toDTO(Topic source, TopicDTO destination) {
-        if (source.getId() != null) {
-            destination.setId(source.getId());
-        }
         destination.setId(source.getId());
         destination.setName(source.getName());
         DisciplineDTO discipline = new DisciplineDTO();

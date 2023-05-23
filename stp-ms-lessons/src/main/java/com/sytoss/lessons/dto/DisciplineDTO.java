@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Setter
 @Entity(name = "DISCIPLINE")
 public class DisciplineDTO {
+
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "discipline_id_generator")
