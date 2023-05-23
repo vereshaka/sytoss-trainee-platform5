@@ -1,13 +1,10 @@
-version: "3.7"
+version: "3.9"
 services:
-  mongo:
-    container_name: mongo_stub_les
-    image: mongo
-    restart: always
+  postgres:
+    image: postgres:13.3
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: pwd
-      MONGO_INITDB_DATABASE: stp_les
+      POSTGRES_DB: "habrdb"
+      POSTGRES_USER: "habrpguser"
+      POSTGRES_PASSWORD: "pgpwd4habr"
     ports:
-      - 27008:27008
-      - 27018:27018
+      - "5432:5432"
