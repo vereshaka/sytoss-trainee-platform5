@@ -1,13 +1,12 @@
 version: "3.7"
 services:
-  mongo:
-    container_name: lessons
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: pwd
-      MONGO_INITDB_DATABASE: stp-lessons
+  postgres:
+    image: 'postgres:13'
+    container_name: 'java-postgres'
     ports:
-      - 27008:27008
-      - 27018:27018
+      - 5432:5432
+    environment:
+      - 'POSTGRES_USER=admin'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_HOST_AUTH_METHOD=trust'
+      - 'POSTGRES_DB=java'
