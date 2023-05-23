@@ -15,7 +15,7 @@ public class CommonThen {
 
     @Then("^operation should be finished with (\\w+) \"(.*)\" error$")
     public void raiseError(Integer status, String error) {
-        assertNotNull(IntegrationTest.getTestContext().getResponse().getStatusCode());
+        assertNotNull(IntegrationTest.getTestContext().getResponse());
         assertEquals(status, IntegrationTest.getTestContext().getResponse().getStatusCode().value());
         assertEquals(error, IntegrationTest.getTestContext().getResponse().getBody());
     }
