@@ -30,4 +30,10 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         ResponseEntity<PersonalExam> result = doPost("/api/personalExam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCodeValue());
     }
+
+    @Test
+    public void shouldSummaryExam() {
+        ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", Void.class, PersonalExam.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
 }

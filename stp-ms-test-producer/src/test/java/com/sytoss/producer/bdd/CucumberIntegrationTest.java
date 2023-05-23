@@ -2,6 +2,8 @@ package com.sytoss.producer.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
+import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.controllers.AbstractControllerTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,13 +21,16 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features")
 @CucumberContextConfiguration
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.csm.bdd")
+@SelectClasspathResource("features")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.producer.bdd")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
 @ExtendWith(SpringExtension.class)
 @Getter
-public class CucumberIntegrationTest extends AbstractSTPProducerApplicationTest {
+public class CucumberIntegrationTest extends AbstractControllerTest {
+
+    @Autowired
+    private PersonalExamConnector personalExamConnector;
 
     @Autowired
     private TestRestTemplate restTemplate;
