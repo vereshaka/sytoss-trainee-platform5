@@ -1,6 +1,6 @@
 package com.sytoss.stp.cucumber;
 
-import bom.QueryResult;
+import com.sytoss.domain.bom.QueryResult;
 import com.sytoss.stp.CucumberIntegrationTest;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;

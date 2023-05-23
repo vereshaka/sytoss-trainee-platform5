@@ -1,6 +1,6 @@
 package com.sytoss.stp.service;
 
-import bom.QueryResult;
+import com.sytoss.domain.bom.QueryResult;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;

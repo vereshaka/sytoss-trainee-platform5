@@ -1,6 +1,6 @@
 package com.sytoss.stp.service;
 
-import bom.QueryResult;
+import com.sytoss.domain.bom.QueryResult;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;

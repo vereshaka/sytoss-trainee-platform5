@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.domain.bom;
 
 import lombok.*;
 
@@ -8,5 +8,4 @@ import lombok.*;
 public class QueryResult {
     private String answer;
     private String etalon;
-
 }
