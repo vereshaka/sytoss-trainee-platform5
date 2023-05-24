@@ -2,22 +2,23 @@ package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest {
@@ -33,7 +34,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
 
     @Test
     public void createExam() {
-        Mockito.doAnswer((Answer<PersonalExam>) invocation -> {
+        Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
             PersonalExam result = (PersonalExam) args[0];
             result.setId("1ada");
@@ -60,9 +61,68 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         assertEquals("1ada", personalExam.getId());
     }
 
+    @Test
+    public void shouldReturnSummary() {
+        PersonalExam personalExam = new PersonalExam();
+
+        personalExam.setId("12345");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED)
+        ));
+
+        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
+
+        PersonalExam returnPersonalExam = personalExamService.summary("12345");
+
+        verify(personalExamConnector).getById("12345");
+        Assertions.assertEquals("12345", returnPersonalExam.getId());
+        Assertions.assertEquals(3, returnPersonalExam.getSummaryGrade());
+    }
+
+    @Test
+    public void shouldReturnSummaryIfAnswerNotGraded() {
+        PersonalExam personalExam = new PersonalExam();
+
+        personalExam.setId("12345");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from owners", 0, "answer correct", AnswerStatus.ANSWERED),
+                createAnswer("select * from customers", 1, "answer incorrect", AnswerStatus.GRADED)
+        ));
+
+        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
+
+        PersonalExam returnPersonalExam = personalExamService.summary("12345");
+
+        verify(personalExamConnector).getById("12345");
+        Assertions.assertEquals("12345", returnPersonalExam.getId());
+        Assertions.assertEquals(2, returnPersonalExam.getSummaryGrade());
+    }
+
+
     private Task createTask(String question) {
         Task task = new Task();
         task.setQuestion(question);
         return task;
+    }
+
+    private Answer createAnswer(String value, float grade, String comment, AnswerStatus answerStatus) {
+        Answer answer = new Answer();
+        answer.setStatus(answerStatus);
+        answer.setValue(value);
+        answer.setGrade(createGrade(grade, comment));
+        return answer;
+    }
+
+    private Grade createGrade(float gradeValue, String comment) {
+        Grade grade = new Grade();
+        grade.setValue(gradeValue);
+        grade.setComment(comment);
+
+        return grade;
     }
 }

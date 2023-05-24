@@ -56,4 +56,10 @@ public class PersonalExamService {
     private Discipline getDiscipline(Long disciplineId) {
         return metadataConnector.getDiscipline(disciplineId);
     }
+
+    public PersonalExam summary(String id) {
+        PersonalExam personalExam = personalExamConnector.getById(id);
+        personalExam.summary();
+        return personalExam;
+    }
 }
