@@ -8,6 +8,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,6 +22,7 @@ import java.util.Random;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Scope(value = "prototype")
 public class DatabaseHelperService {
 
     private final QueryResultConvertor queryResultConvertor;

@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class QueryResult {
+
     private final List<HashMap<String, Object>> resultMapList;
 
     public HashMap<String,Object> getRow(int index){

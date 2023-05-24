@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Scope(value = "prototype")
 public class GradeService {
 
     private final DatabaseHelperService databaseHelperService;
