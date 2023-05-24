@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.stp.CheckAnswerRequestBody;
+
+import bom.CheckAnswerRequestBody;
 import com.sytoss.domain.bom.QueryResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

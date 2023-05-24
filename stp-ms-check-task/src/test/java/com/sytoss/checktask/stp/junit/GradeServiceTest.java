@@ -1,8 +1,9 @@
 package com.sytoss.checktask.stp.junit;
 
-import com.sytoss.checktask.stp.CheckAnswerRequestBody;
+import bom.CheckAnswerRequestBody;
 import com.sytoss.checktask.stp.service.GradeService;
 import org.junit.jupiter.api.Test;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -16,76 +17,77 @@ class GradeServiceTest extends DatabaseInitHelper{
         CheckAnswerRequestBody checkAnswerRequestBody = new CheckAnswerRequestBody();
         checkAnswerRequestBody.setAnswer("select * from answer");
         checkAnswerRequestBody.setEtalon("select * from etalon");
-        checkAnswerRequestBody.setScript("[{\n" +
-                "    \"databaseChangeLog\": [\n" +
-                "      {\n" +
-                "        \"changeSet\": {\n" +
-                "          \"id\": \"create_answer\",\n" +
-                "          \"author\": \"ivan-larin\",\n" +
-                "          \"changes\": [\n" +
-                "            {\n" +
-                "              \"createTable\": {\n" +
-                "                \"tableName\": \"Answer\",\n" +
-                "                \"columns\": [\n" +
-                "                  {\n" +
-                "                    \"column\": {\n" +
-                "                      \"name\": \"Answer\",\n" +
-                "                      \"type\": \"varchar\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }\n" +
-                "            },\n" +
-                "            {\n" +
-                "              \"createTable\": {\n" +
-                "                \"tableName\": \"Etalon\",\n" +
-                "                \"columns\": [\n" +
-                "                  {\n" +
-                "                    \"column\": {\n" +
-                "                      \"name\": \"Etalon\",\n" +
-                "                      \"type\": \"varchar\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }\n" +
-                "            }\n" +
-                "          ]\n" +
-                "        }\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"changeSet\": {\n" +
-                "          \"id\": \"insert-answer\",\n" +
-                "          \"changes\": [\n" +
-                "            {\n" +
-                "              \"insert\": {\n" +
-                "                \"columns\": [\n" +
-                "                  {\n" +
-                "                    \"column\": {\n" +
-                "                      \"name\": \"Answer\",\n" +
-                "                      \"value\": \"it_is_answer\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ],\n" +
-                "                \"tableName\": \"Answer\"\n" +
-                "              }\n" +
-                "            },\n" +
-                "            {\n" +
-                "              \"insert\": {\n" +
-                "                \"columns\": [\n" +
-                "                  {\n" +
-                "                    \"column\": {\n" +
-                "                      \"name\": \"Etalon\",\n" +
-                "                      \"value\": \"it_is_etalon\"\n" +
-                "                    }\n" +
-                "                  }\n" +
-                "                ],\n" +
-                "                \"tableName\": \"Etalon\"\n" +
-                "              }\n" +
-                "            }\n" +
-                "          ]\n" +
-                "        }\n" +
-                "      }\n" +
-                "    ]}]");
+        checkAnswerRequestBody.setScript("""
+                [{
+                    "databaseChangeLog": [
+                      {
+                        "changeSet": {
+                          "id": "create_answer",
+                          "author": "ivan-larin",
+                          "changes": [
+                            {
+                              "createTable": {
+                                "tableName": "Answer",
+                                "columns": [
+                                  {
+                                    "column": {
+                                      "name": "Answer",
+                                      "type": "varchar"
+                                    }
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "createTable": {
+                                "tableName": "Etalon",
+                                "columns": [
+                                  {
+                                    "column": {
+                                      "name": "Etalon",
+                                      "type": "varchar"
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "changeSet": {
+                          "id": "insert-answer",
+                          "changes": [
+                            {
+                              "insert": {
+                                "columns": [
+                                  {
+                                    "column": {
+                                      "name": "Answer",
+                                      "value": "it_is_answer"
+                                    }
+                                  }
+                                ],
+                                "tableName": "Answer"
+                              }
+                            },
+                            {
+                              "insert": {
+                                "columns": [
+                                  {
+                                    "column": {
+                                      "name": "Etalon",
+                                      "value": "it_is_etalon"
+                                    }
+                                  }
+                                ],
+                                "tableName": "Etalon"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]}]""");
         gradeService.checkAndGrade(checkAnswerRequestBody);
         verify(gradeService).checkAndGrade(checkAnswerRequestBody);
     }
