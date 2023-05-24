@@ -21,14 +21,4 @@ public class CheckTaskController {
             @RequestBody CheckAnswerRequestBody body) throws Exception {
         gradeService.checkAndGrade(body);
     }
-
-  /*  private bom.CheckTaskParameters convertJSONtoCheckAnswerRequestBody(String body) throws org.json.simple.parser.ParseException {
-        JSONObject jsonObject = (JSONObject) new JSONParser().parse(body);
-        CheckAnswerRequestBody checkAnswerRequestBody = new CheckAnswerRequestBody();
-        checkAnswerRequestBody.setAnswer((String) jsonObject.get("answer"));
-        checkAnswerRequestBody.setEtalon((String) jsonObject.get("etalon"));
-        JSONObject subJSONObject = (JSONObject) jsonObject.get("script");
-        checkAnswerRequestBody.setScript(subJSONObject.toJSONString());
-        return checkAnswerRequestBody;
-    }*/
 }

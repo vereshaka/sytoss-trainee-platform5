@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
 
 
-class DatabaseHelperServiceTest extends DatabaseInitHelper {
+class DatabaseHelperServiceTest {
 
     private final DatabaseHelperService databaseHelperService = mock(DatabaseHelperService.class);
 
     @Test
-    void generateDatabase() throws Exception {
-        String script = initDatabase();
+    void generateDatabase() {
+        String script = "{databaseChangeLog: [{changeSet: {author: ivan-larin, changes: [{createTable: {columns: [{column: {name: Answer, type: varchar}}], tableName: Answer}}, {createTable: {columns: [{column: {name: Etalon, type: varchar}}], tableName: Etalon}}], id: create_answer}}, {changeSet: {author: ivan-larin, changes: [{insert: {columns: [{column: {name: Answer, value: it_is_answer}}], tableName: Answer}}, {insert: {columns: [{column: {name: Etalon, value: it_is_etalon}}], tableName: Etalon}}], id: insert-answer}}]}";
         databaseHelperService.generateDatabase(script);
         verify(databaseHelperService).generateDatabase(script);
     }

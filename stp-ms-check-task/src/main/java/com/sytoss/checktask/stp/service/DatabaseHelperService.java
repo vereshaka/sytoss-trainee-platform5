@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.QueryResult;
+import bom.QueryResult;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -87,14 +87,11 @@ public class DatabaseHelperService {
         return scriptFile;
     }
 
-    public QueryResult getExecuteQueryResult(String answer, String etalon) throws SQLException {
+    public QueryResult getExecuteQueryResult(String query) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(answer);
-            QueryResult queryResult = new QueryResult();
-            queryResult.setAnswer(queryResultConvertor.convertFromResultSet(resultSet));
-            resultSet = statement.executeQuery(etalon);
-            queryResult.setEtalon(queryResultConvertor.convertFromResultSet(resultSet));
+            ResultSet resultSet = statement.executeQuery(query);
+            QueryResult queryResult = new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
             resultSet.close();
             statement.close();
             return queryResult;

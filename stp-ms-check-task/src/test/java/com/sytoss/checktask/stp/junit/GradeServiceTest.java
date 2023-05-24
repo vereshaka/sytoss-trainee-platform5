@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 
-class GradeServiceTest extends DatabaseInitHelper{
+class GradeServiceTest {
 
     private final GradeService gradeService = mock(GradeService.class);
 

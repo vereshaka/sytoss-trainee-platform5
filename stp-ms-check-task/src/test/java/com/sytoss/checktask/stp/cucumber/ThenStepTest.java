@@ -1,16 +1,34 @@
 package com.sytoss.checktask.stp.cucumber;
 
+import bom.QueryResult;
 import com.sytoss.checktask.stp.CucumberIntegrationTest;
-import com.sytoss.domain.bom.QueryResult;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ThenStepTest extends CucumberIntegrationTest {
 
-    @Then("answer and etalon should be got from database as QueryResult")
+    private final List<QueryResult> resultList = new ArrayList<>();
+
+    @Then("{string} should be")
+    public void answerShouldBe(String parameter, Map<String, Object> mapAnswer) {
+        Assertions.assertEquals("it`s " + parameter, mapAnswer.get(parameter));
+        resultList.add(new QueryResult(List.of(new HashMap<>(mapAnswer))));
+    }
+
+    @And("answer and etalon should have same number of columns and rows")
     public void answerAndEtalonShouldBeGotFromDatabase() {
-        Assertions.assertEquals(QueryResult.class, databaseHelperService.get().getQueryResult().getClass());
+        if (!resultList.isEmpty()) {
+            Assertions.assertEquals(resultList.get(0).getResultMapList().size(),
+                    resultList.get(1).getResultMapList().size());
+            Assertions.assertEquals(resultList.get(0).getResultMapList().get(0).size(),
+                    resultList.get(1).getResultMapList().get(0).size());
+        }
     }
 
     @And("database should be dropped")

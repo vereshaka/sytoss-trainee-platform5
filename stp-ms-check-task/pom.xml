@@ -28,17 +28,6 @@
             <artifactId>liquibase-core</artifactId>
             <version>4.22.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.systoss.stp</groupId>
-            <artifactId>stp-domain</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.15.1</version>
-        </dependency>
 
         <!--TEST-->
         <dependency>
