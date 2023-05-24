@@ -23,8 +23,7 @@ public class DisciplineController {
 
     @Operation(description = "Method that retrieve groups by discipline")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "404", description = "Discipline not found!")
+            @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/{disciplineId}/groups")
     public List<Group> findGroupByDiscipline(@Parameter(description = "id of the discipline to be searched by")
