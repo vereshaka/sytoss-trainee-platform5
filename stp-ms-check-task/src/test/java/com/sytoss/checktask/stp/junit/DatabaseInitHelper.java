@@ -1,4 +1,4 @@
-package com.sytoss.stp.junit;
+package com.sytoss.checktask.stp.junit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class DatabaseInitHelper {
 
     protected String initDatabase() throws FileNotFoundException, URISyntaxException {
-        File file = new File(Thread.currentThread().getContextClassLoader().getResource("databaseTest.yml").toURI());
+        File file = new File(Thread.currentThread().getContextClassLoader().getResource("databaseTest.json").toURI());
         FileReader fileReader = new FileReader(file);
         Scanner scan = new Scanner(fileReader);
         StringBuilder script = new StringBuilder();

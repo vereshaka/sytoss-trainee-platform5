@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.checktask.stp.CheckAnswerRequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,9 @@ public class GradeService {
 
     private final DatabaseHelperService databaseHelperService;
 
-    public void checkAndGrade(String answer, String etalon, String databaseScript) throws Exception {
-        databaseHelperService.generateDatabase(databaseScript);
-        databaseHelperService.getExecuteQueryResult(answer, etalon);
+    public void checkAndGrade(CheckAnswerRequestBody data) throws Exception {
+        databaseHelperService.generateDatabase(data.getScript());
+        databaseHelperService.getExecuteQueryResult(data.getAnswer(), data.getEtalon());
         databaseHelperService.dropDatabase();
     }
 }
