@@ -10,16 +10,12 @@ import java.util.Objects;
 @Component
 public class QueryResultConvertor {
 
-    public void convert(ResultSet resultSet, String parameter, QueryResult queryResult) throws SQLException {
+    public String convertFromResultSet(ResultSet resultSet) throws SQLException {
+        String answer = "";
         while (resultSet.next()) {
-            String answer = resultSet.getString(1);
-            if (Objects.equals(parameter, "answer")) {
-                queryResult.setAnswer(answer);
-            } else {
-                queryResult.setEtalon(answer);
-            }
-            System.out.println(queryResult);
+            answer = resultSet.getString(1);
         }
+        return answer;
     }
 }
 

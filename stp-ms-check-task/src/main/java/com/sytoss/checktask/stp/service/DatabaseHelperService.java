@@ -39,9 +39,6 @@ public class DatabaseHelperService {
     @Value("${database.password}")
     private String password;
 
-    @Getter
-    private QueryResult queryResult = new QueryResult();
-
     public void generateDatabase(String databaseScript) {
         Connection conn;
         try {
@@ -100,13 +97,15 @@ public class DatabaseHelperService {
         return scriptFile;
     }
 
-    public void getExecuteQueryResult(String answer, String etalon) throws SQLException {
+    public QueryResult getExecuteQueryResult(String answer, String etalon) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            QueryResult queryResult = new QueryResult();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(answer);
-            queryResultConvertor.convert(resultSet, "answer", queryResult);
+            queryResult.setAnswer(queryResultConvertor.convertFromResultSet(resultSet));
             resultSet = statement.executeQuery(etalon);
-            queryResultConvertor.convert(resultSet, "etalon", queryResult);
+            queryResult.setEtalon(queryResultConvertor.convertFromResultSet(resultSet));
+            return queryResult;
         }
     }
 }

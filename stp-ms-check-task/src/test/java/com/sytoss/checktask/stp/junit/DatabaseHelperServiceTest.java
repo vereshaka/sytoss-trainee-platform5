@@ -1,7 +1,6 @@
 package com.sytoss.checktask.stp.junit;
 
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
-import com.sytoss.stp.junit.DatabaseInitHelper;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
@@ -10,7 +9,6 @@ import static org.mockito.Mockito.*;
 class DatabaseHelperServiceTest extends DatabaseInitHelper {
 
     private final DatabaseHelperService databaseHelperService = mock(DatabaseHelperService.class);
-
 
     @Test
     void generateDatabase() throws Exception {

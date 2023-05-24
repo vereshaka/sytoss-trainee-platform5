@@ -3,11 +3,11 @@ package com.sytoss.checktask.stp.junit;
 import com.sytoss.checktask.stp.CheckAnswerRequestBody;
 import com.sytoss.checktask.stp.service.GradeService;
 import org.junit.jupiter.api.Test;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-class GradeServiceTest extends com.sytoss.stp.junit.DatabaseInitHelper {
+
+class GradeServiceTest extends DatabaseInitHelper{
 
     private final GradeService gradeService = mock(GradeService.class);
 
