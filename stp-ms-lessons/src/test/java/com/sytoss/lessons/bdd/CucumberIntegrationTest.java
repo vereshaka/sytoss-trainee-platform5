@@ -1,8 +1,8 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.lessons.bdd.connectors.DisciplineConnector;
-import com.sytoss.lessons.bdd.connectors.TopicTestConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.controllers.AbstractControllerTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -30,7 +30,7 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 public class CucumberIntegrationTest extends AbstractControllerTest {
 
     @Autowired
-    private TopicTestConnector topicConnector;
+    private TopicConnector topicConnector;
 
     @Autowired
     private DisciplineConnector disciplineConnector;

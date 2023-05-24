@@ -26,14 +26,14 @@ public class TopicGiven extends CucumberIntegrationTest {
 
     @Given("topic exist")
     public void thisExamHasAnswers(List<TopicDTO> topics) {
-        for(TopicDTO topic : topics){
+        for (TopicDTO topic : topics) {
             TopicDTO topicResult = getTopicConnector().getByName(topic.getName());
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(topic.getDiscipline().getName());
-            if (disciplineDTO == null){
+            if (disciplineDTO == null) {
                 disciplineDTO = getDisciplineConnector().saveAndFlush(topic.getDiscipline());
                 IntegrationTest.getTestContext().setDisciplineId(disciplineDTO.getId());
             }
-            if(topicResult == null){
+            if (topicResult == null) {
                 getTopicConnector().saveAndFlush(topic);
             }
         }

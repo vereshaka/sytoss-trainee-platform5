@@ -10,4 +10,6 @@ import java.util.List;
 public interface TopicConnector extends JpaRepository<TopicDTO, String> {
 
     List<TopicDTO> findByDisciplineId(Long disciplineId);
+
+    TopicDTO getByName(String name);
 }
