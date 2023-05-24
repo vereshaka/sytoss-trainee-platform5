@@ -28,6 +28,7 @@ public class PersonalExamService {
         personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
         personalExam.setName(examConfiguration.getExamName());
         personalExam.setDate(new Date());
+        personalExam.setTime(examConfiguration.getTime());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAnswers(generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration));
         personalExam.setStudentId(examConfiguration.getStudentId());
@@ -63,15 +64,16 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public Task start(String personalExamId) {
+    public PersonalExam start(String personalExamId) {
         PersonalExam personalExam = getById(personalExamId);
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
         personalExam.start();
         personalExam.getAnswers().get(0).inProgress();
-        personalExamConnector.save(personalExam);
-        return personalExam.getAnswers().get(0).getTask();
+        personalExam = personalExamConnector.save(personalExam);
+        personalExam.setAnswers(List.of(personalExam.getAnswers().get(0)));
+        return personalExam;
     }
 
     public PersonalExam getById(String personalExamId) {

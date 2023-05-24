@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class PersonalExam {
     @MongoId
     private String id;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class,StartExam.class})
     private String name;
 
     private Discipline discipline;
@@ -29,8 +30,14 @@ public class PersonalExam {
     @JsonView(PersonalExam.Public.class)
     private Long studentId;
 
-    @JsonView(PersonalExam.Public.class)
-    private List<Answer> answers;
+    @JsonView({PersonalExam.Public.class, StartExam.class})
+    private List<Answer> answers = new ArrayList<>();
+
+    @JsonView(StartExam.class)
+    private Integer time;
+
+    @JsonView(StartExam.class)
+    private Integer amountOfTasks;
 
     private PersonalExamStatus status;
 
@@ -57,5 +64,11 @@ public class PersonalExam {
         });
     }
 
-    public static class Public {}
+    public static class Public {
+
+    }
+
+    public static class StartExam {
+
+    }
 }

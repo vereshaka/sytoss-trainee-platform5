@@ -19,8 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,9 +116,17 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
         input.setAnswers(Arrays.asList(answer));
+        input.setAmountOfTasks(1);
+        input.setTime(10);
         when(personalExamConnector.getById("5")).thenReturn(input);
-        Task result = personalExamService.start("5");
-        assertEquals(input.getAnswers().get(0).getTask().getId(), result.getId());
+        Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            PersonalExam result = (PersonalExam) args[0];
+            result.setId("1L");
+            return result;
+        }).when(personalExamConnector).save(any(PersonalExam.class));
+        PersonalExam result = personalExamService.start("5");
+        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getAnswers().get(0).getTask().getQuestion());
     }
 
     @Test

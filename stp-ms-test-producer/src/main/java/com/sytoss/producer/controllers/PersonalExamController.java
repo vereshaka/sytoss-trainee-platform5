@@ -36,8 +36,9 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Exam is already started!")
     })
+    @JsonView(PersonalExam.StartExam.class)
     @GetMapping("/test/{personalExamId}/start")
-    public Task start(
+    public PersonalExam start(
             @PathVariable("personalExamId")
             String personalExamId) {
         return personalExamService.start(personalExamId);

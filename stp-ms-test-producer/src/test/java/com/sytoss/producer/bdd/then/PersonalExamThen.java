@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
@@ -114,5 +115,12 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     public void personalExamShouldHaveStatus(String examName, Long studentId, String personalExamStatus) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, studentId);
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
+    }
+
+    @And("^should return personal exam with time (.*) and amountOfTasks (.*)$")
+    public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(String time, Long amountOfTasks) throws JsonProcessingException {
+        PersonalExam personalExam =  getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+        assertEquals(Integer.valueOf(time), personalExam.getTime());
+        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), personalExam.getAmountOfTasks());
     }
 }

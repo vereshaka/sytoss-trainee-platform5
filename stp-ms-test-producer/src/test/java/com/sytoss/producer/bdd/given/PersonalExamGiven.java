@@ -40,8 +40,8 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
         getPersonalExamConnector().save(personalExam);
     }
 
-    @Given("^personal \"(.*)\" exam for student with (.*) id and (.*) status exist$")
-    public void personalExamExist(String examName, String studentId, String answerStatus, List<Answer> answers) {
+    @Given("^personal \"(.*)\" exam for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
+    public void personalExamExist(String examName, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, Long.parseLong(studentId));
         if (personalExam != null) {
             personalExam.getAnswers().clear();
@@ -50,6 +50,8 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
             personalExam = new PersonalExam();
             personalExam.setName(examName);
             personalExam.setStudentId(Long.parseLong(studentId));
+            personalExam.setTime(Integer.valueOf(time));
+            personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.setStatus(PersonalExamStatus.valueOf(answerStatus));
         }
         personalExam.setAnswers(answers);
