@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DisciplineConvertor {
+
     public void fromDTO(DisciplineDTO source, Discipline destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
