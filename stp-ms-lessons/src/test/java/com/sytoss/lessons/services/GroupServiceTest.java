@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractSTPLessonsApplicationTest;
 import com.sytoss.lessons.connectors.GroupConnector;
+import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ public class GroupServiceTest extends AbstractSTPLessonsApplicationTest {
 
     @MockBean
     private GroupConnector groupConnector;
+
+    @MockBean
+    private GroupConvertor groupConvertor;
 
     @Test
     public void findGroups() {

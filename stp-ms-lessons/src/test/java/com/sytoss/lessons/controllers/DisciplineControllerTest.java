@@ -30,4 +30,13 @@ public class DisciplineControllerTest extends AbstractControllerTest {
         ResponseEntity<String> result = doGet("/api/discipline/123/groups", requestEntity, String.class);
         assertEquals(200, result.getStatusCodeValue());
     }
+
+    @Test
+    public void shouldNotFindGroupsByDisciplineWhenDisciplineDoesNotExist() {
+        when(groupService.findByDiscipline(any())).thenReturn(new  ArrayList<>());
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<String> result = doGet("/api/discipline/123/groups", requestEntity, String.class);
+        assertEquals(200, result.getStatusCodeValue());
+    }
 }
