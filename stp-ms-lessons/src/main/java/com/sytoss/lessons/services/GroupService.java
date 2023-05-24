@@ -20,7 +20,7 @@ public class GroupService {
     private GroupConvertor groupConvertor;
 
     public List<Group> findByDiscipline(Long disciplineId) {
-        List<GroupDTO> groupDTOList = groupConnector.findByDiscipline(disciplineId);
+        List<GroupDTO> groupDTOList = groupConnector.findByDiscipline_Id(disciplineId);
         List<Group> result = new ArrayList<>();
         for (GroupDTO groupDTO : groupDTOList) {
             Group group = new Group();

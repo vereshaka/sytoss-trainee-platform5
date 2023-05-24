@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @ExtendWith({MockitoExtension.class})
-public abstract class AbstractSTPLessonsApplicationTest {
+public abstract class AbstractLessonsApplicationTest {
 
     @Autowired
     private AbstractApplicationContext applicationContext;

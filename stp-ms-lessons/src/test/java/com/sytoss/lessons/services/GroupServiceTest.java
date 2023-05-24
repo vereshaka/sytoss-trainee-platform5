@@ -1,7 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.AbstractSTPLessonsApplicationTest;
+import com.sytoss.lessons.AbstractLessonsApplicationTest;
 import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class GroupServiceTest extends AbstractSTPLessonsApplicationTest {
+public class GroupServiceTest extends AbstractLessonsApplicationTest {
 
     @InjectMocks
     private GroupService groupService;
@@ -40,7 +40,7 @@ public class GroupServiceTest extends AbstractSTPLessonsApplicationTest {
         List<GroupDTO> input = new ArrayList<>();
         input.add(group);
         input.add(group);
-        when(groupConnector.findByDiscipline(any())).thenReturn(input);
+        when(groupConnector.findByDiscipline_Id(any())).thenReturn(input);
         List<Group> result = groupService.findByDiscipline(11L);
         assertEquals(input.size(), result.size());
     }

@@ -1,6 +1,6 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.lessons.AbstractSTPLessonsApplicationTest;
+import com.sytoss.lessons.AbstractLessonsApplicationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
-public class AbstractControllerTest extends AbstractSTPLessonsApplicationTest {
+public class AbstractControllerTest extends AbstractLessonsApplicationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

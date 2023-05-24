@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/topic.xml">
+
+    <changeSet author="KornienkoD" id="topic_1">
+        <createTable tableName="TOPIC">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)" />
+            <column name="DISCIPLINE_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="APPLICANT" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="topic_2">
+        <addPrimaryKey tableName="TOPIC" columnNames="ID" constraintName="PK_TOPIC" />
+        <rollback>
+            <dropPrimaryKey tableName="TOPIC" constraintName="PK_TOPIC" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="topic_3">
+        <addForeignKeyConstraint baseTableName="TOPIC" baseColumnNames="DISCIPLINE_ID"
+                                 constraintName="FK_TOPIC2DISCIPLINE" referencedTableName="DISCIPLINE"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="TOPIC" constraintName="FK_TOPIC2DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="topic_4">
+        <createSequence sequenceName="TOPIC_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="TOPIC_SEQ" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

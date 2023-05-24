@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface GroupConnector extends JpaRepository<GroupDTO, String> {
+public interface GroupConnector extends JpaRepository<GroupDTO, Long> {
 
-    List<GroupDTO> findByDiscipline(Long disciplineId);
+    List<GroupDTO> findByDiscipline_Id(Long disciplineId);
 }

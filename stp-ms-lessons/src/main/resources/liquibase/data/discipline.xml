@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/discipline.xml">
+
+    <changeSet author="KornienkoD" id="discipline_1">
+        <createTable tableName="DISCIPLINE">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)" />
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="discipline_2">
+        <addPrimaryKey tableName="DISCIPLINE" columnNames="ID" constraintName="PK_DISCIPLINE" />
+        <rollback>
+            <dropPrimaryKey tableName="DISCIPLINE" constraintName="PK_DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="discipline_3">
+        <createSequence sequenceName="DISCIPLINE_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="DISCIPLINE_SEQ" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
