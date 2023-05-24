@@ -24,7 +24,7 @@ public class TopicControllerTest extends AbstractControllerTest {
     @Test
     public void shouldReturnListOfTopics() {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        ResponseEntity<List> result = doGet("/api/12dsa/topics", null, List.class);
+        ResponseEntity<List> result = doGet("/api/1/topics", null, List.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

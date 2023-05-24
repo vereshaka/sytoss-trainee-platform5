@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public class TopicWhen extends CucumberIntegrationTest {
 
     private final String URI = "/api/";
@@ -16,7 +18,10 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about topics by discipline$")
     public void requestSentCreatePersonalExam() {
         String url = getBaseUrl() + URI + IntegrationTest.getTestContext().getDisciplineId() + "/topics";
-        ResponseEntity<String> responseEntity = getRestTemplate().getForEntity(url, null, String.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> httpEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<String> responseEntity = getRestTemplate().getForEntity(url, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }

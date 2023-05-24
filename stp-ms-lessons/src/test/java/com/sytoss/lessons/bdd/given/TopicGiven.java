@@ -1,7 +1,5 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.IntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -30,11 +28,12 @@ public class TopicGiven extends CucumberIntegrationTest {
             TopicDTO topicResult = getTopicConnector().getByName(topic.getName());
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(topic.getDiscipline().getName());
             if (disciplineDTO == null) {
-                disciplineDTO = getDisciplineConnector().saveAndFlush(topic.getDiscipline());
-                IntegrationTest.getTestContext().setDisciplineId(disciplineDTO.getId());
+                disciplineDTO = getDisciplineConnector().save(topic.getDiscipline());
             }
+            IntegrationTest.getTestContext().setDisciplineId(disciplineDTO.getId());
+            topic.setDiscipline(disciplineDTO);
             if (topicResult == null) {
-                getTopicConnector().saveAndFlush(topic);
+                getTopicConnector().save(topic);
             }
         }
     }

@@ -1,6 +1,14 @@
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 4.0.2
-
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    password: pwd
+    #url: jdbc:h2:mem:testdb;MODE=Oracle
+    url: jdbc:h2:file:./jsl-testdb;MODE=Oracle
+    username: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: validate
+  liquibase:
+    change-log: classpath:/liquibase/db.changelog-master.xml
