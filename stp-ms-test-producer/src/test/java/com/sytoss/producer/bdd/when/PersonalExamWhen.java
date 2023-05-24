@@ -1,27 +1,28 @@
 package com.sytoss.producer.bdd.when;
 
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.When;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class PersonalExamWhen extends CucumberIntegrationTest {
 
     private final String URI = "/api/";
 
     @When("^system create \"(.*)\" personal exam by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id$")
-    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, String studentId) {
+    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         ExamConfiguration examConfiguration = new ExamConfiguration();
-        examConfiguration.setStudentId(Long.getLong(studentId));
+        examConfiguration.setStudentId(studentId);
         examConfiguration.setExamName(examName);
         examConfiguration.setQuantityOfTask(quantityOfTask);
         examConfiguration.setTopics(getTopicId(topicName));
@@ -60,5 +61,17 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         } else {
             return 3L;
         }
+    }
+
+    @When("^student with (.*) id start personal exam \"(.*)\"$")
+    public void requestSentStartPersonalExam(String studentId, String personalExamName) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
+        PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
+        String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
+        log.info("Send request to " + url);
+        ResponseEntity<String> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, String.class);
+        IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }

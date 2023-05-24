@@ -55,19 +55,19 @@ public class PersonalExamThen extends CucumberIntegrationTest {
             answer.setGrade(grade);
         }
 
-        if (entry.containsKey("status")) {
-            answer.setStatus(AnswerStatus.valueOf(entry.get("status")));
+        if (entry.containsKey("task status")) {
+            answer.setStatus(AnswerStatus.valueOf(entry.get("task status")));
         }
         return answer;
     }
 
     @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
-    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
+    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, Long studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
-        assertEquals(Long.getLong(studentId), personalExamAnswer.getStudentId());
+        assertEquals(studentId, personalExamAnswer.getStudentId());
         int quantityOfTasks = 0;
         for (Answer answer : answers) {
             for (Answer answerFromResponse : personalExamAnswer.getAnswers())
@@ -98,15 +98,21 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         listAnswer.forEach(answer -> {
             List<Answer> foundAnswers = answers.stream().filter(item ->
                     Objects.equals(answer.getValue(), item.getValue()) &&
-                    Objects.equals(answer.getTask().getQuestion(), item.getTask().getQuestion()) &&
-                    answer.getStatus().equals(item.getStatus()) &&
-                    answer.getGrade().getValue() == item.getGrade().getValue() &&
-                    Objects.equals(answer.getGrade().getComment(), item.getGrade().getComment())
+                            Objects.equals(answer.getTask().getQuestion(), item.getTask().getQuestion()) &&
+                            answer.getStatus().equals(item.getStatus()) &&
+                            answer.getGrade().getValue() == item.getGrade().getValue() &&
+                            Objects.equals(answer.getGrade().getComment(), item.getGrade().getComment())
             ).collect(Collectors.toList());
 
             answers.remove(foundAnswers.get(0));
         });
 
         assertEquals(0, answers.size());
+    }
+
+    @Then("^status of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
+    public void personalExamShouldHaveStatus(String examName, Long studentId, String personalExamStatus) {
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, studentId);
+        assertEquals(personalExamStatus, personalExam.getStatus().toString());
     }
 }

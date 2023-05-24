@@ -1,5 +1,6 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -13,9 +14,11 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -103,6 +106,36 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         Assertions.assertEquals(2, returnPersonalExam.getSummaryGrade());
     }
 
+    @Test
+    public void shouldStartPersonalExam() {
+        PersonalExam input = new PersonalExam();
+        input.setId("5");
+        input.setStatus(PersonalExamStatus.NOT_STARTED);
+        Task task = new Task();
+        task.setId(1L);
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.NOT_STARTED);
+        answer.setTask(task);
+        input.setAnswers(Arrays.asList(answer));
+        when(personalExamConnector.getById("5")).thenReturn(input);
+        Task result = personalExamService.start("5");
+        assertEquals(input.getAnswers().get(0).getTask().getId(), result.getId());
+    }
+
+    @Test
+    public void shouldNotStartExamWhenItStarted() {
+        PersonalExam input = new PersonalExam();
+        input.setId("5");
+        input.setStatus(PersonalExamStatus.IN_PROGRESS);
+        Task task = new Task();
+        task.setId(1L);
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.NOT_STARTED);
+        answer.setTask(task);
+        input.setAnswers(Arrays.asList(answer));
+        when(personalExamConnector.getById("5")).thenReturn(input);
+        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
+    }
 
     private Task createTask(String question) {
         Task task = new Task();

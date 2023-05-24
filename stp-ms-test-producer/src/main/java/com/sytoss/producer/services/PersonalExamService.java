@@ -1,8 +1,8 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.exceptions.businessException.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
-
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -61,5 +61,20 @@ public class PersonalExamService {
         PersonalExam personalExam = personalExamConnector.getById(id);
         personalExam.summary();
         return personalExam;
+    }
+
+    public Task start(String personalExamId) {
+        PersonalExam personalExam = getById(personalExamId);
+        if (personalExam.getAnswers().isEmpty()) {
+            throw new PersonalExamHasNoAnswerException();
+        }
+        personalExam.start();
+        personalExam.getAnswers().get(0).inProgress();
+        personalExamConnector.save(personalExam);
+        return personalExam.getAnswers().get(0).getTask();
+    }
+
+    public PersonalExam getById(String personalExamId) {
+        return personalExamConnector.getById(personalExamId);
     }
 }

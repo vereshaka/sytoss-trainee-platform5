@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.controllers.AbstractControllerTest;
+import com.sytoss.producer.commonConnectors.PersonalExamConnectorTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,9 +31,6 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 public class CucumberIntegrationTest extends AbstractControllerTest {
 
     @Autowired
-    private PersonalExamConnector personalExamConnector;
-
-    @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
@@ -40,6 +38,9 @@ public class CucumberIntegrationTest extends AbstractControllerTest {
 
     @LocalServerPort
     private int applicationPort;
+
+    @Autowired
+    private PersonalExamConnectorTest personalExamConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
