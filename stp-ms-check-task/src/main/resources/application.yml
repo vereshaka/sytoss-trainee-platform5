@@ -1,6 +1,2 @@
-database:
-  url: jdbc:h2:~/
-  username: SA
-  password: ~
 server:
   port: 9010

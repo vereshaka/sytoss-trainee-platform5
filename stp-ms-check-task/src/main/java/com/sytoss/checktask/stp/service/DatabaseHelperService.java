@@ -1,18 +1,13 @@
 package com.sytoss.checktask.stp.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.sytoss.domain.bom.QueryResult;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -30,14 +25,11 @@ public class DatabaseHelperService {
 
     private final QueryResultConvertor queryResultConvertor;
 
-    @Value("${database.url}")
-    private String url;
+    private static final String username = "SA";
 
-    @Value("${database.username}")
-    private String username;
+    private static final String password = "~";
 
-    @Value("${database.password}")
-    private String password;
+    private String url = "jdbc:h2:~/";
 
     public void generateDatabase(String databaseScript) {
         Connection conn;
@@ -48,7 +40,7 @@ public class DatabaseHelperService {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
-                    new SearchPathResourceAccessor("stp-ms-check-task/src/main/resources/scripts"), database);
+                    new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();
             databaseFile.deleteOnExit();
             conn.close();
@@ -87,11 +79,9 @@ public class DatabaseHelperService {
     }
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
-        JsonNode jsonNodeTree = new ObjectMapper().readTree(databaseScript);
-        String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree).replaceAll("\"", "");
-        File scriptFile = File.createTempFile("script", ".yml", new File("stp-ms-check-task/src/main/resources/scripts/"));
+        File scriptFile = File.createTempFile("script", ".yml");
         OutputStreamWriter myWriter = new FileWriter(scriptFile);
-        myWriter.write(jsonAsYaml);
+        myWriter.write(databaseScript);
         myWriter.flush();
         myWriter.close();
         return scriptFile;
@@ -99,12 +89,14 @@ public class DatabaseHelperService {
 
     public QueryResult getExecuteQueryResult(String answer, String etalon) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            QueryResult queryResult = new QueryResult();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(answer);
+            QueryResult queryResult = new QueryResult();
             queryResult.setAnswer(queryResultConvertor.convertFromResultSet(resultSet));
             resultSet = statement.executeQuery(etalon);
             queryResult.setEtalon(queryResultConvertor.convertFromResultSet(resultSet));
+            resultSet.close();
+            statement.close();
             return queryResult;
         }
     }

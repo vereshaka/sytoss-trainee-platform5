@@ -17,7 +17,7 @@ public class CheckTaskController {
     private final GradeService gradeService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public void checkTask(
+    public void check(
             @RequestBody CheckAnswerRequestBody body) throws Exception {
         gradeService.checkAndGrade(body);
     }
