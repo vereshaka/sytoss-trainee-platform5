@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MetadataConnectorImpl implements MetadataConnector {
@@ -82,6 +83,30 @@ public class MetadataConnectorImpl implements MetadataConnector {
         task.setQuestion(question);
         task.setTopics(topics);
         task.setEtalonAnswer(etalonAnswer);
+        return task;
+    }
+
+    @Override
+    public Task getTaskById(Long id) {
+        Task task = new Task();
+        task.setId(1L);
+        task.setQuestion("Get all from students table");
+        task.setEtalonAnswer("SELECT * FROM Students");
+
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setId(1L);
+        taskDomain.setName("SQL");
+        task.setTaskDomain(taskDomain);
+
+        List<Topic> topics = new ArrayList<>();
+
+        Topic topic1 = new Topic();
+        topic1.setId(1L);
+        topic1.setName("DML");
+        topics.add(topic1);
+
+        task.setTopics(topics);
+
         return task;
     }
 }

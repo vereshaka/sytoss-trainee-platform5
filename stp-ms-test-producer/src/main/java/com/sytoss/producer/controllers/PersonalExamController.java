@@ -2,14 +2,19 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +26,9 @@ public class PersonalExamController {
 
     @Autowired
     private PersonalExamConnector personalExamConnector;
+
+    @Autowired
+    private AnswerService answerService;
 
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
@@ -51,5 +59,17 @@ public class PersonalExamController {
     @GetMapping("/personalExam/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
+    }
+
+    @Operation(description = "Method for answering tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/personalExam/{testId}/task/answer")
+    public ResponseEntity<Answer> answer(@PathVariable(value = "testId") String examId,
+                                         @RequestBody HttpEntity<String> taskAnswer) {
+
+        Answer nextAnswer = answerService.answer(examId, taskAnswer.getBody());
+        return new ResponseEntity<>(nextAnswer, HttpStatus.OK);
     }
 }

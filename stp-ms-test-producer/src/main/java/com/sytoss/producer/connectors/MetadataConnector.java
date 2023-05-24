@@ -16,4 +16,6 @@ public interface MetadataConnector {
     List<Task> getTasksForTopic(Long id);
 
     TaskDomain getTaskDomain(Long id);
+
+    Task getTaskById(Long id);
 }
