@@ -65,7 +65,7 @@ public class PersonalExamService {
 
     public Task start(String personalExamId) {
         PersonalExam personalExam = getById(personalExamId);
-        if (personalExam.getAnswers() == null) {
+        if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
         personalExam.start();
