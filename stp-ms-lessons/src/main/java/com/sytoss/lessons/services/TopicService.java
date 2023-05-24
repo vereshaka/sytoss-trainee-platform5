@@ -19,7 +19,7 @@ public class TopicService {
     @Autowired
     private TopicConvertor topicConvertor;
 
-    public List<Topic> findByDiscipline(String disciplineId) {
+    public List<Topic> findByDiscipline(Long disciplineId) {
         List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
         List<Topic> topicList = new ArrayList<>();
         for (TopicDTO topicDTO : topicDTOList) {

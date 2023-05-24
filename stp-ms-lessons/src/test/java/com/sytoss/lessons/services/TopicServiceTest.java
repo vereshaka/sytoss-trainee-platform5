@@ -35,7 +35,7 @@ public class TopicServiceTest extends AbstractLessonsApplicationTest {
         topics.add(createTopic("topic second"));
         topics.add(createTopic("topic third"));
         when(topicConnector.findByDisciplineId(any())).thenReturn(topics);
-        List<Topic> topicAnswer = topicService.findByDiscipline("das13ads");
+        List<Topic> topicAnswer = topicService.findByDiscipline(1L);
         assertEquals(3, topicAnswer.size());
     }
 

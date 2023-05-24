@@ -21,7 +21,7 @@ public class TopicController {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
     @GetMapping("/{disciplineId}/topics")
-    public List<Topic> findByDisciplineId(@PathVariable(value = "disciplineId") String discipleId) {
+    public List<Topic> findByDisciplineId(@PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);
     }
 }
