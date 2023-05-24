@@ -7,7 +7,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.util.CheckAnswerRequestBody;
+import com.sytoss.producer.util.CheckTaskParameters;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -57,7 +57,7 @@ public class AnswerServiceTest extends AbstractSTPProducerApplicationTest {
 
         Answer result = answerService.answer(examId, taskAnswer);
 
-        verify(checkTaskConnector).checkAnswer(any(CheckAnswerRequestBody.class));
+        verify(checkTaskConnector).checkAnswer(any(CheckTaskParameters.class));
         verify(personalExamConnector, times(2)).save(any(PersonalExam.class));
 
         assertEquals(nextAnswer, result);

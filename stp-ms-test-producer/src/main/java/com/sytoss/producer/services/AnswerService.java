@@ -8,7 +8,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.util.CheckAnswerRequestBody;
+import com.sytoss.producer.util.CheckTaskParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -44,13 +44,13 @@ public class AnswerService {
         Task task = metadataConnector.getTaskById(answer.getTask().getId());
         TaskDomain taskDomain = metadataConnector.getTaskDomain(answer.getTask().getTaskDomain().getId());
 
-        CheckAnswerRequestBody checkAnswerRequestBody = new CheckAnswerRequestBody();
+        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
-        checkAnswerRequestBody.setAnswer(answer.getValue());
-        checkAnswerRequestBody.setEtalon(task.getEtalonAnswer());
-        checkAnswerRequestBody.setScript(taskDomain.getScript());
+        checkTaskParameters.setAnswer(answer.getValue());
+        checkTaskParameters.setEtalon(task.getEtalonAnswer());
+        checkTaskParameters.setScript(taskDomain.getScript());
 
-        Grade grade = checkTaskConnector.checkAnswer(checkAnswerRequestBody);
+        Grade grade = checkTaskConnector.checkAnswer(checkTaskParameters);
 
         answer.changeStatus(grade);
 

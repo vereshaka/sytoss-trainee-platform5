@@ -3,7 +3,7 @@ package com.sytoss.producer.bdd.when;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
-import com.sytoss.producer.util.CheckAnswerRequestBody;
+import com.sytoss.producer.util.CheckTaskParameters;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +18,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
     @When("student calls answer with value {string} on personal exam with id {word}")
     public void studentCallsAnswer(String answer, String examId) {
 
-        when(getCheckTaskConnector().checkAnswer(any(CheckAnswerRequestBody.class))).thenReturn(new Grade());
+        when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Grade());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

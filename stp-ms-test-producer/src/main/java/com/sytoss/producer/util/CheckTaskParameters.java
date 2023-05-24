@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CheckAnswerRequestBody {
+public class CheckTaskParameters {
 
     private String answer;
 
