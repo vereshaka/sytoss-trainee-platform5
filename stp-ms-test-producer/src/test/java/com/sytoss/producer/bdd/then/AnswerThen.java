@@ -2,6 +2,7 @@ package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
@@ -14,9 +15,9 @@ public class AnswerThen extends CucumberIntegrationTest {
 
     @Then("^PersonalExam with \"(.*)\" question should be received$")
     public void questionShouldBe(String question) throws JsonProcessingException {
-        PersonalExam personalExam = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
+        FirstTask firstTask = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
         });
-        assertEquals(question, personalExam.getAnswers().get(0).getTask().getQuestion());
+        assertEquals(question, firstTask.getTask().getQuestion());
     }
 
     @Then("^status of first answer of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")

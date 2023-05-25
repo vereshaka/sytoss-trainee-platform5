@@ -21,6 +21,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("studentId", studentId.toString());
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setStudentId(studentId);
         examConfiguration.setExamName(examName);
@@ -67,6 +68,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     public void requestSentStartPersonalExam(String studentId, String personalExamName) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("studentId", studentId);
         HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
