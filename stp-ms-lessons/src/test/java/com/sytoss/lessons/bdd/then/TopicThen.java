@@ -20,6 +20,7 @@ public class TopicThen extends CucumberIntegrationTest {
         List<Topic> topicList = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<List<Topic>>() {
         });
         int quantityOfTasks = 0;
+        assertEquals(topics.size(), topicList.size());
         for (Topic topic : topicList) {
             for (TopicDTO topicFromResponse : topics)
                 if (topic.getName().equals(topicFromResponse.getName())) {
