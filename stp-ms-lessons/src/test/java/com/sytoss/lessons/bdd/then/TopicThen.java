@@ -21,8 +21,8 @@ public class TopicThen extends CucumberIntegrationTest {
         });
         int quantityOfTasks = 0;
         assertEquals(topics.size(), topicList.size());
-        for (Topic topic : topicList) {
-            for (TopicDTO topicFromResponse : topics)
+        for (Topic topicFromResponse : topicList) {
+            for (TopicDTO topic : topics)
                 if (topic.getName().equals(topicFromResponse.getName())) {
                     quantityOfTasks++;
                 }
