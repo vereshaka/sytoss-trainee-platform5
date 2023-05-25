@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.IntegrationTest;
@@ -22,6 +23,18 @@ public class TopicWhen extends CucumberIntegrationTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<String> responseEntity = getRestTemplate().getForEntity(url, String.class);
+        IntegrationTest.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher create \"(.*)\" topic$")
+    public void topicCreating(String topicName) {
+        String url = getBaseUrl() + URI + "discipline/" + IntegrationTest.getTestContext().getDisciplineId() + "/topic";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Topic topic = new Topic();
+        topic.setName(topicName);
+        HttpEntity<Topic> request = new HttpEntity<>(topic, httpHeaders);
+        ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, request, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }

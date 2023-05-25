@@ -15,3 +15,19 @@ Feature: Topic
       | SQL        | Join Inner      |
       | SQL        | Sorting results |
       | SQL        | Drop results    |
+
+  Scenario: teacher create a new topic
+    Given disciplines exist
+      | discipline |
+      | SQL        |
+      | Mongo      |
+    And "First" topic by "Mongo" discipline doesn't exist
+    When teacher create "First" topic
+    Then operation is successful
+
+  Scenario: teacher create a topic that already exist
+    Given topic exist
+      | discipline | topic           |
+      | Mongo      | First           |
+    When teacher create "First" topic
+    Then operation should be finished with 409 "Topic with name "First" already exist" error
