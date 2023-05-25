@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
 import bom.QueryResult;
+import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationError;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -25,11 +26,11 @@ import java.util.Random;
 @Scope(value = "prototype")
 public class DatabaseHelperService {
 
-    private final QueryResultConvertor queryResultConvertor;
-
     private static final String username = "SA";
 
     private static final String password = "~";
+
+    private final QueryResultConvertor queryResultConvertor;
 
     private String url = "jdbc:h2:~/";
 
@@ -47,25 +48,30 @@ public class DatabaseHelperService {
             databaseFile.deleteOnExit();
             conn.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DatabaseCommunicationError("Database creating error");
         }
     }
 
-    public void executeQuery(String sqlQuery) throws Exception {
+    public void executeQuery(String sqlQuery) {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sqlQuery);
+            statement.executeQuery(sqlQuery);
             log.info("Query was executed");
         } catch (Exception e) {
             log.error("Error occurred during execution query: {}", sqlQuery);
             log.error("Error: ", e);
-            throw e;
+            throw new DatabaseCommunicationError("Error during query execution");
         }
     }
 
-    public void dropDatabase() throws Exception {
-        executeQuery("DROP ALL OBJECTS DELETE FILES;");
-        log.info("database was dropped");
+    public void dropDatabase() {
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
+            log.info("database was dropped");
+        } catch (SQLException e) {
+            throw new DatabaseCommunicationError("Error in database dropping");
+        }
     }
 
     private String generateDatabaseName() {
@@ -89,7 +95,7 @@ public class DatabaseHelperService {
         return scriptFile;
     }
 
-    public QueryResult getExecuteQueryResult(String query) throws SQLException {
+    public QueryResult getExecuteQueryResult(String query) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -97,6 +103,8 @@ public class DatabaseHelperService {
             resultSet.close();
             statement.close();
             return queryResult;
+        } catch (Exception e) {
+            throw new DatabaseCommunicationError("Error during the receiving execute query result");
         }
     }
 }
