@@ -53,7 +53,6 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void testAnswer() {
-        // Подготовка тестовых данных
         String examId = "123";
         String taskAnswer = "taskAnswer";
         Answer expectedAnswer = new Answer();

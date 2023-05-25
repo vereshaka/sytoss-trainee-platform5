@@ -37,15 +37,13 @@ public class AnswerThen extends CucumberIntegrationTest {
 
         PersonalExam personalExam = getPersonalExamConnector().getById(examId);
 
-        Answer answer = new Answer();
+        Answer answer;
 
         Optional<Answer> foundAnswer = personalExam.getAnswers().stream()
                 .filter(answerTmp -> answerTmp.getId().equals(answerId))
                 .findFirst();
 
-        if (foundAnswer.isPresent()) {
-            answer = foundAnswer.orElse(null);
-        }
+        answer = foundAnswer.orElse(null);
 
         Assertions.assertEquals(answer.getValue(), string);
         Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
