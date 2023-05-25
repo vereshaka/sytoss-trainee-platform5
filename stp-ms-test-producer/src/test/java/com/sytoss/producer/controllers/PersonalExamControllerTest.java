@@ -34,7 +34,9 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldSummaryExam() {
-        ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", Void.class, PersonalExam.class);
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

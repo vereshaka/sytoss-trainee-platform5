@@ -36,8 +36,9 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     @When("the exam with id {word} is done")
     public void theExamIsDoneOnTask(String examId) {
         String url = URI + "personalExam/" + examId + "/summary";
-
-        ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 
