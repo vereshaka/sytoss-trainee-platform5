@@ -13,7 +13,7 @@ public class TestContext {
 
     private ResponseEntity<String> response;
 
-    private ResponseEntity<List> listOfGroupResponse;
+    private ResponseEntity<List<Group>> listOfGroupResponse;
 
     private Long disciplineId;
 }

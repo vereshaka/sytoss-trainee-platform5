@@ -5,6 +5,7 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.IntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class GroupWhen extends CucumberIntegrationTest {
     public void requestSentFindGroupsByDicipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/groups";
-        ResponseEntity<List> responseEntity = doGet(url, Void.class, List.class);
+        ResponseEntity<List<Group>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Group>>(){});
         IntegrationTest.getTestContext().setListOfGroupResponse(responseEntity);
     }
 }
