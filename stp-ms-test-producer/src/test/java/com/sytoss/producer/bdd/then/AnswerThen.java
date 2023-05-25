@@ -32,17 +32,19 @@ public class AnswerThen extends CucumberIntegrationTest {
         assertEquals(answerStatus, personalExam.getAnswers().get(0).getStatus().toString());
     }
 
-    @Then("answer with id {int} of personal exam with id {word} should have value {string} and change status to {word}")
-    public void taskWithNumberShouldHaveAnswer(int answerId, String examId, String string, String status) {
+    @Then("answer with id {long} of personal exam with id {word} should have value {string} and change status to {word}")
+    public void taskWithNumberShouldHaveAnswer(long answerId, String examId, String string, String status) {
 
         PersonalExam personalExam = getPersonalExamConnector().getById(examId);
 
         Answer answer = new Answer();
 
-        Optional<Answer> foundAnswer = personalExam.getAnswers().stream().filter(answerTmp -> answerTmp.getId() == answerId).findFirst();
+        Optional<Answer> foundAnswer = personalExam.getAnswers().stream()
+                .filter(answerTmp -> answerTmp.getId().equals(answerId))
+                .findFirst();
 
         if (foundAnswer.isPresent()) {
-            answer = foundAnswer.get();
+            answer = foundAnswer.orElse(null);
         }
 
         Assertions.assertEquals(answer.getValue(), string);
@@ -56,6 +58,7 @@ public class AnswerThen extends CucumberIntegrationTest {
 
         Assertions.assertEquals(answer.getId(), nextAnswer.getId());
         Assertions.assertEquals(answer.getTask().getQuestion(), nextAnswer.getTask().getQuestion());
+        Assertions.assertNotNull(nextAnswer.getTask());
         Assertions.assertEquals(answer.getStatus(), nextAnswer.getStatus());
     }
 }
