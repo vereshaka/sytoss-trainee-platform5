@@ -1,5 +1,6 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.checktaskshared.util.CheckTaskParameters;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
@@ -7,7 +8,6 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.util.CheckTaskParameters;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;

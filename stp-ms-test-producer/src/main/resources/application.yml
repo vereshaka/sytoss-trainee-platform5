@@ -5,4 +5,3 @@ spring:
 server:
    port: 9101
 check-task-url: http://localhost:8080
-check-task-endpoint: /api/task/check

@@ -1,4 +1,4 @@
-package com.sytoss.producer.util;
+package com.sytoss.checktaskshared.util;
 
 import lombok.Getter;
 import lombok.Setter;

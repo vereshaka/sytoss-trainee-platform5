@@ -68,7 +68,6 @@ public class PersonalExamController {
     @PostMapping("/personalExam/{testId}/task/answer")
     public Answer answer(@PathVariable(value = "testId") String examId,
                                          @RequestBody String taskAnswer) {
-
         return answerService.answer(examId, taskAnswer);
     }
 }
