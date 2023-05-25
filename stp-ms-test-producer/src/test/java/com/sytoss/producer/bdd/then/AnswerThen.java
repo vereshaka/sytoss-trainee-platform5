@@ -14,9 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class AnswerThen extends CucumberIntegrationTest {
 
     @Then("^PersonalExam with \"(.*)\" question should be received$")
-    public void questionShouldBe(String question) throws JsonProcessingException {
-        FirstTask firstTask = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
-        });
+    public void questionShouldBe(String question)  {
+        FirstTask firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
         assertEquals(question, firstTask.getTaskModel().getQuestion());
     }
 
