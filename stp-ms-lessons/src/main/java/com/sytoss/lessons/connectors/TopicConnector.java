@@ -11,5 +11,5 @@ public interface TopicConnector extends JpaRepository<TopicDTO, Long> {
 
     List<TopicDTO> findByDisciplineId(Long disciplineId);
 
-    TopicDTO getByName(String name);
+    TopicDTO getByNameAndDisciplineId(String name, Long disciplineId);
 }
