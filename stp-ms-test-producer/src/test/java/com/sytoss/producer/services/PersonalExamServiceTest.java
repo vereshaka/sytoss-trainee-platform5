@@ -118,6 +118,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         input.setAnswers(Arrays.asList(answer));
         input.setAmountOfTasks(1);
         input.setTime(10);
+        input.setStudentId(1L);
         when(personalExamConnector.getById("5")).thenReturn(input);
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -125,7 +126,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
             result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        FirstTask result = personalExamService.start("5");
+        FirstTask result = personalExamService.start("5", 1L);
         assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
@@ -139,9 +140,10 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
+        input.setStudentId(1L);
         input.setAnswers(Arrays.asList(answer));
         when(personalExamConnector.getById("5")).thenReturn(input);
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
+        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5", 1L));
     }
 
     private Task createTask(String question) {

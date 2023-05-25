@@ -1,7 +1,6 @@
 package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -11,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -41,8 +41,9 @@ public class PersonalExamController {
     @GetMapping("/test/{personalExamId}/start")
     public FirstTask start(
             @PathVariable("personalExamId")
-            String personalExamId) {
-        return personalExamService.start(personalExamId);
+            String personalExamId,
+            @RequestHeader(value="studentId")  String studentId) {
+        return personalExamService.start(personalExamId, Long.valueOf(studentId));
     }
 
     @Operation(description = "Method that return personal exam with summary grade")

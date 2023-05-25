@@ -1,6 +1,5 @@
 package com.sytoss.producer.controllers;
 
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -13,7 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class PersonalExamControllerTest extends AbstractControllerTest {
@@ -41,10 +40,11 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldStartTest() {
-        when(personalExamService.start(any())).thenReturn(new FirstTask());
+        when(personalExamService.start(anyString(), anyLong())).thenReturn(new FirstTask());
         HttpHeaders headers = new HttpHeaders();
+        headers.set("studentId", "1");
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<PersonalExam> result = doGet("/api/test/123/start", requestEntity, PersonalExam.class);
+        ResponseEntity<FirstTask> result = doGet("/api/test/123/start", requestEntity, FirstTask.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

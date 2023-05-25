@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.businessException.PersonalExamHasNoAnswerException;
+import com.sytoss.domain.bom.exceptions.businessException.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -9,10 +10,7 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,8 +62,11 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public FirstTask start(String personalExamId) {
+    public FirstTask start(String personalExamId, Long studentId) {
         PersonalExam personalExam = getById(personalExamId);
+        if(!Objects.equals(personalExam.getStudentId(), studentId)){
+            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+        }
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
