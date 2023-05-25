@@ -1,9 +1,9 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.lessons.commonConnectors.DisciplineConnectorTest;
 import com.sytoss.lessons.commonConnectors.GroupConnectorTest;
-import com.sytoss.lessons.connectors.GroupConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.controllers.AbstractControllerTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -22,13 +22,19 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 
 @Suite
 @IncludeEngines("cucumber")
-@SelectClasspathResource("features")
 @CucumberContextConfiguration
+@SelectClasspathResource("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.lessons.bdd")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
 @ExtendWith(SpringExtension.class)
 @Getter
 public class CucumberIntegrationTest extends AbstractControllerTest {
+
+    @Autowired
+    private TopicConnector topicConnector;
+
+    @Autowired
+    private DisciplineConnector disciplineConnector;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -41,9 +47,6 @@ public class CucumberIntegrationTest extends AbstractControllerTest {
 
     @Autowired
     private GroupConnectorTest groupConnector;
-
-    @Autowired
-    private DisciplineConnectorTest disciplineConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

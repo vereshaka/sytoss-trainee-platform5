@@ -13,9 +13,6 @@ public class DisciplineConvertor {
     }
 
     public void toDTO(Discipline source, DisciplineDTO destination) {
-        if (source.getId() != null) {
-            destination.setId(source.getId());
-        }
         destination.setId(source.getId());
         destination.setName(source.getName());
     }
