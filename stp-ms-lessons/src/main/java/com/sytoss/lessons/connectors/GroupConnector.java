@@ -8,4 +8,6 @@ import java.util.List;
 public interface GroupConnector extends JpaRepository<GroupDTO, Long> {
 
     List<GroupDTO> findByDisciplineId(Long disciplineId);
+
+    GroupDTO getByNameAndDisciplineId(String groupName, Long disciplineId);
 }

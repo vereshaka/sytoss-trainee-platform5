@@ -1,8 +1,8 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.lessons.commonConnectors.GroupConnectorTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.controllers.AbstractControllerTest;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -46,7 +46,7 @@ public class CucumberIntegrationTest extends AbstractControllerTest {
     private int applicationPort;
 
     @Autowired
-    private GroupConnectorTest groupConnector;
+    private GroupConnector groupConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

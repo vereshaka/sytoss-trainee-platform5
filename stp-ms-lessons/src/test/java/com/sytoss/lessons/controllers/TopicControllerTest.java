@@ -1,9 +1,11 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class TopicControllerTest extends AbstractControllerTest {
     @Test
     public void shouldReturnListOfTopics() {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        ResponseEntity<List> result = doGet("/api/1/topics", null, List.class);
+        ResponseEntity<List<Topic>> result = doGet("/api/1/topics", null, new ParameterizedTypeReference<List<Topic>>(){});
         assertEquals(200, result.getStatusCode().value());
     }
 }
