@@ -16,8 +16,8 @@ Feature: PersonalExam
 
   Scenario: Student can start test
     Given personal "Exam" exam for student with 2 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
-      | task                                   | task status |
-      | What are the different subsets of SQL? | NOT_STARTED |
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
     When student with 2 id start personal exam "Exam"
     Then operation is successful
     And should return personal exam with time 10 and amountOfTasks 1
@@ -27,7 +27,7 @@ Feature: PersonalExam
 
   Scenario: Student is not allowed to start test when it already start
     Given personal "Exam" exam for student with 2 id and IN_PROGRESS status exist and time 10 and amountOfTasks 1
-      | task                                   | task status |
-      | What are the different subsets of SQL? | IN_PROGRESS |
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
     When student with 2 id start personal exam "Exam"
     Then operation should be finished with 409 "Exam is already in progress!" error

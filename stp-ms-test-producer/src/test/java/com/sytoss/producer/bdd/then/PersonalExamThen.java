@@ -2,6 +2,7 @@ package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
@@ -58,6 +59,12 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
         if (entry.containsKey("task status")) {
             answer.setStatus(AnswerStatus.valueOf(entry.get("task status")));
+        }
+        if (entry.containsKey("script")) {
+            TaskDomain taskDomain = new TaskDomain();
+            taskDomain.setScript(entry.get("script"));
+            taskOne.setTaskDomain(taskDomain);
+            answer.setTask(taskOne);
         }
         return answer;
     }
@@ -119,8 +126,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @And("^should return personal exam with time (.*) and amountOfTasks (.*)$")
     public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(String time, Long amountOfTasks) throws JsonProcessingException {
-        FirstTask firstTask =  getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), FirstTask.class);
-        assertEquals(Integer.valueOf(time), firstTask.getTime());
-        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getAmountOfTasks());
+        FirstTask firstTask = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), FirstTask.class);
+        assertEquals(Integer.valueOf(time), firstTask.getExamModel().getTime());
+        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExamModel().getAmountOfTasks());
     }
 }

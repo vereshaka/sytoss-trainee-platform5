@@ -17,7 +17,7 @@ public class AnswerThen extends CucumberIntegrationTest {
     public void questionShouldBe(String question) throws JsonProcessingException {
         FirstTask firstTask = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
         });
-        assertEquals(question, firstTask.getTask().getQuestion());
+        assertEquals(question, firstTask.getTaskModel().getQuestion());
     }
 
     @Then("^status of first answer of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")

@@ -64,7 +64,7 @@ public class PersonalExamService {
 
     public FirstTask start(String personalExamId, Long studentId) {
         PersonalExam personalExam = getById(personalExamId);
-        if(!Objects.equals(personalExam.getStudentId(), studentId)){
+        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
         }
         if (personalExam.getAnswers().isEmpty()) {
@@ -74,10 +74,16 @@ public class PersonalExamService {
         personalExam.getAnswers().get(0).inProgress();
         personalExam = personalExamConnector.save(personalExam);
         FirstTask firstTask = new FirstTask();
-        firstTask.setTask(personalExam.getAnswers().get(0).getTask());
-        firstTask.setTime(personalExam.getTime());
-        firstTask.setName(personalExam.getName());
-        firstTask.setAmountOfTasks(personalExam.getAmountOfTasks());
+        ExamModel examModel = new ExamModel();
+        examModel.setName(personalExam.getName());
+        examModel.setTime(personalExam.getTime());
+        examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
+        firstTask.setExamModel(examModel);
+        TaskModel taskModel = new TaskModel();
+        taskModel.setQuestion(personalExam.getAnswers().get(0).getTask().getQuestion());
+        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getScript());
+        taskModel.setQuestionNumber(1);
+        firstTask.setTaskModel(taskModel);
         return firstTask;
     }
 
