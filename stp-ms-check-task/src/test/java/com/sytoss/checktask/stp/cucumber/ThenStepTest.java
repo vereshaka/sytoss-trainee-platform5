@@ -2,7 +2,6 @@ package com.sytoss.checktask.stp.cucumber;
 
 import bom.QueryResult;
 import com.sytoss.checktask.stp.CucumberIntegrationTest;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -21,7 +20,7 @@ public class ThenStepTest extends CucumberIntegrationTest {
         resultList.add(new QueryResult(List.of(new HashMap<>(mapAnswer))));
     }
 
-    @And("answer and etalon should have same number of columns and rows")
+    @Then("answer and etalon should have same number of columns and rows")
     public void answerAndEtalonShouldBeGotFromDatabase() {
         if (!resultList.isEmpty()) {
             Assertions.assertEquals(resultList.get(0).getResultMapList().size(),
@@ -31,7 +30,7 @@ public class ThenStepTest extends CucumberIntegrationTest {
         }
     }
 
-    @And("database should be dropped")
+    @Then("database should be dropped")
     public void databaseShouldBeDropped() throws Exception {
         databaseHelperService.get().dropDatabase();
     }

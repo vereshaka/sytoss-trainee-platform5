@@ -9,9 +9,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>stp-ms-check-task</artifactId>
-
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,7 +30,6 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite-api</artifactId>
-            <version>1.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -41,6 +37,11 @@
             <artifactId>stp-ms-check-task-shared</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
         </dependency>
     </dependencies>
 
