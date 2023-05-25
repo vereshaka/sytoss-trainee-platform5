@@ -3,7 +3,6 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.AbstractLessonsApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,14 +16,11 @@ import static org.mockito.Mockito.when;
 public class DisciplineServiceTest extends AbstractLessonsApplicationTest {
 
     @MockBean
-    @Autowired
     private DisciplineConnector disciplineConnector;
 
     @InjectMocks
+    @Autowired
     private DisciplineService disciplineService;
-
-/*    @InjectMocks
-    private DisciplineConvertor disciplineConvertor;*/
 
     @Test
     public void getDisciplineById() {
