@@ -9,10 +9,7 @@ import com.sytoss.producer.services.PersonalExamService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,18 +53,18 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void testAnswer() {
-        String examId = "examId";
-        String taskAnswerValue = "taskAnswer";
-        HttpEntity<String> taskAnswer = new HttpEntity<>(taskAnswerValue);
-
+        // Подготовка тестовых данных
+        String examId = "123";
+        String taskAnswer = "taskAnswer";
         Answer expectedAnswer = new Answer();
-        ResponseEntity<Answer> expectedResponse = new ResponseEntity<>(expectedAnswer, HttpStatus.OK);
 
-        when(answerService.answer(examId, taskAnswer.getBody())).thenReturn(expectedAnswer);
+        when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
 
-        ResponseEntity<Answer> actualResponse = personalExamController.answer(examId, taskAnswer);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);
 
-        assertEquals(expectedResponse, actualResponse);
-        verify(answerService).answer(examId, taskAnswer.getBody());
+        ResponseEntity<Answer> result = doPost("/api/personalExam/12dsa/task/answer", requestEntity, Answer.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }

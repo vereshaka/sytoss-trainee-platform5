@@ -66,10 +66,9 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/personalExam/{testId}/task/answer")
-    public ResponseEntity<Answer> answer(@PathVariable(value = "testId") String examId,
-                                         @RequestBody HttpEntity<String> taskAnswer) {
+    public Answer answer(@PathVariable(value = "testId") String examId,
+                                         @RequestBody String taskAnswer) {
 
-        Answer nextAnswer = answerService.answer(examId, taskAnswer.getBody());
-        return new ResponseEntity<>(nextAnswer, HttpStatus.OK);
+        return answerService.answer(examId, taskAnswer);
     }
 }

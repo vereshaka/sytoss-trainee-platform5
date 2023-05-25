@@ -52,7 +52,7 @@ public class AnswerService {
 
         Grade grade = checkTaskConnector.checkAnswer(checkTaskParameters);
 
-        answer.changeStatus(grade);
+        answer.grade(grade);
 
         personalExamConnector.save(personalExam);
     }

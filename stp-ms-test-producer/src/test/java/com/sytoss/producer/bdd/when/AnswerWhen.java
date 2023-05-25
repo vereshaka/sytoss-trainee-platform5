@@ -23,13 +23,10 @@ public class AnswerWhen extends CucumberIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> requestEntity = new HttpEntity<>(answer, headers);
-
         String url = "/api/personalExam/" + examId + "/task/answer";
 
-        ResponseEntity<String> responseEntity = doPost(url, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = doPost(url, answer, String.class);
 
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }
-
