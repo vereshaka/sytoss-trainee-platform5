@@ -26,7 +26,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/{disciplineId}/groups")
-    public List<Group> findGroupByDiscipline(@Parameter(description = "id of the discipline to be searched by")
+    public List<Group> findByDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                                  @PathVariable("disciplineId")
                                                  Long disciplineId) {
         return groupService.findByDiscipline(disciplineId);
