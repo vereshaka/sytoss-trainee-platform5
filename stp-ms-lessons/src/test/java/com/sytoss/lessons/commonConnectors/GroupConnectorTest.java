@@ -5,5 +5,5 @@ import com.sytoss.lessons.dto.GroupDTO;
 
 public interface GroupConnectorTest extends GroupConnector {
 
-    GroupDTO getByNameAndDiscipline_Id(String groupName, Long disciplineId);
+    GroupDTO getByNameAndDisciplineId(String groupName, Long disciplineId);
 }

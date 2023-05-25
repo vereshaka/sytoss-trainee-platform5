@@ -40,7 +40,7 @@ public class GroupServiceTest extends AbstractLessonsApplicationTest {
         List<GroupDTO> input = new ArrayList<>();
         input.add(group);
         input.add(group);
-        when(groupConnector.findByDiscipline_Id(any())).thenReturn(input);
+        when(groupConnector.findByDisciplineId(any())).thenReturn(input);
         List<Group> result = groupService.findByDiscipline(11L);
         assertEquals(input.size(), result.size());
     }

@@ -1,6 +1,6 @@
 Feature: Group
 
-  Scenario: system create personal exam
+  Scenario: system retrieve all groups by discipline
     Given groups exist
       | discipline | group |
       | SQL        | AT-11 |
