@@ -7,16 +7,17 @@ import com.sytoss.domain.bom.lessons.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MetadataConnectorImpl implements MetadataConnector {
 
     @Override
     public Discipline getDiscipline(Long id) {
         Discipline discipline = new Discipline();
-        if (id == 1L) {
+        if (Objects.equals(id, 1L)) {
             discipline.setId(id);
             discipline.setName("SQL");
-        } else if (id == 2L) {
+        } else if (Objects.equals(id, 2L)) {
             discipline.setId(id);
             discipline.setName("ORACLE");
         } else {
@@ -29,11 +30,11 @@ public class MetadataConnectorImpl implements MetadataConnector {
     @Override
     public Topic getTopic(Long id) {
         Topic topic = new Topic();
-        if (id == 1L) {
+        if (Objects.equals(id, 1L)) {
             topic.setId(id);
             topic.setName("JOIN");
             topic.setDiscipline(getDiscipline(1L));
-        } else if (id == 2L) {
+        } else if (Objects.equals(id, 2L)) {
             topic.setId(id);
             topic.setName("SELECT");
             topic.setDiscipline(getDiscipline(2L));
@@ -47,10 +48,10 @@ public class MetadataConnectorImpl implements MetadataConnector {
 
     @Override
     public List<Task> getTasksForTopic(Long id) {
-        if (id == 1L) {
+        if (Objects.equals(id, "1L")) {
             return List.of(createTask("Inner Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)),
                     createTask("Left Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)));
-        } else if (id == 2L) {
+        } else if (Objects.equals(id, "2L")) {
             return List.of(createTask("Left Join?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)),
                     createTask("Is SQL cool?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)));
         } else {
