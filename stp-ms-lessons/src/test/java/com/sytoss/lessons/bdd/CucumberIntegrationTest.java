@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.commonConnectors.DisciplineConnectorTest;
+import com.sytoss.lessons.commonConnectors.GroupConnectorTest;
 import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.controllers.AbstractControllerTest;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -39,7 +40,7 @@ public class CucumberIntegrationTest extends AbstractControllerTest {
     private int applicationPort;
 
     @Autowired
-    private GroupConnector groupConnector;
+    private GroupConnectorTest groupConnector;
 
     @Autowired
     private DisciplineConnectorTest disciplineConnector;

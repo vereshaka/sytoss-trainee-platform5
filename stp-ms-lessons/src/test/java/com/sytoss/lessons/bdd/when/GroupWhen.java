@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 public class GroupWhen extends CucumberIntegrationTest {
 
-    @When("^receive all groups by \"SQL\" discipline$")
+    @When("^receive all groups by \"(.*)\" discipline$")
     public void requestSentFindGroupsByDicipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/groups";

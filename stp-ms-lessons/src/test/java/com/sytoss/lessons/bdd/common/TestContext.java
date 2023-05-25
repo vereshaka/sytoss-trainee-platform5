@@ -9,4 +9,6 @@ import org.springframework.http.ResponseEntity;
 public class TestContext {
 
     private ResponseEntity<String> response;
+
+    private Long disciplineId;
 }

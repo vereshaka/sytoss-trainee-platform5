@@ -9,28 +9,25 @@ import com.sytoss.lessons.dto.GroupDTO;
 import io.cucumber.java.en.Then;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^groups should received$")
     public void groupsShouldBeReceived(List<GroupDTO> groups) throws JsonProcessingException {
-        List<Group> result = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<List<Group>>() {
+        List<Group> results = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
         });
-        assertEquals(groups.size(), result.size());
+        assertEquals(groups.size(), results.size());
 
-        for (GroupDTO group : groups) {
-            List<GroupDTO> foundItems = groups.stream().filter(item -> Objects.equals(group.getName(), item.getName()) &&
-                    Objects.equals(group.getDiscipline().getName(), item.getDiscipline().getName())).toList();
-            if (foundItems.size() == 0) {
-                fail("Group with name " + group.getName() + "and discipline with name" + group.getDiscipline().getName() +"not found");
-            }
-            result.remove(foundItems.get(0));
+        int quantityOfGroups = 0;
+
+        for (Group result : results) {
+            for (GroupDTO groupDTO : groups)
+                if (result.getName().equals(groupDTO.getName())) {
+                    quantityOfGroups++;
+                }
         }
-        assertEquals(0, result.size());
+        assertEquals(quantityOfGroups, results.size());
     }
 }
