@@ -19,7 +19,7 @@ public class PersonalExam {
     @MongoId
     private String id;
 
-    @JsonView({PersonalExam.Public.class,StartExam.class})
+    @JsonView({PersonalExam.Public.class})
     private String name;
 
     private Discipline discipline;
@@ -30,13 +30,11 @@ public class PersonalExam {
     @JsonView(PersonalExam.Public.class)
     private Long studentId;
 
-    @JsonView({PersonalExam.Public.class, StartExam.class})
+    @JsonView(PersonalExam.Public.class)
     private List<Answer> answers = new ArrayList<>();
 
-    @JsonView(StartExam.class)
     private Integer time;
 
-    @JsonView(StartExam.class)
     private Integer amountOfTasks;
 
     private PersonalExamStatus status;
@@ -65,10 +63,8 @@ public class PersonalExam {
     }
 
     public static class Public {
+        public static class StartExam {
 
-    }
-
-    public static class StartExam {
-
+        }
     }
 }

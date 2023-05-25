@@ -13,12 +13,12 @@ public class Task {
 
     private Long id;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.StartExam.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.Public.StartExam.class})
     private String question;
 
     private String etalonAnswer;
 
-    @JsonView({PersonalExam.StartExam.class})
+    @JsonView({PersonalExam.Public.StartExam.class})
     private TaskDomain taskDomain;
 
     private List<Topic> topics;

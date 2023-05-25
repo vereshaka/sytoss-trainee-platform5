@@ -3,6 +3,7 @@ package com.sytoss.producer.controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.services.PersonalExamService;
@@ -36,9 +37,9 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Exam is already started!")
     })
-    @JsonView(PersonalExam.StartExam.class)
+    @JsonView(PersonalExam.Public.StartExam.class)
     @GetMapping("/test/{personalExamId}/start")
-    public PersonalExam start(
+    public FirstTask start(
             @PathVariable("personalExamId")
             String personalExamId) {
         return personalExamService.start(personalExamId);

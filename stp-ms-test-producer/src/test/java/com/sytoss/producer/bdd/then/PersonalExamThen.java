@@ -119,8 +119,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @And("^should return personal exam with time (.*) and amountOfTasks (.*)$")
     public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(String time, Long amountOfTasks) throws JsonProcessingException {
-        PersonalExam personalExam =  getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
-        assertEquals(Integer.valueOf(time), personalExam.getTime());
-        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), personalExam.getAmountOfTasks());
+        FirstTask firstTask =  getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), FirstTask.class);
+        assertEquals(Integer.valueOf(time), firstTask.getTime());
+        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getAmountOfTasks());
     }
 }

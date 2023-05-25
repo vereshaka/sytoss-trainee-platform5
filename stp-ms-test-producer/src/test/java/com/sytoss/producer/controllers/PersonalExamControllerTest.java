@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.services.PersonalExamService;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldStartTest() {
-        when(personalExamService.start(any())).thenReturn(new PersonalExam());
+        when(personalExamService.start(any())).thenReturn(new FirstTask());
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<PersonalExam> result = doGet("/api/test/123/start", requestEntity, PersonalExam.class);

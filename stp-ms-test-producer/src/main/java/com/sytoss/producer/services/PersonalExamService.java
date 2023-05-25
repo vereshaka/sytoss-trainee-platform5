@@ -64,7 +64,7 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public PersonalExam start(String personalExamId) {
+    public FirstTask start(String personalExamId) {
         PersonalExam personalExam = getById(personalExamId);
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
@@ -72,8 +72,12 @@ public class PersonalExamService {
         personalExam.start();
         personalExam.getAnswers().get(0).inProgress();
         personalExam = personalExamConnector.save(personalExam);
-        personalExam.setAnswers(List.of(personalExam.getAnswers().get(0)));
-        return personalExam;
+        FirstTask firstTask = new FirstTask();
+        firstTask.setTask(personalExam.getAnswers().get(0).getTask());
+        firstTask.setTime(personalExam.getTime());
+        firstTask.setName(personalExam.getName());
+        firstTask.setAmountOfTasks(personalExam.getAmountOfTasks());
+        return firstTask;
     }
 
     public PersonalExam getById(String personalExamId) {

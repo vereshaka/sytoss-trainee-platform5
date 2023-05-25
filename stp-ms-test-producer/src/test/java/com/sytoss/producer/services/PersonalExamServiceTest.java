@@ -125,8 +125,8 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
             result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        PersonalExam result = personalExamService.start("5");
-        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getAnswers().get(0).getTask().getQuestion());
+        FirstTask result = personalExamService.start("5");
+        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
     @Test

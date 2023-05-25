@@ -13,6 +13,6 @@ public class TaskDomain {
 
     private String name;
 
-    @JsonView({PersonalExam.StartExam.class})
+    @JsonView({PersonalExam.Public.StartExam.class})
     private String script;
 }
