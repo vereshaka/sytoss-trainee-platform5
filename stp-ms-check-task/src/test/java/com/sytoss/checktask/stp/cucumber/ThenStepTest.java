@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.mockito.Mockito.verify;
+
 public class ThenStepTest extends CucumberIntegrationTest {
 
     private final List<QueryResult> resultList = new ArrayList<>();
@@ -31,7 +33,8 @@ public class ThenStepTest extends CucumberIntegrationTest {
     }
 
     @Then("database should be dropped")
-    public void databaseShouldBeDropped() throws Exception {
+    public void databaseShouldBeDropped() {
         databaseHelperService.get().dropDatabase();
+        verify(databaseHelperService.get()).dropDatabase();
     }
 }
