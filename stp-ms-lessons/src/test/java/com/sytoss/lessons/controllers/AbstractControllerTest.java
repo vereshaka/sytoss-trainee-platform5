@@ -24,7 +24,7 @@ public class AbstractControllerTest extends AbstractLessonsApplicationTest {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 }
