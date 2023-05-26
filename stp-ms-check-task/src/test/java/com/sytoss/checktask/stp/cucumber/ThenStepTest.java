@@ -21,7 +21,6 @@ public class ThenStepTest extends CucumberIntegrationTest {
 
     @Then("database should be dropped")
     public void databaseShouldBeDropped() {
-        databaseHelperService.get().dropDatabase();
         Assertions.assertThrows(DatabaseCommunicationError.class,
                 () -> databaseHelperService.get().getExecuteQueryResult("select * from answer"));
     }
