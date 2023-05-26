@@ -35,20 +35,17 @@ public class DatabaseHelperService {
     private String url = "jdbc:h2:~/";
 
     public void generateDatabase(String databaseScript) {
-        Connection conn;
-        try {
-            url += generateDatabaseName();
+        url += generateDatabaseName();
+        try (Connection connection = DriverManager.getConnection(url, username, password)){
             Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection(url, username, password);
             File databaseFile = writeDatabaseScriptFile(databaseScript);
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(conn));
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();
             databaseFile.deleteOnExit();
-            conn.close();
         } catch (Exception e) {
-            throw new DatabaseCommunicationError("Database creating error");
+            throw new DatabaseCommunicationError("Database creating error",e);
         }
     }
 
@@ -60,7 +57,7 @@ public class DatabaseHelperService {
         } catch (Exception e) {
             log.error("Error occurred during execution query: {}", sqlQuery);
             log.error("Error: ", e);
-            throw new DatabaseCommunicationError("Error during query execution");
+            throw new DatabaseCommunicationError("Error during query execution",e);
         }
     }
 
@@ -70,7 +67,7 @@ public class DatabaseHelperService {
             statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
             log.info("database was dropped");
         } catch (SQLException e) {
-            throw new DatabaseCommunicationError("Error in database dropping");
+            throw new DatabaseCommunicationError("Error in database dropping",e);
         }
     }
 
@@ -88,23 +85,22 @@ public class DatabaseHelperService {
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
         File scriptFile = File.createTempFile("script", ".yml");
-        OutputStreamWriter myWriter = new FileWriter(scriptFile);
-        myWriter.write(databaseScript);
-        myWriter.flush();
-        myWriter.close();
+        try( OutputStreamWriter myWriter = new FileWriter(scriptFile)) {
+            myWriter.write(databaseScript);
+            myWriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return scriptFile;
     }
 
     public QueryResult getExecuteQueryResult(String query) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            QueryResult queryResult = new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
-            resultSet.close();
-            statement.close();
-            return queryResult;
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+            return new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
         } catch (Exception e) {
-            throw new DatabaseCommunicationError("Error during the receiving execute query result");
+            throw new DatabaseCommunicationError("Error during the receiving execute query result",e);
         }
     }
 }
