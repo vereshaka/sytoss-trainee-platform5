@@ -62,6 +62,24 @@ public class PersonalExam {
         });
     }
 
-    public static class Public {
+    public Answer getCurrentAnswer() {
+        for (Answer answer : answers) {
+            if (answer.getStatus().equals(AnswerStatus.IN_PROGRESS)) {
+                return answer;
+            }
+        }
+        return null;
     }
+
+    public Answer getNextAnswer() {
+        for (Answer answer : answers) {
+            if (answer.getStatus().equals(AnswerStatus.NOT_STARTED)) {
+                answer.setStatus(AnswerStatus.IN_PROGRESS);
+                return answer;
+            }
+        }
+        return null;
+    }
+
+    public static class Public {}
 }

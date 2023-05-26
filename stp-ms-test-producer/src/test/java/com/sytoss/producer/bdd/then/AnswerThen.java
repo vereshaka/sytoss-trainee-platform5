@@ -1,10 +1,18 @@
 package com.sytoss.producer.bdd.then;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.Then;
+import org.junit.jupiter.api.Assertions;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,5 +30,31 @@ public class AnswerThen extends CucumberIntegrationTest {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, Long.parseLong(studentId));
         assertNotNull(personalExam.getAnswers());
         assertEquals(answerStatus, personalExam.getAnswers().get(0).getStatus().toString());
+    }
+
+    @Then("answer with id {long} of personal exam with id {word} should have value {string} and change status to {word}")
+    public void taskWithNumberShouldHaveAnswer(long answerId, String examId, String string, String status) {
+
+        PersonalExam personalExam = getPersonalExamConnector().getById(examId);
+
+        Optional<Answer> foundAnswer = personalExam.getAnswers().stream()
+                .filter(answerTmp -> answerTmp.getId().equals(answerId))
+                .findFirst();
+
+        Answer answer = foundAnswer.orElse(null);
+
+        Assertions.assertEquals(answer.getValue(), string);
+        Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
+    }
+
+    @Then("response should return next task")
+    public void responseShouldReturnNextTask(Answer answer) throws JsonProcessingException {
+
+        Answer nextAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), Answer.class);
+
+        Assertions.assertEquals(answer.getId(), nextAnswer.getId());
+        Assertions.assertEquals(answer.getTask().getQuestion(), nextAnswer.getTask().getQuestion());
+        Assertions.assertNotNull(nextAnswer.getTask());
+        Assertions.assertEquals(answer.getStatus(), nextAnswer.getStatus());
     }
 }

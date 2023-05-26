@@ -2,6 +2,7 @@ package com.sytoss.producer.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.producer.AbstractSTPProducerApplicationTest;
+import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.controllers.AbstractControllerTest;
 import com.sytoss.producer.commonConnectors.PersonalExamConnectorTest;
@@ -13,6 +14,7 @@ import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -38,6 +40,10 @@ public class CucumberIntegrationTest extends AbstractControllerTest {
 
     @LocalServerPort
     private int applicationPort;
+
+    @MockBean
+    @Autowired
+    private CheckTaskConnector checkTaskConnector;
 
     @Autowired
     private PersonalExamConnectorTest personalExamConnector;
