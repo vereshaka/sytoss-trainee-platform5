@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp;
 
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
+import com.sytoss.checktask.stp.service.QueryResultConvertor;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -10,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.mockito.Mockito.mock;
-
 @CucumberContextConfiguration
 @SpringBootTest(classes = CheckTaskApplication.class)
 @RunWith(Cucumber.class)
@@ -20,5 +19,5 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(SpringExtension.class)
 public class CucumberIntegrationTest {
     protected static final ThreadLocal<DatabaseHelperService> databaseHelperService =
-            ThreadLocal.withInitial(() -> mock(DatabaseHelperService.class));
+            ThreadLocal.withInitial(() -> new DatabaseHelperService(new QueryResultConvertor()));
 }
