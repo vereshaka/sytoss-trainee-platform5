@@ -132,7 +132,7 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
         FirstTask result = personalExamService.start("5", 1L);
-        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTaskModel().getQuestion());
+        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
     @Test

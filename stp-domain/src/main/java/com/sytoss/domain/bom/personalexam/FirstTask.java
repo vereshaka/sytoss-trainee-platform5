@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class FirstTask {
 
-    private ExamModel examModel;
+    private ExamModel exam;
 
-    private TaskModel taskModel;
+    private TaskModel task;
 }

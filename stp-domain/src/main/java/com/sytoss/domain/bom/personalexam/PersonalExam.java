@@ -63,8 +63,5 @@ public class PersonalExam {
     }
 
     public static class Public {
-        public static class StartExam {
-
-        }
     }
 }
