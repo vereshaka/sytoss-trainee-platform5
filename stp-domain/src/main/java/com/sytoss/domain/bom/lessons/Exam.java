@@ -20,5 +20,7 @@ public class Exam {
 
     private Long groupId;
 
+    private Integer numberOfTasks;
+
     private List<Topic> topics;
 }
