@@ -12,6 +12,5 @@ public class ExamService {
     private ExamConnector examConnector;
 
     public void save(Exam exam) {
-
     }
 }
