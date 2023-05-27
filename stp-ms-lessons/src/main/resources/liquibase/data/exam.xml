@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/exam.xml">
+
+    <changeSet author="BodenchukY" id="exam_1">
+        <createTable tableName="EXAM">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="RELEVANT_FROM" type="DATE" />
+            <column name="RELEVANT_TO" type="DATE" />
+            <column name="DURATION" type="INT" />
+            <column name="GROUP_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="NUMBER_OF_TASKS" type="INT" />
+            <column name="TOPICS" type="VARCHAR2(200 BYTE)" />
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="EXAM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="BodenchukY" author="exam_2">
+        <addPrimaryKey tableName="EXAM" columnNames="ID" constraintName="PK_EXAM" />
+        <rollback>
+            <dropPrimaryKey tableName="EXAM" constraintName="PK_EXAM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="BodenchukY" id="exam_3">
+        <addForeignKeyConstraint baseTableName="EXAM" baseColumnNames="GROUP_ID"
+                                 constraintName="FK_EXAM2GROUP" referencedTableName="GROUP"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="EXAM" constraintName="FK_EXAM2GROUP" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="BodenchukY" id="exam_4">
+        <createSequence sequenceName="EXAM_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="EXAM_SEQ" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
