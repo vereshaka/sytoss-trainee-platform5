@@ -10,9 +10,11 @@ public class DisciplineGiven extends CucumberIntegrationTest {
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
-        DisciplineDTO discipline = new DisciplineDTO();
-        discipline.setName(disciplineName);
-        discipline = getDisciplineConnector().saveAndFlush(discipline);
-        IntegrationTest.getTestContext().setDisciplineId(discipline.getId());
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO = getDisciplineConnector().saveAndFlush(disciplineDTO);
+        }
+        IntegrationTest.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
 }

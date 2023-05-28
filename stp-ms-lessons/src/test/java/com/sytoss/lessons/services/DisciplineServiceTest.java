@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.businessException.notFound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.AbstractLessonsApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
