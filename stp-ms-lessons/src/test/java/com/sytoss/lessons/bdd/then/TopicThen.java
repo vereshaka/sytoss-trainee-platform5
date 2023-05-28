@@ -17,8 +17,9 @@ public class TopicThen extends CucumberIntegrationTest {
 
     @Then("^should return$")
     public void topicShouldBe(List<TopicDTO> topics) throws JsonProcessingException {
-        List<Topic> topicList = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
-        });
+        //List<Topic> topicList = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
+        //});
+        List<Topic> topicList = IntegrationTest.getTestContext().getListOfTopicResponse().getBody();
         int quantityOfTasks = 0;
         assertEquals(topics.size(), topicList.size());
         for (Topic topicFromResponse : topicList) {

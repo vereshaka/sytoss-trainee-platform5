@@ -20,6 +20,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/groups";
         ResponseEntity<List<Group>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Group>>(){});
+        IntegrationTest.getTestContext().setStatus(responseEntity.getStatusCode().value());
         IntegrationTest.getTestContext().setListOfGroupResponse(responseEntity);
     }
 }

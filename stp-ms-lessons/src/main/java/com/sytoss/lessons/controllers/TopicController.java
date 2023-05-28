@@ -20,7 +20,7 @@ public class TopicController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
-    @GetMapping("/{disciplineId}/topics")
+    @GetMapping("/discipline/{disciplineId}/topics")
     public List<Topic> findByDisciplineId(@PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);
     }

@@ -11,13 +11,14 @@ import io.cucumber.java.en.Then;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^groups should received$")
     public void groupsShouldBeReceived(List<GroupDTO> groups) throws JsonProcessingException {
-        List<Group> results = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
-        });
+        List<Group> results = IntegrationTest.getTestContext().getListOfGroupResponse().getBody();
+        assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
         int quantityOfGroups = 0;
