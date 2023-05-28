@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.then;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
@@ -15,9 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TopicThen extends CucumberIntegrationTest {
 
     @Then("^should return$")
-    public void topicShouldBe(List<TopicDTO> topics) throws JsonProcessingException {
-        //List<Topic> topicList = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), new TypeReference<>() {
-        //});
+    public void topicShouldBe(List<TopicDTO> topics) {
         List<Topic> topicList = (List<Topic>) TestExecutionContext.getTestContext().getResponse().getBody();
         int quantityOfTasks = 0;
         assertEquals(topics.size(), topicList.size());
