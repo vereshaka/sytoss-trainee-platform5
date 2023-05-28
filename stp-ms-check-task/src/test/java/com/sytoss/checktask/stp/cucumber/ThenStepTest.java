@@ -5,6 +5,7 @@ import com.sytoss.checktask.stp.CucumberIntegrationTest;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationError;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 
 public class ThenStepTest extends CucumberIntegrationTest {
@@ -21,8 +22,11 @@ public class ThenStepTest extends CucumberIntegrationTest {
 
     @Then("database should be dropped")
     public void databaseShouldBeDropped() {
-        Assertions.assertThrows(DatabaseCommunicationError.class,
+        Exception exception = Assertions.assertThrows(DatabaseCommunicationError.class,
                 () -> databaseHelperService.get().getExecuteQueryResult("select * from answer"));
+        Assertions.assertEquals(JdbcSQLSyntaxErrorException.class, exception.getCause().getClass());
+        Assertions.assertEquals("Table \"ANSWER\" not found (this database is empty); SQL statement:\n" +
+                "select * from answer [42104-214]", exception.getCause().getMessage());
     }
 
     @Then("answer should be {string}")
