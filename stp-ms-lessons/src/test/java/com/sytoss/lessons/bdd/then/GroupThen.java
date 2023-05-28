@@ -1,10 +1,9 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.IntegrationTest;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.GroupDTO;
 import io.cucumber.java.en.Then;
 
@@ -17,7 +16,7 @@ public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^groups should received$")
     public void groupsShouldBeReceived(List<GroupDTO> groups) throws JsonProcessingException {
-        List<Group> results = IntegrationTest.getTestContext().getListOfGroupResponse().getBody();
+        List<Group> results = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 

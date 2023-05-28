@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.IntegrationTest;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
@@ -29,7 +29,7 @@ public class TopicGiven extends CucumberIntegrationTest {
             if (disciplineDTO == null) {
                 disciplineDTO = getDisciplineConnector().save(topic.getDiscipline());
             }
-            IntegrationTest.getTestContext().setDisciplineId(disciplineDTO.getId());
+            TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
             TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId());
             topic.setDiscipline(disciplineDTO);
             if (topicResult == null) {

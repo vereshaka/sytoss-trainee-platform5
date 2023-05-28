@@ -1,4 +1,4 @@
-package com.sytoss.producer.commonConnectors;
+package com.sytoss.producer.common.connectors;
 
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.PersonalExamConnector;

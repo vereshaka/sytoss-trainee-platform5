@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.IntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import io.cucumber.java.DataTableType;

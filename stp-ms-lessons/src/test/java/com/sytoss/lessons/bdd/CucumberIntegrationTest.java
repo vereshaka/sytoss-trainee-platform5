@@ -23,7 +23,7 @@ import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 @Suite
 @IncludeEngines("cucumber")
 @CucumberContextConfiguration
-@SelectClasspathResource("features")
+@SelectClasspathResource("/features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.lessons.bdd")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
 @ExtendWith(SpringExtension.class)

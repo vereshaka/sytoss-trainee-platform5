@@ -1,11 +1,9 @@
 package com.sytoss.producer.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.producer.AbstractSTPProducerApplicationTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
-import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.controllers.AbstractControllerTest;
-import com.sytoss.producer.commonConnectors.PersonalExamConnectorTest;
+import com.sytoss.producer.common.connectors.PersonalExamConnectorTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
