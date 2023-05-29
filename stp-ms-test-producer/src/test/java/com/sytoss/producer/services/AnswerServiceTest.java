@@ -46,19 +46,34 @@ public class AnswerServiceTest extends AbstractJunitTest {
         input.setId(examId);
         input.setStatus(PersonalExamStatus.NOT_STARTED);
         Discipline discipline = new Discipline();
-        discipline.setId(2L);
+        discipline.setId(22L);
         input.setDiscipline(discipline);
+
+        //--first task and answer
         Task task = new Task();
         task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(9L);
+        taskDomain.setId(10L);
         taskDomain.setScript(".uml");
         task.setTaskDomain(taskDomain);
         Answer currentAnswer = new Answer();
         currentAnswer.setId(8L);
         currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
         currentAnswer.setTask(task);
-        input.setAnswers(Arrays.asList(currentAnswer));
+
+        //--second task and answer
+        Task nextTask = new Task();
+        nextTask.setId(2L);
+        TaskDomain nextTaskDomain = new TaskDomain();
+        nextTaskDomain.setId(11L);
+        nextTaskDomain.setScript(".uml");
+        nextTask.setTaskDomain(nextTaskDomain);
+        Answer nextAnswer = new Answer();
+        nextAnswer.setId(9L);
+        nextAnswer.setStatus(AnswerStatus.NOT_STARTED);
+        nextAnswer.setTask(task);
+
+        input.setAnswers(Arrays.asList(currentAnswer, nextAnswer));
         input.setAmountOfTasks(1);
         input.setTime(10);
         input.setStudentId(studentId);
@@ -67,7 +82,7 @@ public class AnswerServiceTest extends AbstractJunitTest {
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
             PersonalExam result = (PersonalExam) args[0];
-            result.setId("1L");
+            result.setId(examId);
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
 
@@ -75,8 +90,8 @@ public class AnswerServiceTest extends AbstractJunitTest {
         personalExamService.start("4", studentId);
         Answer result = answerService.answer(examId, studentId, taskAnswer);
 
-        assertEquals("8", result.getId());
-        assertEquals(taskAnswer, result.getValue());
-        assertEquals("ANSWERED", result.getStatus());
+        assertEquals(9, result.getId());
+        assertEquals(null, result.getValue());
+        assertEquals("IN_PROGRESS", String.valueOf(result.getStatus()));
     }
 }
