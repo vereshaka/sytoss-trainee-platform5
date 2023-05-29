@@ -2,16 +2,15 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.lessons.AbstractLessonsApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TopicConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +19,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class TopicServiceTest extends AbstractLessonsApplicationTest {
+public class TopicServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private TopicConnector topicConnector;
+
+    @Mock
+    private TopicConvertor topicConvertor;
+
+    @Mock
+    private DisciplineService disciplineService;
 
     @InjectMocks
     private TopicService topicService;
-
-    @MockBean
-    private TopicConvertor topicConvertor;
-
-    @MockBean
-    private DisciplineService disciplineService;
 
     @Test
     public void createExam() {
