@@ -29,14 +29,4 @@ public class DisciplineConvertor {
         teacherConverter.toDTO(source.getTeacher(), teacherDTO);
         destination.setTeacher(teacherDTO);
     }
-
-//    public void fromDTO(DisciplineDTO source, Discipline destination) {
-//        destination.setId(source.getId());
-//        destination.setName(source.getName());
-//    }
-//
-//    public void toDTO(Discipline source, DisciplineDTO destination) {
-//        destination.setId(source.getId());
-//        destination.setName(source.getName());
-//    }
 }
