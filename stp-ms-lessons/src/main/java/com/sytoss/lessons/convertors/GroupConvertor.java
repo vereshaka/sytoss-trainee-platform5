@@ -1,20 +1,20 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.GroupDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class TopicConvertor {
+public class GroupConvertor {
 
     private final DisciplineConvertor disciplineConvertor;
 
-    public void fromDTO(TopicDTO source, Topic destination) {
+    public void fromDTO(GroupDTO source, Group destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
         Discipline discipline = new Discipline();
@@ -22,8 +22,10 @@ public class TopicConvertor {
         destination.setDiscipline(discipline);
     }
 
-    public void toDTO(Topic source, TopicDTO destination) {
-        destination.setId(source.getId());
+    public void toDTO(Group source, GroupDTO destination) {
+        if (source.getId() != null) {
+            destination.setId(source.getId());
+        }
         destination.setName(source.getName());
         DisciplineDTO discipline = new DisciplineDTO();
         disciplineConvertor.toDTO(source.getDiscipline(), discipline);

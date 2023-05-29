@@ -9,20 +9,20 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class AnswerService {
 
     private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
 
-    @Autowired
-    private PersonalExamConnector personalExamConnector;
+    private final PersonalExamConnector personalExamConnector;
 
-    @Autowired
-    private CheckTaskConnector checkTaskConnector;
+    private final CheckTaskConnector checkTaskConnector;
 
     public Answer answer(String examId, String taskAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(examId);

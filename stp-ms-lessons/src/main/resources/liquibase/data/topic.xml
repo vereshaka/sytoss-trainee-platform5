@@ -20,7 +20,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="KornienkoD" author="topic_2">
+    <changeSet author="KornienkoD" id="topic_2">
         <addPrimaryKey tableName="TOPIC" columnNames="ID" constraintName="PK_TOPIC" />
         <rollback>
             <dropPrimaryKey tableName="TOPIC" constraintName="PK_TOPIC" />
