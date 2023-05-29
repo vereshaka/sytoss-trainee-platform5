@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class AnswerService {
@@ -26,6 +28,9 @@ public class AnswerService {
 
     public Answer answer(String examId, Long studentId, String taskAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(examId);
+        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+        }
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
