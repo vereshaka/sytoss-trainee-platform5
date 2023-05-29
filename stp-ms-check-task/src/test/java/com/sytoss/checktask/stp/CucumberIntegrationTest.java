@@ -1,7 +1,5 @@
 package com.sytoss.checktask.stp;
 
-import com.sytoss.checktask.stp.service.DatabaseHelperService;
-import com.sytoss.checktask.stp.service.QueryResultConvertor;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -14,10 +12,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @CucumberContextConfiguration
 @SpringBootTest(classes = CheckTaskApplication.class)
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty", "json:target/cucumber-report.json"}, features = "src/test/resources/features")
+@CucumberOptions(features = "src/test/resources/features")
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 public class CucumberIntegrationTest {
-    protected static final ThreadLocal<DatabaseHelperService> databaseHelperService =
-            ThreadLocal.withInitial(() -> new DatabaseHelperService(new QueryResultConvertor()));
+
 }

@@ -1,7 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
 import bom.QueryResult;
-import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationError;
+import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -44,20 +44,9 @@ public class DatabaseHelperService {
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();
             databaseFile.deleteOnExit();
+            log.info("database was generated");
         } catch (Exception e) {
-            throw new DatabaseCommunicationError("Database creating error",e);
-        }
-    }
-
-    public void executeQuery(String sqlQuery) {
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             Statement statement = connection.createStatement()) {
-            statement.executeQuery(sqlQuery);
-            log.info("Query was executed");
-        } catch (Exception e) {
-            log.error("Error occurred during execution query: {}", sqlQuery);
-            log.error("Error: ", e);
-            throw new DatabaseCommunicationError("Error during query execution",e);
+            throw new DatabaseCommunicationException("Database creating error",e);
         }
     }
 
@@ -67,7 +56,7 @@ public class DatabaseHelperService {
             statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
             log.info("database was dropped");
         } catch (SQLException e) {
-            throw new DatabaseCommunicationError("Error in database dropping",e);
+            log.error("Error in database dropping", e);
         }
     }
 
@@ -89,18 +78,17 @@ public class DatabaseHelperService {
             myWriter.write(databaseScript);
             myWriter.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseCommunicationException("Error during work with a database", e);
         }
         return scriptFile;
     }
 
-    public QueryResult getExecuteQueryResult(String query) {
+    public QueryResult getExecuteQueryResult(String query) throws SQLException {
         try (Connection connection = DriverManager.getConnection(url, username, password);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
+            log.info("query result was got");
             return new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
-        } catch (Exception e) {
-            throw new DatabaseCommunicationError("Error during the receiving execute query result",e);
         }
     }
 }

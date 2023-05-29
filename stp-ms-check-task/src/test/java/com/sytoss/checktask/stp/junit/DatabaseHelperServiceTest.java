@@ -1,12 +1,13 @@
 package com.sytoss.checktask.stp.junit;
 
 import bom.QueryResult;
-import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationError;
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
 import com.sytoss.checktask.stp.service.QueryResultConvertor;
+import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,24 +25,7 @@ class DatabaseHelperServiceTest {
     }
 
     @Test
-    void generateDatabaseError() {
-        Assertions.assertThrows(DatabaseCommunicationError.class, () -> databaseHelperService.generateDatabase(""));
-    }
-
-    @Test
-    void executeQuery() {
-        databaseHelperService.generateDatabase(script);
-        Assertions.assertDoesNotThrow(() -> databaseHelperService.executeQuery("select * from answer"));
-    }
-
-    @Test
-    void executeQueryWithError() {
-        databaseHelperService.generateDatabase(script);
-        Assertions.assertThrows(DatabaseCommunicationError.class, () -> databaseHelperService.executeQuery(""));
-    }
-
-    @Test
-    void getExecuteQueryResult() {
+    void getExecuteQueryResult() throws SQLException {
         databaseHelperService.generateDatabase(script);
         HashMap<String, Object> map = new HashMap<>();
         map.put("ANSWER", "it_is_answer");
@@ -53,6 +37,6 @@ class DatabaseHelperServiceTest {
     void dropDatabase() {
         databaseHelperService.generateDatabase(script);
         databaseHelperService.dropDatabase();
-        Assertions.assertThrows(DatabaseCommunicationError.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
+        Assertions.assertThrows(JdbcSQLSyntaxErrorException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
     }
 }

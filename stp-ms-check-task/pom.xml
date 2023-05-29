@@ -32,11 +32,11 @@
             <artifactId>junit-platform-suite-api</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.systoss.stp</groupId>
             <artifactId>stp-ms-check-task-shared</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>

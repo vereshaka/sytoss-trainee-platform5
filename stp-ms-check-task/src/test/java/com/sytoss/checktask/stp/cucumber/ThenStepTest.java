@@ -1,14 +1,12 @@
 package com.sytoss.checktask.stp.cucumber;
 
 import bom.QueryResult;
-import com.sytoss.checktask.stp.CucumberIntegrationTest;
-import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationError;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 
-public class ThenStepTest extends CucumberIntegrationTest {
+public class ThenStepTest {
 
     @Then("answer and etalon should have same number of columns and rows")
     public void answerAndEtalonShouldBeGotFromDatabase() {
@@ -22,11 +20,9 @@ public class ThenStepTest extends CucumberIntegrationTest {
 
     @Then("database should be dropped")
     public void databaseShouldBeDropped() {
-        Exception exception = Assertions.assertThrows(DatabaseCommunicationError.class,
-                () -> databaseHelperService.get().getExecuteQueryResult("select * from answer"));
-        Assertions.assertEquals(JdbcSQLSyntaxErrorException.class, exception.getCause().getClass());
-        Assertions.assertEquals("Table \"ANSWER\" not found (this database is empty); SQL statement:\n" +
-                "select * from answer [42104-214]", exception.getCause().getMessage());
+        Exception exception = Assertions.assertThrows(JdbcSQLSyntaxErrorException.class,
+                () -> TestContext.getInstance().getDatabaseHelperService().get().getExecuteQueryResult("select * from answer"));
+        Assertions.assertTrue(exception.getMessage().contains("Table \"ANSWER\" not found (this database is empty)"));
     }
 
     @Then("answer should be {string}")

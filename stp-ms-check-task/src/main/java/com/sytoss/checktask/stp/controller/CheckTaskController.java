@@ -2,6 +2,7 @@ package com.sytoss.checktask.stp.controller;
 
 import bom.CheckAnswerRequestBody;
 import com.sytoss.checktask.stp.service.GradeService;
+import com.sytoss.domain.bom.personalexam.Grade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +18,8 @@ public class CheckTaskController {
     private final GradeService gradeService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public void check(
-            @RequestBody CheckAnswerRequestBody body) throws Exception {
-        gradeService.checkAndGrade(body);
+    public Grade check(
+            @RequestBody CheckAnswerRequestBody body) {
+        return gradeService.checkAndGrade(body);
     }
 }
