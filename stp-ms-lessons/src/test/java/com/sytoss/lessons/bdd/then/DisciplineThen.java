@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DisciplineThen extends CucumberIntegrationTest {
 
-    @Then("^\"(.*)\" discipline$")
+    @Then("^\"(.*)\" discipline should be received$")
     public void disciplineShouldBeReceived(String disciplineName) {
         Discipline discipline = (Discipline) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(disciplineName, discipline.getName());

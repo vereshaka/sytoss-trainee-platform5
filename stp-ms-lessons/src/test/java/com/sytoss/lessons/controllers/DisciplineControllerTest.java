@@ -67,10 +67,8 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldGetDisciplineById(){
         when(disciplineService.getById(any())).thenReturn(new Discipline());
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doGet("/api/discipline/123", requestEntity, Discipline.class);
-        assertEquals(200, result.getStatusCodeValue());
+        ResponseEntity<Discipline> result = doGet("/api/discipline/123", null, Discipline.class);
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
