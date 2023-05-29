@@ -26,34 +26,23 @@ public class AnswerService {
 
     public Answer answer(String examId, String taskAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(examId);
-
         Answer answer = personalExam.getCurrentAnswer();
-
         answer.answer(taskAnswer);
-
         checkAnswer(answer, personalExam);
-
         personalExamConnector.save(personalExam);
-
         return personalExam.getNextAnswer();
     }
 
     @Async
     void checkAnswer(Answer answer, PersonalExam personalExam) {
-
         Task task = metadataConnector.getTaskById(answer.getTask().getId());
         TaskDomain taskDomain = metadataConnector.getTaskDomain(answer.getTask().getTaskDomain().getId());
-
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-
         checkTaskParameters.setAnswer(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setScript(taskDomain.getScript());
-
         Grade grade = checkTaskConnector.checkAnswer(checkTaskParameters);
-
         answer.grade(grade);
-
         personalExamConnector.save(personalExam);
     }
 
