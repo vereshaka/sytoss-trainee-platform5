@@ -24,7 +24,7 @@ public class AnswerService {
 
     private final CheckTaskConnector checkTaskConnector;
 
-    public Answer answer(String examId, String taskAnswer) {
+    public Answer answer(String examId, Long studentId, String taskAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(examId);
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);

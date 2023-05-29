@@ -13,9 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -70,7 +67,8 @@ public class PersonalExamController {
     public Answer answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "examId") String examId,
+            @RequestHeader(value="studentId")  String studentId,
             @RequestBody String taskAnswer) {
-        return answerService.answer(examId, taskAnswer);
+        return answerService.answer(examId, Long.valueOf(studentId), taskAnswer);
     }
 }
