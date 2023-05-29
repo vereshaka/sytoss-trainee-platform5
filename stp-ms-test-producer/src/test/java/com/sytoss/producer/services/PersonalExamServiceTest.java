@@ -5,12 +5,14 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.AbstractSTPProducerApplicationTest;
+import com.sytoss.producer.AbstractApplicationTest;
+import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -25,12 +27,12 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest {
+public class PersonalExamServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private MetadataConnectorImpl metadataConnector;
 
-    @MockBean
+    @Mock
     private PersonalExamConnector personalExamConnector;
 
     @InjectMocks
@@ -51,9 +53,9 @@ public class PersonalExamServiceTest extends AbstractSTPProducerApplicationTest 
         Discipline discipline = new Discipline();
         discipline.setId(1L);
         discipline.setName("SQL");
-        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
-        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
-        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
+//        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
+//                when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
+//        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
         List<Long> topics = new ArrayList<>();
         topics.add(1L);
         topics.add(2L);

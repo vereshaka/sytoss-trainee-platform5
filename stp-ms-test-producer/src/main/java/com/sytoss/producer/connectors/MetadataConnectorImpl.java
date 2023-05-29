@@ -48,10 +48,10 @@ public class MetadataConnectorImpl implements MetadataConnector {
 
     @Override
     public List<Task> getTasksForTopic(Long id) {
-        if (Objects.equals(id, "1L")) {
+        if (Objects.equals(id, 1L)) {
             return List.of(createTask("Inner Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)),
                     createTask("Left Join", "Yes", List.of(getTopic(1L)), getTaskDomain(1L)));
-        } else if (Objects.equals(id, "2L")) {
+        } else if (Objects.equals(id, 2L)) {
             return List.of(createTask("Left Join?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)),
                     createTask("Is SQL cool?", "Yes", List.of(getTopic(2L)), getTaskDomain(1L)));
         } else {

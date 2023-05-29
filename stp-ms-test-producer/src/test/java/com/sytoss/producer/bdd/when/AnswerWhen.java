@@ -30,7 +30,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
         HttpEntity<String> request = new HttpEntity<>(answer, headers);
 
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }
