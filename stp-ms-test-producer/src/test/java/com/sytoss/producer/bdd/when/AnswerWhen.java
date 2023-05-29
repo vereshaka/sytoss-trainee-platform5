@@ -1,10 +1,13 @@
 package com.sytoss.producer.bdd.when;
 
 import com.sytoss.checktaskshared.util.CheckTaskParameters;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.When;
+import org.mockito.stubbing.Answer;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +27,9 @@ public class AnswerWhen extends CucumberIntegrationTest {
 
         String url = "/api/personalExam/" + examId + "/task/answer";
 
-        ResponseEntity<String> responseEntity = doPost(url, answer, String.class);
+        HttpEntity<String> request = new HttpEntity<>(answer, headers);
+
+        ResponseEntity<String> responseEntity = doPost(url, request, String.class);
 
         IntegrationTest.getTestContext().setResponse(responseEntity);
     }
