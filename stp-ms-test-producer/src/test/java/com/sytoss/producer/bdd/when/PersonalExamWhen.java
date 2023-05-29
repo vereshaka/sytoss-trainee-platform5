@@ -33,7 +33,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         String url = getBaseUrl() + URI + "personalExam/create";
         ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
-        IntegrationTest.getTestContext().setStastuCode(responseEntity.getStatusCode().value());
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 
     @When("the exam with id {word} is done")
@@ -43,7 +43,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
-        IntegrationTest.getTestContext().setStastuCode(responseEntity.getStatusCode().value());
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 
     private List<Long> getTopicId(String name) {
@@ -76,7 +76,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         HttpEntity<Task> requestEntity = startTest(studentId);
         ResponseEntity<FirstTask> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, FirstTask.class);
         IntegrationTest.getTestContext().setFirstTaskResponse(responseEntity);
-        IntegrationTest.getTestContext().setStastuCode(responseEntity.getStatusCode().value());
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
     @When("^student with (.*) id start second time personal exam \"(.*)\"$")
     public void startSecondTimePersonalExam(String studentId, String personalExamName) {
@@ -86,7 +86,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         HttpEntity<Task> requestEntity = startTest(studentId);
         ResponseEntity<String> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
-        IntegrationTest.getTestContext().setStastuCode(responseEntity.getStatusCode().value());
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
     private HttpEntity startTest(String studentId) {
         HttpHeaders headers = new HttpHeaders();

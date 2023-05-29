@@ -11,7 +11,7 @@ public class TestContext {
 
     private ResponseEntity<String> response;
 
-    private int stastuCode;
+    private int statusCode;
 
     private ResponseEntity<FirstTask> firstTaskResponse;
 }

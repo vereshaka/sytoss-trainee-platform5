@@ -10,7 +10,7 @@ public class CommonThen {
 
     @Then("^operation is successful$")
     public void status() {
-        assertEquals(200, IntegrationTest.getTestContext().getStastuCode());
+        assertEquals(200, IntegrationTest.getTestContext().getStatusCode());
     }
 
     @Then("^operation should be finished with (\\w+) \"(.*)\" error$")
