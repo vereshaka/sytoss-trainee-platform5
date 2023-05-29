@@ -1,4 +1,4 @@
-Feature: Group
+Feature: Discipline
 
   Scenario: retrieve discipline information
     Given "SQL" discipline exists

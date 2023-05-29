@@ -21,46 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PersonalExamThen extends CucumberIntegrationTest {
 
-    @DataTableType
-    public Answer mapAnswer(Map<String, String> entry) {
-        Answer answer = new Answer();
-        Task taskOne = new Task();
-
-        if (entry.containsKey("task")) {
-            taskOne.setQuestion(entry.get("task"));
-            answer.setTask(taskOne);
-        }
-
-        Topic topic = new Topic();
-        if (entry.containsKey("listOfSubjects")) {
-            topic.setName(entry.get("listOfSubjects"));
-        }
-        Task task = new Task();
-
-        if (entry.containsKey("taskId")) {
-            task.setId(Long.parseLong(entry.get("taskId")));
-        }
-        if (entry.containsKey("question")) {
-            task.setQuestion(entry.get("question"));
-            task.setTopics(List.of(topic));
-            answer.setTask(task);
-        }
-
-        Grade grade = new Grade();
-
-        if (entry.containsKey("grade")) {
-            grade.setValue(Float.parseFloat(entry.get("grade")));
-            grade.setComment(entry.get("comment"));
-            answer.setValue(entry.get("answer"));
-            answer.setGrade(grade);
-        }
-
-        if (entry.containsKey("task status")) {
-            answer.setStatus(AnswerStatus.valueOf(entry.get("task status")));
-        }
-        return answer;
-    }
-
     @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
     public void thisCustomerHasProjects(String examName, String disciplineName, String topic, Long studentId, List<Answer> answers) throws JsonProcessingException {
         PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);

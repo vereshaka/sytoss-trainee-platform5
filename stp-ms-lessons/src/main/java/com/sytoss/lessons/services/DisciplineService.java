@@ -1,30 +1,27 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.notFound.DisciplineNotFoundException;
+import com.sytoss.domain.bom.exceptions.businessException.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class DisciplineService {
 
-    @Autowired
-    private DisciplineConnector disciplineConnector;
+    private final DisciplineConnector disciplineConnector;
 
-    @Autowired
-    private DisciplineConvertor disciplineConvertor;
+    private final DisciplineConvertor disciplineConvertor;
 
-    public Discipline getById(Long disciplineId) {
-        DisciplineDTO discipline = disciplineConnector.getReferenceById(disciplineId);;
-        if (discipline.getId() == null) {
-            throw new DisciplineNotFoundException(disciplineId);
-        } else {
-            Discipline result = new Discipline();
-            disciplineConvertor.fromDTO(discipline, result);
-            return result;
-        }
+    public Discipline getById(Long id) {
+        DisciplineDTO disciplineDTO = disciplineConnector.findById(id).orElseThrow(() -> new DisciplineNotFoundException(id));
+        Discipline discipline = new Discipline();
+        disciplineConvertor.fromDTO(disciplineDTO, discipline);
+        return discipline;
     }
 }
