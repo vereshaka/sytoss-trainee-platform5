@@ -72,21 +72,17 @@ public class AnswerServiceTest extends AbstractJunitTest {
         nextAnswer.setId(9L);
         nextAnswer.setStatus(AnswerStatus.NOT_STARTED);
         nextAnswer.setTask(task);
-
         input.setAnswers(Arrays.asList(currentAnswer, nextAnswer));
         input.setAmountOfTasks(1);
         input.setTime(10);
         input.setStudentId(studentId);
         when(personalExamConnector.getById(examId)).thenReturn(input);
-
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
             PersonalExam result = (PersonalExam) args[0];
             result.setId(examId);
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-
-
         personalExamService.start("4", studentId);
         Answer result = answerService.answer(examId, studentId, taskAnswer);
 
