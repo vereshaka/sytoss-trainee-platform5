@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupConnector;
+import com.sytoss.lessons.connectors.TeacherConnector;
 import com.sytoss.lessons.connectors.TopicConnector;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -34,6 +35,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private TopicConnector topicConnector;
+
+    @Autowired
+    private TeacherConnector teacherConnector;
 
     @Autowired
     private DisciplineConnector disciplineConnector;

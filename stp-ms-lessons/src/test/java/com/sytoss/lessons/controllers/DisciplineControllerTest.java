@@ -1,9 +1,11 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @MockBean
     private GroupService groupService;
 
+    @MockBean
+    private DisciplineService disciplineService;
+
     @Test
     public void shouldSaveTopic() {
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
@@ -52,6 +57,16 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", null, new ParameterizedTypeReference<List<Group>>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldSaveDiscipline() {
+        when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
+        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

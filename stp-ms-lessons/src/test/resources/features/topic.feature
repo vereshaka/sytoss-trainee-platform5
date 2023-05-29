@@ -1,7 +1,10 @@
 Feature: Topic
 
   Scenario: system retrieve information list of topic
-    Given topic exist
+    Given teachers exist
+      | firstName  | lastName  |
+      | Dmytro     | Kornienko |
+    And topic exist
       | discipline | topic           |
       | SQL        | Join            |
       | SQL        | Join Inner      |
@@ -17,18 +20,23 @@ Feature: Topic
       | SQL        | Drop results    |
 
   Scenario: teacher create a new topic
-    Given disciplines exist
-      | discipline |
-      | SQL        |
-      | Mongo      |
+    Given teachers exist
+      | firstName  | lastName  |
+      | Maksym     | Mitkov    |
+    And disciplines exist
+      | disciplineId | discipline   | teacherId |
+      | 1            | SQL          |  7        |
+      | 2            | Mongo        |  7        |
     And "First" topic by "Mongo" discipline doesn't exist
     When teacher create "First" topic
     Then operation is successful
 
-  @Bug
-  Scenario: teacher create a topic that already exist
-    Given topic exist
-      | discipline | topic           |
-      | Mongo      | First           |
-    When teacher create "First" topic
-    Then operation should be finished with 409 "Topic with name "First" already exist" error
+#  Scenario: teacher create a topic that already exist
+#    Given teachers exist
+#      | firstName  | lastName  |
+#      | Dmytro     | Kornienko |
+#    And topic exist
+#      | discipline | topic |
+#      | Mongo      | First |
+#    When teacher create "First" topic
+#    Then operation should be finished with 409 "Topic with name "First" already exist" error

@@ -1,7 +1,10 @@
 Feature: Group
 
   Scenario: system retrieve all groups by discipline
-    Given groups exist
+    Given teachers exist
+      | firstName  | lastName  |
+      | Alexey     | Shatokhin |
+    And groups exist
       | discipline | group |
       | SQL        | AT-11 |
       | SQL        | AT-12 |
