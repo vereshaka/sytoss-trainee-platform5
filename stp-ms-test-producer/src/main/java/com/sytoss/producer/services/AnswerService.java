@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.checktaskshared.util.CheckTaskParameters;
+import com.sytoss.domain.bom.exceptions.businessException.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
@@ -26,8 +27,8 @@ public class AnswerService {
 
     private final CheckTaskConnector checkTaskConnector;
 
-    public Answer answer(String examId, Long studentId, String taskAnswer) {
-        PersonalExam personalExam = personalExamConnector.getById(examId);
+    public Answer answer(String personalExamId, Long studentId, String taskAnswer) {
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudentId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
         }

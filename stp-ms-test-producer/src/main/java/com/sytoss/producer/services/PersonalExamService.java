@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.businessException.PersonalExamHasNoAnswerException;
+import com.sytoss.domain.bom.exceptions.businessException.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +27,7 @@ public class PersonalExamService {
         personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
         personalExam.setName(examConfiguration.getExamName());
         personalExam.setDate(new Date());
+        personalExam.setTime(examConfiguration.getTime());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAnswers(generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration));
         personalExam.setStudentId(examConfiguration.getStudentId());
@@ -64,15 +63,29 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public Task start(String personalExamId) {
+    public FirstTask start(String personalExamId, Long studentId) {
         PersonalExam personalExam = getById(personalExamId);
+        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+        }
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
         personalExam.start();
         personalExam.getAnswers().get(0).inProgress();
-        personalExamConnector.save(personalExam);
-        return personalExam.getAnswers().get(0).getTask();
+        personalExam = personalExamConnector.save(personalExam);
+        FirstTask firstTask = new FirstTask();
+        ExamModel examModel = new ExamModel();
+        examModel.setName(personalExam.getName());
+        examModel.setTime(personalExam.getTime());
+        examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
+        firstTask.setExam(examModel);
+        TaskModel taskModel = new TaskModel();
+        taskModel.setQuestion(personalExam.getAnswers().get(0).getTask().getQuestion());
+        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getScript());
+        taskModel.setQuestionNumber(1);
+        firstTask.setTask(taskModel);
+        return firstTask;
     }
 
     public PersonalExam getById(String personalExamId) {

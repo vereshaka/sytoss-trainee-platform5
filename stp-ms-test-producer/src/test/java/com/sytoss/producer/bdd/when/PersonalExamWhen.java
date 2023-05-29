@@ -2,6 +2,7 @@ package com.sytoss.producer.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
@@ -21,6 +22,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("studentId", studentId.toString());
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setStudentId(studentId);
         examConfiguration.setExamName(examName);
@@ -31,6 +33,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         String url = getBaseUrl() + URI + "personalExam/create";
         ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 
     @When("the exam with id {word} is done")
@@ -40,6 +43,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 
     private List<Long> getTopicId(String name) {
@@ -65,14 +69,30 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     }
 
     @When("^student with (.*) id start personal exam \"(.*)\"$")
-    public void requestSentStartPersonalExam(String studentId, String personalExamName) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
+    public void startPersonalExam(String studentId, String personalExamName) {
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
+        HttpEntity<Task> requestEntity = startTest(studentId);
+        ResponseEntity<FirstTask> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, FirstTask.class);
+        IntegrationTest.getTestContext().setFirstTaskResponse(responseEntity);
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
+    }
+    @When("^student with (.*) id start second time personal exam \"(.*)\"$")
+    public void startSecondTimePersonalExam(String studentId, String personalExamName) {
+        PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
+        String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
+        log.info("Send request to " + url);
+        HttpEntity<Task> requestEntity = startTest(studentId);
         ResponseEntity<String> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
+        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
+    }
+    private HttpEntity startTest(String studentId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("studentId", studentId);
+        HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
+        return requestEntity;
     }
 }

@@ -53,17 +53,6 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         }
     }
 
-//    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
-//        HttpHeaders headers = new HttpHeaders();
-//        if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
-//            for (Map.Entry entry : ((HttpEntity) requestEntity).getHeaders().entrySet()) {
-//                headers.addAll(entry.getKey().toString(), (List<? extends String>) entry.getValue());
-//            }
-//        }
-//        HttpEntity request = new HttpEntity<>(requestEntity, headers);
-//        return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-//    }
-
     protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity requestEntity, Class<T> responseType) {
         return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }

@@ -2,11 +2,13 @@ package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
@@ -74,5 +76,12 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     public void personalExamShouldHaveStatus(String examName, Long studentId, String personalExamStatus) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, studentId);
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
+    }
+
+    @Then("should return personal exam with time {int} and amountOfTasks {long}")
+    public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks){
+        FirstTask firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
+        assertEquals(time, firstTask.getExam().getTime());
+        assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());
     }
 }

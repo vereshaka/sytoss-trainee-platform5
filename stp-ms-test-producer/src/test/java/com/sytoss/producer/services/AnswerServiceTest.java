@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -34,28 +35,36 @@ public class AnswerServiceTest extends AbstractJunitTest {
     @Test
     public void testAnswer() {
 
-        String examId = "examId";
         String taskAnswer = "taskAnswer";
 
-        PersonalExam personalExamMock = Mockito.mock(PersonalExam.class);
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("examId");
+        personalExam.setStatus(PersonalExamStatus.IN_PROGRESS);
         List<Answer> answers = new ArrayList<>();
-        personalExamMock.setAnswers(answers);
-        Answer currentAnswer = Mockito.mock(Answer.class);
-        Answer nextAnswer = Mockito.mock(Answer.class);
-        Task currentTask = Mockito.mock(Task.class);
-        TaskDomain taskDomain = Mockito.mock(TaskDomain.class);
+        personalExam.setAnswers(answers);
+        personalExam.setStudentId(77L);
+        Answer currentAnswer = new Answer();
+        Answer nextAnswer = new Answer();
+        Task currentTask = new Task();
+        TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(6L);
         currentTask.setId(5L);
         currentAnswer.setTask(currentTask);
         currentTask.setTaskDomain(taskDomain);
+        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
 
-        when(personalExamConnector.getById(examId)).thenReturn(personalExamMock);
-        when(personalExamMock.getCurrentAnswer()).thenReturn(currentAnswer);
+        Mockito.doAnswer((org.mockito.stubbing.Answer<Answer>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            Answer result = (Answer) args[0];
+            return result;
+        }).when(personalExamConnector).save(any(PersonalExam.class));
+
+        when(personalExam.getCurrentAnswer()).thenReturn(currentAnswer);
         when(currentAnswer.getTask()).thenReturn(currentTask);
         when(currentTask.getTaskDomain()).thenReturn(taskDomain);
-        when(personalExamMock.getNextAnswer()).thenReturn(nextAnswer);
+        when(personalExam.getNextAnswer()).thenReturn(nextAnswer);
 
-        Answer result = answerService.answer(examId, taskAnswer);
+        Answer result = answerService.answer(personalExam.getId(), personalExam.getStudentId(), taskAnswer);
 
         verify(checkTaskConnector).checkAnswer(any(CheckTaskParameters.class));
         verify(personalExamConnector, times(2)).save(any(PersonalExam.class));

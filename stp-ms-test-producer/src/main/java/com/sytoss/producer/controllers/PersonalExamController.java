@@ -1,9 +1,9 @@
 package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.services.AnswerService;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,10 +44,11 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "409", description = "Exam is already started!")
     })
     @GetMapping("/test/{personalExamId}/start")
-    public Task start(
+    public FirstTask start(
             @PathVariable("personalExamId")
-            String personalExamId) {
-        return personalExamService.start(personalExamId);
+            String personalExamId,
+            @RequestHeader(value="studentId")  String studentId) {
+        return personalExamService.start(personalExamId, Long.valueOf(studentId));
     }
 
     @Operation(description = "Method that return personal exam with summary grade")
@@ -63,12 +65,12 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/personalExam/{examId}/task/answer")
+    @PostMapping("/personalExam/{personalExamId}/task/answer")
     public Answer answer(
             @Parameter(description = "id of personalExam to be searched")
-            @PathVariable(value = "examId") String examId,
-            @RequestHeader(value="studentId")  String studentId,
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @RequestHeader(value="studentId")  Long studentId,
             @RequestBody String taskAnswer) {
-        return answerService.answer(examId, Long.valueOf(studentId), taskAnswer);
+        return answerService.answer(personalExamId, studentId, taskAnswer);
     }
 }

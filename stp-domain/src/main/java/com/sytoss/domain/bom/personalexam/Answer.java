@@ -16,7 +16,7 @@ public class Answer {
     @JsonView(PersonalExam.Public.class)
     private String value;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class})
     private Task task;
 
     @JsonView(PersonalExam.Public.class)

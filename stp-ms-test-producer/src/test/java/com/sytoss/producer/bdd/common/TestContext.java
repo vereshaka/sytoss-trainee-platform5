@@ -1,5 +1,6 @@
 package com.sytoss.producer.bdd.common;
 
+import com.sytoss.domain.bom.personalexam.FirstTask;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
@@ -9,4 +10,10 @@ import org.springframework.http.ResponseEntity;
 public class TestContext {
 
     private ResponseEntity<String> response;
+
+    private int statusCode;
+
+    private Long studentId;
+
+    private ResponseEntity<FirstTask> firstTaskResponse;
 }
