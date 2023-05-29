@@ -35,8 +35,8 @@ public class AnswerService {
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
-        personalExamConnector.save(personalExam);
-        return personalExam.getNextAnswer();
+        PersonalExam savedPersonalExam =  personalExamConnector.save(personalExam);
+        return savedPersonalExam.getNextAnswer();
     }
 
     @Async

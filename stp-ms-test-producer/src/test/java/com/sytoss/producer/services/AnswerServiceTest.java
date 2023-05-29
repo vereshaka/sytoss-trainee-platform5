@@ -1,11 +1,10 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.checktaskshared.util.CheckTaskParameters;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,48 +32,51 @@ public class AnswerServiceTest extends AbstractJunitTest {
     @InjectMocks
     private AnswerService answerService;
 
+    @InjectMocks
+    private PersonalExamService personalExamService;
+
     @Test
     public void testAnswer() {
 
+        Long studentId = 77L;
+        String examId = "4";
         String taskAnswer = "taskAnswer";
 
-        PersonalExam personalExam = new PersonalExam();
-        personalExam.setId("examId");
-        personalExam.setStatus(PersonalExamStatus.IN_PROGRESS);
-        List<Answer> answers = new ArrayList<>();
-        personalExam.setAnswers(answers);
-        personalExam.setStudentId(77L);
-        Answer currentAnswer = new Answer();
-        Answer nextAnswer = new Answer();
-        Task currentTask = new Task();
+        PersonalExam input = new PersonalExam();
+        input.setId(examId);
+        input.setStatus(PersonalExamStatus.NOT_STARTED);
+        Discipline discipline = new Discipline();
+        discipline.setId(2L);
+        input.setDiscipline(discipline);
+        Task task = new Task();
+        task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(6L);
-        currentTask.setId(5L);
-        currentAnswer.setTask(currentTask);
-        currentTask.setTaskDomain(taskDomain);
-        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
+        taskDomain.setId(9L);
+        taskDomain.setScript(".uml");
+        task.setTaskDomain(taskDomain);
+        Answer currentAnswer = new Answer();
+        currentAnswer.setId(8L);
+        currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
+        currentAnswer.setTask(task);
+        input.setAnswers(Arrays.asList(currentAnswer));
+        input.setAmountOfTasks(1);
+        input.setTime(10);
+        input.setStudentId(studentId);
+        when(personalExamConnector.getById(examId)).thenReturn(input);
 
-        Mockito.doAnswer((org.mockito.stubbing.Answer<Answer>) invocation -> {
+        Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
-            Answer result = (Answer) args[0];
+            PersonalExam result = (PersonalExam) args[0];
+            result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
 
-        when(personalExam.getCurrentAnswer()).thenReturn(currentAnswer);
-        when(currentAnswer.getTask()).thenReturn(currentTask);
-        when(currentTask.getTaskDomain()).thenReturn(taskDomain);
-        when(personalExam.getNextAnswer()).thenReturn(nextAnswer);
 
-        Answer result = answerService.answer(personalExam.getId(), personalExam.getStudentId(), taskAnswer);
+        personalExamService.start("4", studentId);
+        Answer result = answerService.answer(examId, studentId, taskAnswer);
 
-        verify(checkTaskConnector).checkAnswer(any(CheckTaskParameters.class));
-        verify(personalExamConnector, times(2)).save(any(PersonalExam.class));
-
-        assertEquals(nextAnswer, result);
-        assertEquals(nextAnswer.getId(), result.getId());
-        assertEquals(nextAnswer.getValue(), result.getValue());
-        assertEquals(nextAnswer.getTask(), result.getTask());
-        assertEquals(nextAnswer.getStatus(), result.getStatus());
-        assertEquals(nextAnswer.getGrade(), result.getGrade());
+        assertEquals("8", result.getId());
+        assertEquals(taskAnswer, result.getValue());
+        assertEquals("ANSWERED", result.getStatus());
     }
 }
