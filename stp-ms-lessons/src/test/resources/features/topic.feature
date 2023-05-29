@@ -31,12 +31,12 @@ Feature: Topic
     When teacher create "First" topic
     Then operation is successful
 
-#  Scenario: teacher create a topic that already exist
-#    Given teachers exist
-#      | firstName  | lastName  |
-#      | Dmytro     | Kornienko |
-#    And topic exist
-#      | discipline | topic |
-#      | Mongo      | First |
-#    When teacher create "First" topic
-#    Then operation should be finished with 409 "Topic with name "First" already exist" error
+  Scenario: teacher create a topic that already exist
+    Given teachers exist
+      | firstName  | lastName  |
+      | Dmytro     | Kornienko |
+    And topic exist
+      | discipline | topic |
+      | Mongo      | First |
+    When teacher create "First" topic that already created
+    Then operation should be finished with 409 "Topic with name "First" already exist" error

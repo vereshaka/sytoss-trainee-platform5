@@ -34,4 +34,16 @@ public class TopicWhen extends CucumberIntegrationTest {
         ResponseEntity<Topic> responseEntity = getRestTemplate().postForEntity(url, request, Topic.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("teacher create {string} topic that already created")
+    public void existingTopicCreating(String topicName) {
+        String url = getBaseUrl() + URI + "discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Topic topic = new Topic();
+        topic.setName(topicName);
+        HttpEntity<Topic> request = new HttpEntity<>(topic, httpHeaders);
+        ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, request, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }
