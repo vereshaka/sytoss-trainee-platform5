@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class TopicControllerTest extends AbstractControllerTest {
+public class TopicControllerTest extends AbstractApplicationTest {
 
     @InjectMocks
     private TopicController topicController;

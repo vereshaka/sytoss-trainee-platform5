@@ -4,14 +4,15 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class GroupConvertor {
 
-    @Autowired
-    private DisciplineConvertor disciplineConvertor;
+    private final DisciplineConvertor disciplineConvertor;
 
     public void fromDTO(GroupDTO source, Group destination) {
         destination.setId(source.getId());

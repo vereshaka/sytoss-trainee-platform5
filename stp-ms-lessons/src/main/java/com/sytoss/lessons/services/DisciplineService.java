@@ -5,19 +5,19 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
 public class DisciplineService {
 
-    @Autowired
-    private DisciplineConnector disciplineConnector;
+    private final DisciplineConnector disciplineConnector;
 
-    @Autowired
-    private DisciplineConvertor disciplineConvertor;
+    private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
         DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);

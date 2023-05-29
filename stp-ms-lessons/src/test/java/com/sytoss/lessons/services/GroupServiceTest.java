@@ -1,14 +1,14 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.AbstractLessonsApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +17,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class GroupServiceTest extends AbstractLessonsApplicationTest {
+public class GroupServiceTest extends AbstractJunitTest {
+
+    @Mock
+    private GroupConnector groupConnector;
+
+    @Mock
+    private GroupConvertor groupConvertor;
 
     @InjectMocks
     private GroupService groupService;
-
-    @MockBean
-    private GroupConnector groupConnector;
-
-    @MockBean
-    private GroupConvertor groupConvertor;
 
     @Test
     public void findGroups() {

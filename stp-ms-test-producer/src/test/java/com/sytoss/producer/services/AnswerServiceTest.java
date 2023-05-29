@@ -5,13 +5,13 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.producer.AbstractSTPProducerApplicationTest;
+import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class AnswerServiceTest extends AbstractSTPProducerApplicationTest {
+public class AnswerServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private PersonalExamConnector personalExamConnector;
 
-    @MockBean
+    @Mock
     private CheckTaskConnector checkTaskConnector;
 
     @InjectMocks

@@ -6,25 +6,23 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.TopicDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class TopicService {
 
-    @Autowired
-    private TopicConnector topicConnector;
+    private final TopicConnector topicConnector;
 
-    @Autowired
-    private TopicConvertor topicConvertor;
+    private final TopicConvertor topicConvertor;
 
-    @Autowired
-    @Lazy
-    private DisciplineService disciplineService;
+    private final DisciplineService disciplineService;
 
     public List<Topic> findByDiscipline(Long disciplineId) {
         List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);

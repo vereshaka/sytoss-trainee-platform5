@@ -25,6 +25,7 @@ Feature: Topic
     When teacher create "First" topic
     Then operation is successful
 
+  @Bug
   Scenario: teacher create a topic that already exist
     Given topic exist
       | discipline | topic           |

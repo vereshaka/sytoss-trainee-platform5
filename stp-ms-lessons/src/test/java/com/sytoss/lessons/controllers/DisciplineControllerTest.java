@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TopicService;
@@ -21,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class DisciplineControllerTest extends AbstractControllerTest {
+public class DisciplineControllerTest extends AbstractApplicationTest {
 
     @InjectMocks
     private DisciplineController disciplineController;

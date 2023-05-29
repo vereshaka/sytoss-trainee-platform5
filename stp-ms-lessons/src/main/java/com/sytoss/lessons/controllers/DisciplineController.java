@@ -10,21 +10,21 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/discipline")
 @Tag(name = "DisciplineController")
 public class DisciplineController {
 
-    @Autowired
-    private TopicService topicService;
+    private final TopicService topicService;
 
-    @Autowired
-    private GroupService groupService;
+    private final GroupService groupService;
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

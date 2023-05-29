@@ -8,20 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@ExtendWith({MockitoExtension.class})
 @EnableConfigurationProperties({MongoProperties.class, EmbeddedMongoProperties.class})
-public abstract class AbstractSTPProducerApplicationTest {
+public abstract class AbstractApplicationTest extends AbstractJunitTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     @Autowired
     private AbstractApplicationContext applicationContext;
@@ -41,5 +51,24 @@ public abstract class AbstractSTPProducerApplicationTest {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
+            for (Map.Entry entry : ((HttpEntity) requestEntity).getHeaders().entrySet()) {
+                headers.addAll(entry.getKey().toString(), (List<? extends String>) entry.getValue());
+            }
+        }
+        HttpEntity request = new HttpEntity<>(requestEntity, headers);
+        return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
+    }
+
+    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 }
