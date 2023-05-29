@@ -49,7 +49,7 @@ public class AnswerServiceTest extends AbstractJunitTest {
         discipline.setId(22L);
         input.setDiscipline(discipline);
 
-        //--first task and answer
+        // first task and the answer that we will process and save
         Task task = new Task();
         task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
@@ -61,7 +61,7 @@ public class AnswerServiceTest extends AbstractJunitTest {
         currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
         currentAnswer.setTask(task);
 
-        //--second task and answer
+        // second task and the answer what we return at last
         Task nextTask = new Task();
         nextTask.setId(2L);
         TaskDomain nextTaskDomain = new TaskDomain();
