@@ -1,4 +1,4 @@
-package com.sytoss.domain.bom.exceptions.businessException;
+package com.sytoss.domain.bom.exceptions.business;
 
 import com.sytoss.domain.bom.exceptions.ApplicationException;
 

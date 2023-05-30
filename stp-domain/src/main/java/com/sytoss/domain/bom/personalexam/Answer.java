@@ -1,8 +1,8 @@
 package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.exceptions.businessException.AnswerInProgressException;
-import com.sytoss.domain.bom.exceptions.businessException.AnswerIsAnsweredException;
+import com.sytoss.domain.bom.exceptions.business.AnswerInProgressException;
+import com.sytoss.domain.bom.exceptions.business.AnswerIsAnsweredException;
 import com.sytoss.domain.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;

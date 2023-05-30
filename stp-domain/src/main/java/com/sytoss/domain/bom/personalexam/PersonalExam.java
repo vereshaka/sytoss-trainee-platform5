@@ -1,8 +1,8 @@
 package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamHasNoAnswerException;
-import com.sytoss.domain.bom.exceptions.businessException.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
+import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
