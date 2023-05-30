@@ -37,8 +37,8 @@ public class DisciplineService {
 
     public Discipline create(Long teacherId, Discipline discipline) {
         DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), teacherId);
-        Teacher teacher = teacherService.getById(teacherId);
         if (oldDisciplineDTO == null) {
+            Teacher teacher = teacherService.getById(teacherId);
             Discipline newDiscipline = new Discipline();
             newDiscipline.setName(discipline.getName());
             newDiscipline.setTeacher(teacher);
