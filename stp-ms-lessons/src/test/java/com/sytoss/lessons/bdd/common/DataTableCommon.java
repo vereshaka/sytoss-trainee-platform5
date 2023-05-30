@@ -11,15 +11,6 @@ import java.util.Map;
 public class DataTableCommon {
 
     @DataTableType
-    public TeacherDTO mapTeacher(Map<String, String> entry) {
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setFirstName(entry.get("firstName"));
-        teacherDTO.setLastName(entry.get("lastName"));
-
-        return teacherDTO;
-    }
-
-    @DataTableType
     public DisciplineDTO mapDiscipline(Map<String, String> entry) {
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setName(entry.get("discipline"));
