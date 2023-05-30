@@ -4,7 +4,7 @@ Feature: Group
     Given teacher "Maksym" "Mitkov" exists
 
   Scenario: system retrieve all groups by discipline
-    And groups exist
+    Given groups exist
       | discipline | group |
       | SQL        | AT-11 |
       | SQL        | AT-12 |
