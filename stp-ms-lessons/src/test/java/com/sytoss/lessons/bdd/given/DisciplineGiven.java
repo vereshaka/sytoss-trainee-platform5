@@ -26,7 +26,7 @@ public class DisciplineGiven extends CucumberIntegrationTest {
     }
 
     @Given("disciplines exist")
-    public void thisExamHasAnswers(List<DisciplineDTO> disciplines) {
+    public void disciplinesExist(List<DisciplineDTO> disciplines) {
         for (DisciplineDTO discipline : disciplines) {
             Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
             TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);

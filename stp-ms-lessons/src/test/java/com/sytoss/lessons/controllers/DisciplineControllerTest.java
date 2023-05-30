@@ -76,7 +76,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     }
 
     @Test
-    void shouldReturn409Conflict() {
+    void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
