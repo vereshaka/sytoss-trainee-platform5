@@ -29,7 +29,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
-        ResponseEntity<Topic> responseEntity = doPost(url, topic, new ParameterizedTypeReference<Topic>(){});
+        ResponseEntity<Topic> responseEntity = doPost(url, topic, Topic.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -38,7 +38,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
-        ResponseEntity<String> responseEntity = doPost(url, topic, new ParameterizedTypeReference<String>(){});
+        ResponseEntity<String> responseEntity = doPost(url, topic, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

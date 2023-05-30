@@ -24,7 +24,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        ResponseEntity<String> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<String>(){});
+        ResponseEntity<String> responseEntity = doPost(url, discipline, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
