@@ -25,7 +25,7 @@ public class ExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/exam/save")
-    public void saveRequest(@RequestBody Exam exam) {
-        examService.save(exam);
+    public Exam saveRequest(@RequestBody Exam exam) {
+        return examService.save(exam);
     }
 }

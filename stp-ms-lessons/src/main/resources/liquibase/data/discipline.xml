@@ -17,7 +17,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="KornienkoD" author="discipline_2">
+    <changeSet author="KornienkoD" id="discipline_2">
         <addPrimaryKey tableName="DISCIPLINE" columnNames="ID" constraintName="PK_DISCIPLINE" />
         <rollback>
             <dropPrimaryKey tableName="DISCIPLINE" constraintName="PK_DISCIPLINE" />

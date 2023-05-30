@@ -1,5 +1,6 @@
-package com.sytoss.domain.bom.lessons;
+package com.sytoss.domain.bom.users;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,4 +11,6 @@ public class Group {
     private Long id;
 
     private String name;
+
+    private Discipline discipline;
 }

@@ -4,17 +4,22 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
-@Entity(name = "STUDENT_GROUP")
+@Entity(name = "GROUPS")
 public class GroupDTO {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_group_id_generator")
-    @SequenceGenerator(name = "student_group_id_generator", sequenceName = "STUDENT_GROUP_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groups_id_generator")
+    @SequenceGenerator(name = "groups_id_generator", sequenceName = "GROUPS_SEQ", allocationSize = 1)
     private Long id;
 
     @Column(name = "NAME")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
+    private DisciplineDTO discipline;
 }

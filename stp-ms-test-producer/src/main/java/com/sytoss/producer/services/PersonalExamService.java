@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PersonalExamService {
 
-    private MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
+    private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
 
-    @Autowired
-    private PersonalExamConnector personalExamConnector;
+    private final PersonalExamConnector personalExamConnector;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();

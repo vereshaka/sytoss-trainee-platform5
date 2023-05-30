@@ -1,5 +1,6 @@
 package com.sytoss.domain.bom.lessons;
 
+import com.sytoss.domain.bom.users.Group;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,8 @@ import java.util.List;
 public class Exam {
 
     private Long id;
+
+    private String name;
 
     private Date relevantFrom;
 

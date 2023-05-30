@@ -18,7 +18,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="budget2project_" author="BodenchukY">
+    <changeSet id="exam2topic_2" author="BodenchukY">
         <addPrimaryKey tableName="EXAM2TOPIC" columnNames="EXAM_ID, TOPIC_ID"
                        constraintName="PK_EXAM2TOPIC" />
         <rollback>

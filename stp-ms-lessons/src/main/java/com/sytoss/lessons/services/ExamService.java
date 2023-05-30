@@ -16,9 +16,11 @@ public class ExamService {
     @Autowired
     private ExamConvertor examConvertor;
 
-    public void save(Exam exam) {
+    public Exam save(Exam exam) {
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
-        examConnector.save(examDTO);
+        examDTO = examConnector.save(examDTO);
+        examConvertor.fromDTO(examDTO, exam);
+        return exam;
     }
 }

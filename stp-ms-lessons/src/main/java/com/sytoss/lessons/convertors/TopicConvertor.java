@@ -4,14 +4,15 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class TopicConvertor {
 
-    @Autowired
-    private DisciplineConvertor disciplineConvertor;
+    private final DisciplineConvertor disciplineConvertor;
 
     public void fromDTO(TopicDTO source, Topic destination) {
         destination.setId(source.getId());
