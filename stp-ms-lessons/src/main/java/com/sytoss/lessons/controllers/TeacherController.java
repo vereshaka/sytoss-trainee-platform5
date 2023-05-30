@@ -18,7 +18,7 @@ public class TeacherController {
 
     private final DisciplineService disciplineService;
 
-    @Operation(description = "Method that register a new discipline", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
