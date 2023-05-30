@@ -18,7 +18,7 @@ public class Exam {
 
     private Integer duration;
 
-    private Long groupId;
+    private Group group;
 
     private Integer numberOfTasks;
 

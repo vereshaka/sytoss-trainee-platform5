@@ -12,11 +12,10 @@
             <column name="RELEVANT_FROM" type="DATE" />
             <column name="RELEVANT_TO" type="DATE" />
             <column name="DURATION" type="INT" />
-            <column name="GROUP_ID" type="BIGINT">
+            <column name="STUDENT_GROUP_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="NUMBER_OF_TASKS" type="INT" />
-            <column name="TOPICS" type="VARCHAR2(200 BYTE)" />
         </createTable>
 
         <rollback>
@@ -32,11 +31,11 @@
     </changeSet>
 
     <changeSet author="BodenchukY" id="exam_3">
-        <addForeignKeyConstraint baseTableName="EXAM" baseColumnNames="GROUP_ID"
-                                 constraintName="FK_EXAM2GROUP" referencedTableName="GROUP"
+        <addForeignKeyConstraint baseTableName="EXAM" baseColumnNames="STUDENT_GROUP_ID"
+                                 constraintName="FK_EXAM2STUDENT_GROUP" referencedTableName="STUDENT_GROUP"
                                  referencedColumnNames="ID" />
         <rollback>
-            <dropForeignKeyConstraint baseTableName="EXAM" constraintName="FK_EXAM2GROUP" />
+            <dropForeignKeyConstraint baseTableName="EXAM" constraintName="FK_EXAM2STUDENT_GROUP" />
         </rollback>
     </changeSet>
 

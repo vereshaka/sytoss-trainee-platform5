@@ -6,13 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "GROUP")
+@Entity(name = "STUDENT_GROUP")
 public class GroupDTO {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "group_id_generator")
-    @SequenceGenerator(name = "group_id_generator", sequenceName = "GROUP_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_group_id_generator")
+    @SequenceGenerator(name = "student_group_id_generator", sequenceName = "STUDENT_GROUP_SEQ", allocationSize = 1)
     private Long id;
 
     @Column(name = "NAME")

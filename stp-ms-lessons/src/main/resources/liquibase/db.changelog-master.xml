@@ -5,8 +5,9 @@
 
     <include file="data/discipline.xml" relativeToChangelogFile="true" />
     <include file="data/topic.xml" relativeToChangelogFile="true" />
-    <include file="data/group.xml" relativeToChangelogFile="true" />
+    <include file="data/studentgroup.xml" relativeToChangelogFile="true" />
     <include file="data/exam.xml" relativeToChangelogFile="true" />
+    <include file="data/exam2topic.xml" relativeToChangelogFile="true" />
     <changeSet id="version_0.0.1" author="KornienkoD">
         <tagDatabase tag="0.0.1" />
     </changeSet>

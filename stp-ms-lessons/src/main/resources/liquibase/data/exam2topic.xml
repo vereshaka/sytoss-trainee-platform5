@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/exam2topic.xml">
+
+    <changeSet author="BodenchukY" id="exam2topic_1">
+        <createTable tableName="EXAM2TOPIC">
+            <column name="EXAM_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="TOPIC_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="EXAM2TOPIC" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="budget2project_" author="BodenchukY">
+        <addPrimaryKey tableName="EXAM2TOPIC" columnNames="EXAM_ID, TOPIC_ID"
+                       constraintName="PK_EXAM2TOPIC" />
+        <rollback>
+            <dropPrimaryKey tableName="EXAM2TOPIC" constraintName="PK_EXAM2TOPIC" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

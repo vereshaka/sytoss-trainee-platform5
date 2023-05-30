@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,12 +28,17 @@ public class ExamDTO {
     private Integer duration;
 
     @ManyToOne
-    @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "STUDENT_GROUP_ID", referencedColumnName = "ID")
     private GroupDTO group;
 
     @Column(name = "NUMBER_OF_TASKS")
     private Integer numberOfTasks;
 
-    @Column(name = "TOPICS")
-    private String topics;
+    @ManyToMany
+    @JoinTable(
+            name = "EXAM2TOPIC",
+            joinColumns = @JoinColumn(name = "EXAM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
+    private List<TopicDTO> topics;
 }
+
