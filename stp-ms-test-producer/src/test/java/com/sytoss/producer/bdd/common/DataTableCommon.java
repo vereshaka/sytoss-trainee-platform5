@@ -42,6 +42,7 @@ public class DataTableCommon {
         }
         if (params.containsKey("task")) {
             task.setQuestion(params.get("task"));
+            answer.setTask(task);
         }
 
         TaskDomain taskDomain = new TaskDomain();
@@ -63,9 +64,17 @@ public class DataTableCommon {
             task.setTopics(List.of(topic));
         }
 
+        if (params.containsKey("task status")) {
+            answer.setStatus(AnswerStatus.valueOf(params.get("task status")));
+        }
+
+        if (params.containsKey("script")) {
+            taskDomain.setScript(params.get("script"));
+            task.setTaskDomain(taskDomain);
+            answer.setTask(task);
+        }
         answer.setTask(task);
 
         return answer;
     }
-
 }

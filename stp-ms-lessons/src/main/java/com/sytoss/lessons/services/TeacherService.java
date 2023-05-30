@@ -1,16 +1,13 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.TeacherNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.TeacherConnector;
 import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.dto.TeacherDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

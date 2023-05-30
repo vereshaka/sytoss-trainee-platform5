@@ -16,7 +16,7 @@ public class GroupWhen extends CucumberIntegrationTest {
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/groups";
-        ResponseEntity<List<Group>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Group>>(){});
+        ResponseEntity<List<Group>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Group>>(){});
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

@@ -1,8 +1,8 @@
 package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class PersonalExam {
     @MongoId
     private String id;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class})
     private String name;
 
     private Discipline discipline;
@@ -32,6 +32,10 @@ public class PersonalExam {
 
     @JsonView(PersonalExam.Public.class)
     private List<Answer> answers = new ArrayList<>();
+
+    private Integer time;
+
+    private Integer amountOfTasks;
 
     private PersonalExamStatus status;
 

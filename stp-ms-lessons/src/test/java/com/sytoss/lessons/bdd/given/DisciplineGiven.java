@@ -49,4 +49,21 @@ public class DisciplineGiven extends CucumberIntegrationTest {
             getDisciplineConnector().delete(disciplineDTO);
         }
     }
+
+    @Given("^\"(.*)\" discipline exists$")
+    public void disciplineExist(String disciplineName) {
+
+        Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
+        TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
+
+        assert teacherDTO != null;
+
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacher(teacherDTO);
+            getDisciplineConnector().saveAndFlush(disciplineDTO);
+        }
+    }
 }
