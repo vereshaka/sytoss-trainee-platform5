@@ -13,7 +13,7 @@ public class Task {
 
     private Long id;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class})
     private String question;
 
     private String etalonAnswer;

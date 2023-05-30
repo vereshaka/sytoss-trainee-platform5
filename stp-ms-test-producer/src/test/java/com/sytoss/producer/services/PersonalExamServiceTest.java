@@ -3,8 +3,8 @@ package com.sytoss.producer.services;
 import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.AbstractApplicationTest;
 import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +21,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -115,13 +113,25 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         input.setStatus(PersonalExamStatus.NOT_STARTED);
         Task task = new Task();
         task.setId(1L);
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setScript(".uml");
+        task.setTaskDomain(taskDomain);
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
         input.setAnswers(Arrays.asList(answer));
+        input.setAmountOfTasks(1);
+        input.setTime(10);
+        input.setStudentId(1L);
         when(personalExamConnector.getById("5")).thenReturn(input);
-        Task result = personalExamService.start("5");
-        assertEquals(input.getAnswers().get(0).getTask().getId(), result.getId());
+        Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            PersonalExam result = (PersonalExam) args[0];
+            result.setId("1L");
+            return result;
+        }).when(personalExamConnector).save(any(PersonalExam.class));
+        Question result = personalExamService.start("5", 1L);
+        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
     @Test
@@ -134,9 +144,10 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
+        input.setStudentId(1L);
         input.setAnswers(Arrays.asList(answer));
         when(personalExamConnector.getById("5")).thenReturn(input);
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
+        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5", 1L));
     }
 
     private Task createTask(String question) {
