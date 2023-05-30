@@ -1,7 +1,7 @@
 package com.sytoss.producer.bom;
 
-import com.sytoss.domain.bom.exceptions.businessException.AnswerInProgressException;
-import com.sytoss.domain.bom.exceptions.businessException.AnswerIsAnsweredException;
+import com.sytoss.domain.bom.exceptions.business.AnswerInProgressException;
+import com.sytoss.domain.bom.exceptions.business.AnswerIsAnsweredException;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import org.junit.jupiter.api.Test;

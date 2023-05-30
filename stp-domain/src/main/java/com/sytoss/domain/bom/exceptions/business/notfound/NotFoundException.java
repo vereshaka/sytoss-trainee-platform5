@@ -1,4 +1,6 @@
-package com.sytoss.domain.bom.exceptions.businessException;
+package com.sytoss.domain.bom.exceptions.business.notfound;
+
+import com.sytoss.domain.bom.exceptions.business.BusinessException;
 
 public class NotFoundException extends BusinessException {
 

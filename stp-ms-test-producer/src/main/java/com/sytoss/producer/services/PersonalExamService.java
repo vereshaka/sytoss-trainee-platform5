@@ -1,13 +1,12 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamHasNoAnswerException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.notFound.DisciplineNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,7 +37,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
 
     @Test
     public void shouldRaiseExceptionWhenDisciplineNotExist() {
-        when(disciplineConnector.findById(1L)).thenThrow(new DisciplineNotFoundException(1L));
+        when(disciplineConnector.getReferenceById(1L)).thenReturn(null);
         assertThrows(DisciplineNotFoundException.class, () -> disciplineService.getById(1L));
     }
 }

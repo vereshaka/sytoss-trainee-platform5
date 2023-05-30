@@ -1,6 +1,6 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.TopicExistException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TopicConnector;

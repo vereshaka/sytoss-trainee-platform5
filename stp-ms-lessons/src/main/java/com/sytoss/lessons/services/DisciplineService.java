@@ -1,6 +1,6 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.businessException.DisciplineNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
@@ -19,9 +19,12 @@ public class DisciplineService {
     private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
-        DisciplineDTO disciplineDTO = disciplineConnector.findById(id).orElseThrow(() -> new DisciplineNotFoundException(id));
-        Discipline discipline = new Discipline();
-        disciplineConvertor.fromDTO(disciplineDTO, discipline);
-        return discipline;
+        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);//.orElseThrow(() -> new DisciplineNotFoundException(id));
+        if (disciplineDTO != null) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            return discipline;
+        }
+            throw new DisciplineNotFoundException(id);
     }
 }
