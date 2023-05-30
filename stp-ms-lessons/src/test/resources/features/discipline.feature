@@ -9,10 +9,7 @@ Feature: Discipline
     Then operation is successful
 
   Scenario: teacher creates a discipline that already exists
-    Given disciplines exist
-      | discipline |
-      | SQL        |
-      | Mongo      |
+    Given "SQL" discipline exists
     When teacher creates existing "SQL" discipline
     Then operation should be finished with 409 "Discipline with name "SQL" already exist" error
 
