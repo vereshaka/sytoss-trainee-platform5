@@ -1,22 +1,27 @@
 package com.sytoss.checktask.stp.bdd.other;
 
 
-import bom.QueryResult;
+import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
-import com.sytoss.checktask.stp.service.QueryResultConvertor;
+import com.sytoss.domain.bom.personalexam.Grade;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.ResponseEntity;
+
+import static org.mockito.Mockito.mock;
 
 @Getter
 @Setter
 public class TestContext {
 
-    private final ThreadLocal<DatabaseHelperService> databaseHelperService =
-            ThreadLocal.withInitial(() -> new DatabaseHelperService(new QueryResultConvertor()));
+    private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider = mock(ObjectProvider.class);
 
-    private QueryResult answer;
+    private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
-    private QueryResult etalon;
+    private ResponseEntity<String> responseEntity;
+
+    private Grade grade;
 
     private static final ThreadLocal<TestContext> testContext = new ThreadLocal<>();
 

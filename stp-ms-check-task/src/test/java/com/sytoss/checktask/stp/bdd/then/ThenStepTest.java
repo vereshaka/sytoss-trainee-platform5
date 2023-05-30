@@ -1,39 +1,28 @@
 package com.sytoss.checktask.stp.bdd.then;
 
-import bom.QueryResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
 import com.sytoss.checktask.stp.bdd.other.TestContext;
-import io.cucumber.java.en.And;
+import com.sytoss.domain.bom.personalexam.Grade;
 import io.cucumber.java.en.Then;
-import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 
 public class ThenStepTest extends CucumberIntegrationTest {
 
-    @Then("answer and etalon should have same number of columns and rows")
-    public void answerAndEtalonShouldBeGotFromDatabase() {
-        QueryResult queryResultAnswer = TestContext.getInstance().getAnswer();
-        QueryResult queryResultEtalon = TestContext.getInstance().getEtalon();
-        Assertions.assertEquals(queryResultAnswer.getResultMapList().size(),
-                queryResultEtalon.getResultMapList().size());
-        Assertions.assertEquals(queryResultAnswer.getResultMapList().get(0).size(),
-                queryResultEtalon.getResultMapList().get(0).size());
+    @Then("request should be processed successfully")
+    public void requestShouldBeProcessedSuccessfully() throws JsonProcessingException {
+        Assertions.assertEquals(200, TestContext.getInstance().getResponseEntity().getStatusCode().value());
+        Grade grade = getMapper().readValue(TestContext.getInstance().getResponseEntity().getBody(), Grade.class);
+        TestContext.getInstance().setGrade(grade);
     }
 
-    @Then("database should be dropped")
-    public void databaseShouldBeDropped() {
-        Exception exception = Assertions.assertThrows(JdbcSQLSyntaxErrorException.class,
-                () -> TestContext.getInstance().getDatabaseHelperService().get().getExecuteQueryResult("select * from answer"));
-        Assertions.assertTrue(exception.getMessage().contains("Table \"ANSWER\" not found (this database is empty)"));
+    @Then("Grade value is {int}")
+    public void gradeValueIs(int value) {
+        Assertions.assertEquals(value, TestContext.getInstance().getGrade().getValue());
     }
 
-    @Then("answer should be {string}")
-    public void answerShouldBe(String answer) {
-        Assertions.assertEquals(answer, TestContext.getInstance().getAnswer().getRow(0).get("ANSWER"));
-    }
-
-    @And("etalon should be {string}")
-    public void etalonShouldBe(String etalon) {
-        Assertions.assertEquals(etalon, TestContext.getInstance().getEtalon().getRow(0).get("ETALON"));
+    @Then("Grade message is {string}")
+    public void gradeMessageIs(String message) {
+        Assertions.assertEquals(message, TestContext.getInstance().getGrade().getComment());
     }
 }

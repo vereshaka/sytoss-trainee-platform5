@@ -2,8 +2,6 @@ package com.sytoss.checktask.stp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
@@ -20,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@EnableConfigurationProperties({MongoProperties.class})
 public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
     @Autowired
@@ -45,18 +42,6 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
             throw new RuntimeException(e);
         }
     }
-
-//    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
-//        HttpHeaders headers = new HttpHeaders();
-//        if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
-//            for (Map.Entry entry : ((HttpEntity) requestEntity).getHeaders().entrySet()) {
-//                headers.addAll(entry.getKey().toString(), (List<? extends String>) entry.getValue());
-//            }
-//        }
-//        HttpEntity request = new HttpEntity<>(requestEntity, headers);
-//        return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-//    }
-
 
     protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity requestEntity, Class<T> responseType) {
         return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
