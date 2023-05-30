@@ -1,4 +1,4 @@
-package com.sytoss.checktask.stp.cucumber;
+package com.sytoss.checktask.stp.bdd.other;
 
 
 import bom.QueryResult;
@@ -25,6 +25,11 @@ public class TestContext {
             testContext.set(new TestContext());
         }
         return testContext.get();
+    }
+
+
+    public static void drop() {
+        testContext.set(null);
     }
 }
 

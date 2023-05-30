@@ -12,11 +12,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-            <version>${spring.boot.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.systoss.stp</groupId>
             <artifactId>stp-domain</artifactId>
             <version>${project.version}</version>

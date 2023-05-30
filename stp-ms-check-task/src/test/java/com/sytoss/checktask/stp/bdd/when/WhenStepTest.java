@@ -1,11 +1,13 @@
-package com.sytoss.checktask.stp.cucumber;
+package com.sytoss.checktask.stp.bdd.when;
 
+import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
+import com.sytoss.checktask.stp.bdd.other.TestContext;
 import io.cucumber.java.en.When;
 
 import java.sql.SQLException;
 
 
-public class WhenStepTest {
+public class WhenStepTest extends CucumberIntegrationTest {
 
     @When("student's answer is checking with {string}, {string}")
     public void studentsAnswerIsCheckingWith(String answer, String etalon) throws SQLException {

@@ -1,12 +1,14 @@
-package com.sytoss.checktask.stp.cucumber;
+package com.sytoss.checktask.stp.bdd.then;
 
 import bom.QueryResult;
+import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
+import com.sytoss.checktask.stp.bdd.other.TestContext;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 
-public class ThenStepTest {
+public class ThenStepTest extends CucumberIntegrationTest {
 
     @Then("answer and etalon should have same number of columns and rows")
     public void answerAndEtalonShouldBeGotFromDatabase() {
