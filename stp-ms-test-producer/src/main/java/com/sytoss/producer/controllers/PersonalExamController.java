@@ -9,9 +9,11 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,9 +65,12 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/personalExam/{testId}/task/answer")
-    public Answer answer(@PathVariable(value = "testId") String examId,
-                                         @RequestBody String taskAnswer) {
-        return answerService.answer(examId, taskAnswer);
+    @PostMapping("/personalExam/{personalExamId}/task/answer")
+    public Answer answer(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @RequestHeader(value="studentId")  Long studentId,
+            @RequestBody String taskAnswer) {
+        return answerService.answer(personalExamId, studentId, taskAnswer);
     }
 }

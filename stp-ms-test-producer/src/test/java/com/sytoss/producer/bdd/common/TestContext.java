@@ -14,4 +14,6 @@ public class TestContext {
     private int statusCode;
 
     private ResponseEntity<Question> firstTaskResponse;
+
+    private Long studentId;
 }

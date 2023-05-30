@@ -58,12 +58,14 @@ public class PersonalExamControllerTest extends AbstractApplicationTest {
     @Test
     public void testAnswer() {
         String examId = "123";
+        Long studentID = 77L;
         String taskAnswer = "taskAnswer";
         Answer expectedAnswer = new Answer();
 
-        when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
+        when(answerService.answer(examId, studentID, taskAnswer)).thenReturn(expectedAnswer);
 
         HttpHeaders headers = new HttpHeaders();
+        headers.set("studentId", String.valueOf(studentID));
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);
 
