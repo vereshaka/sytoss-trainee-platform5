@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeacherConnector extends JpaRepository<TeacherDTO, Long> {
 
-    TeacherDTO getByLastName(String lastName);
-
     TeacherDTO getByLastNameAndFirstName(String lastName, String firstName);
 
 }

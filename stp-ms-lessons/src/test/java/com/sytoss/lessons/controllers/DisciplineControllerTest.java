@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.businessException.DisciplineExistException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
@@ -69,5 +70,15 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    void shouldReturn409Conflict() {
+        when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
+        ResponseEntity<String> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<String>() {
+        });
+        assertEquals(409, result.getStatusCode().value());
     }
 }
