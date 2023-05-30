@@ -2,7 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.FirstTask;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.AbstractApplicationTest;
 import com.sytoss.producer.services.AnswerService;
@@ -47,11 +47,11 @@ public class PersonalExamControllerTest extends AbstractApplicationTest {
 
     @Test
     public void shouldStartTest() {
-        when(personalExamService.start(anyString(), anyLong())).thenReturn(new FirstTask());
+        when(personalExamService.start(anyString(), anyLong())).thenReturn(new Question());
         HttpHeaders headers = new HttpHeaders();
         headers.set("studentId", "1");
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<FirstTask> result = doGet("/api/test/123/start", requestEntity, FirstTask.class);
+        ResponseEntity<Question> result = doGet("/api/test/123/start", requestEntity, Question.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

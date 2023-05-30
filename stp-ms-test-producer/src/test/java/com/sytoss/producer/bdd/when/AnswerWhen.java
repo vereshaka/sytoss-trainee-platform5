@@ -26,7 +26,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
         String url = "/api/personalExam/" + personalExamId + "/task/answer";
         HttpEntity<String> request = new HttpEntity<>(answer, headers);
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        IntegrationTest.getTestContext().setResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
+        IntegrationTest.getTestContext().setResponse(responseEntity);
     }
 }

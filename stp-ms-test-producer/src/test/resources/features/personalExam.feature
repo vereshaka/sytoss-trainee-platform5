@@ -1,6 +1,5 @@
 Feature: PersonalExam
 
-  @Bug
   Scenario: system create personal exam
     Given tasks exist
       | discipline | topic           | task       |

@@ -5,7 +5,6 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.AbstractApplicationTest;
 import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +21,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -133,7 +130,7 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
             result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        FirstTask result = personalExamService.start("5", 1L);
+        Question result = personalExamService.start("5", 1L);
         assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 

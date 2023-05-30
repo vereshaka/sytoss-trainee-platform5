@@ -8,7 +8,6 @@ import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -63,7 +62,7 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public FirstTask start(String personalExamId, Long studentId) {
+    public Question start(String personalExamId, Long studentId) {
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudentId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
@@ -74,7 +73,7 @@ public class PersonalExamService {
         personalExam.start();
         personalExam.getAnswers().get(0).inProgress();
         personalExam = personalExamConnector.save(personalExam);
-        FirstTask firstTask = new FirstTask();
+        Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());
         examModel.setTime(personalExam.getTime());

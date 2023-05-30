@@ -2,7 +2,7 @@ package com.sytoss.producer.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.FirstTask;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
@@ -74,7 +74,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
         HttpEntity<Task> requestEntity = startTest(studentId);
-        ResponseEntity<FirstTask> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, FirstTask.class);
+        ResponseEntity<Question> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, Question.class);
         IntegrationTest.getTestContext().setFirstTaskResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FirstTask {
+public class Question {
 
     private ExamModel exam;
 
