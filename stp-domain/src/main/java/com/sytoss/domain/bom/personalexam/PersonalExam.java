@@ -19,7 +19,7 @@ public class PersonalExam {
     @MongoId
     private String id;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class})
     private String name;
 
     private Discipline discipline;
@@ -32,6 +32,10 @@ public class PersonalExam {
 
     @JsonView(PersonalExam.Public.class)
     private List<Answer> answers = new ArrayList<>();
+
+    private Integer time;
+
+    private Integer amountOfTasks;
 
     private PersonalExamStatus status;
 
