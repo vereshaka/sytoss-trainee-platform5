@@ -13,15 +13,16 @@ import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
 
-    @Given("teachers exist")
-    public void teachersExist(List<TeacherDTO> teachers) {
-        for (TeacherDTO teacher : teachers) {
-            TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(teacher.getLastName(), teacher.getFirstName());
-            if (teacherDTO == null) {
-                teacherDTO = getTeacherConnector().save(teacher);
-            }
-            TestExecutionContext.getTestContext().setTeacherId(teacherDTO.getId());
+    @Given("teacher {word} {word} exists")
+    public void teacherExists(String firstName, String lastName) {
+        TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(lastName, firstName);
+        if (teacherDTO == null) {
+            TeacherDTO teacher = new TeacherDTO();
+            teacher.setFirstName(firstName);
+            teacher.setLastName(lastName);
+            teacherDTO = getTeacherConnector().save(teacher);
         }
+        TestExecutionContext.getTestContext().setTeacherId(teacherDTO.getId());
     }
 
     @Given("disciplines exist")

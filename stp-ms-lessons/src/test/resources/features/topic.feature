@@ -1,9 +1,9 @@
 Feature: Topic
 
+  Background:
+    Given teacher "Maksym" "Mitkov" exists
+
   Scenario: system retrieve information list of topic
-    Given teachers exist
-      | firstName  | lastName  |
-      | Dmytro     | Kornienko |
     And topic exist
       | discipline | topic           |
       | SQL        | Join            |
@@ -20,9 +20,6 @@ Feature: Topic
       | SQL        | Drop results    |
 
   Scenario: teacher create a new topic
-    Given teachers exist
-      | firstName  | lastName  |
-      | Maksym     | Mitkov    |
     And disciplines exist
       | disciplineId | discipline   | teacherId |
       | 1            | SQL          |  7        |
@@ -32,9 +29,6 @@ Feature: Topic
     Then operation is successful
 
   Scenario: teacher create a topic that already exist
-    Given teachers exist
-      | firstName  | lastName  |
-      | Dmytro     | Kornienko |
     And topic exist
       | discipline | topic |
       | Mongo      | First |

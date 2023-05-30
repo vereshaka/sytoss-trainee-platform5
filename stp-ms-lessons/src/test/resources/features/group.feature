@@ -1,9 +1,9 @@
 Feature: Group
 
+  Background:
+    Given teacher "Maksym" "Mitkov" exists
+
   Scenario: system retrieve all groups by discipline
-    Given teachers exist
-      | firstName  | lastName  |
-      | Alexey     | Shatokhin |
     And groups exist
       | discipline | group |
       | SQL        | AT-11 |

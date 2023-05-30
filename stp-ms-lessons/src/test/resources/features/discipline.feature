@@ -1,18 +1,15 @@
 Feature: Discipline
 
+  Background:
+    Given teacher "Maksym" "Mitkov" exists
+
   Scenario: teacher creates a new discipline
-    Given teachers exist
-      | firstName  | lastName  |
-      | Maksym     | Mitkov    |
-    And "SQL" discipline doesn't exist
+    Given "SQL" discipline doesn't exist
     When teacher creates "SQL" discipline
     Then operation is successful
 
   Scenario: teacher creates a discipline that already exists
-    Given teachers exist
-      | firstName  | lastName  |
-      | Maksym     | Mitkov    |
-    And disciplines exist
+    Given disciplines exist
       | discipline |
       | SQL        |
     When teacher creates "SQL" discipline
