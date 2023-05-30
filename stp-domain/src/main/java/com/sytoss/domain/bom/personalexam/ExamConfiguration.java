@@ -15,6 +15,8 @@ public class ExamConfiguration {
 
     private String examName;
 
+    private Integer time;
+
     private int quantityOfTask;
 
     private Long studentId;

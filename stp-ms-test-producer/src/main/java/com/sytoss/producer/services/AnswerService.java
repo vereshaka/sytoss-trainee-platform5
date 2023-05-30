@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @Service
 public class AnswerService {
@@ -23,36 +26,28 @@ public class AnswerService {
 
     private final CheckTaskConnector checkTaskConnector;
 
-    public Answer answer(String examId, String taskAnswer) {
-        PersonalExam personalExam = personalExamConnector.getById(examId);
-
+    public Answer answer(String personalExamId, Long studentId, String taskAnswer) {
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
+        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+        }
         Answer answer = personalExam.getCurrentAnswer();
-
         answer.answer(taskAnswer);
-
         checkAnswer(answer, personalExam);
-
         personalExamConnector.save(personalExam);
-
         return personalExam.getNextAnswer();
     }
 
     @Async
     void checkAnswer(Answer answer, PersonalExam personalExam) {
-
         Task task = metadataConnector.getTaskById(answer.getTask().getId());
         TaskDomain taskDomain = metadataConnector.getTaskDomain(answer.getTask().getTaskDomain().getId());
-
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-
         checkTaskParameters.setAnswer(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setScript(taskDomain.getScript());
-
         Grade grade = checkTaskConnector.checkAnswer(checkTaskParameters);
-
         answer.grade(grade);
-
         personalExamConnector.save(personalExam);
     }
 

@@ -1,22 +1,19 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+public class DisciplineWhen extends CucumberIntegrationTest {
 
-public class GroupWhen extends CucumberIntegrationTest {
-
-    @When("^receive all groups by \"(.*)\" discipline$")
+    @When("^receive \"(.*)\" discipline information$")
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
-        String url = "/api/discipline/" + discipline.getId() + "/groups";
-        ResponseEntity<List<Group>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Group>>(){});
+        String url = "/api/discipline/" + discipline.getId();
+        ResponseEntity<Discipline> responseEntity = doGet(url, Void.class, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

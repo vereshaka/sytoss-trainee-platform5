@@ -1,7 +1,7 @@
 Feature: Answer
 
   Scenario: student answers on task
-    Given personal exam with id 1 exists and answers exist
+    Given personal exam with id 1 and student 77 exist
       | answerId | taskId | taskDomainId | question                    | answer                    | status      | etalon                 | grade  | comment            |
       |  1       | 12     | 22           | get all from tasks table    | SELECT * FROM tasks       | GRADED      | SELECT * FROM tasks    | 1      | "answer correct"   |
       |  2       | 13     | 23           | get all from students table |                           | IN_PROGRESS | SELECT * FROM students |        |                    |
