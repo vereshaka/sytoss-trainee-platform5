@@ -4,7 +4,7 @@ Feature: Topic
     Given teacher "Maksym" "Mitkov" exists
 
   Scenario: system retrieve information list of topic
-    And topic exist
+    Given topic exist
       | discipline | topic           |
       | SQL        | Join            |
       | SQL        | Join Inner      |
@@ -20,7 +20,7 @@ Feature: Topic
       | SQL        | Drop results    |
 
   Scenario: teacher create a new topic
-    And disciplines exist
+    Given disciplines exist
       | disciplineId | discipline   | teacherId |
       | 1            | SQL          |  7        |
       | 2            | Mongo        |  7        |
@@ -29,7 +29,7 @@ Feature: Topic
     Then operation is successful
 
   Scenario: teacher create a topic that already exist
-    And topic exist
+    Given topic exist
       | discipline | topic |
       | Mongo      | First |
     When teacher create "First" topic
