@@ -19,7 +19,7 @@ public class DisciplineService {
     private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
-        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);//.orElseThrow(() -> new DisciplineNotFoundException(id));
+        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
         if (disciplineDTO != null) {
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
