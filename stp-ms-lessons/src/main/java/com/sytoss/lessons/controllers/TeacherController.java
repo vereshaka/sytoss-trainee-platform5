@@ -30,5 +30,4 @@ public class TeacherController {
             @RequestBody Discipline discipline) {
         return disciplineService.create(teacherId, discipline);
     }
-
 }

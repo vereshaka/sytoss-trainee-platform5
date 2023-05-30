@@ -33,5 +33,4 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
         return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
     }
-
 }
