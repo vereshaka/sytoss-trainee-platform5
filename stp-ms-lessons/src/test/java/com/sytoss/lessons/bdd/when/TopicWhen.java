@@ -19,7 +19,8 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about topics by discipline$")
     public void requestSentCreatePersonalExam() {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topics";
-        ResponseEntity<List<Topic>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Topic>>(){});
+        ResponseEntity<List<Topic>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Topic>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -31,7 +32,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         Topic topic = new Topic();
         topic.setName(topicName);
         HttpEntity<Topic> request = new HttpEntity<>(topic, httpHeaders);
-        ResponseEntity<Topic> responseEntity = getRestTemplate().postForEntity(url, request, Topic.class);
+        ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, request, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

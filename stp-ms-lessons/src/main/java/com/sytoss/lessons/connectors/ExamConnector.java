@@ -8,7 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface ExamConnector extends JpaRepository<ExamDTO, Long> {
 
     ExamDTO getByNameAndGroupName(String examName, String groupName);
-
-    @Override
-    ExamDTO getById(Long examId);
 }
