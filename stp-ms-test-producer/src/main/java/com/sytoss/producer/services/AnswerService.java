@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.checktaskshared.util.CheckTaskParameters;
-import com.sytoss.domain.bom.exceptions.businessException.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
@@ -11,7 +11,6 @@ import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
