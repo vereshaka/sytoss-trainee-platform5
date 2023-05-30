@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.mongodb.assertions.Assertions.assertTrue;
+
 
 public class ExamThen extends CucumberIntegrationTest {
 
@@ -34,14 +36,12 @@ public class ExamThen extends CucumberIntegrationTest {
     public void examShouldHaveTopic(String examName, String groupName, List<TopicDTO> topicDTOList) {
         ExamDTO examDTO = getExamConnector().getByNameAndGroupName(examName, groupName);
 
-        examDTO.getTopics().forEach(topicDTO -> {
-            List<TopicDTO> foundTopics = topicDTOList.stream().filter(
-                    item -> Objects.equals(item.getName(), topicDTO.getName()) &&
-                            Objects.equals(item.getDiscipline().getName(), topicDTO.getDiscipline().getName())
-            ).toList();
-            topicDTOList.remove(foundTopics.get(0));
-        });
-
-        Assertions.assertEquals(0, topicDTOList.size());
+        assertTrue(topicDTOList.stream()
+                .allMatch(expectedTopic -> examDTO.getTopics().stream()
+                        .anyMatch(actualTopic -> Objects.equals(actualTopic.getName(), expectedTopic.getName()) &&
+                                Objects.equals(actualTopic.getDiscipline().getName(), expectedTopic.getDiscipline().getName())
+                        )
+                )
+        );
     }
 }

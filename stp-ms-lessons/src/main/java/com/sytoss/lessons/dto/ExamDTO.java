@@ -40,7 +40,7 @@ public class ExamDTO {
     @Column(name = "NUMBER_OF_TASKS")
     private Integer numberOfTasks;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "EXAM2TOPIC",
             joinColumns = @JoinColumn(name = "EXAM_ID"),
