@@ -1,11 +1,9 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
-import com.sytoss.domain.bom.personalexam.FirstTask;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
@@ -21,7 +19,7 @@ public class AnswerThen extends CucumberIntegrationTest {
 
     @Then("^PersonalExam with \"(.*)\" question should be received$")
     public void questionShouldBe(String question)  {
-        FirstTask firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
+        Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
         assertEquals(question, firstTask.getTask().getQuestion());
     }
 
