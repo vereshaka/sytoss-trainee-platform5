@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.TeacherConnector;
 import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.dto.TeacherDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,13 @@ public class TeacherService {
     private final TeacherConvertor teacherConverter;
 
     public Teacher getById(Long id) {
-        Optional<TeacherDTO> optionalTeacherDTO = teacherConnector.findById(id);
-        TeacherDTO teacherDTO = optionalTeacherDTO.orElseThrow(() -> new TeacherNotFoundException(id));
-
-        Teacher teacher = new Teacher();
-        teacherConverter.fromDTO(teacherDTO, teacher);
-        return teacher;
+        try {
+            TeacherDTO teacherDTO = teacherConnector.getReferenceById(id);
+            Teacher teacher = new Teacher();
+            teacherConverter.fromDTO(teacherDTO, teacher);
+            return teacher;
+        } catch (EntityNotFoundException e) {
+            throw new TeacherNotFoundException(id);
+        }
     }
 }

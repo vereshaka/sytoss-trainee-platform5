@@ -13,5 +13,6 @@ Feature: Discipline
       | discipline |
       | SQL        |
       | Mongo      |
-    When teacher creates "SQL" discipline
+    When teacher creates existing "SQL" discipline
     Then operation should be finished with 409 "Discipline with name "SQL" already exist" error
+

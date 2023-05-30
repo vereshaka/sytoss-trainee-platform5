@@ -32,5 +32,5 @@ Feature: Topic
     Given topic exist
       | discipline | topic |
       | Mongo      | First |
-    When teacher create "First" topic
+    When teacher creates existing "First" topic
     Then operation should be finished with 409 "Topic with name "First" already exist" error

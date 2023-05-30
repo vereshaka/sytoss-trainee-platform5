@@ -29,6 +29,15 @@ public class TopicWhen extends CucumberIntegrationTest {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
+        ResponseEntity<Topic> responseEntity = doPost(url, topic, new ParameterizedTypeReference<Topic>(){});
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("teacher creates existing {string} topic")
+    public void existingTopicCreating(String topicName) {
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        Topic topic = new Topic();
+        topic.setName(topicName);
         ResponseEntity<String> responseEntity = doPost(url, topic, new ParameterizedTypeReference<String>(){});
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

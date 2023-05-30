@@ -1,22 +1,25 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("teacher creates {string} discipline")
-    public void topicCreating(String disciplineName) {
+    public void disciplineCreating(String disciplineName) {
+        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
+        Discipline discipline = new Discipline();
+        discipline.setName(disciplineName);
+        ResponseEntity<Discipline> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<Discipline>(){});
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("teacher creates existing {string} discipline")
+    public void existingDisciplineCreating(String disciplineName) {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
