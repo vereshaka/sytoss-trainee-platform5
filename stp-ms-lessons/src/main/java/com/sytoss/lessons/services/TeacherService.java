@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TeacherService {
@@ -18,14 +20,11 @@ public class TeacherService {
     private final TeacherConvertor teacherConverter;
 
     public Teacher getById(Long id) {
-        TeacherDTO teacherDTO = teacherConnector.getReferenceById(id);
-        if (teacherDTO != null) {
-            Teacher teacher = new Teacher();
-            teacherConverter.fromDTO(teacherDTO, teacher);
-            return teacher;
-        } else {
-            throw new TeacherNotFoundException(id);
-        }
-    }
+        Optional<TeacherDTO> optionalTeacherDTO = teacherConnector.findById(id);
+        TeacherDTO teacherDTO = optionalTeacherDTO.orElseThrow(() -> new TeacherNotFoundException(id));
 
+        Teacher teacher = new Teacher();
+        teacherConverter.fromDTO(teacherDTO, teacher);
+        return teacher;
+    }
 }
