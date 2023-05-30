@@ -42,8 +42,8 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("{string} discipline doesn't exist")
-    public void topicExist(String disciplineName) {
+    @Given("^discipline \"(.*)\" doesn't exist$")
+    public void disciplineNotExist(String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO != null) {
             getDisciplineConnector().delete(disciplineDTO);
@@ -65,5 +65,6 @@ public class DisciplineGiven extends CucumberIntegrationTest {
             disciplineDTO.setTeacher(teacherDTO);
             getDisciplineConnector().saveAndFlush(disciplineDTO);
         }
+        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
 }

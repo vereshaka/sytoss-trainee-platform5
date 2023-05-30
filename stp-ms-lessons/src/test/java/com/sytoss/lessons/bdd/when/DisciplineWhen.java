@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
 
-    @When("teacher creates {string} discipline")
+    @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
         Discipline discipline = new Discipline();
@@ -19,7 +19,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("teacher creates existing {string} discipline")
+    @When("^teacher creates existing \"(.*)\" discipline$")
     public void existingDisciplineCreating(String disciplineName) {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
         Discipline discipline = new Discipline();
