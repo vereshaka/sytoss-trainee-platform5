@@ -39,7 +39,7 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private DisciplineConnector disciplineConnector;
 
     @Autowired
-    private ObjectMapper mapper;
+    protected ObjectMapper mapper;
 
     @LocalServerPort
     private int applicationPort;

@@ -1,4 +1,4 @@
-package bom;
+package com.sytoss.checktask.model;
 
 import lombok.*;
 

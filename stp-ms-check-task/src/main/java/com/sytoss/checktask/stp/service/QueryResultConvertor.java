@@ -22,7 +22,6 @@ public class QueryResultConvertor {
             for (int i = 1; i <= columns; ++i) {
                 row.put(metaData.getColumnName(i), resultSet.getObject(i));
             }
-
             hashMapList.add(row);
         }
 

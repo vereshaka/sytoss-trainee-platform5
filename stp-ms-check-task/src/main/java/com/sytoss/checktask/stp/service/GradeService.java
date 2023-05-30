@@ -1,7 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
-import bom.CheckAnswerRequestBody;
-import bom.QueryResult;
+import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.personalexam.Grade;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class GradeService {
 
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
-    public Grade checkAndGrade(CheckAnswerRequestBody data) {
+    public Grade checkAndGrade(CheckTaskParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
             helperServiceProviderObject.generateDatabase(data.getScript());

@@ -1,13 +1,11 @@
-package bom;
+package com.sytoss.checktask.model;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
 @Getter
 @Setter
-public class CheckAnswerRequestBody {
+public class CheckTaskParameters {
 
     private String answer;
 

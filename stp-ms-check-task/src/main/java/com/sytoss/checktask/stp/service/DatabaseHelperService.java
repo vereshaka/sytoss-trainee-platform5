@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import bom.QueryResult;
+import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import liquibase.Liquibase;
 import liquibase.database.Database;

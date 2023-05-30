@@ -1,8 +1,6 @@
-package com.sytoss.checktask.stp.junit;
+package com.sytoss.checktask.stp.service;
 
-import bom.QueryResult;
-import com.sytoss.checktask.stp.service.DatabaseHelperService;
-import com.sytoss.checktask.stp.service.QueryResultConvertor;
+import com.sytoss.checktask.model.QueryResult;
 import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

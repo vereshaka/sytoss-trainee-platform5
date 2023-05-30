@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
-import bom.CheckAnswerRequestBody;
+import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.stp.service.GradeService;
 import com.sytoss.domain.bom.personalexam.Grade;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,7 +21,7 @@ public class CheckTaskController {
     @ApiResponse(responseCode = "200", description = "Success|OK")
     @RequestMapping(method = RequestMethod.POST)
     public Grade check(
-            @RequestBody CheckAnswerRequestBody body) {
+            @RequestBody CheckTaskParameters body) {
         return gradeService.checkAndGrade(body);
     }
 }
