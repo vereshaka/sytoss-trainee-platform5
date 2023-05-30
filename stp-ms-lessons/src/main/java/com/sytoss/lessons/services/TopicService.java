@@ -1,23 +1,28 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.businessException.TopicExistException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.TopicDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class TopicService {
 
-    @Autowired
-    private TopicConnector topicConnector;
+    private final TopicConnector topicConnector;
 
-    @Autowired
-    private TopicConvertor topicConvertor;
+    private final TopicConvertor topicConvertor;
+
+    private final DisciplineService disciplineService;
 
     public List<Topic> findByDiscipline(Long disciplineId) {
         List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
@@ -28,5 +33,20 @@ public class TopicService {
             topicList.add(topic);
         }
         return topicList;
+    }
+
+    public Topic create(Long disciplineId, Topic topic) {
+        TopicDTO oldTopicDTO = topicConnector.getByNameAndDisciplineId(topic.getName(), disciplineId);
+        Discipline discipline = disciplineService.getById(disciplineId);
+        if (oldTopicDTO == null) {
+            topic.setDiscipline(discipline);
+            TopicDTO topicDTO = new TopicDTO();
+            topicConvertor.toDTO(topic, topicDTO);
+            topicDTO = topicConnector.saveAndFlush(topicDTO);
+            topicConvertor.fromDTO(topicDTO, topic);
+            return topic;
+        } else {
+            throw new TopicExistException(topic.getName());
+        }
     }
 }

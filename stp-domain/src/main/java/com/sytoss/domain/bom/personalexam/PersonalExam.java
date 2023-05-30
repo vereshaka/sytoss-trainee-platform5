@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class PersonalExam {
     private Long studentId;
 
     @JsonView(PersonalExam.Public.class)
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     private PersonalExamStatus status;
 
@@ -55,6 +56,25 @@ public class PersonalExam {
                 summaryGrade += answer.getGrade().getValue();
             }
         });
+    }
+
+    public Answer getCurrentAnswer() {
+        for (Answer answer : answers) {
+            if (answer.getStatus().equals(AnswerStatus.IN_PROGRESS)) {
+                return answer;
+            }
+        }
+        return null;
+    }
+
+    public Answer getNextAnswer() {
+        for (Answer answer : answers) {
+            if (answer.getStatus().equals(AnswerStatus.NOT_STARTED)) {
+                answer.setStatus(AnswerStatus.IN_PROGRESS);
+                return answer;
+            }
+        }
+        return null;
     }
 
     public static class Public {}

@@ -34,4 +34,14 @@ public class Answer {
             throw new AnswerIsAnsweredException();
         }
     }
+
+    public void grade(Grade grade) {
+        setGrade(grade);
+        setStatus(AnswerStatus.GRADED);
+    }
+
+    public void answer(String value) {
+        setValue(value);
+        setStatus(AnswerStatus.ANSWERED);
+    }
 }
