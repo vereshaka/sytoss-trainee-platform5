@@ -30,18 +30,6 @@ class GradeServiceTest extends AbstractApplicationTest {
         Assertions.assertEquals("ok", grade.getComment());
     }
 
-   /* @Test
-    void checkAndGradeWithWrongAnswer() {
-        CheckAnswerRequestBody checkAnswerRequestBody = new CheckAnswerRequestBody();
-        checkAnswerRequestBody.setAnswer("select answer");
-        checkAnswerRequestBody.setEtalon("select * from etalon");
-        checkAnswerRequestBody.setScript("{databaseChangeLog: [{changeSet: {author: ivan-larin, changes: [{createTable: {columns: [{column: {name: Answer, type: varchar}}], tableName: Answer}}, {createTable: {columns: [{column: {name: Etalon, type: varchar}}], tableName: Etalon}}], id: create_answer}}, {changeSet: {author: ivan-larin, changes: [{insert: {columns: [{column: {name: Answer, value: it_is_answer}}], tableName: Answer}}, {insert: {columns: [{column: {name: Etalon, value: it_is_etalon}}], tableName: Etalon}}], id: insert-answer}}]}");
-        when(databaseHelperServiceProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
-        GradeService gradeService = new GradeService(databaseHelperServiceProvider);
-        Grade grade = gradeService.checkAndGrade(checkAnswerRequestBody);
-        Assertions.assertEquals(0, grade.getValue());
-    }*/
-
     @Test
     void checkAndGradeWithWrongEtalon() {
         CheckTaskParameters checkAnswerRequestBody = new CheckTaskParameters();
@@ -63,5 +51,4 @@ class GradeServiceTest extends AbstractApplicationTest {
         ResponseEntity<String> responseEntity = doPost("/api/task/check", httpEntity, String.class);
         Assertions.assertEquals(400, responseEntity.getStatusCode().value());
     }
-
 }

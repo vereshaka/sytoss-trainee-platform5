@@ -4,6 +4,5 @@ public class WrongEtalonException extends RuntimeException {
 
     public WrongEtalonException(String message, Throwable cause) {
         super(message, cause);
-        cause.printStackTrace();
     }
 }
