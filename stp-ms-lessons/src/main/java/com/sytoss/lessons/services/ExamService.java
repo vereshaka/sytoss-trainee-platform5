@@ -4,17 +4,16 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ExamService {
 
-    @Autowired
-    private ExamConnector examConnector;
+    private final ExamConnector examConnector;
 
-    @Autowired
-    private ExamConvertor examConvertor;
+    private final ExamConvertor examConvertor;
 
     public Exam save(Exam exam) {
         ExamDTO examDTO = new ExamDTO();

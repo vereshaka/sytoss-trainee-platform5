@@ -12,9 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.mongodb.assertions.Assertions.assertTrue;
-
-
 public class ExamThen extends CucumberIntegrationTest {
 
     @Then("\"{word}\" exam should be from {word} to {word} with {int} tasks for \"{word}\" group with {int} minutes duration")
@@ -36,7 +33,7 @@ public class ExamThen extends CucumberIntegrationTest {
     public void examShouldHaveTopic(String examName, String groupName, List<TopicDTO> topicDTOList) {
         ExamDTO examDTO = getExamConnector().getByNameAndGroupName(examName, groupName);
 
-        assertTrue(topicDTOList.stream()
+        Assertions.assertTrue(topicDTOList.stream()
                 .allMatch(expectedTopic -> examDTO.getTopics().stream()
                         .anyMatch(actualTopic -> Objects.equals(actualTopic.getName(), expectedTopic.getName()) &&
                                 Objects.equals(actualTopic.getDiscipline().getName(), expectedTopic.getDiscipline().getName())
