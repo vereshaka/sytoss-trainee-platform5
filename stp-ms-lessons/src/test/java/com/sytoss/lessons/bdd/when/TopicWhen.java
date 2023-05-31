@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import io.cucumber.java.en.When;
@@ -19,20 +20,25 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about topics by discipline$")
     public void requestSentCreatePersonalExam() {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topics";
-        ResponseEntity<List<Topic>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Topic>>() {
-        });
+        ResponseEntity<List<Topic>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<Topic>>(){});
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher create \"(.*)\" topic$")
     public void topicCreating(String topicName) {
-        String url = getBaseUrl() + URI + "discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
-        HttpEntity<Topic> request = new HttpEntity<>(topic, httpHeaders);
-        ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, request, String.class);
+        ResponseEntity<Topic> responseEntity = doPost(url, topic, Topic.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("teacher creates existing {string} topic")
+    public void existingTopicCreating(String topicName) {
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        Topic topic = new Topic();
+        topic.setName(topicName);
+        ResponseEntity<String> responseEntity = doPost(url, topic, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

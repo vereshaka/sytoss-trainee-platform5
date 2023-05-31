@@ -1,13 +1,18 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -25,6 +30,7 @@ import static org.mockito.Mockito.when;
 public class DisciplineControllerTest extends AbstractApplicationTest {
 
     @InjectMocks
+    @Autowired
     private DisciplineController disciplineController;
 
     @MockBean
@@ -35,6 +41,9 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
 
     @MockBean
     private GroupService groupService;
+
+    @MockBean
+    private DisciplineService disciplineService;
 
     @Test
     public void shouldSaveTopic() {
@@ -54,5 +63,40 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", null, new ParameterizedTypeReference<List<Group>>() {
         });
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldSaveDiscipline() {
+        when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
+        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<Discipline>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    void shouldReturnExceptionWhenSaveExistingDiscipline() {
+        when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
+        ResponseEntity<String> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<String>() {
+        });
+        assertEquals(409, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldGetDisciplineById() {
+        when(disciplineService.getById(any())).thenReturn(new Discipline());
+        ResponseEntity<Discipline> result = doGet("/api/discipline/123", null, Discipline.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldNotGetDisciplineByIdWhenItDoesNotExist() {
+        when(disciplineService.getById(any())).thenThrow(new DisciplineNotFoundException(123L));
+        ResponseEntity<String> result = doGet("/api/discipline/123", null, String.class);
+        assertEquals(404, result.getStatusCode().value());
+        assertEquals("Discipline with id \"123\" not found", result.getBody());
     }
 }

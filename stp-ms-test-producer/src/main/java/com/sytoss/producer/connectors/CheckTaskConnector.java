@@ -1,6 +1,6 @@
 package com.sytoss.producer.connectors;
 
-import com.sytoss.checktaskshared.util.CheckTaskParameters;
+import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Grade;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;

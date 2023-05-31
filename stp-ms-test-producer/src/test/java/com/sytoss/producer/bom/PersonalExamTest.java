@@ -1,7 +1,7 @@
 package com.sytoss.producer.bom;
 
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamAlreadyStartedException;
-import com.sytoss.domain.bom.exceptions.businessException.PersonalExamIsFinishedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import org.junit.jupiter.api.Test;

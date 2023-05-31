@@ -5,6 +5,7 @@ import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.GroupConnector;
+import com.sytoss.lessons.connectors.TeacherConnector;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
@@ -39,13 +40,16 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private TopicConnector topicConnector;
 
     @Autowired
+    private TeacherConnector teacherConnector;
+
+    @Autowired
     private DisciplineConnector disciplineConnector;
 
     @Autowired
     private ExamConnector examConnector;
 
     @Autowired
-    private ObjectMapper mapper;
+    protected ObjectMapper mapper;
 
     @Autowired
     private TopicConvertor topicConvertor;

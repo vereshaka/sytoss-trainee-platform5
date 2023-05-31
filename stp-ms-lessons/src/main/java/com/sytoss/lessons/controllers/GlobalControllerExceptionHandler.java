@@ -1,7 +1,9 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.exceptions.businessException.DisciplineNotFoundException;
-import com.sytoss.domain.bom.exceptions.businessException.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +21,16 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler({DisciplineNotFoundException.class})
     public ResponseEntity<?> handleValidationException(DisciplineNotFoundException disciplineNotFoundException, WebRequest request) {
-        return ResponseEntity.status(409).body(disciplineNotFoundException.getMessage());
+        return ResponseEntity.status(404).body(disciplineNotFoundException.getMessage());
     }
 
+    @ExceptionHandler({DisciplineExistException.class})
+    public ResponseEntity<?> handleValidationException(DisciplineExistException disciplineExistException, WebRequest request) {
+        return ResponseEntity.status(409).body(disciplineExistException.getMessage());
+    }
+
+    @ExceptionHandler({TeacherNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
+    }
 }

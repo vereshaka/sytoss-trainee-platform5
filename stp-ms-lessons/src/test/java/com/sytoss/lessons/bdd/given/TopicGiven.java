@@ -3,31 +3,29 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TeacherDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class TopicGiven extends CucumberIntegrationTest {
 
-    @DataTableType
-    public TopicDTO mapTopic(Map<String, String> entry) {
-        TopicDTO topic = new TopicDTO();
-        DisciplineDTO discipline = new DisciplineDTO();
-        topic.setName(entry.get("topic"));
-        discipline.setName(entry.get("discipline"));
-        topic.setDiscipline(discipline);
-        return topic;
-    }
-
     @Given("topic exist")
     public void thisExamHasAnswers(List<TopicDTO> topics) {
+
         for (TopicDTO topic : topics) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(topic.getDiscipline().getName());
+            Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
+            TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
+
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherDTO.getId());
             if (disciplineDTO == null) {
-                disciplineDTO = getDisciplineConnector().save(topic.getDiscipline());
+                disciplineDTO = topic.getDiscipline();
+                disciplineDTO.setTeacher(teacherDTO);
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
             TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId());
