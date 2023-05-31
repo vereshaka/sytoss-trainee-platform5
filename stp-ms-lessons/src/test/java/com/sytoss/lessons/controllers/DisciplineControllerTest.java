@@ -70,7 +70,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<Discipline>() {
+        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -80,7 +80,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/teacher/7/discipline/create", requestEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }
