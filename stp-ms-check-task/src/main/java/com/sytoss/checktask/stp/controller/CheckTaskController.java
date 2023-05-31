@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/task/check")
@@ -21,9 +20,9 @@ public class CheckTaskController {
     private final GradeService gradeService;
 
     @ApiResponses(
-            value = {@ApiResponse(responseCode = "200", description = "Success|OK"), @ApiResponse(responseCode = "400",
-                    description = "Bad request", content = @Content(mediaType = "")), @ApiResponse(responseCode = "406",
-                    description = "Not Acceptable", content = @Content(mediaType = ""))})
+            value = {@ApiResponse(responseCode = "200", description = "Success|OK"),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "")),
+                    @ApiResponse(responseCode = "406", description = "Not Acceptable", content = @Content(mediaType = ""))})
     @RequestMapping(method = RequestMethod.POST)
     public Grade check(
             @RequestBody CheckTaskParameters body) {
