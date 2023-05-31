@@ -1,6 +1,6 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.checktaskshared.util.CheckTaskParameters;
+import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;

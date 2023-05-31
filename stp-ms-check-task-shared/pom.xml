@@ -6,8 +6,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>stp-ms-check-task-shared</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.systoss.stp</groupId>
+            <artifactId>stp-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

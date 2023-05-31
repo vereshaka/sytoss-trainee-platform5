@@ -1,4 +1,4 @@
-package com.sytoss.checktaskshared.util;
+package com.sytoss.checktask.model;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,10 +1,11 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.checktaskshared.util.CheckTaskParameters;
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.producer.AbstractJunitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -13,13 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class AnswerServiceTest extends AbstractJunitTest {
 
