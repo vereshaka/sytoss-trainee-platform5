@@ -10,6 +10,9 @@
                 <constraints nullable="false" />
             </column>
             <column name="NAME" type="VARCHAR2(100 BYTE)" />
+            <column name="TEACHER_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
         <rollback>
@@ -28,6 +31,15 @@
         <createSequence sequenceName="DISCIPLINE_SEQ" />
         <rollback>
             <dropSequence sequenceName="DISCIPLINE_SEQ" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="MitkovM" id="discipline_4">
+        <addForeignKeyConstraint baseTableName="DISCIPLINE" baseColumnNames="TEACHER_ID"
+                                 constraintName="FK_DISCIPLINE2TEACHER" referencedTableName="TEACHER"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="DISCIPLINE" constraintName="FK_DISCIPLINE2TEACHER" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

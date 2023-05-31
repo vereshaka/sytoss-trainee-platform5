@@ -13,5 +13,4 @@ public class NotFoundException extends BusinessException {
 
         super(objectName + " with id \"" + id + "\" not found");
     }
-
 }

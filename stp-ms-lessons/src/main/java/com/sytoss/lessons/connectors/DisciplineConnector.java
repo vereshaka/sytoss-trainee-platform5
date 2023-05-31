@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface DisciplineConnector extends JpaRepository<DisciplineDTO, Long> {
 
     DisciplineDTO getByName(String name);
+
+    DisciplineDTO getByNameAndTeacherId(String disciplineName, Long teacherId);
 }

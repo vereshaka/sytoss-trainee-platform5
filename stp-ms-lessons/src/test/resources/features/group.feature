@@ -1,5 +1,8 @@
 Feature: Group
 
+  Background:
+    Given teacher "Maksym" "Mitkov" exists
+
   Scenario: system retrieve all groups by discipline
     Given groups exist
       | discipline | group |

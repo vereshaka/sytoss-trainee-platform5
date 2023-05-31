@@ -1,13 +1,22 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
+import com.sytoss.domain.bom.exceptions.business.TopicExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.TeacherConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TeacherDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,6 +27,10 @@ public class DisciplineService {
 
     private final DisciplineConvertor disciplineConvertor;
 
+    private final TeacherService teacherService;
+
+    private final TeacherConnector teacherConnector;
+
     public Discipline getById(Long id) {
         DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
         if (disciplineDTO != null) {
@@ -26,5 +39,20 @@ public class DisciplineService {
             return discipline;
         }
             throw new DisciplineNotFoundException(id);
+    }
+
+    public Discipline create(Long teacherId, Discipline discipline) {
+        DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), teacherId);
+        if (oldDisciplineDTO == null) {
+            Teacher teacher = teacherService.getById(teacherId);
+            discipline.setTeacher(teacher);
+            DisciplineDTO disciplineDTO = new DisciplineDTO();
+            disciplineConvertor.toDTO(discipline, disciplineDTO);
+            disciplineDTO = disciplineConnector.saveAndFlush(disciplineDTO);
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            return discipline;
+        } else {
+            throw new DisciplineExistException(discipline.getName());
+        }
     }
 }
