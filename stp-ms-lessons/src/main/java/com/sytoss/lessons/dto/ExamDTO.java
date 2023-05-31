@@ -46,4 +46,3 @@ public class ExamDTO {
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private Collection<TopicDTO> topics;
 }
-
