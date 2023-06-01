@@ -45,7 +45,7 @@ public class GroupGiven extends CucumberIntegrationTest {
     @Given("^\"(.*)\" group exist for this discipline$")
     public void groupExistForDiscipline(String groupName) {
         GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
-        if (groupDTO == null){
+        if (groupDTO == null) {
             groupDTO = new GroupDTO();
             groupDTO.setName(groupName);
             groupDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
@@ -53,5 +53,3 @@ public class GroupGiven extends CucumberIntegrationTest {
         }
     }
 }
-
-

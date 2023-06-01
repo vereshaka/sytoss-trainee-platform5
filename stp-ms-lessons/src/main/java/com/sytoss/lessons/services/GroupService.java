@@ -8,7 +8,6 @@ import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.dto.GroupDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class GroupService {
         return result;
     }
 
-    public Group create(Long disciplineId, Group group){
+    public Group create(Long disciplineId, Group group) {
         GroupDTO groupDTO = groupConnector.getByNameAndDisciplineId(group.getName(), disciplineId);
         if (groupDTO == null) {
             groupDTO = new GroupDTO();

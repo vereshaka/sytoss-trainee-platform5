@@ -78,5 +78,4 @@ public class DisciplineController {
                              @RequestBody Group group) {
         return groupService.create(disciplineId, group);
     }
-
 }
