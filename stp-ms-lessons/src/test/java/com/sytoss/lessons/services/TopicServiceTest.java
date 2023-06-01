@@ -30,6 +30,9 @@ import static org.mockito.Mockito.when;
 public class TopicServiceTest extends AbstractJunitTest {
 
     @Mock
+    private DisciplineService disciplineService;
+
+    @Mock
     private TopicConnector topicConnector;
 
     @Mock
@@ -40,9 +43,6 @@ public class TopicServiceTest extends AbstractJunitTest {
 
     @Mock
     private TeacherConvertor teacherConverter;
-
-    @Mock
-    private DisciplineService disciplineService;
 
     @InjectMocks
     private TopicService topicService;

@@ -1,13 +1,10 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TopicExistException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TopicConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,9 +15,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
+
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TopicService {
 
     private final TopicConnector topicConnector;
