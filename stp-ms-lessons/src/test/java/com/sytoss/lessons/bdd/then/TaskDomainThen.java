@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions;
 
 public class TaskDomainThen extends CucumberIntegrationTest {
 
-    @Then("system should been get \"(.*)\" information")
+    @Then("^system should been get \"(.*)\" information$")
     public void systemShouldGetTaskDomain(String taskDomainName) {
         TaskDomain result = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
 
