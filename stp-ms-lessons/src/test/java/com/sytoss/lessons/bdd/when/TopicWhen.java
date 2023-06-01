@@ -24,6 +24,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
+    @When("^retrieve information about topic by topicID$")
     public void getById() {
         Long topicId = TestExecutionContext.getTestContext().getTopicId();
         if (TestExecutionContext.getTestContext().getTopicId() == null) {

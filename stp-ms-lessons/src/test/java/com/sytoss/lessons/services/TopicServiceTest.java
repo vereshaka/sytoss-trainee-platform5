@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -35,13 +36,13 @@ public class TopicServiceTest extends AbstractJunitTest {
     @Mock
     private TopicConnector topicConnector;
 
-    @Mock
+    @Spy
     private TopicConvertor topicConvertor;
 
-    @Mock
+    @Spy
     private DisciplineConvertor disciplineConvertor;
 
-    @Mock
+    @Spy
     private TeacherConvertor teacherConverter;
 
     @InjectMocks
