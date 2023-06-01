@@ -8,9 +8,11 @@ import org.springframework.stereotype.Component;
 public class TeacherConvertor {
 
     public void fromDTO(TeacherDTO source, Teacher destination) {
-        destination.setId(source.getId());
-        destination.setFirstName(source.getFirstName());
-        destination.setLastName(source.getLastName());
+        if (source != null) {
+            destination.setId(source.getId());
+            destination.setFirstName(source.getFirstName());
+            destination.setLastName(source.getLastName());
+        }
     }
 
     public void toDTO(Teacher source, TeacherDTO destination) {

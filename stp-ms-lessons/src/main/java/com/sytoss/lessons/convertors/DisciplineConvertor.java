@@ -23,10 +23,15 @@ public class DisciplineConvertor {
     }
 
     public void toDTO(Discipline source, DisciplineDTO destination) {
-        destination.setId(source.getId());
-        destination.setName(source.getName());
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherConverter.toDTO(source.getTeacher(), teacherDTO);
-        destination.setTeacher(teacherDTO);
+        if (source != null) {
+            destination.setId(source.getId());
+            destination.setName(source.getName());
+
+            if (source.getTeacher() != null) {
+                TeacherDTO teacherDTO = new TeacherDTO();
+                teacherConverter.toDTO(source.getTeacher(), teacherDTO);
+                destination.setTeacher(teacherDTO);
+            }
+        }
     }
 }
