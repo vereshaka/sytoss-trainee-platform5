@@ -5,11 +5,9 @@ import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TeacherDTO;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class GroupGiven extends CucumberIntegrationTest {
@@ -33,6 +31,25 @@ public class GroupGiven extends CucumberIntegrationTest {
             if (result == null) {
                 getGroupConnector().save(groupDTO);
             }
+        }
+    }
+
+    @Given("^\"(.*)\" group does not exist for this discipline$")
+    public void groupDoesNotExistForDiscipline(String groupName) {
+        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
+        if (groupDTO != null) {
+            getGroupConnector().delete(groupDTO);
+        }
+    }
+
+    @Given("^\"(.*)\" group exist for this discipline$")
+    public void groupExistForDiscipline(String groupName) {
+        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
+        if (groupDTO == null){
+            groupDTO = new GroupDTO();
+            groupDTO.setName(groupName);
+            groupDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
+            getGroupConnector().save(groupDTO);
         }
     }
 }

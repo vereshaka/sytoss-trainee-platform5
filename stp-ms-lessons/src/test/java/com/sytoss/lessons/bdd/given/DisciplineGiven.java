@@ -4,26 +4,12 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TeacherDTO;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
-
-    @Given("teacher {word} {word} exists")
-    public void teacherExists(String firstName, String lastName) {
-        TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(lastName, firstName);
-        if (teacherDTO == null) {
-            TeacherDTO teacher = new TeacherDTO();
-            teacher.setFirstName(firstName);
-            teacher.setLastName(lastName);
-            teacherDTO = getTeacherConnector().save(teacher);
-        }
-        TestExecutionContext.getTestContext().setTeacherId(teacherDTO.getId());
-    }
 
     @Given("disciplines exist")
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
@@ -50,7 +36,7 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^\"(.*)\" discipline exists$")
+    @Given("^this teacher has \"(.*)\" discipline$")
     public void disciplineExist(String disciplineName) {
 
         Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
