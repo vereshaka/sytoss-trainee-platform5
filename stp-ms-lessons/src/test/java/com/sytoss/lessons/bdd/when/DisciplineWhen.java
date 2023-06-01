@@ -12,7 +12,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
+        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         ResponseEntity<Discipline> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<Discipline>(){});
@@ -21,7 +21,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates existing \"(.*)\" discipline$")
     public void existingDisciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline/create";
+        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         ResponseEntity<String> responseEntity = doPost(url, discipline, String.class);

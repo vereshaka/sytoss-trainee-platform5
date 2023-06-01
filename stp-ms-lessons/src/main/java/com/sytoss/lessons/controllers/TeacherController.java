@@ -23,7 +23,7 @@ public class TeacherController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping("/{teacherId}/discipline/create")
+    @PostMapping("/{teacherId}/discipline")
     public Discipline create(
             @Parameter(description = "id of teacher to be searched")
             @PathVariable("teacherId") Long teacherId,
