@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,11 @@ import org.springframework.web.context.request.WebRequest;
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
+
+    @ExceptionHandler({TaskNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TaskNotFoundException taskNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
+    }
 
     @ExceptionHandler({TopicExistException.class})
     public ResponseEntity<?> handleValidationException(TopicExistException topicExistException, WebRequest request) {

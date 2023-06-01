@@ -2,11 +2,7 @@ package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.connectors.GroupConnector;
-import com.sytoss.lessons.connectors.TeacherConnector;
-import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -41,6 +37,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private TeacherConnector teacherConnector;
+
+    @Autowired
+    private TaskConnector taskConnector;
 
     @Autowired
     private DisciplineConnector disciplineConnector;

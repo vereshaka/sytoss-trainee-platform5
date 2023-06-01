@@ -3,6 +3,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd"
                    logicalFilePath="/liquibase/a1-master.xml">
 
+    <include file="data/task.xml" relativeToChangelogFile="true" />
+    <include file="data/taskdomain.xml" relativeToChangelogFile="true" />
     <include file="data/teacher.xml" relativeToChangelogFile="true" />
     <include file="data/discipline.xml" relativeToChangelogFile="true" />
     <include file="data/topic.xml" relativeToChangelogFile="true" />

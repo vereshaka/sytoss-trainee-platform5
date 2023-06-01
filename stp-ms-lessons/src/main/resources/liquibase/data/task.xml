@@ -1,0 +1,46 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/task.xml">
+
+    <changeSet author="MitkovM" id="task_1">
+        <createTable tableName="TASK">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="QUESTION" type="VARCHAR2(100 BYTE)" />
+            <column name="ETALON_ANSWER" type="VARCHAR2(100 BYTE)" />
+            <column name="TASK_DOMAIN_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="TASK" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="MitkovM" id="task_2">
+        <addPrimaryKey tableName="TASK" columnNames="ID" constraintName="PK_TASK" />
+        <rollback>
+            <dropPrimaryKey tableName="TASK" constraintName="PK_TASK" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="MitkovM" id="task_3">
+        <createSequence sequenceName="TASK_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="TASK_SEQ" />
+        </rollback>
+    </changeSet>
+
+<!--    <changeSet author="MitkovM" id="task_4">-->
+<!--        <addForeignKeyConstraint baseTableName="TASK" baseColumnNames="TASK_DOMAIN_ID"-->
+<!--                                 constraintName="FK_TASK2TASKDOMAIN" referencedTableName="TASK_DOMAIN"-->
+<!--                                 referencedColumnNames="ID" />-->
+<!--        <rollback>-->
+<!--            <dropForeignKeyConstraint baseTableName="TASK" constraintName="FK_TASK2TASKDOMAIN" />-->
+<!--        </rollback>-->
+<!--    </changeSet>-->
+</databaseChangeLog>
