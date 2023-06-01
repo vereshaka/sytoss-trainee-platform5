@@ -38,9 +38,8 @@ public class TopicThen extends CucumberIntegrationTest {
 
     @Then("^should return \"(.*)\" topic")
     public void projectIdShouldExist(String topicName) {
-        Object answer = TestExecutionContext.getTestContext().getResponse().getBody();
-        Topic topic = Topic.class.cast(answer);
-        assertEquals(topicName, topic.getName());
-        assertEquals(TestExecutionContext.getTestContext().getTopicId(), topic.getId());
+        Topic answer = (Topic) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertEquals(topicName, answer.getName());
+        assertEquals(TestExecutionContext.getTestContext().getTopicId(), answer.getId());
     }
 }

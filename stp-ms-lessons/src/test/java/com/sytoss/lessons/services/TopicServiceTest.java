@@ -36,13 +36,13 @@ public class TopicServiceTest extends AbstractJunitTest {
     @Mock
     private TopicConnector topicConnector;
 
-    @Spy
+    @Mock
     private TopicConvertor topicConvertor;
 
-    @Spy
+    @Mock
     private DisciplineConvertor disciplineConvertor;
 
-    @Spy
+    @Mock
     private TeacherConvertor teacherConverter;
 
     @InjectMocks
