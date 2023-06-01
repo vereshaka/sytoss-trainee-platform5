@@ -1,0 +1,34 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/taskDomain.xml">
+
+    <changeSet author="KornienkoD" id="task_domain_1">
+        <createTable tableName="TASK_DOMAIN">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="SCRIPT" type="VARCHAR2(100 BYTE)"/>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="TASK_DOMAIN"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="task_domain_2">
+        <addPrimaryKey tableName="TASK_DOMAIN" columnNames="ID" constraintName="PK_TASK_DOMAIN"/>
+        <rollback>
+            <dropPrimaryKey tableName="TASK_DOMAIN" constraintName="PK_TASK_DOMAIN"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="task_domain_3">
+        <createSequence sequenceName="TASK_DOMAIN_SEQ"/>
+        <rollback>
+            <dropSequence sequenceName="TASK_DOMAIN_SEQ"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
