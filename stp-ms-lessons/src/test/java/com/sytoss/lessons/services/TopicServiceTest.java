@@ -14,9 +14,11 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TopicServiceTest extends AbstractJunitTest {
@@ -59,6 +61,22 @@ public class TopicServiceTest extends AbstractJunitTest {
         Topic result = topicService.create(1L, input);
         assertEquals(1L, result.getDiscipline().getId());
         assertEquals("CMS", result.getName());
+    }
+
+    @Test
+    public void shouldReturnTopicById() {
+        TopicDTO topic = new TopicDTO();
+        topic.setName("topic first");
+        when(topicConnector.getReferenceById(anyLong())).thenReturn(new TopicDTO());
+        Mockito.doAnswer((Answer<TopicDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            TopicDTO result = (TopicDTO) args[0];
+            result.setId(2L);
+            return result;
+        }).when(topicConnector).saveAndFlush(any(TopicDTO.class));
+
+        Topic result = topicService.getById(2L);
+        assertEquals(2L, result.getId());
     }
 
     private TopicDTO createTopic(String name) {

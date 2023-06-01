@@ -34,3 +34,19 @@ Feature: Topic
       | Mongo      | First |
     When teacher creates existing "First" topic
     Then operation should be finished with 409 "Topic with name "First" already exist" error
+
+  Scenario: Retrieve information about topic by id
+    Given topic exist
+      | discipline | topic           |
+      | SQL        | Join            |
+    When retrieve information about topic by topicID
+    Then operation is successful
+    And should return "Join" topic
+
+  Scenario: Retrieve information about topic by id when it doesnt exist
+    Given disciplines exist
+      | disciplineId | discipline   | teacherId |
+      | 2            | Mongo        |  7        |
+    And "First" topic by "Mongo" discipline doesn't exist
+    When retrieve information about topic by topicID
+    Then operation should be finished with 404 "Topic doesnt exist" error

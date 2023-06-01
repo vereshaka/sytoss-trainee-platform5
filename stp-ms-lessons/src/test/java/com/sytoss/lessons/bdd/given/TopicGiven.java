@@ -31,8 +31,9 @@ public class TopicGiven extends CucumberIntegrationTest {
             TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId());
             topic.setDiscipline(disciplineDTO);
             if (topicResult == null) {
-                getTopicConnector().save(topic);
+                topicResult = getTopicConnector().save(topic);
             }
+            TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
         }
     }
 

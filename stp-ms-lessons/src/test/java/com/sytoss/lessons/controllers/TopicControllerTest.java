@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TopicControllerTest extends AbstractApplicationTest {
@@ -28,6 +29,13 @@ public class TopicControllerTest extends AbstractApplicationTest {
     public void shouldReturnListOfTopics() {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", null, new ParameterizedTypeReference<List<Topic>>(){});
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnTopicById() {
+        when(topicService.getById(anyLong())).thenReturn(new Topic());
+        ResponseEntity<Topic> result = doGet("/api/topic/123", null, new ParameterizedTypeReference<Topic>(){});
         assertEquals(200, result.getStatusCode().value());
     }
 }
