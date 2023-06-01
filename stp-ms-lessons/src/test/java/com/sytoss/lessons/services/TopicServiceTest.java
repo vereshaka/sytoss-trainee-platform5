@@ -5,12 +5,14 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class TopicServiceTest extends AbstractJunitTest {
     @Mock
     private TopicConnector topicConnector;
 
-    @Mock
+
     private TopicConvertor topicConvertor;
 
     @Mock
@@ -65,15 +67,12 @@ public class TopicServiceTest extends AbstractJunitTest {
 
     @Test
     public void shouldReturnTopicById() {
-        TopicDTO topic = new TopicDTO();
-        topic.setName("topic first");
-        when(topicConnector.getReferenceById(anyLong())).thenReturn(new TopicDTO());
-        Mockito.doAnswer((Answer<TopicDTO>) invocation -> {
-            final Object[] args = invocation.getArguments();
-            TopicDTO result = (TopicDTO) args[0];
-            result.setId(2L);
-            return result;
-        }).when(topicConnector).saveAndFlush(any(TopicDTO.class));
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setId(2L);
+        topicDTO.setName("topic");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        topicDTO.setDiscipline(disciplineDTO);
+        when(topicConnector.getReferenceById(anyLong())).thenReturn(topicDTO);
 
         Topic result = topicService.getById(2L);
         assertEquals(2L, result.getId());

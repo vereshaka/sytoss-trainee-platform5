@@ -49,4 +49,4 @@ Feature: Topic
       | 2            | Mongo        |  7        |
     And "First" topic by "Mongo" discipline doesn't exist
     When retrieve information about topic by topicID
-    Then operation should be finished with 404 "Topic doesnt exist" error
+    Then operation should be finished with 404 "Topic with id "99" not found" error

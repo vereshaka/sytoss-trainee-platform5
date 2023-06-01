@@ -29,10 +29,16 @@ public class TopicWhen extends CucumberIntegrationTest {
         Long topicId = TestExecutionContext.getTestContext().getTopicId();
         if (TestExecutionContext.getTestContext().getTopicId() == null) {
             topicId = 99L;
+            String url = "/api/topic/" + topicId;
+            ResponseEntity<String> responseEntity = doGet(url, null, String.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
-        String url = "/api/topic/" + topicId;
-        ResponseEntity<Topic> responseEntity = doGet(url, null, new ParameterizedTypeReference<Topic>(){});
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        else {
+            String url = "/api/topic/" + topicId;
+            ResponseEntity<Topic> responseEntity = doGet(url, null, new ParameterizedTypeReference<Topic>() {});
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }
+
     }
 
     @When("^teacher create \"(.*)\" topic$")
