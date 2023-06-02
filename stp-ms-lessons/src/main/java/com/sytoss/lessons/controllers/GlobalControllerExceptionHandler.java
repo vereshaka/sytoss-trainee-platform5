@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TopicExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +34,11 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({TeacherNotFoundException.class})
     public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
         return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
+    }
+
+    @ExceptionHandler({TopicNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TopicNotFoundException topicNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(topicNotFoundException.getMessage());
     }
 
     @ExceptionHandler({TaskDomainAlreadyExist.class})

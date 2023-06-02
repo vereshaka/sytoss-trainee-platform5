@@ -3,10 +3,10 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,5 +25,17 @@ public class TopicController {
     @GetMapping("/discipline/{disciplineId}/topics")
     public List<Topic> findByDisciplineId(@PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);
+    }
+
+    @Operation(description = "Method that return topic by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suceess|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!"),
+    })
+    @GetMapping("/topic/{topicId}")
+    public Topic getById(
+            @Parameter(description = "id of topic to be searched")
+            @PathVariable(value = "topicId") Long topicId) {
+        return topicService.getById(topicId);
     }
 }

@@ -26,5 +26,7 @@ public class TestExecutionContext {
 
     private Long disciplineId;
 
+    private Long topicId;
+
     private Long teacherId;
 }
