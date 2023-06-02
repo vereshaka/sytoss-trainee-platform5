@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 public class TaskDomainConvertor {
 
     public void fromDTO(TaskDomainDTO source, TaskDomain destination) {
-        if (source != null) {
-            destination.setId(source.getId());
-            destination.setName(source.getName());
-            destination.setScript(source.getScript());
-        }
+        destination.setId(source.getId());
+        destination.setName(source.getName());
+        destination.setScript(source.getScript());
     }
 
     public void toDTO(TaskDomain source, TaskDomainDTO destination) {
-        if (source != null) {
-            destination.setId(source.getId());
-            destination.setName(source.getName());
-            destination.setScript(source.getScript());
-        }
+        destination.setId(source.getId());
+        destination.setName(source.getName());
+        destination.setScript(source.getScript());
     }
 }

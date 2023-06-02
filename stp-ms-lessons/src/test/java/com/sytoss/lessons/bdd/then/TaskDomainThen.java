@@ -11,7 +11,6 @@ public class TaskDomainThen extends CucumberIntegrationTest {
     @Then("^system should been get \"(.*)\" information$")
     public void systemShouldGetTaskDomain(String taskDomainName) {
         TaskDomain result = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
-
         Assertions.assertNotNull(result);
         Assertions.assertEquals(taskDomainName, result.getName());
     }

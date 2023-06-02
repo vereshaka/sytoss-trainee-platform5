@@ -33,11 +33,8 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
         taskDomainDTO.setScript("Script Domain");
-
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
-
         TaskDomain result = taskDomainService.getById(1L);
-
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("First Domain", result.getName());
         Assertions.assertEquals("Script Domain", result.getScript());
