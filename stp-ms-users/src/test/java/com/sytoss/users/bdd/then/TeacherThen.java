@@ -7,7 +7,6 @@ import io.cucumber.java.en.Then;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 public class TeacherThen extends CucumberIntegrationTest {
 
     @Then("^teacher with \"(.*)\" firstname and \"(.*)\" middlename and \"(.*)\" lastname should exist$")
