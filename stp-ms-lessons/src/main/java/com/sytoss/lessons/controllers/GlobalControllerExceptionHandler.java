@@ -15,11 +15,6 @@ import org.springframework.web.context.request.WebRequest;
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
-    @ExceptionHandler({TaskNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TaskNotFoundException taskNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
-    }
-
     @ExceptionHandler({TopicExistException.class})
     public ResponseEntity<?> handleValidationException(TopicExistException topicExistException, WebRequest request) {
         return ResponseEntity.status(409).body(topicExistException.getMessage());
@@ -39,4 +34,10 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
         return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
     }
+
+    @ExceptionHandler({TaskNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TaskNotFoundException taskNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
+    }
+
 }

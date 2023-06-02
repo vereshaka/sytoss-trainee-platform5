@@ -1,8 +1,6 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.TaskService;
@@ -10,14 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskControllerTest extends AbstractApplicationTest {
@@ -43,5 +37,4 @@ public class TaskControllerTest extends AbstractApplicationTest {
         assertEquals(404, result.getStatusCode().value());
         assertEquals("Task with id \"5\" not found", result.getBody());
     }
-
 }

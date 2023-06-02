@@ -21,5 +21,4 @@ public class TaskWhen extends CucumberIntegrationTest {
         ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
-
 }

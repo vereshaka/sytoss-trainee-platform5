@@ -1,9 +1,7 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.AbstractApplicationTest;
-import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.dto.*;
 import org.junit.jupiter.api.Test;
