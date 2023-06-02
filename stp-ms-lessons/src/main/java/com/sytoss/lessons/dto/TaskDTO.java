@@ -33,8 +33,8 @@ public class TaskDTO {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "TASK2TOPIC",
-        joinColumns = @JoinColumn(name = "TASK_ID"),
-        inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
+            name = "TASK2TOPIC",
+            joinColumns = @JoinColumn(name = "TASK_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private List<TopicDTO> topics;
 }

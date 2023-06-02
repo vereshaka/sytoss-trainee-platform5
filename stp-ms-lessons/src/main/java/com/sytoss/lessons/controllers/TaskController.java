@@ -26,8 +26,8 @@ public class TaskController {
     })
     @GetMapping("/{taskId}")
     public Task getDiscipline(@Parameter(description = "id of the task to be searched by")
-                                    @PathVariable("taskId")
-                                    Long taskId) {
+                              @PathVariable("taskId")
+                              Long taskId) {
         return taskService.getById(taskId);
     }
 }
