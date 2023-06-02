@@ -43,39 +43,4 @@ public class TaskGiven extends CucumberIntegrationTest {
             getTaskConnector().delete(taskDTO);
         }
     }
-
-    @Given("^this teacher has \"(.*)\" discipline$")
-    public void teacherHasDiscipline(String disciplineName) {
-        Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-        TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-        assert teacherDTO != null;
-
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
-        if (disciplineDTO == null) {
-            disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacher(teacherDTO);
-            disciplineDTO = getDisciplineConnector().saveAndFlush(disciplineDTO);
-        }
-        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
-    }
-
-    @Given("^this discipline has \"(.*)\" topic$")
-    public void disciplineHasTopic(String topicName) {
-
-        Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
-        DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
-
-        assert disciplineDTO != null;
-
-        TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
-        if (topicResult == null) {
-            topicResult = new TopicDTO();
-            topicResult.setName(topicName);
-            topicResult.setDiscipline(disciplineDTO);
-            topicResult = getTopicConnector().save(topicResult);
-        }
-        TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
-    }
 }
