@@ -2,11 +2,12 @@ package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TaskGiven extends CucumberIntegrationTest {
 

@@ -42,7 +42,6 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
     }
 
-
     @ExceptionHandler({TopicNotFoundException.class})
     public ResponseEntity<?> handleValidationException(TopicNotFoundException topicNotFoundException, WebRequest request) {
         return ResponseEntity.status(404).body(topicNotFoundException.getMessage());

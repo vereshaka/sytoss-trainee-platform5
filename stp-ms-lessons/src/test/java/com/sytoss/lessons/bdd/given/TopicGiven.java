@@ -2,13 +2,12 @@ package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.*;
-import io.cucumber.java.DataTableType;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TeacherDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.Given;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class TopicGiven extends CucumberIntegrationTest {

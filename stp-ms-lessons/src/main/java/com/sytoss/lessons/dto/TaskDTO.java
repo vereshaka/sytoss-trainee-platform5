@@ -1,9 +1,5 @@
 package com.sytoss.lessons.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
