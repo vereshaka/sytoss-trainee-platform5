@@ -1,6 +1,5 @@
-package com.sytoss.lessons.bdd.common;
+package com.sytoss.users.bdd.common;
 
-import com.sytoss.domain.bom.lessons.Topic;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +22,4 @@ public class TestExecutionContext {
     }
 
     private ResponseEntity response;
-
-    private Long disciplineId;
-
-    private Long topicId;
-
-    private Long teacherId;
-
-    private Topic topic;
 }
