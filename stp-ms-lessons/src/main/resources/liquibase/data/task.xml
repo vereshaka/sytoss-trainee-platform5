@@ -34,13 +34,4 @@
             <dropSequence sequenceName="TASK_SEQ" />
         </rollback>
     </changeSet>
-
-<!--    <changeSet author="MitkovM" id="task_4">-->
-<!--        <addForeignKeyConstraint baseTableName="TASK" baseColumnNames="TASK_DOMAIN_ID"-->
-<!--                                 constraintName="FK_TASK2TASKDOMAIN" referencedTableName="TASK_DOMAIN"-->
-<!--                                 referencedColumnNames="ID" />-->
-<!--        <rollback>-->
-<!--            <dropForeignKeyConstraint baseTableName="TASK" constraintName="FK_TASK2TASKDOMAIN" />-->
-<!--        </rollback>-->
-<!--    </changeSet>-->
 </databaseChangeLog>

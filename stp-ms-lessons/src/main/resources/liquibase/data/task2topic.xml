@@ -25,5 +25,4 @@
             <dropPrimaryKey tableName="TASK2TOPIC" constraintName="PK_TASK2TOPIC" />
         </rollback>
     </changeSet>
-
 </databaseChangeLog>
