@@ -33,6 +33,9 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
+    protected ObjectMapper mapper;
+
+    @Autowired
     private TopicConnector topicConnector;
 
     @Autowired
@@ -46,9 +49,6 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private ExamConnector examConnector;
-
-    @Autowired
-    protected ObjectMapper mapper;
 
     @Autowired
     private TopicConvertor topicConvertor;

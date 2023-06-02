@@ -2,8 +2,10 @@ package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class TaskDomainConvertor {
 

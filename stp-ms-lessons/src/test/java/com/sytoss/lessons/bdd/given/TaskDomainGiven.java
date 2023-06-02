@@ -6,21 +6,21 @@ import io.cucumber.java.en.Given;
 
 public class TaskDomainGiven extends CucumberIntegrationTest {
 
-    @Given("^\"(.*)\" task domain exist$")
-    public void taskDomainExists(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
-        if (taskDomainDTO == null) {
-            taskDomainDTO = new TaskDomainDTO();
-            taskDomainDTO.setName(taskDomainName);
-            getTaskDomainConnector().save(taskDomainDTO);
+    @Given("^\"(.*)\" task domain doesnt exist$")
+    public void taskDomainNotExist(String name) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
+        if (taskDomainDTO != null) {
+            getTaskDomainConnector().delete(taskDomainDTO);
         }
     }
 
-    @Given("^\"(.*)\" task domain does not exist$")
-    public void taskDomainDoesNotExist(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
-        if (taskDomainDTO != null) {
-            getTaskDomainConnector().deleteById(taskDomainDTO.getId());
+    @Given("^\"(.*)\" task domain exist$")
+    public void taskDomainExist(String name) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
+        if (taskDomainDTO == null) {
+            taskDomainDTO = new TaskDomainDTO();
+            taskDomainDTO.setName(name);
+            getTaskDomainConnector().save(taskDomainDTO);
         }
     }
 }

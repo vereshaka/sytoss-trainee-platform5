@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/taskDomain")
@@ -18,6 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskDomainController {
 
     private final TaskDomainService taskDomainService;
+
+    @Operation(description = "Method that create a new task domain")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Task domain already exist")
+    })
+    @PostMapping("/")
+    public TaskDomain create(
+            @RequestBody TaskDomain taskDomain) {
+        return taskDomainService.create(taskDomain);
+    }
 
     @Operation(description = "Method that save information about exam")
     @ApiResponses(value = {
