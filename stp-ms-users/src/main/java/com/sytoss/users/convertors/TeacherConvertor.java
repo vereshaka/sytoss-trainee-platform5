@@ -13,11 +13,15 @@ public class TeacherConvertor {
         destination.setId(source.getId());
         destination.setFirstName(source.getFirstName());
         destination.setLastName(source.getLastName());
+        destination.setMiddleName(source.getMiddleName());
+        destination.setEmail(source.getEmail());
     }
 
     public void toDTO(Teacher source, TeacherDTO destination) {
         destination.setId(source.getId());
         destination.setFirstName(source.getFirstName());
         destination.setLastName(source.getLastName());
+        destination.setMiddleName(source.getMiddleName());
+        destination.setEmail(source.getEmail());
     }
 }
