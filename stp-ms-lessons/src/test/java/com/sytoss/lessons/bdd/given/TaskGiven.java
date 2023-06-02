@@ -78,6 +78,4 @@ public class TaskGiven extends CucumberIntegrationTest {
         }
         TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
     }
-
-
 }
