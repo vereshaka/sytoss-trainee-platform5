@@ -18,14 +18,14 @@ public class TaskDomainService {
 
     public TaskDomain create(TaskDomain taskDomain) {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getByName(taskDomain.getName());
-        if(taskDomainDTO == null){
+        if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
             return taskDomain;
-        }else{
-           throw new TaskDomainAlreadyExist(taskDomain.getName());
+        } else {
+            throw new TaskDomainAlreadyExist(taskDomain.getName());
         }
     }
 }
