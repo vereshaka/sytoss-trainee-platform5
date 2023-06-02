@@ -61,10 +61,7 @@ public class TopicGiven extends CucumberIntegrationTest {
     @Given("^this discipline has \"(.*)\" topic$")
     public void disciplineHasTopic(String topicName) {
 
-        Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
-        DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
-
-        assert disciplineDTO != null;
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
 
         TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         if (topicResult == null) {
