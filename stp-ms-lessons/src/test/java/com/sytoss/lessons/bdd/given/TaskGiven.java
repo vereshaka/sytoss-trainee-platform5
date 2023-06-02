@@ -13,19 +13,11 @@ public class TaskGiven extends CucumberIntegrationTest {
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
 
-        Optional<TaskDomainDTO> optionalTaskDomainDTO = getTaskDomainConnector().findById(TestExecutionContext.getTestContext().getTaskDomainId());
-        TaskDomainDTO taskDomainDTO = optionalTaskDomainDTO.orElse(null);
-
-        assert taskDomainDTO != null;
-
-        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
-        TopicDTO topicDTO = optionalTopicDTO.orElse(null);
-
-        assert topicDTO != null;
-
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
 
         if (taskDTO == null) {
+            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
+            TopicDTO topicDTO = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId());
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);
             taskDTO.setEtalonAnswer("Etalon answer");
