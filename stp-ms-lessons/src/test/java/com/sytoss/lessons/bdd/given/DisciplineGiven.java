@@ -4,11 +4,9 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TeacherDTO;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
@@ -53,13 +51,9 @@ public class DisciplineGiven extends CucumberIntegrationTest {
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
 
-        Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-        TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-        assert teacherDTO != null;
-
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         if (disciplineDTO == null) {
+            TeacherDTO teacherDTO = getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId());
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacher(teacherDTO);
@@ -70,13 +64,10 @@ public class DisciplineGiven extends CucumberIntegrationTest {
 
     @Given("^this teacher has \"(.*)\" discipline$")
     public void teacherHasDiscipline(String disciplineName) {
-        Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-        TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-        assert teacherDTO != null;
 
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         if (disciplineDTO == null) {
+            TeacherDTO teacherDTO = getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId());
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacher(teacherDTO);
