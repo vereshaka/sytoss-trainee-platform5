@@ -5,16 +5,14 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class TaskDomainConvertor {
 
     public void fromDTO(TaskDomainDTO source, TaskDomain destination) {
-        if (source != null) {
-            destination.setId(source.getId());
-            destination.setName(source.getName());
-            destination.setScript(source.getScript());
-        }
+        destination.setId(source.getId());
+        destination.setName(source.getName());
+        destination.setScript(source.getScript());
     }
 
     public void toDTO(TaskDomain source, TaskDomainDTO destination) {

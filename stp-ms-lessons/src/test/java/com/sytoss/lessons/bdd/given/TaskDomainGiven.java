@@ -20,4 +20,21 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
     }
 
+    @Given("^\"(.*)\" task domain doesnt exist$")
+    public void taskDomainNotExist(String name) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
+        if (taskDomainDTO != null) {
+            getTaskDomainConnector().delete(taskDomainDTO);
+        }
+    }
+
+    @Given("^\"(.*)\" task domain exist$")
+    public void taskDomainExist(String name) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
+        if (taskDomainDTO == null) {
+            taskDomainDTO = new TaskDomainDTO();
+            taskDomainDTO.setName(name);
+            getTaskDomainConnector().save(taskDomainDTO);
+        }
+    }
 }
