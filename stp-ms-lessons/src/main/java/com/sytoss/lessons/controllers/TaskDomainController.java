@@ -20,7 +20,8 @@ public class TaskDomainController {
 
     @Operation(description = "Method that create a new task domain")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK")
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Task domain already exist")
     })
     @PostMapping("/")
     public TaskDomain create(

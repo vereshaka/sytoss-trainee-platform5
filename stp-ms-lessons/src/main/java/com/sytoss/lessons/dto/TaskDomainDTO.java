@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity(name = "TASK_DOMAIN")
 public class TaskDomainDTO {
+
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "task_domain_id_generator")
