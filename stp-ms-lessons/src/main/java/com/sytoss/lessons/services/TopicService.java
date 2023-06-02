@@ -68,13 +68,4 @@ public class TopicService {
         }
     }
 
-//    public Topic getById2(Long id) {
-//        TopicDTO topicDTO = topicConnector.getReferenceById(id);
-//        if (topicDTO != null) {
-//            Topic topic = new Topic();
-//            topicConvertor.fromDTO(topicDTO, topic);
-//            return topic;
-//        }
-//        throw new TopicNotFoundException(id);
-//    }
 }
