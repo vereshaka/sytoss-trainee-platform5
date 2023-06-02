@@ -27,7 +27,6 @@ public class TaskServiceTest extends AbstractApplicationTest {
     @Autowired
     private TaskService taskService;
 
-
     @Test
     public void getDisciplineById() {
         TaskDTO input = new TaskDTO();

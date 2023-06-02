@@ -35,6 +35,6 @@ public class TaskGiven extends CucumberIntegrationTest {
         if (taskDTO != null) {
             getTaskConnector().delete(taskDTO);
         }
-        TestExecutionContext.getTestContext().setTaskId(3L);
+        TestExecutionContext.getTestContext().setTaskId(taskId);
     }
 }
