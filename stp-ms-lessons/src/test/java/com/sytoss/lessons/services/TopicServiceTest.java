@@ -36,14 +36,8 @@ public class TopicServiceTest extends AbstractJunitTest {
     @Mock
     private TopicConnector topicConnector;
 
-    @Mock
-    private TopicConvertor topicConvertor;
-
-    @Mock
-    private DisciplineConvertor disciplineConvertor;
-
-    @Mock
-    private TeacherConvertor teacherConverter;
+    @Spy
+    private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor(new TeacherConvertor()));
 
     @InjectMocks
     private TopicService topicService;
@@ -51,9 +45,9 @@ public class TopicServiceTest extends AbstractJunitTest {
     @Test
     public void createExam() {
         List<TopicDTO> topics = new ArrayList<>();
-        topics.add(createTopic("topic first"));
-        topics.add(createTopic("topic second"));
-        topics.add(createTopic("topic third"));
+        topics.add(createTopicWithDiscipline("topic first"));
+        topics.add(createTopicWithDiscipline("topic second"));
+        topics.add(createTopicWithDiscipline("topic third"));
         when(topicConnector.findByDisciplineId(any())).thenReturn(topics);
         List<Topic> topicAnswer = topicService.findByDiscipline(1L);
         assertEquals(3, topicAnswer.size());
@@ -100,10 +94,20 @@ public class TopicServiceTest extends AbstractJunitTest {
         return topic;
     }
 
+    private TopicDTO createTopicWithDiscipline(String name) {
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setName(name);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(4L);
+        disciplineDTO.setName("first discipline");
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setId(88L);
+        disciplineDTO.setTeacher(teacherDTO);
+        topicDTO.setDiscipline(disciplineDTO);
+        return topicDTO;
+    }
+
     public Discipline createReference(Long id) {
-        Discipline result = new Discipline();
-        result.setId(id);
-        result.setName("Test");
-        return result;
+        return Discipline.builder().id(id).name("first discipline").build();
     }
 }

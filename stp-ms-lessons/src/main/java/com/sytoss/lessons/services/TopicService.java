@@ -1,11 +1,15 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -63,4 +67,14 @@ public class TopicService {
             throw new TopicNotFoundException(id);
         }
     }
+
+//    public Topic getById2(Long id) {
+//        TopicDTO topicDTO = topicConnector.getReferenceById(id);
+//        if (topicDTO != null) {
+//            Topic topic = new Topic();
+//            topicConvertor.fromDTO(topicDTO, topic);
+//            return topic;
+//        }
+//        throw new TopicNotFoundException(id);
+//    }
 }
