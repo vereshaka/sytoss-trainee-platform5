@@ -1,0 +1,47 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/task.xml">
+
+    <changeSet author="LarinI" id="task_1">
+        <createTable tableName="TASK">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="QUESTION" type="VARCHAR2(100 BYTE)" />
+            <column name="ANSWER" type="VARCHAR2(100 BYTE)" />
+            <column name="TASK_DOMAIN_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="TASK" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="LarinI" id="task_2">
+        <addPrimaryKey tableName="TASK" columnNames="ID" constraintName="PK_TASK" />
+        <rollback>
+            <dropPrimaryKey tableName="TASK" constraintName="PK_TASK" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="LarinI" id="task_3">
+        <addForeignKeyConstraint baseTableName="TASK" baseColumnNames="TASK_DOMAIN_ID"
+                                 constraintName="FK_TASKS2TASK_DOMAIN" referencedTableName="TASK_DOMAIN"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="TASK" constraintName="FK_TASKS2TASK_DOMAIN" />
+            <dropForeignKeyConstraint baseTableName="TASK" constraintName="FK_TASK2TOPICS" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="LarinI" id="task_4">
+        <createSequence sequenceName="TASK_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="TASK_SEQ" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

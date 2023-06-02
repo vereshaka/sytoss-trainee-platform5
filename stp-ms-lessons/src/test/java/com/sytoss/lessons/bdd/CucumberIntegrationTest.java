@@ -3,8 +3,7 @@ package com.sytoss.lessons.bdd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.convertors.GroupConvertor;
-import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.convertors.*;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,6 +50,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private TaskDomainConnector taskDomainConnector;
 
     @Autowired
+    private TaskDomainConvertor taskDomainConvertor;
+
+    @Autowired
     private TopicConvertor topicConvertor;
 
     @Autowired
@@ -61,6 +63,18 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private GroupConnector groupConnector;
+
+    @Autowired
+    private TeacherConvertor teacherConvertor;
+
+    @Autowired
+    private DisciplineConvertor disciplineConvertor;
+
+    @Autowired
+    private TaskConnector taskConnector;
+
+    @Autowired
+    private TaskConvertor taskConvertor;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
