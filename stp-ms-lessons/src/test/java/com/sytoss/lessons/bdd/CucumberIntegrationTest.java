@@ -42,6 +42,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private TaskConnector taskConnector;
 
     @Autowired
+    private TaskDomainConnector taskDomainConnector;
+
+    @Autowired
     private DisciplineConnector disciplineConnector;
 
     @Autowired

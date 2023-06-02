@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TaskThen extends CucumberIntegrationTest {
 
-    @Then("should return task with {string} question")
+    @Then("^should return task with \"(.*)\" question$")
     public void taskShouldBeReturned(String question) {
         Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
         assert task != null;

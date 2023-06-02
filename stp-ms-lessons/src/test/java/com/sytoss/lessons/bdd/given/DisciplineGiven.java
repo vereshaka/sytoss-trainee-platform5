@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
 
-    @Given("teacher {word} {word} exists")
+    @Given("^teacher \"(.*)\" \"(.*)\" exists$")
     public void teacherExists(String firstName, String lastName) {
         TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(lastName, firstName);
         if (teacherDTO == null) {
