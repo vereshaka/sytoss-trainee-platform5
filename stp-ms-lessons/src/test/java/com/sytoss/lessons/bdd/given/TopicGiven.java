@@ -8,6 +8,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +36,19 @@ public class TopicGiven extends CucumberIntegrationTest {
             }
             TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
         }
+    }
+
+    @Given("^This discipline has \"(.*)\" project$")
+    public void customerHasProject(String topicName) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        if (topicDTO == null) {
+            topicDTO = new TopicDTO();
+            topicDTO.setName(topicName);
+            topicDTO.setDiscipline(disciplineDTO);
+            topicDTO = getTopicConnector().save(topicDTO);
+        }
+        TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
     }
 
     @Given("^\"(.*)\" topic by \"(.*)\" discipline doesn't exist$")

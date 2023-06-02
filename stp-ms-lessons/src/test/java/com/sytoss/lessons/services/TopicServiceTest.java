@@ -77,13 +77,13 @@ public class TopicServiceTest extends AbstractJunitTest {
         topicDTO.setName("topic");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(4L);
-        disciplineDTO.setName("werwer");
+        disciplineDTO.setName("discipline");
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setId(88L);
+        Topic topic = new Topic();
         disciplineDTO.setTeacher(teacherDTO);
         topicDTO.setDiscipline(disciplineDTO);
         when(topicConnector.getReferenceById(2L)).thenReturn(topicDTO);
-
         Topic result = topicService.getById(2L);
         assertEquals(2L, result.getId());
     }
