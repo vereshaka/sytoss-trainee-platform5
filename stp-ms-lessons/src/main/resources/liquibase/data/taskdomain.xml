@@ -2,33 +2,33 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-                   logicalFilePath="data/taskdomain.xml">
+                   logicalFilePath="data/taskDomain.xml">
 
-    <changeSet author="BodenchukY" id="task_domain_1">
+    <changeSet author="KornienkoD" id="task_domain_1">
         <createTable tableName="TASK_DOMAIN">
             <column name="ID" type="BIGINT">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR2(100 BYTE)" />
-            <column name="SCRIPT" type="VARCHAR2(200 BYTE)" />
+            <column name="NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="SCRIPT" type="VARCHAR2(100 BYTE)"/>
         </createTable>
 
         <rollback>
-            <dropTable tableName="TASK_DOMAIN" />
+            <dropTable tableName="TASK_DOMAIN"/>
         </rollback>
     </changeSet>
 
-    <changeSet author="BodenchukY" id="task_domain_2">
-        <addPrimaryKey tableName="TASK_DOMAIN" columnNames="ID" constraintName="PK_TASK_DOMAIN" />
+    <changeSet author="KornienkoD" id="task_domain_2">
+        <addPrimaryKey tableName="TASK_DOMAIN" columnNames="ID" constraintName="PK_TASK_DOMAIN"/>
         <rollback>
-            <dropPrimaryKey tableName="TASK_DOMAIN" constraintName="PK_TASK_DOMAIN" />
+            <dropPrimaryKey tableName="TASK_DOMAIN" constraintName="PK_TASK_DOMAIN"/>
         </rollback>
     </changeSet>
 
-    <changeSet author="BodenchukY" id="task_domain_3">
-        <createSequence sequenceName="TASK_DOMAIN_SEQ" />
+    <changeSet author="KornienkoD" id="task_domain_3">
+        <createSequence sequenceName="TASK_DOMAIN_SEQ"/>
         <rollback>
-            <dropSequence sequenceName="TASK_DOMAIN_SEQ" />
+            <dropSequence sequenceName="TASK_DOMAIN_SEQ"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
