@@ -13,9 +13,6 @@
             <column name="DISCIPLINE_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
-            <column name="TASK_ID" type="BIGINT">
-                <constraints nullable="false" />
-            </column>
         </createTable>
 
         <rollback>
@@ -43,15 +40,6 @@
         <createSequence sequenceName="TOPIC_SEQ" />
         <rollback>
             <dropSequence sequenceName="TOPIC_SEQ" />
-        </rollback>
-    </changeSet>
-
-    <changeSet author="MitkovM" id="topic_5">
-        <addForeignKeyConstraint baseTableName="TOPIC" baseColumnNames="TASK_ID"
-                                 constraintName="FK_TOPIC2TASK" referencedTableName="TASK"
-                                 referencedColumnNames="ID" />
-        <rollback>
-            <dropForeignKeyConstraint baseTableName="TOPIC" constraintName="FK_TOPIC2TASK" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

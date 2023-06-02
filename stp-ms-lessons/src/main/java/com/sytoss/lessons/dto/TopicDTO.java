@@ -22,8 +22,4 @@ public class TopicDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
-
-    @ManyToOne
-    @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
-    private TaskDTO task;
 }
