@@ -15,9 +15,9 @@ public class TaskWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("retrieve information about this task with id {long}")
-    public void requestSentRetrieveTask(long taskId) {
-        String url = "/api/task/" + taskId;
+    @When("retrieve information about this existing task")
+    public void requestSentRetrieveExistingTask() {
+        String url = "/api/task/" + 1;
         ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

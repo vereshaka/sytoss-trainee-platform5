@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TaskGiven extends CucumberIntegrationTest {
 
-    @Given("task with question {string} exist")
-    public void taskExist(String question) {
+    @Given("task with question {string} exists")
+    public void taskExists(String question) {
 
         TaskDTO taskDTO = getTaskConnector().getByQuestion(question);
         if (taskDTO == null) {
@@ -23,18 +23,16 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setTaskDomain(taskDomainDTO);
             List<TopicDTO> topics = new ArrayList<>();
             taskDTO.setTopics(topics);
-
             getTaskConnector().saveAndFlush(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
     }
 
-    @Given("task with question {string} and id {long} doesnt exist")
-    public void taskNotExist(String question, long taskId) {
+    @Given("task with question {string} doesnt exist")
+    public void taskNotExist(String question) {
         TaskDTO taskDTO = getTaskConnector().getByQuestion(question);
         if (taskDTO != null) {
             getTaskConnector().delete(taskDTO);
         }
-        TestExecutionContext.getTestContext().setTaskId(taskId);
     }
 }

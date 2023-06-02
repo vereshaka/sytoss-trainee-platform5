@@ -28,15 +28,12 @@ public class TaskConvertor {
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
-
         List<Topic> topicList = new ArrayList<>();
-
         source.getTopics().forEach(topicDTO -> {
             Topic topic = new Topic();
             topicConvertor.fromDTO(topicDTO, topic);
             topicList.add(topic);
         });
-
         destination.setTopics(topicList);
     }
 
@@ -47,15 +44,12 @@ public class TaskConvertor {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
-
         List<TopicDTO> topicDTOList = new ArrayList<>();
-
         source.getTopics().forEach(topic -> {
             TopicDTO topicDTO = new TopicDTO();
             topicConvertor.toDTO(topic, topicDTO);
             topicDTOList.add(topicDTO);
         });
-
         destination.setTopics(topicDTOList);
     }
 }

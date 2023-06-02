@@ -25,7 +25,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found!")
     })
     @GetMapping("/{taskId}")
-    public Task getDiscipline(@Parameter(description = "id of the task to be searched by")
+    public Task getById(@Parameter(description = "id of the task to be searched by")
                               @PathVariable("taskId")
                               Long taskId) {
         return taskService.getById(taskId);

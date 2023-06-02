@@ -26,7 +26,7 @@ public class TaskServiceTest extends AbstractApplicationTest {
     private TaskService taskService;
 
     @Test
-    public void getDisciplineById() {
+    public void getTaskById() {
         TaskDTO input = new TaskDTO();
         input.setId(1L);
         input.setQuestion("What is SQL?");
