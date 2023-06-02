@@ -5,11 +5,5 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Teacher {
-
-    private Long id;
-
-    private String firstName;
-
-    private String lastName;
+public class Teacher extends AbstractUser{
 }
