@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 public class TeacherWhen extends CucumberIntegrationTest {
 
     @When("^anonymous register in system as teacher with \"(.*)\" firstname and \"(.*)\" middlename and \"(.*)\" lastname$")
-    public void disciplineCreating(String firstname, String middlename, String lastname) {
+    public void teacherCreating(String firstname, String middlename, String lastname) {
         String url = "/api/teacher/";
         Teacher teacher = new Teacher();
         teacher.setFirstName(firstname);

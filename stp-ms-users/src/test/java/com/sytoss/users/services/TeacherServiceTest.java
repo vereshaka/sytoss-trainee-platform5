@@ -28,7 +28,6 @@ public class TeacherServiceTest extends AbstractJunitTest {
     @Spy
     private TeacherConvertor teacherConvertor = new TeacherConvertor();
 
-
     @Test
     public void shouldSaveTeacher() {
         Mockito.doAnswer((Answer<TeacherDTO>) invocation -> {

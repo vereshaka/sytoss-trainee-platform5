@@ -23,8 +23,4 @@ public class TestExecutionContext {
     }
 
     private ResponseEntity response;
-
-    private Long disciplineId;
-
-    private Long teacherId;
 }

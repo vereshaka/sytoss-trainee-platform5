@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TeacherThen extends CucumberIntegrationTest {
 
     @Then("^teacher with \"(.*)\" firstname and \"(.*)\" middlename and \"(.*)\" lastname should exist$")
-    public void disciplineShouldBeReceived(String firstName, String middlename, String lastname) {
+    public void teacherShouldBeSave(String firstName, String middlename, String lastname) {
         Teacher teacher = (Teacher) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(firstName, teacher.getFirstName());
         assertEquals(middlename, teacher.getMiddleName());

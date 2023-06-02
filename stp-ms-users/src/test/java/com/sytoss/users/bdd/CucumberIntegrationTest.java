@@ -31,9 +31,6 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
-    protected ObjectMapper mapper;
-
-    @Autowired
     private TeacherConnector teacherConnector;
 
     @LocalServerPort
