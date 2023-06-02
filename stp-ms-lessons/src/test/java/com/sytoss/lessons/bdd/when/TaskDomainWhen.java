@@ -13,7 +13,6 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void systemTryToFindTaskDomainById(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
         String url = "/api/taskDomain/" + taskDomainDTO.getId();
-
         ResponseEntity<TaskDomain> responseEntity = doGet(url, null, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

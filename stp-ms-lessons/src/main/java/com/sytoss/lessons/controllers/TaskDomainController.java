@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/taskDomain")
 @RequiredArgsConstructor
 public class TaskDomainController {
 
@@ -24,7 +24,7 @@ public class TaskDomainController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task domain not found"),
     })
-    @GetMapping("/taskDomain/{taskDomainId}")
+    @GetMapping("/{taskDomainId}")
     public TaskDomain getById(@Parameter(description = "id of the task domain to be searched by")
                               @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getById(taskDomainId);
