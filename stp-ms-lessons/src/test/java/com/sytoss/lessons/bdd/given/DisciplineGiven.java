@@ -36,7 +36,7 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^this teacher has \"(.*)\" discipline$")
+    @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
 
         Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());

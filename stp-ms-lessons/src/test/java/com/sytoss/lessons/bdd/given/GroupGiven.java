@@ -15,17 +15,12 @@ public class GroupGiven extends CucumberIntegrationTest {
     @Given("^groups exist$")
     public void groupsExist(List<GroupDTO> groups) {
         for (GroupDTO groupDTO : groups) {
-
-            Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-            TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(groupDTO.getDiscipline().getName(), teacherDTO.getId());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(groupDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
             if (disciplineDTO == null) {
                 disciplineDTO = groupDTO.getDiscipline();
-                disciplineDTO.setTeacher(teacherDTO);
+                disciplineDTO.setTeacher(getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
-            TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
             GroupDTO result = getGroupConnector().getByNameAndDisciplineId(groupDTO.getName(), disciplineDTO.getId());
             groupDTO.setDiscipline(disciplineDTO);
             if (result == null) {

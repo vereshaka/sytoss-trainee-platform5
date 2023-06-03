@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 @Setter
 public class TestExecutionContext {
 
-
     private static final ThreadLocal<TestExecutionContext> testContext = new ThreadLocal<>();
 
     public static TestExecutionContext getTestContext() {
@@ -25,6 +24,8 @@ public class TestExecutionContext {
     private ResponseEntity response;
 
     private Long disciplineId;
+
+    private Long topicId;
 
     private Long teacherId;
 }
