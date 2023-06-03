@@ -38,11 +38,9 @@ public class TaskWhen extends CucumberIntegrationTest {
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
         task.setTopics(List.of(topic));
         if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId()) == null) {
-
             ResponseEntity<Task> responseEntity = doPost(url, task, Task.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         } else {
-
             ResponseEntity<String> responseEntity = doPost(url, task, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
