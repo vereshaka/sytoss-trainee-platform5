@@ -11,6 +11,18 @@ import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
 
+    @Given("^teacher \"(.*)\" \"(.*)\" exists$")
+    public void teacherExists(String firstName, String lastName) {
+        TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(lastName, firstName);
+        if (teacherDTO == null) {
+            TeacherDTO teacher = new TeacherDTO();
+            teacher.setFirstName(firstName);
+            teacher.setLastName(lastName);
+            teacherDTO = getTeacherConnector().save(teacher);
+        }
+        TestExecutionContext.getTestContext().setTeacherId(teacherDTO.getId());
+    }
+
     @Given("disciplines exist")
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
         for (DisciplineDTO discipline : disciplines) {
@@ -39,17 +51,27 @@ public class DisciplineGiven extends CucumberIntegrationTest {
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
 
-        Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-        TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-        assert teacherDTO != null;
-
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         if (disciplineDTO == null) {
+            TeacherDTO teacherDTO = getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId());
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacher(teacherDTO);
             getDisciplineConnector().saveAndFlush(disciplineDTO);
+        }
+        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
+    }
+
+    @Given("^this teacher has \"(.*)\" discipline$")
+    public void teacherHasDiscipline(String disciplineName) {
+
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        if (disciplineDTO == null) {
+            TeacherDTO teacherDTO = getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacher(teacherDTO);
+            disciplineDTO = getDisciplineConnector().saveAndFlush(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
