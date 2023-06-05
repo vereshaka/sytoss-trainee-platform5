@@ -87,7 +87,7 @@ public class TaskServiceTest extends AbstractApplicationTest {
         taskDTO.setId(1L);
         taskDTO.setQuestion("Question");
         taskDTO.setEtalonAnswer("Answer");
-        taskDTO.setTaskDomainDTO(taskDomainDTO);
+        taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
         when(taskConnector.findTasksByTopicsId(anyLong())).thenReturn(List.of(taskDTO));

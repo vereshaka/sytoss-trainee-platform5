@@ -3,7 +3,10 @@ package com.sytoss.lessons.bdd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.convertors.*;
+import com.sytoss.lessons.convertors.GroupConvertor;
+import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,21 +52,11 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private TaskConnector taskConnector;
 
     @Autowired
-    private TaskDomainConnector taskDomainConnector;
-
-    @Autowired
-    private DisciplineConnector disciplineConnector;
-
-    @Autowired
-    private ExamConnector examConnector;
-
-    @Autowired
     private TopicConvertor topicConvertor;
+
     @LocalServerPort private int applicationPort;
 
     @Autowired private GroupConnector groupConnector;
-
-    @Autowired private TaskConnector taskConnector;
 
     @Autowired private TaskConvertor taskConvertor;
 

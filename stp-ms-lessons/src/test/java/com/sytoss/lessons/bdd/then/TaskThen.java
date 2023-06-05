@@ -74,7 +74,7 @@ public class TaskThen extends CucumberIntegrationTest {
             String taskQuestion = columns.get("task");
             TaskDTO taskDTO = new TaskDTO();
             taskDTO.setQuestion(taskQuestion);
-            taskDTO.setTaskDomainDTO(getTaskDomainConnector().getByName("TaskDomain"));
+            taskDTO.setTaskDomain(getTaskDomainConnector().getByName("TaskDomain"));
             taskDTO.setTopics(List.of(topicDTO));
             taskDTOS.add(taskDTO);
         }
