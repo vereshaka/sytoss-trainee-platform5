@@ -1,6 +1,5 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.AbstractJunitTest;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -53,11 +51,5 @@ public class TaskServiceTest extends AbstractJunitTest {
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
         Assertions.assertEquals(1, result.get(0).getTopics().size());
-    }
-
-    @Test
-    public void shouldRaiseExceptionWhenTaskNotExist() {
-        when(taskConnector.findTasksByTopicsId(2L)).thenThrow(new TaskNotFoundException(2L));
-        assertThrows(TaskNotFoundException.class, () -> taskService.findByTopicId(2L));
     }
 }

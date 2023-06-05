@@ -19,7 +19,6 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
-            taskDomainDTO.
             taskDomainDTO.setName(name);
             getTaskDomainConnector().save(taskDomainDTO);
         }

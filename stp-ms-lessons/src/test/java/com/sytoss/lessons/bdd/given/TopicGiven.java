@@ -1,8 +1,5 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -58,61 +55,5 @@ public class TopicGiven extends CucumberIntegrationTest {
         if (topic != null) {
             getTopicConnector().delete(topic);
         }
-    }
-
-    @Given("topic with name \"(.*)\" exist")
-    public void topicWithExist(String name) {
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        teacher.setFirstName("Ivan");
-        teacher.setLastName("Ivanov");
-        TeacherDTO teacherDTO = new TeacherDTO();
-        getTeacherConvertor().toDTO(teacher, teacherDTO);
-        getTeacherConnector().save(teacherDTO);
-
-
-        Discipline discipline = new Discipline();
-        discipline.setId(1L);
-        discipline.setName("Database");
-        discipline.setTeacher(teacher);
-        DisciplineDTO disciplineDTO = new DisciplineDTO();
-        getDisciplineConvertor().toDTO(discipline, disciplineDTO);
-        getDisciplineConnector().save(disciplineDTO);
-
-        Topic topic = new Topic();
-        topic.setId(1L);
-        topic.setName(name);
-        topic.setDiscipline(discipline);
-        TopicDTO topicDTO = new TopicDTO();
-        getTopicConvertor().toDTO(topic, topicDTO);
-        getTopicConnector().save(topicDTO);
-        TestExecutionContext.getTestContext().setTopicId(topic.getId());
-    }
-
-    @Given("topic with name {string} and id {string} exist")
-    public void topicWithNameAndIdExist(String name, String id) {
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(1L);
-        teacherDTO.setFirstName("Ivan");
-        teacherDTO.setLastName("Ivanov");
-        getTeacherConnector().save(teacherDTO);
-
-
-        DisciplineDTO discipline = new DisciplineDTO();
-        discipline.setId(1L);
-        discipline.setName("Database");
-        discipline.setTeacher(teacher);
-        DisciplineDTO disciplineDTO = new DisciplineDTO();
-        getDisciplineConvertor().toDTO(discipline, disciplineDTO);
-        getDisciplineConnector().save(disciplineDTO);
-
-        Topic topic = new Topic();
-        topic.setId(Long.parseLong(id));
-        topic.setName(name);
-        topic.setDiscipline(discipline);
-        TopicDTO topicDTO = new TopicDTO();
-        getTopicConvertor().toDTO(topic, topicDTO);
-        getTopicConnector().save(topicDTO);
-        TestExecutionContext.getTestContext().setTopicId(topic.getId());
     }
 }

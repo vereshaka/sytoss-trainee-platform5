@@ -1,56 +1,57 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import io.cucumber.java.en.And;
+import com.sytoss.lessons.dto.TopicDTO;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TaskGiven extends CucumberIntegrationTest {
 
-    @Given("this topic has task with question {string}")
-    public void thisTopicHasTaskWithQuestion(String question) {
-
-        Task task = new Task();
-        task.setId(1L);
-        task.setQuestion(question);
-        task.setTaskDomain(taskDomain);
-        task.setTopics(List.of(getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId())));
-
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        getTaskDomainConvertor().toDTO(taskDomain, taskDomainDTO);
-        getTaskDomainConnector().save(taskDomainDTO);
-
-        TaskDTO taskDTO = new TaskDTO();
-        getTaskConvertor().toDTO(task, taskDTO);
-        getTaskConnector().save(taskDTO);
+    @Given("tasks exist")
+    public void tasksExist(DataTable tasks) {
+        getTaskConnector().deleteAll();
+        getTopicConnector().deleteAll();
+        getDisciplineConnector().deleteAll();
+        List<Map<String, String>> rows = tasks.asMaps();
+        getListOfTasksFromDataTable(rows);
     }
 
-    @And("task with question {string} doesnt have this topic")
-    public void taskWithQuestionDoesntHaveThisTopic(String question) {
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(1L);
-        taskDomain.setName("Task Domain");
-        taskDomain.setScript("Script");
+    private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
+        for (Map<String, String> columns : rows) {
+            String disciplineName = columns.get("discipline");
+            Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setName(disciplineName);
+                disciplineDTO.setTeacher(getTeacherConnector().getReferenceById(teacherId));
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            }
 
-        Task task = new Task();
-        task.setId(1L);
-        task.setQuestion(question);
-        task.setTaskDomain(taskDomain);
-        task.setTopics(new ArrayList<>());
+            String topicName = columns.get("topic");
+            TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+            if (topicDTO == null) {
+                topicDTO = new TopicDTO();
+                topicDTO.setName(topicName);
+                topicDTO.setDiscipline(disciplineDTO);
+                topicDTO = getTopicConnector().save(topicDTO);
+                if (TestExecutionContext.getTestContext().getTopicId() == null) {
+                    TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+                }
+            }
 
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        getTaskDomainConvertor().toDTO(taskDomain, taskDomainDTO);
-        getTaskDomainConnector().save(taskDomainDTO);
-
-        TaskDTO taskDTO = new TaskDTO();
-        getTaskConvertor().toDTO(task, taskDTO);
-        getTaskConnector().save(taskDTO);
+            String taskQuestion = columns.get("task");
+            TaskDTO taskDTO = new TaskDTO();
+            taskDTO.setQuestion(taskQuestion);
+            taskDTO.setTaskDomainDTO(getTaskDomainConnector().getByName("TaskDomain"));
+            taskDTO.setTopics(List.of(topicDTO));
+            getTaskConnector().save(taskDTO);
+        }
     }
 }

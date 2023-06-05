@@ -1,6 +1,5 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
@@ -21,16 +20,12 @@ public class TaskService {
 
     public List<Task> findByTopicId(Long topicId) {
         List<TaskDTO> taskDTOList = taskConnector.findTasksByTopicsId(topicId);
-        if(!taskDTOList.isEmpty()) {
-            List<Task> tasksList = new ArrayList<>();
-            for (TaskDTO taskDTO : taskDTOList) {
-                Task task = new Task();
-                taskConvertor.fromDTO(taskDTO, task);
-                tasksList.add(task);
-            }
-            return tasksList;
-        } else {
-            throw new TaskNotFoundException(topicId);
+        List<Task> tasksList = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOList) {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            tasksList.add(task);
         }
+        return tasksList;
     }
 }

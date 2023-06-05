@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.common;
 
-import com.sytoss.domain.bom.lessons.Topic;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,14 @@ import org.springframework.http.ResponseEntity;
 public class TestExecutionContext {
 
     private static final ThreadLocal<TestExecutionContext> testContext = new ThreadLocal<>();
+
+    private ResponseEntity response;
+
+    private Long disciplineId;
+
+    private Long topicId;
+
+    private Long teacherId;
 
     public static TestExecutionContext getTestContext() {
         if (testContext.get() == null) {
@@ -21,12 +28,4 @@ public class TestExecutionContext {
     public static void drop() {
         testContext.set(null);
     }
-
-    private ResponseEntity response;
-
-    private Long disciplineId;
-
-    private Long topicId;
-
-    private Long teacherId;
 }

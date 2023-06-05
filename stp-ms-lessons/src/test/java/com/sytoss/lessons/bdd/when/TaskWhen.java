@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public class TaskWhen extends CucumberIntegrationTest {
 
-    @When("retrieve information about task by topic")
+    @When("retrieve information about tasks by topic")
     public void retrieveInformationAboutTaskByTopic() {
         String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/tasks";
         ResponseEntity<String> responseEntity = doGet(url, null, String.class);

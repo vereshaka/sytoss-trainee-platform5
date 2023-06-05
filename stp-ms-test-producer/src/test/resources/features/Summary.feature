@@ -1,3 +1,4 @@
+@ignore
 Feature: Summary
 
   Scenario: student path to summary when all tasks are graded

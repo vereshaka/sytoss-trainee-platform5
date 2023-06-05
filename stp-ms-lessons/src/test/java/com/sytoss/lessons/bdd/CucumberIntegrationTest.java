@@ -31,50 +31,36 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @Getter
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
-    @Autowired
-    protected ObjectMapper mapper;
+    @Autowired protected ObjectMapper mapper;
 
-    @Autowired
-    private TopicConnector topicConnector;
+    @Autowired private TopicConnector topicConnector;
 
-    @Autowired
-    private TeacherConnector teacherConnector;
+    @Autowired private TeacherConnector teacherConnector;
 
-    @Autowired
-    private DisciplineConnector disciplineConnector;
+    @Autowired private DisciplineConnector disciplineConnector;
 
-    @Autowired
-    private ExamConnector examConnector;
+    @Autowired private ExamConnector examConnector;
 
-    @Autowired
-    private TaskDomainConnector taskDomainConnector;
+    @Autowired private TaskDomainConnector taskDomainConnector;
 
-    @Autowired
-    private TaskDomainConvertor taskDomainConvertor;
+    @Autowired private TaskDomainConvertor taskDomainConvertor;
 
-    @Autowired
-    private TopicConvertor topicConvertor;
+    @Autowired private TopicConvertor topicConvertor;
 
-    @Autowired
-    private GroupConvertor groupConvertor;
+    @Autowired private GroupConvertor groupConvertor;
 
-    @LocalServerPort
-    private int applicationPort;
+    @LocalServerPort private int applicationPort;
 
-    @Autowired
-    private GroupConnector groupConnector;
+    @Autowired private GroupConnector groupConnector;
 
-    @Autowired
-    private TeacherConvertor teacherConvertor;
+    @Autowired private TeacherConvertor teacherConvertor;
 
-    @Autowired
-    private DisciplineConvertor disciplineConvertor;
+    @Autowired private DisciplineConvertor disciplineConvertor;
 
-    @Autowired
-    private TaskConnector taskConnector;
+    @Autowired private TaskConnector taskConnector;
 
-    @Autowired
-    private TaskConvertor taskConvertor;
+    @Autowired private TaskConvertor taskConvertor;
+
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
