@@ -1,10 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.*;
-import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +50,11 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({GroupExistException.class})
     public ResponseEntity<?> handleValidationException(GroupExistException groupExistException, WebRequest request) {
         return ResponseEntity.status(409).body(groupExistException.getMessage());
+    }
+
+    @ExceptionHandler({TaskDomainNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TaskDomainNotFoundException taskDomainNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(taskDomainNotFoundException.getMessage());
     }
 
     @ExceptionHandler({TaskExistException.class})

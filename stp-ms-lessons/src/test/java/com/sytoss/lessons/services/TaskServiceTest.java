@@ -31,9 +31,6 @@ public class TaskServiceTest extends AbstractApplicationTest {
     @Autowired
     private TaskService taskService;
 
-/*    @Mock
-    private TaskConvertor taskConvertor;*/
-
     @Test
     public void getTaskById() {
         TaskDTO input = new TaskDTO();
