@@ -1,6 +1,8 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.lessons.services.TaskService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,8 @@ import java.util.List;
 public class TopicController {
 
     private final TopicService topicService;
+
+    private final TaskService taskService;
 
     @Operation(description = "Method that retrieve information about topic")
     @ApiResponses(value = {
@@ -37,5 +41,15 @@ public class TopicController {
             @Parameter(description = "id of topic to be searched")
             @PathVariable(value = "topicId") Long topicId) {
         return topicService.getById(topicId);
+    }
+
+    @Operation(description = "Method that gets tasks by topic ID")
+    @ApiResponses(
+            value = {@ApiResponse(responseCode = "200", description = "Success|OK"), @ApiResponse(responseCode = "404",
+                    description = "Topic not found")})
+    @GetMapping("/topic/{topicId}/tasks")
+    public List<Task> getByTopicId(
+            @PathVariable(value = "topicId") Long topicId) {
+        return taskService.findByTopicId(topicId);
     }
 }

@@ -45,7 +45,7 @@ public class DisciplineGiven extends CucumberIntegrationTest {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacher(teacherDTO);
-            getDisciplineConnector().save(disciplineDTO);
+            getDisciplineConnector().saveAndFlush(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }

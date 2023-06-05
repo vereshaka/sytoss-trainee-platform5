@@ -8,15 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/task")
 public class TaskController {
 
     private final TaskService taskService;
@@ -26,7 +21,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task not found!")
     })
-    @GetMapping("/task/{taskId}")
+    @GetMapping("/{taskId}")
     public Task getById(@Parameter(description = "id of the task to be searched by")
                               @PathVariable("taskId")
                               Long taskId) {
@@ -38,18 +33,8 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Task already exist!")
     })
-    @PostMapping("/task/")
+    @PostMapping("/")
     public Task create(@RequestBody Task task) {
         return taskService.create(task);
-    }
-
-    @Operation(description = "Method that gets tasks by topic ID")
-    @ApiResponses(
-            value = {@ApiResponse(responseCode = "200", description = "Success|OK"), @ApiResponse(responseCode = "404",
-                    description = "Topic not found")})
-    @GetMapping("/topic/{topicId}/tasks")
-    public List<Task> getByTopicId(
-            @PathVariable(value = "topicId") Long topicId) {
-        return taskService.findByTopicId(topicId);
     }
 }
