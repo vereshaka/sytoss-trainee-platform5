@@ -1,8 +1,9 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
-import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractApplicationTest;
@@ -98,5 +99,23 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         ResponseEntity<String> result = doGet("/api/discipline/123", null, String.class);
         assertEquals(404, result.getStatusCode().value());
         assertEquals("Discipline with id \"123\" not found", result.getBody());
+    }
+
+    @Test
+    public void shouldCreateGroup() {
+        when(groupService.create(anyLong(), any(Group.class))).thenReturn(new Group());
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
+        ResponseEntity<Group> result = doPost("/api/discipline/123/group", requestEntity, Group.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldNotCreateGroupWhenItExists() {
+        when(groupService.create(anyLong(), any(Group.class))).thenThrow(new GroupExistException("Test"));
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
+        ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
+        assertEquals(409, result.getStatusCode().value());
     }
 }

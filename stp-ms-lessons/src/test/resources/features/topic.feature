@@ -37,7 +37,7 @@ Feature: Topic
 
   Scenario: Retrieve information about topic by id
     Given "SQL" discipline exists
-    And This discipline has "Join" project
+    And This discipline has "Join" topic
     When retrieve information about topic by topicID
     Then operation is successful
     And should return "Join" topic

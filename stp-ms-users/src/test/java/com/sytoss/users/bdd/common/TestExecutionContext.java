@@ -1,4 +1,4 @@
-package com.sytoss.lessons.bdd.common;
+package com.sytoss.users.bdd.common;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,10 +22,4 @@ public class TestExecutionContext {
     }
 
     private ResponseEntity response;
-
-    private Long disciplineId;
-
-    private Long topicId;
-
-    private Long teacherId;
 }
