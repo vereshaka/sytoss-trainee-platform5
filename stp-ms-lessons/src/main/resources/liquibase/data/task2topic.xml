@@ -3,6 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/task2topic.xml">
+
     <changeSet author="MitkovM" id="task2topic_1">
         <createTable tableName="TASK2TOPIC">
             <column name="TASK_ID" type="BIGINT">
@@ -16,6 +17,7 @@
             <dropTable tableName="TASK2TOPIC" />
         </rollback>
     </changeSet>
+
     <changeSet author="MitkovM" id="task2topic_2">
         <addPrimaryKey tableName="TASK2TOPIC" columnNames="TASK_ID, TOPIC_ID"
                        constraintName="PK_TASK2TOPIC" />

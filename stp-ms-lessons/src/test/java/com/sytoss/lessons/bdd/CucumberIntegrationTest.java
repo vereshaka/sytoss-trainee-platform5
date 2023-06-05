@@ -45,22 +45,30 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired private TaskDomainConvertor taskDomainConvertor;
 
-    @Autowired private TopicConvertor topicConvertor;
+    @Autowired
+    private TaskConnector taskConnector;
 
-    @Autowired private GroupConvertor groupConvertor;
+    @Autowired
+    private TaskDomainConnector taskDomainConnector;
 
+    @Autowired
+    private DisciplineConnector disciplineConnector;
+
+    @Autowired
+    private ExamConnector examConnector;
+
+    @Autowired
+    private TopicConvertor topicConvertor;
     @LocalServerPort private int applicationPort;
 
     @Autowired private GroupConnector groupConnector;
-
-    @Autowired private TeacherConvertor teacherConvertor;
-
-    @Autowired private DisciplineConvertor disciplineConvertor;
 
     @Autowired private TaskConnector taskConnector;
 
     @Autowired private TaskConvertor taskConvertor;
 
+    @Autowired
+    private GroupConvertor groupConvertor;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
