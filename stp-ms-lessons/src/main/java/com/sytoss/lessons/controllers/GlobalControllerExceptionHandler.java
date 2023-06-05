@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TopicExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TeacherNotFoundException;
@@ -36,6 +37,11 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({TeacherNotFoundException.class})
     public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
         return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
+    }
+
+    @ExceptionHandler({TaskNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TaskNotFoundException taskNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
     }
 
     @ExceptionHandler({TopicNotFoundException.class})

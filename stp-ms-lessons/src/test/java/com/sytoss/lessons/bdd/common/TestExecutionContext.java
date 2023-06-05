@@ -28,4 +28,8 @@ public class TestExecutionContext {
     private Long topicId;
 
     private Long teacherId;
+
+    private Long taskId;
+
+    private Long taskDomainId;
 }
