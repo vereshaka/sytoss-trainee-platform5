@@ -64,4 +64,18 @@ public class DisciplineController {
                                     Long disciplineId) {
         return disciplineService.getById(disciplineId);
     }
+
+    @Operation(description = "Method that create group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!"),
+            @ApiResponse(responseCode = "409", description = "Group already exists!")
+    })
+    @PostMapping("/{disciplineId}/group")
+    public Group createGroup(@Parameter(description = "id of the discipline to be searched by")
+                             @PathVariable("disciplineId")
+                             Long disciplineId,
+                             @RequestBody Group group) {
+        return groupService.create(disciplineId, group);
+    }
 }
