@@ -35,7 +35,7 @@ public class TopicGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^This discipline has \"(.*)\" project$")
+    @Given("^This discipline has \"(.*)\" topic")
     public void customerHasProject(String topicName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());

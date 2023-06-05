@@ -29,4 +29,11 @@ public class GroupThen extends CucumberIntegrationTest {
         }
         assertEquals(quantityOfGroups, results.size());
     }
+
+    @Then("^\"(.*)\" group should be for \"(.*)\" discipline$")
+    public void groupShouldBe(String groupName, String disciplineName) {
+        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
+        assertNotNull(groupDTO);
+        assertEquals(disciplineName, groupDTO.getDiscipline().getName());
+    }
 }

@@ -11,18 +11,6 @@ import java.util.Optional;
 
 public class DisciplineGiven extends CucumberIntegrationTest {
 
-    @Given("^teacher \"(.*)\" \"(.*)\" exists$")
-    public void teacherExists(String firstName, String lastName) {
-        TeacherDTO teacherDTO = getTeacherConnector().getByLastNameAndFirstName(lastName, firstName);
-        if (teacherDTO == null) {
-            TeacherDTO teacher = new TeacherDTO();
-            teacher.setFirstName(firstName);
-            teacher.setLastName(lastName);
-            teacherDTO = getTeacherConnector().save(teacher);
-        }
-        TestExecutionContext.getTestContext().setTeacherId(teacherDTO.getId());
-    }
-
     @Given("disciplines exist")
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
         for (DisciplineDTO discipline : disciplines) {
