@@ -16,3 +16,14 @@ Feature: Task
     Given task with question "What are the different subsets of SQL?" doesnt exist
     When retrieve information about this existing task
     Then operation should be finished with 404 "Task with id "1" not found" error
+
+  Scenario: system create new task
+    Given task with question "What are the different subsets of SQL?" doesnt exist
+    When system create task with question "What are the different subsets of SQL?"
+    Then operation is successful
+    And task with question "What are the different subsets of SQL?" should be created
+
+  Scenario: system does not create new task when task exists
+    Given task with question "What are the different subsets of SQL?" exists
+    When system create task with question "What are the different subsets of SQL?"
+    Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error

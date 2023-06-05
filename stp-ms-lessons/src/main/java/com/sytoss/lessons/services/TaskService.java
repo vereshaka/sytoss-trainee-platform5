@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.connectors.TaskConnector;
@@ -26,5 +27,17 @@ public class TaskService {
         } catch (EntityNotFoundException e) {
             throw new TaskNotFoundException(id);
         }
+    }
+
+    public Task create(Task task) {
+        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getId());
+        if (taskDTO == null) {
+            taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        }
+        throw new TaskExistException(task.getQuestion());
     }
 }
