@@ -45,10 +45,10 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private DisciplineConnector disciplineConnector;
 
     @Autowired
-    private ExamConnector examConnector;
+    private TaskDomainConnector taskDomainConnector;
 
     @Autowired
-    private TaskDomainConnector taskDomainConnector;
+    private ExamConnector examConnector;
 
     @Autowired
     private TopicConvertor topicConvertor;
