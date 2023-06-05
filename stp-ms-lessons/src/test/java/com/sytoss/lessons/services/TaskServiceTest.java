@@ -27,7 +27,6 @@ public class TaskServiceTest extends AbstractJunitTest {
     private final TaskService taskService = new TaskService(taskConnector,
             new TaskConvertor(new TaskDomainConvertor(), new TopicConvertor(new DisciplineConvertor(new TeacherConvertor()))));
 
-
     @Test
     public void shouldReturnTaskByTopicId() {
         TopicDTO topicDTO = new TopicDTO();

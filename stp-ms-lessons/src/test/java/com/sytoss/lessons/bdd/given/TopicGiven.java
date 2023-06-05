@@ -38,7 +38,7 @@ public class TopicGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^This discipline has \"(.*)\" project$")
+    @Given("^this discipline has \"(.*)\" topic")
     public void customerHasProject(String topicName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
@@ -60,7 +60,7 @@ public class TopicGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("topic with name {string} exist")
+    @Given("topic with name \"(.*)\" exist")
     public void topicWithExist(String name) {
         Teacher teacher = new Teacher();
         teacher.setId(1L);
@@ -86,21 +86,19 @@ public class TopicGiven extends CucumberIntegrationTest {
         TopicDTO topicDTO = new TopicDTO();
         getTopicConvertor().toDTO(topic, topicDTO);
         getTopicConnector().save(topicDTO);
-        TestExecutionContext.getTestContext().setTopic(topic);
+        TestExecutionContext.getTestContext().setTopicId(topic.getId());
     }
 
     @Given("topic with name {string} and id {string} exist")
     public void topicWithNameAndIdExist(String name, String id) {
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        teacher.setFirstName("Ivan");
-        teacher.setLastName("Ivanov");
         TeacherDTO teacherDTO = new TeacherDTO();
-        getTeacherConvertor().toDTO(teacher, teacherDTO);
+        teacherDTO.setId(1L);
+        teacherDTO.setFirstName("Ivan");
+        teacherDTO.setLastName("Ivanov");
         getTeacherConnector().save(teacherDTO);
 
 
-        Discipline discipline = new Discipline();
+        DisciplineDTO discipline = new DisciplineDTO();
         discipline.setId(1L);
         discipline.setName("Database");
         discipline.setTeacher(teacher);
@@ -115,6 +113,6 @@ public class TopicGiven extends CucumberIntegrationTest {
         TopicDTO topicDTO = new TopicDTO();
         getTopicConvertor().toDTO(topic, topicDTO);
         getTopicConnector().save(topicDTO);
-        TestExecutionContext.getTestContext().setTopic(topic);
+        TestExecutionContext.getTestContext().setTopicId(topic.getId());
     }
 }

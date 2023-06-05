@@ -16,16 +16,12 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("this topic has task with question {string}")
     public void thisTopicHasTaskWithQuestion(String question) {
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(1L);
-        taskDomain.setName("Task Domain");
-        taskDomain.setScript("Script");
 
         Task task = new Task();
         task.setId(1L);
         task.setQuestion(question);
         task.setTaskDomain(taskDomain);
-        task.setTopics(List.of(TestExecutionContext.getTestContext().getTopic()));
+        task.setTopics(List.of(getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId())));
 
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         getTaskDomainConvertor().toDTO(taskDomain, taskDomainDTO);

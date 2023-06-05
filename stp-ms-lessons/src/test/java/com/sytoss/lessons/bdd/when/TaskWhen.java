@@ -9,7 +9,7 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("retrieve information about task by topic")
     public void retrieveInformationAboutTaskByTopic() {
-        String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopic().getId() + "/tasks";
+        String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/tasks";
         ResponseEntity<String> responseEntity = doGet(url, null, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

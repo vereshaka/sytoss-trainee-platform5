@@ -6,9 +6,9 @@ import io.cucumber.java.en.Given;
 
 public class TeacherGiven extends CucumberIntegrationTest {
 
-    @Given("^teacher with \"(.*)\" firstname and \"(.*)\" middlename and \"(.*)\" lastname doesnt exist$")
-    public void teacherNotExist(String firstName, String middlename, String lastname) {
-        TeacherDTO teacherDTO = getTeacherConnector().getByFirstNameAndMiddleNameAndLastName(firstName, middlename,lastname);
+    @Given("^teacher with \"(.*)\" firstName and \"(.*)\" middleName and \"(.*)\" lastName doesnt exist$")
+    public void teacherNotExist(String firstName, String middleName, String lastName) {
+        TeacherDTO teacherDTO = getTeacherConnector().getByFirstNameAndMiddleNameAndLastName(firstName, middleName, lastName);
         if (teacherDTO != null) {
             getTeacherConnector().delete(teacherDTO);
         }

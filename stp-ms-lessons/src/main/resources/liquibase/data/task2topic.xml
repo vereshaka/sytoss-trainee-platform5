@@ -1,10 +1,9 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/task2topic.xml">
-
-    <changeSet author="LarinI" id="task2topic_1">
+    <changeSet author="MitkovM" id="task2topic_1">
         <createTable tableName="TASK2TOPIC">
             <column name="TASK_ID" type="BIGINT">
                 <constraints nullable="false" />
@@ -17,19 +16,11 @@
             <dropTable tableName="TASK2TOPIC" />
         </rollback>
     </changeSet>
-
-    <changeSet author="LarinI" id="task2topic_2">
+    <changeSet author="MitkovM" id="task2topic_2">
         <addPrimaryKey tableName="TASK2TOPIC" columnNames="TASK_ID, TOPIC_ID"
                        constraintName="PK_TASK2TOPIC" />
-        <addForeignKeyConstraint baseTableName="TASK2TOPIC" baseColumnNames="TOPIC_ID"
-                                 constraintName="FK_TASK2TOPICS2TOPIC" referencedTableName="TOPIC"
-                                 referencedColumnNames="ID" />
-        <addForeignKeyConstraint baseTableName="TASK2TOPIC" baseColumnNames="TASK_ID"
-                                 constraintName="FK_TASK2TOPICS2TASK" referencedTableName="TASK"
-                                 referencedColumnNames="ID" />
         <rollback>
             <dropPrimaryKey tableName="TASK2TOPIC" constraintName="PK_TASK2TOPIC" />
         </rollback>
     </changeSet>
-
 </databaseChangeLog>
