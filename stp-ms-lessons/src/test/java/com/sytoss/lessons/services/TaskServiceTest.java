@@ -42,6 +42,8 @@ public class TaskServiceTest extends AbstractApplicationTest {
         input.setEtalonAnswer("SQL is life");
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomainDTO.setDiscipline(disciplineDTO);
         input.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         input.setTopics(topicDTOList);

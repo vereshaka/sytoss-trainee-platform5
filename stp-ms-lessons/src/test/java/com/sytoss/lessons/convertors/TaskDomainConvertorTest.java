@@ -1,16 +1,21 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TeacherDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class TaskDomainConvertorTest extends AbstractApplicationTest {
 
-    @Autowired
-    private TaskDomainConvertor taskDomainConvertor;
+    @Spy
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor(new TeacherConvertor()));
 
     @Test
     public void toDTOTaskDomainConvertorTest() {
@@ -18,6 +23,12 @@ public class TaskDomainConvertorTest extends AbstractApplicationTest {
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
         taskDomain.setScript("Script Domain");
+        Teacher teacher = new Teacher();
+        teacher.setId(62L);
+        Discipline discipline = new Discipline();
+        discipline.setId(93L);
+        discipline.setTeacher(teacher);
+        taskDomain.setDiscipline(discipline);
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
         Assertions.assertEquals(taskDomain.getId(), taskDomainDTO.getId());
@@ -31,6 +42,12 @@ public class TaskDomainConvertorTest extends AbstractApplicationTest {
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
         taskDomainDTO.setScript("Script Domain");
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setId(62L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(93L);
+        disciplineDTO.setTeacher(teacherDTO);
+        taskDomainDTO.setDiscipline(disciplineDTO);
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
         Assertions.assertEquals(taskDomainDTO.getId(), taskDomain.getId());

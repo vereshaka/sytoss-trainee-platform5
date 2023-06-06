@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskDomainControllerTest extends AbstractApplicationTest {
@@ -28,17 +29,18 @@ public class TaskDomainControllerTest extends AbstractApplicationTest {
 
     @Test
     public void shouldSaveTaskDomain() {
-        ResponseEntity<TaskDomain> response = doPost("/api/taskDomain/", new TaskDomain(), new ParameterizedTypeReference<TaskDomain>() {
+        when(taskDomainService.create(anyLong(), any())).thenReturn(new TaskDomain());
+        ResponseEntity<TaskDomain> response = doPost("/api/discipline/123", new TaskDomain(), new ParameterizedTypeReference<TaskDomain>() {
         });
         assertEquals(200, response.getStatusCode().value());
     }
 
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
-        when(taskDomainService.create(any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
+        when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
-        ResponseEntity<String> result = doPost("/api/taskDomain/", requestEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> result = doPost("/api/discipline/123", requestEntity, new ParameterizedTypeReference<String>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }

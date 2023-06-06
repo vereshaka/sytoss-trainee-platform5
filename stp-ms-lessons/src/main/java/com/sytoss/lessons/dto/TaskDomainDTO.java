@@ -20,4 +20,8 @@ public class TaskDomainDTO {
 
     @Column(name = "SCRIPT")
     private String script;
+
+    @ManyToOne
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
+    private DisciplineDTO discipline;
 }

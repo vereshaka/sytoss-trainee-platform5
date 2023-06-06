@@ -4,7 +4,7 @@ Feature: Task
     Given teacher "Maksym" "Mitkov" exists
     And this teacher has "SQL" discipline
     And this discipline has "Join" topic
-    And "First Domain" task domain exists
+    And "First Domain" task domain exist
 
   Scenario: Retrieve information about task
     Given task with question "What are the different subsets of SQL?" exists

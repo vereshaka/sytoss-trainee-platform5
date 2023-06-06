@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -18,10 +19,13 @@ public class TaskDomainService {
 
     private final TaskDomainConvertor taskDomainConvertor;
 
-    public TaskDomain create(TaskDomain taskDomain) {
-        TaskDomainDTO taskDomainDTO = taskDomainConnector.getByName(taskDomain.getName());
-        if (taskDomainDTO == null) {
-            taskDomainDTO = new TaskDomainDTO();
+    private final DisciplineService disciplineService;
+    public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
+        Discipline discipline = disciplineService.getById(disciplineId);
+        TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByName(taskDomain.getName());
+        if (oldTaskDomainDTO == null) {
+            taskDomain.setDiscipline(discipline);
+            TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);

@@ -39,8 +39,8 @@ public class TopicService {
     }
 
     public Topic create(Long disciplineId, Topic topic) {
-        TopicDTO oldTopicDTO = topicConnector.getByNameAndDisciplineId(topic.getName(), disciplineId);
         Discipline discipline = disciplineService.getById(disciplineId);
+        TopicDTO oldTopicDTO = topicConnector.getByNameAndDisciplineId(topic.getName(), disciplineId);
         if (oldTopicDTO == null) {
             topic.setDiscipline(discipline);
             TopicDTO topicDTO = new TopicDTO();

@@ -13,7 +13,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void requestSentCreateTaskDomain(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/taskDomain/";
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         ResponseEntity<TaskDomain> responseEntity = doPost(url, taskDomain, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -22,7 +22,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void requestSentCreateTaskDomainWhenItExist(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/taskDomain/";
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         ResponseEntity<String> responseEntity = doPost(url, taskDomain, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

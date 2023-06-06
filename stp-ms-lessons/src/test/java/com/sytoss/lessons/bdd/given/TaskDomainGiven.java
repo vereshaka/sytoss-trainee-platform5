@@ -2,20 +2,22 @@ package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Given;
 
 public class TaskDomainGiven extends CucumberIntegrationTest {
 
-    @Given("^\"(.*)\" task domain exists$")
-    public void taskDomainExists(String taskDomainName) {
-
+    @Given("^\"(.*)\" task domain exist$")
+    public void taskDomainExist(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setScript("Test script");
-            taskDomainDTO = getTaskDomainConnector().saveAndFlush(taskDomainDTO);
+            taskDomainDTO.setDiscipline(disciplineDTO);
+            getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
     }
@@ -25,16 +27,6 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
         if (taskDomainDTO != null) {
             getTaskDomainConnector().delete(taskDomainDTO);
-        }
-    }
-
-    @Given("^\"(.*)\" task domain exist$")
-    public void taskDomainExist(String name) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
-        if (taskDomainDTO == null) {
-            taskDomainDTO = new TaskDomainDTO();
-            taskDomainDTO.setName(name);
-            getTaskDomainConnector().save(taskDomainDTO);
         }
     }
 }
