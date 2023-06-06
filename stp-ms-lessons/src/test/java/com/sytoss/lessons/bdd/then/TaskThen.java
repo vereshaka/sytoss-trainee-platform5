@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
@@ -40,19 +41,17 @@ public class TaskThen extends CucumberIntegrationTest {
         List<Task> tasks = getListOfTasksFromDataTable(rows);
         List<Task> tasksFromResponse = (List<Task>) TestExecutionContext.getTestContext().getResponse().getBody();
         Assertions.assertEquals(tasks.size(), tasksFromResponse.size());
+        Assertions.assertIterableEquals(tasks.stream().map(Task::getQuestion).toList(),
+                tasksFromResponse.stream().map(Task::getQuestion).toList());
+        List<List<Topic>> allTopicsDataTable = tasks.stream().map(Task::getTopics).toList();
+        List<List<Topic>> allTopicsFromResponse = tasksFromResponse.stream().map(Task::getTopics).toList();
+        Assertions.assertIterableEquals(allTopicsDataTable.stream().map(el2->el2.stream().map(Topic::getName).toList()).toList(),
+                allTopicsFromResponse.stream().map(el2->el2.stream().map(Topic::getName).toList()).toList());
 
-        for (int i = 0; i < tasks.size(); i++) {
-            Assertions.assertEquals(tasks.get(i).getQuestion(), tasksFromResponse.get(i).getQuestion());
-            if (tasks.get(i).getTopics().size() == tasksFromResponse.get(i).getTopics().size()) {
-                List<Topic> taskTopics = tasks.get(i).getTopics().stream().toList();
-                List<Topic> tasksFromResponseTopics = tasksFromResponse.get(i).getTopics().stream().toList();
-                for (int j = 0; j < taskTopics.size(); j++) {
-                    Assertions.assertEquals(taskTopics.get(j).getName(), tasksFromResponseTopics.get(j).getName());
-                    Assertions.assertEquals(taskTopics.get(j).getDiscipline().getName(), tasksFromResponseTopics.get(j).getDiscipline().getName());
-                }
-            }
-        }
-
+        List<List<Discipline>> allDisciplinesFromDataTable = allTopicsDataTable.stream().map(el2->el2.stream().map(Topic::getDiscipline).toList()).toList();
+        List<List<Discipline>> allDisciplinesFromResponse =  allTopicsFromResponse.stream().map(el2->el2.stream().map(Topic::getDiscipline).toList()).toList();
+        Assertions.assertIterableEquals(allDisciplinesFromDataTable.stream().map(el2->el2.stream().map(Discipline::getName).toList()).toList(),
+                allDisciplinesFromResponse.stream().map(el2->el2.stream().map(Discipline::getName).toList()).toList());
     }
 
     private List<Task> getListOfTasksFromDataTable(List<Map<String, String>> rows) {
