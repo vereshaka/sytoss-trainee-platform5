@@ -8,7 +8,7 @@ import io.cucumber.java.en.Given;
 
 public class TaskDomainGiven extends CucumberIntegrationTest {
 
-    @Given("^\"(.*)\" task domain exist$")
+    @Given("^\"(.*)\" task domain exists$")
     public void taskDomainExist(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
