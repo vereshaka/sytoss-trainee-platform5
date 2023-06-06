@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -34,27 +35,27 @@ public class TaskThen extends CucumberIntegrationTest {
     }
 
     @Then("tasks should be received")
-    public void tasksShouldBeReceived(DataTable tasks) {
-        List<Map<String, String>> rows = tasks.asMaps();
-        List<TaskDTO> taskDTOS = getListOfTasksFromDataTable(rows);
-        List<TaskDTO> taskDTOsFromResponse = (List<TaskDTO>) TestExecutionContext.getTestContext().getResponse().getBody();
-        Assertions.assertEquals(taskDTOS.size(), taskDTOsFromResponse.size());
+    public void tasksShouldBeReceived(DataTable tasksDataTable) {
+        List<Map<String, String>> rows = tasksDataTable.asMaps();
+        List<Task> tasks = getListOfTasksFromDataTable(rows);
+        List<Task> tasksFromResponse = (List<Task>) TestExecutionContext.getTestContext().getResponse().getBody();
+        Assertions.assertEquals(tasks.size(), tasksFromResponse.size());
 
-        for (int i = 0; i < taskDTOS.size(); i++) {
-            Assertions.assertEquals(taskDTOS.get(i).getQuestion(), taskDTOsFromResponse.get(i).getQuestion());
-            if (taskDTOS.get(i).getTopics().size() == taskDTOsFromResponse.get(i).getTopics().size()) {
-                List<TopicDTO> taskDTOSTopics = taskDTOS.get(i).getTopics().stream().toList();
-                List<TopicDTO> taskDTOSFromResponseTopics = taskDTOsFromResponse.get(i).getTopics().stream().toList();
-                for (int j = 0; j < taskDTOSTopics.size(); j++) {
-                    Assertions.assertEquals(taskDTOSTopics.get(j).getName(), taskDTOSFromResponseTopics.get(j).getName());
-                    Assertions.assertEquals(taskDTOSTopics.get(j).getDiscipline().getName(), taskDTOSFromResponseTopics.get(j).getDiscipline().getName());
+        for (int i = 0; i < tasks.size(); i++) {
+            Assertions.assertEquals(tasks.get(i).getQuestion(), tasksFromResponse.get(i).getQuestion());
+            if (tasks.get(i).getTopics().size() == tasksFromResponse.get(i).getTopics().size()) {
+                List<Topic> taskTopics = tasks.get(i).getTopics().stream().toList();
+                List<Topic> tasksFromResponseTopics = tasksFromResponse.get(i).getTopics().stream().toList();
+                for (int j = 0; j < taskTopics.size(); j++) {
+                    Assertions.assertEquals(taskTopics.get(j).getName(), tasksFromResponseTopics.get(j).getName());
+                    Assertions.assertEquals(taskTopics.get(j).getDiscipline().getName(), tasksFromResponseTopics.get(j).getDiscipline().getName());
                 }
             }
         }
 
     }
 
-    private List<TaskDTO> getListOfTasksFromDataTable(List<Map<String, String>> rows) {
+    private List<Task> getListOfTasksFromDataTable(List<Map<String, String>> rows) {
         List<TaskDTO> taskDTOS = new ArrayList<>();
         for (Map<String, String> columns : rows) {
             String disciplineName = columns.get("discipline");
@@ -71,10 +72,17 @@ public class TaskThen extends CucumberIntegrationTest {
             String taskQuestion = columns.get("task");
             TaskDTO taskDTO = new TaskDTO();
             taskDTO.setQuestion(taskQuestion);
-            taskDTO.setTaskDomain(getTaskDomainConnector().getByName("TaskDomain"));
+            taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId()));
             taskDTO.setTopics(List.of(topicDTO));
             taskDTOS.add(taskDTO);
         }
-        return taskDTOS;
+
+        List<Task> tasks = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOS) {
+            Task task = new Task();
+            getTaskConvertor().fromDTO(taskDTO, task);
+            tasks.add(task);
+        }
+        return tasks;
     }
 }

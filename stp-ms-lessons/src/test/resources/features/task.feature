@@ -27,8 +27,6 @@ Feature: Task
     Given task with question "What are the different subsets of SQL?" exists
     When system create task with question "What are the different subsets of SQL?"
     Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
-    Given "TaskDomain" task domain exist
-    And teacher with "Ivan" firstName and "Jovanovich" middleName and "Ivanov" lastName exists
 
   Scenario: Retrieve information about tasks by topic id
     Given tasks exist

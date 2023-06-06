@@ -50,8 +50,8 @@ public class TaskWhen extends CucumberIntegrationTest {
     @When("retrieve information about tasks by topic")
     public void retrieveInformationAboutTaskByTopic() {
         String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/tasks";
-        ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {
-        });
+        ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {});
+       // ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
