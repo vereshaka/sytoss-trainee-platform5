@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.Given;
 
@@ -16,13 +15,11 @@ public class TopicGiven extends CucumberIntegrationTest {
     public void thisExamHasAnswers(List<TopicDTO> topics) {
 
         for (TopicDTO topic : topics) {
-            Optional<TeacherDTO> optionalTeacherDTO = getTeacherConnector().findById(TestExecutionContext.getTestContext().getTeacherId());
-            TeacherDTO teacherDTO = optionalTeacherDTO.orElse(null);
-
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherDTO.getId());
+            Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
             if (disciplineDTO == null) {
                 disciplineDTO = topic.getDiscipline();
-                disciplineDTO.setTeacher(teacherDTO);
+                disciplineDTO.setTeacherId(teacherId);
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
@@ -37,7 +34,7 @@ public class TopicGiven extends CucumberIntegrationTest {
 
     @Given("^\"(.*)\" topic by \"(.*)\" discipline doesn't exist$")
     public void topicExist(String topicName, String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         TopicDTO topic = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         if (topic != null) {
             getTopicConnector().delete(topic);

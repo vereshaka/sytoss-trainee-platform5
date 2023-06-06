@@ -4,12 +4,8 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

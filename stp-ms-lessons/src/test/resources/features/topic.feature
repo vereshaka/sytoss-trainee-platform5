@@ -21,9 +21,9 @@ Feature: Topic
 
   Scenario: teacher create a new topic
     Given disciplines exist
-      | disciplineId | discipline   | teacherId |
-      | 1            | SQL          |  7        |
-      | 2            | Mongo        |  7        |
+      | disciplineId | discipline   |
+      | 1            | SQL          |
+      | 2            | Mongo        |
     And "First" topic by "Mongo" discipline doesn't exist
     When teacher create "First" topic
     Then operation is successful

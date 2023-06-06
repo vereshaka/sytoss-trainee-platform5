@@ -22,4 +22,11 @@ public class TeacherService {
         teacherConverter.fromDTO(teacherDTO, teacher);
         return teacher;
     }
+
+    public Teacher getById(Long teacherId){
+        TeacherDTO teacherDTO = teacherConnector.getReferenceById(teacherId);
+        Teacher result = new Teacher();
+        teacherConverter.fromDTO(teacherDTO, result);
+        return result;
+    }
 }

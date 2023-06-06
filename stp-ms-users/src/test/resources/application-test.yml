@@ -10,4 +10,4 @@ spring:
       hibernate:
         ddl-auto: validate
 #  liquibase:
-#    change-log: classpath:/liquibase/db.changelog-master.xml
+#    change-log: classpath:/liquibase/db.changelog-master1.xml

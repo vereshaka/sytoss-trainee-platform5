@@ -57,7 +57,7 @@ public class TaskGiven extends CucumberIntegrationTest {
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setName(disciplineName);
-                disciplineDTO.setTeacher(getTeacherConnector().getReferenceById(teacherId));
+                disciplineDTO.setTeacherId(teacherId);
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
 

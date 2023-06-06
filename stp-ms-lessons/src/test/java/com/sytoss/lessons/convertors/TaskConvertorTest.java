@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TaskConvertorTest extends AbstractJunitTest {
 
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(), new TopicConvertor(new DisciplineConvertor(new TeacherConvertor())));
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(), new TopicConvertor(new DisciplineConvertor()));
 
     @Test
     public void fromDTOTaskConvertorTest() {
@@ -31,11 +31,9 @@ public class TaskConvertorTest extends AbstractJunitTest {
         taskDTO.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         TopicDTO topicDTO = new TopicDTO();
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(62L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(93L);
-        disciplineDTO.setTeacher(teacherDTO);
+        disciplineDTO.setTeacherId(1L);
         topicDTO.setDiscipline(disciplineDTO);
         topicDTO.setId(9L);
         topicDTOList.add(topicDTO);

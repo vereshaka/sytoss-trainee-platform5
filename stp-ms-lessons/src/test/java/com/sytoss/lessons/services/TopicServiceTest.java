@@ -6,10 +6,8 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,15 +15,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TopicServiceTest extends AbstractJunitTest {
@@ -37,7 +32,7 @@ public class TopicServiceTest extends AbstractJunitTest {
     private TopicConnector topicConnector;
 
     @Spy
-    private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor(new TeacherConvertor()));
+    private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor());
 
     @InjectMocks
     private TopicService topicService;
@@ -78,10 +73,8 @@ public class TopicServiceTest extends AbstractJunitTest {
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(4L);
         disciplineDTO.setName("discipline");
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(88L);
         Topic topic = new Topic();
-        disciplineDTO.setTeacher(teacherDTO);
+        disciplineDTO.setTeacherId(1L);
         topicDTO.setDiscipline(disciplineDTO);
         when(topicConnector.getReferenceById(2L)).thenReturn(topicDTO);
         Topic result = topicService.getById(2L);
@@ -100,14 +93,12 @@ public class TopicServiceTest extends AbstractJunitTest {
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(4L);
         disciplineDTO.setName("first discipline");
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(88L);
-        disciplineDTO.setTeacher(teacherDTO);
+        disciplineDTO.setTeacherId(1L);
         topicDTO.setDiscipline(disciplineDTO);
         return topicDTO;
     }
 
     public Discipline createReference(Long id) {
-        return Discipline.builder().id(id).name("first discipline").build();
+        return Discipline.builder().id(id).name("first discipline").teacher(new Teacher()).build();
     }
 }

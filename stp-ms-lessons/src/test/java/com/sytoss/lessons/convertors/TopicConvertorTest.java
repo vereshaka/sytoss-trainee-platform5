@@ -5,8 +5,8 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.users.convertors.TeacherConvertor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 
@@ -15,15 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TopicConvertorTest extends AbstractJunitTest {
 
     @Spy
-    private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor(new TeacherConvertor()));
+    private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor());
 
     @Test
     public void fromDTOTopicConvertorTest() {
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(62L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(93L);
-        disciplineDTO.setTeacher(teacherDTO);
+        disciplineDTO.setTeacherId(1L);
         TopicDTO topicDTO = new TopicDTO();
         topicDTO.setId(1L);
         topicDTO.setName("Join");
