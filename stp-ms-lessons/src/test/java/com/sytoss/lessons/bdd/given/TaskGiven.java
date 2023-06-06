@@ -76,7 +76,5 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setTopics(List.of(topicDTO));
             getTaskConnector().save(taskDTO);
         }
-        TestExecutionContext.getTestContext().setTopicId(getTopicConnector().findAll().get(0).getId());
-
     }
 }

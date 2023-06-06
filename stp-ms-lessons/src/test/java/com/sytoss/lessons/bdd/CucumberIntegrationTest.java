@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
-import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -34,34 +32,38 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @Getter
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
-    @Autowired protected ObjectMapper mapper;
+    @Autowired
+    protected ObjectMapper mapper;
 
-    @Autowired private TopicConnector topicConnector;
+    @Autowired
+    private TopicConnector topicConnector;
 
-    @Autowired private TeacherConnector teacherConnector;
-
-    @Autowired private DisciplineConnector disciplineConnector;
-
-    @Autowired private ExamConnector examConnector;
-
-    @Autowired private TaskDomainConnector taskDomainConnector;
-
-    @Autowired private TaskDomainConvertor taskDomainConvertor;
+    @Autowired
+    private TeacherConnector teacherConnector;
 
     @Autowired
     private TaskConnector taskConnector;
 
     @Autowired
+    private TaskDomainConnector taskDomainConnector;
+
+    @Autowired
+    private DisciplineConnector disciplineConnector;
+
+    @Autowired
+    private ExamConnector examConnector;
+
+    @Autowired
     private TopicConvertor topicConvertor;
-
-    @LocalServerPort private int applicationPort;
-
-    @Autowired private GroupConnector groupConnector;
-
-    @Autowired private TaskConvertor taskConvertor;
 
     @Autowired
     private GroupConvertor groupConvertor;
+
+    @LocalServerPort
+    private int applicationPort;
+
+    @Autowired
+    private GroupConnector groupConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

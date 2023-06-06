@@ -35,7 +35,7 @@ Feature: Task
       | SQL        | Join   | What is Inner Join? |
       | SQL        | INSERT | What is Join?       |
       | Mongo      | Join   | What is Join?       |
-    When retrieve information about tasks by topic
+    When retrieve information about tasks by "Join" topic in "SQL" discipline
     Then operation is successful
     And tasks should be received
       | discipline | topic  | task                |

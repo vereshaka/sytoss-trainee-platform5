@@ -10,7 +10,6 @@ spring:
     properties:
       hibernate:
         ddl-auto: validate
-        enable_lazy_load_no_trans: true
   liquibase:
     change-log: classpath:/liquibase/db.changelog-master.xml
 

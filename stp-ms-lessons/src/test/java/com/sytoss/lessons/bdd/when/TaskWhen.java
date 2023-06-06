@@ -5,6 +5,8 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +49,13 @@ public class TaskWhen extends CucumberIntegrationTest {
         }
     }
 
-    @When("retrieve information about tasks by topic")
-    public void retrieveInformationAboutTaskByTopic() {
-        String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/tasks";
-        ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {});
-       // ResponseEntity<String> responseEntity = doGet(url, Void.class, String.class);
+    @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+        String url = "/api/topic/" + topicDTO.getId() + "/tasks";
+        ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
