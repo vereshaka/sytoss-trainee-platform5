@@ -9,7 +9,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -27,7 +30,8 @@ public class TopicController {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
     @GetMapping("/discipline/{disciplineId}/topics")
-    public List<Topic> findByDisciplineId(@PathVariable(value = "disciplineId") Long discipleId) {
+    public List<Topic> findByDisciplineId(
+            @PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);
     }
 
@@ -39,16 +43,19 @@ public class TopicController {
     @GetMapping("/topic/{topicId}")
     public Topic getById(
             @Parameter(description = "id of topic to be searched")
-            @PathVariable(value = "topicId") Long topicId) {
+            @PathVariable(value = "topicId")
+            Long topicId) {
         return topicService.getById(topicId);
     }
 
     @Operation(description = "Method that gets tasks by topic ID")
     @ApiResponses(
-            value = {@ApiResponse(responseCode = "200", description = "Success|OK"), @ApiResponse(responseCode = "404",
-                    description = "Topic not found")})
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Success|OK"),
+                    @ApiResponse(responseCode = "404", description = "Topic not found")
+            })
     @GetMapping("/topic/{topicId}/tasks")
-    public List<Task> getByTopicId(
+    public List<Task> findByTopicId(
             @PathVariable(value = "topicId") Long topicId) {
         return taskService.findByTopicId(topicId);
     }

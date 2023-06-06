@@ -45,7 +45,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findTasksByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();

@@ -90,7 +90,7 @@ public class TaskServiceTest extends AbstractApplicationTest {
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findTasksByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
 
         List<Task> result = taskService.findByTopicId(1L);
         Assertions.assertEquals(1L, result.get(0).getId());
