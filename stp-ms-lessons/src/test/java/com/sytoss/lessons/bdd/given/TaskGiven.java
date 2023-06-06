@@ -50,6 +50,7 @@ public class TaskGiven extends CucumberIntegrationTest {
     }
 
     private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
+        TestExecutionContext.getTestContext().setTopicId(null);
         for (Map<String, String> columns : rows) {
             String disciplineName = columns.get("discipline");
             Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
@@ -68,7 +69,11 @@ public class TaskGiven extends CucumberIntegrationTest {
                 topicDTO.setName(topicName);
                 topicDTO.setDiscipline(disciplineDTO);
                 topicDTO = getTopicConnector().save(topicDTO);
+                if(TestExecutionContext.getTestContext().getTopicId()==null){
+                    TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+                }
             }
+
 
             String taskQuestion = columns.get("task");
             TaskDTO taskDTO = new TaskDTO();
@@ -77,6 +82,6 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setTopics(List.of(topicDTO));
             getTaskConnector().save(taskDTO);
         }
-        TestExecutionContext.getTestContext().setTopicId(1L);
+
     }
 }

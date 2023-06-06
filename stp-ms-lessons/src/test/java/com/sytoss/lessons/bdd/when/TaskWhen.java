@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import io.cucumber.java.en.When;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -49,7 +50,8 @@ public class TaskWhen extends CucumberIntegrationTest {
     @When("retrieve information about tasks by topic")
     public void retrieveInformationAboutTaskByTopic() {
         String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/tasks";
-        ResponseEntity<String> responseEntity = doGet(url, null, String.class);
+        ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

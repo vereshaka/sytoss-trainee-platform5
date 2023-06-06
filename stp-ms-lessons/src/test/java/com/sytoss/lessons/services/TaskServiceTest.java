@@ -73,7 +73,7 @@ public class TaskServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldReturnTaskByTopicId() {
+    public void shouldReturnTasksByTopicId() {
         TopicDTO topicDTO = new TopicDTO();
         topicDTO.setId(1L);
         topicDTO.setName("Database");
