@@ -10,6 +10,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -39,5 +42,16 @@ public class TaskService {
             return task;
         }
         throw new TaskExistException(task.getQuestion());
+    }
+
+    public List<Task> findByTopicId(Long topicId) {
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<Task> tasksList = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOList) {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            tasksList.add(task);
+        }
+        return tasksList;
     }
 }

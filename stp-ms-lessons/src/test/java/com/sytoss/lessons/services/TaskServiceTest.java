@@ -5,9 +5,11 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TaskConnector;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskServiceTest extends AbstractApplicationTest {
@@ -67,5 +70,33 @@ public class TaskServiceTest extends AbstractApplicationTest {
         Task result = taskService.create(input);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getQuestion(), result.getQuestion());
+    }
+
+    @Test
+    public void shouldReturnTasksByTopicId() {
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setId(1L);
+        topicDTO.setName("Database");
+        topicDTO.setDiscipline(new DisciplineDTO());
+
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        taskDomainDTO.setName("Task Domain");
+
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(1L);
+        taskDTO.setQuestion("Question");
+        taskDTO.setEtalonAnswer("Answer");
+        taskDTO.setTaskDomain(taskDomainDTO);
+        taskDTO.setTopics(List.of(topicDTO));
+
+        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+
+        List<Task> result = taskService.findByTopicId(1L);
+        Assertions.assertEquals(1L, result.get(0).getId());
+        Assertions.assertEquals("Question", result.get(0).getQuestion());
+        Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
+        Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
+        Assertions.assertEquals(1, result.get(0).getTopics().size());
     }
 }

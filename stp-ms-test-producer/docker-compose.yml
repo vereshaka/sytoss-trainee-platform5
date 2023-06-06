@@ -1,10 +1,13 @@
-version: "3.9"
+version: "3.7"
 services:
-  postgres:
-    image: postgres:13.3
+  mongo:
+    container_name: mongo_stub
+    image: mongo
+    restart: always
     environment:
-      POSTGRES_DB: "lessons"
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "password"
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: pwd
+      MONGO_INITDB_DATABASE: stp
     ports:
-      - "5432:5432"
+      - 27007:27007
+      - 27017:27017

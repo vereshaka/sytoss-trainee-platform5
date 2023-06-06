@@ -1,16 +1,18 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,19 +53,20 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         assertEquals(dateFormat.parse(date), personalExam.getDate());
 
         List<Answer> listAnswer = personalExam.getAnswers();
-        listAnswer.forEach(answer -> {
-            List<Answer> foundAnswers = answers.stream().filter(item ->
-                    Objects.equals(answer.getValue(), item.getValue()) &&
-                            Objects.equals(answer.getTask().getQuestion(), item.getTask().getQuestion()) &&
-                            answer.getStatus().equals(item.getStatus()) &&
-                            answer.getGrade().getValue() == item.getGrade().getValue() &&
-                            Objects.equals(answer.getGrade().getComment(), item.getGrade().getComment())
-            ).collect(Collectors.toList());
+        Iterator<Answer> i = listAnswer.iterator();
 
-            answers.remove(foundAnswers.get(0));
-        });
-
-        assertEquals(0, answers.size());
+        while (i.hasNext()) {
+            for (Answer answer : answers) {
+                Answer answerResult = i.next();
+                if (answer.getValue().equals(answerResult.getValue()) &&
+                        answer.getStatus().equals(answerResult.getStatus()) &&
+                        answer.getGrade().getValue() == answerResult.getGrade().getValue() &&
+                        answer.getGrade().getComment().equals(answerResult.getGrade().getComment())) {
+                    i.remove();
+                }
+            }
+        }
+        assertEquals(0, listAnswer.size());
     }
 
     @Then("^status of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
@@ -73,7 +76,7 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Then("should return personal exam with time {int} and amountOfTasks {long}")
-    public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks){
+    public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks) {
         Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
         assertEquals(time, firstTask.getExam().getTime());
         assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());

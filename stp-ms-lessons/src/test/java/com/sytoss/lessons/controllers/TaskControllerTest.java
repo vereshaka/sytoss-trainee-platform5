@@ -18,6 +18,15 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class TaskControllerTest extends AbstractApplicationTest {
@@ -60,5 +69,12 @@ public class TaskControllerTest extends AbstractApplicationTest {
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
         ResponseEntity<String> result = doPost("/api/task/", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
+    }
+
+    public void shouldReturnListOfTasksByTopicId() {
+        when(taskService.findByTopicId(any())).thenReturn(new ArrayList<>());
+        ResponseEntity<List<Task>> result = doGet("/api/topic/1/tasks", null, new ParameterizedTypeReference<List<Task>>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
     }
 }
