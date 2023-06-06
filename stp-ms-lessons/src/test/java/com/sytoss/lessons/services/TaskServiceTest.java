@@ -84,6 +84,8 @@ public class TaskServiceTest extends AbstractApplicationTest {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("Task Domain");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomainDTO.setDiscipline(disciplineDTO);
 
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setId(1L);
