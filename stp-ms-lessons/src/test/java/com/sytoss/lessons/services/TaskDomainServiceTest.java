@@ -4,11 +4,11 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
-import com.sytoss.lessons.convertors.TeacherConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import org.junit.jupiter.api.Assertions;
@@ -36,12 +36,12 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
     private TaskDomainConnector taskDomainConnector;
 
     @Spy
-    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor(new TeacherConvertor()));
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
 
     @Test
     public void shouldCreateTaskDomain() {
         when(disciplineService.getById(1L)).thenReturn(createReference(1L));
-        when(taskDomainConnector.getByName("TaskDomain first")).thenReturn(null);
+        when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(null);
         Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
             TaskDomainDTO result = (TaskDomainDTO) args[0];
@@ -62,7 +62,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         newTaskDomain.setName("TaskDomain first");
         newTaskDomain.setScript("script");
         when(disciplineService.getById(1L)).thenReturn(createReference(1L));
-        when(taskDomainConnector.getByName("TaskDomain first")).thenReturn(new TaskDomainDTO());
+        when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(new TaskDomainDTO());
         assertThrows(TaskDomainAlreadyExist.class, () -> taskDomainService.create(1L, newTaskDomain));
     }
 
@@ -87,7 +87,13 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         assertThrows(TaskDomainNotFoundException.class, () -> taskDomainService.getById(1L));
     }
 
-    public Discipline createReference(Long id) {
-        return Discipline.builder().id(id).name("first discipline").build();
+    private Discipline createReference(Long id) {
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        Discipline discipline = new Discipline();
+        discipline.setId(id);
+        discipline.setTeacher(teacher);
+        discipline.setName("first discipline");
+        return discipline;
     }
 }

@@ -18,7 +18,6 @@ public class DisciplineDTO {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "TEACHER_ID", referencedColumnName = "ID")
-    private TeacherDTO teacher;
+    @Column(name = "TEACHER_ID")
+    private Long teacherId;
 }

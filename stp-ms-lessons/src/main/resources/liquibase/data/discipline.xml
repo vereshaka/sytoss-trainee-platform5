@@ -34,12 +34,4 @@
         </rollback>
     </changeSet>
 
-    <changeSet author="MitkovM" id="discipline_4">
-        <addForeignKeyConstraint baseTableName="DISCIPLINE" baseColumnNames="TEACHER_ID"
-                                 constraintName="FK_DISCIPLINE2TEACHER" referencedTableName="TEACHER"
-                                 referencedColumnNames="ID" />
-        <rollback>
-            <dropForeignKeyConstraint baseTableName="DISCIPLINE" constraintName="FK_DISCIPLINE2TEACHER" />
-        </rollback>
-    </changeSet>
 </databaseChangeLog>

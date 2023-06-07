@@ -2,17 +2,12 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
-import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +27,8 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     @Autowired
     private DisciplineService disciplineService;
 
-    @MockBean
-    private TeacherService teacherService;
-
     @Test
     public void shouldSaveDiscipline() {
-        when(teacherService.getById(1L)).thenReturn(createReference(1L));
         when(disciplineConnector.getByNameAndTeacherId("SQL", 1L)).thenReturn(null);
         Mockito.doAnswer((Answer<DisciplineDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -65,9 +56,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
         DisciplineDTO input = new DisciplineDTO();
         input.setId(1L);
         input.setName("SQL");
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(1L);
-        input.setTeacher(teacherDTO);
+        input.setTeacherId(1L);
         when(disciplineConnector.getReferenceById(any())).thenReturn(input);
         Discipline result = disciplineService.getById(1L);
         assertEquals(input.getId(), result.getId());

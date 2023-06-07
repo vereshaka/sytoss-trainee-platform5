@@ -2,7 +2,6 @@ package com.sytoss.lessons.bdd.common;
 
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 
@@ -16,9 +15,9 @@ public class DataTableCommon {
         disciplineDTO.setName(entry.get("discipline"));
 
         if (entry.containsKey("teacherId")) {
-            TeacherDTO teacherDTO = new TeacherDTO();
-            teacherDTO.setId(Long.valueOf(entry.get("teacherId")));
-            disciplineDTO.setTeacher(teacherDTO);
+            disciplineDTO.setTeacherId(Long.parseLong(entry.get("teacherId")));
+        } else {
+            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
         }
 
         return disciplineDTO;

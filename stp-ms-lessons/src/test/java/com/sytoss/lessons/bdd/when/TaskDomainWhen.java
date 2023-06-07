@@ -29,7 +29,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system retrieve information about \"(.*)\" task domain$")
     public void systemTryToFindTaskDomainById(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
             ResponseEntity<String> responseEntity = doGet(url, null, String.class);

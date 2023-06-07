@@ -4,11 +4,9 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Optional;
 
 public class GroupGiven extends CucumberIntegrationTest {
 
@@ -18,7 +16,7 @@ public class GroupGiven extends CucumberIntegrationTest {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(groupDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
             if (disciplineDTO == null) {
                 disciplineDTO = groupDTO.getDiscipline();
-                disciplineDTO.setTeacher(getTeacherConnector().getReferenceById(TestExecutionContext.getTestContext().getTeacherId()));
+                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             GroupDTO result = getGroupConnector().getByNameAndDisciplineId(groupDTO.getName(), disciplineDTO.getId());

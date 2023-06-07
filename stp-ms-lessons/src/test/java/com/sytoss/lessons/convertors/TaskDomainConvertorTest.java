@@ -6,7 +6,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TeacherDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TaskDomainConvertorTest extends AbstractApplicationTest {
 
     @Spy
-    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor(new TeacherConvertor()));
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
 
     @Test
     public void toDTOTaskDomainConvertorTest() {
@@ -42,11 +41,9 @@ public class TaskDomainConvertorTest extends AbstractApplicationTest {
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
         taskDomainDTO.setScript("Script Domain");
-        TeacherDTO teacherDTO = new TeacherDTO();
-        teacherDTO.setId(62L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(93L);
-        disciplineDTO.setTeacher(teacherDTO);
+        disciplineDTO.setTeacherId(1L);
         taskDomainDTO.setDiscipline(disciplineDTO);
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);

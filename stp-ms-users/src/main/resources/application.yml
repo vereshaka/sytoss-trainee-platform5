@@ -11,6 +11,6 @@ spring:
         dialect: org.hibernate.dialect.PostgresPlusDialect
         ddl-auto: validate
   liquibase:
-    change-log: classpath:/liquibase/db.changelog-master.xml
+    change-log: classpath:/liquibase/db.changelog-master1.xml
 server:
    port: 9101

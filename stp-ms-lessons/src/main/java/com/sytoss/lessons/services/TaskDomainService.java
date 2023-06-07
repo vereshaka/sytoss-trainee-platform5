@@ -23,7 +23,7 @@ public class TaskDomainService {
 
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         Discipline discipline = disciplineService.getById(disciplineId);
-        TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByName(taskDomain.getName());
+        TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
         if (oldTaskDomainDTO == null) {
             taskDomain.setDiscipline(discipline);
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
