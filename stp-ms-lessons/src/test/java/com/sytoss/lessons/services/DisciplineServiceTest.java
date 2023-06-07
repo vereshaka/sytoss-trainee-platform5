@@ -6,7 +6,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.users.services.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -28,12 +27,8 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     @Autowired
     private DisciplineService disciplineService;
 
-    @MockBean
-    private TeacherService teacherService;
-
     @Test
     public void shouldSaveDiscipline() {
-        when(teacherService.getById(1L)).thenReturn(createReference(1L));
         when(disciplineConnector.getByNameAndTeacherId("SQL", 1L)).thenReturn(null);
         Mockito.doAnswer((Answer<DisciplineDTO>) invocation -> {
             final Object[] args = invocation.getArguments();

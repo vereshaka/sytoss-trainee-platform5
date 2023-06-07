@@ -6,7 +6,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.users.convertors.TeacherConvertor;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 

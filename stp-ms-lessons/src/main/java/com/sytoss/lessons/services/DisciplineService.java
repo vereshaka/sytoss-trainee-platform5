@@ -7,7 +7,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.users.services.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class DisciplineService {
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
         }
-            throw new DisciplineNotFoundException(id);
+        throw new DisciplineNotFoundException(id);
     }
 
     public Discipline create(Long teacherId, Discipline discipline) {
