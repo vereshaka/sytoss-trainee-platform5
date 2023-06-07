@@ -44,7 +44,6 @@ public class TaskGiven extends CucumberIntegrationTest {
     public void tasksExist(DataTable tasks) {
         getTaskConnector().deleteAll();
         getTopicConnector().deleteAll();
-        getDisciplineConnector().deleteAll();
         List<Map<String, String>> rows = tasks.asMaps();
         getListOfTasksFromDataTable(rows);
     }

@@ -11,6 +11,9 @@
             </column>
             <column name="NAME" type="VARCHAR2(100 BYTE)"/>
             <column name="SCRIPT" type="VARCHAR2(100 BYTE)"/>
+            <column name="DISCIPLINE_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
         </createTable>
 
         <rollback>
@@ -29,6 +32,15 @@
         <createSequence sequenceName="TASK_DOMAIN_SEQ"/>
         <rollback>
             <dropSequence sequenceName="TASK_DOMAIN_SEQ"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="VereshchakaV" id="task_domain_4">
+        <addForeignKeyConstraint baseTableName="TASK_DOMAIN" baseColumnNames="DISCIPLINE_ID"
+                                 constraintName="FK_TASK_DOMAIN2DISCIPLINE" referencedTableName="DISCIPLINE"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="TASK_DOMAIN" constraintName="FK_TASK_DOMAIN2DISCIPLINE" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

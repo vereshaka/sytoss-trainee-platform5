@@ -1,10 +1,12 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
+import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,6 +30,8 @@ public class DisciplineController {
     private final GroupService groupService;
 
     private final DisciplineService disciplineService;
+
+    private final TaskDomainService taskDomainService;
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -77,5 +81,18 @@ public class DisciplineController {
                              Long disciplineId,
                              @RequestBody Group group) {
         return groupService.create(disciplineId, group);
+    }
+
+    @Operation(description = "Method that create a new task domain")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Task domain already exist")
+    })
+    @PostMapping("/{disciplineId}")
+    public TaskDomain create(
+            @Parameter(description = "id of the discipline to be searched by")
+            @PathVariable("disciplineId") Long disciplineId,
+            @RequestBody TaskDomain taskDomain) {
+        return taskDomainService.create(disciplineId, taskDomain);
     }
 }
