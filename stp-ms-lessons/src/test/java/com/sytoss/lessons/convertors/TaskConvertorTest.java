@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TaskConvertorTest extends AbstractJunitTest {
 
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(), new TopicConvertor(new DisciplineConvertor()));
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()));
 
     @Test
     public void fromDTOTaskConvertorTest() {
@@ -26,9 +26,6 @@ public class TaskConvertorTest extends AbstractJunitTest {
         taskDTO.setId(4L);
         taskDTO.setQuestion("What is SQL?");
         taskDTO.setEtalonAnswer("SQL is life");
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainDTO.setId(14L);
-        taskDTO.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         TopicDTO topicDTO = new TopicDTO();
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -37,6 +34,10 @@ public class TaskConvertorTest extends AbstractJunitTest {
         topicDTO.setDiscipline(disciplineDTO);
         topicDTO.setId(9L);
         topicDTOList.add(topicDTO);
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(14L);
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(topicDTOList);
         Task task = new Task();
         taskConvertor.fromDTO(taskDTO, task);

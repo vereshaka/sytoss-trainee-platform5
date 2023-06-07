@@ -14,7 +14,7 @@ public class TaskDomainThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" task domain should be created$")
     public void groupsShouldBeReceived(String name) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(name);
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, TestExecutionContext.getTestContext().getDisciplineId());
         TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(taskDomainDTO);
         assertEquals(taskDomain.getId(), taskDomainDTO.getId());

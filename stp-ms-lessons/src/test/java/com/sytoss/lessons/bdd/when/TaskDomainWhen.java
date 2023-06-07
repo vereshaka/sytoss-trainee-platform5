@@ -13,7 +13,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void requestSentCreateTaskDomain(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/taskDomain/";
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         ResponseEntity<TaskDomain> responseEntity = doPost(url, taskDomain, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -22,14 +22,14 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void requestSentCreateTaskDomainWhenItExist(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/taskDomain/";
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         ResponseEntity<String> responseEntity = doPost(url, taskDomain, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system retrieve information about \"(.*)\" task domain$")
     public void systemTryToFindTaskDomainById(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByName(taskDomainName);
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
             ResponseEntity<String> responseEntity = doGet(url, null, String.class);
