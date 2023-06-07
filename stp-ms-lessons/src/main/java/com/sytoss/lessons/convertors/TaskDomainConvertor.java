@@ -24,6 +24,7 @@ public class TaskDomainConvertor {
         disciplineConvertor.fromDTO(source.getDiscipline(), discipline);
         destination.setDiscipline(discipline);
     }
+
     public void toDTO(TaskDomain source, TaskDomainDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
