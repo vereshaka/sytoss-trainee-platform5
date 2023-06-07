@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class TopicGiven extends CucumberIntegrationTest {
 
-    @Given("topic exist")
+    @Given("topics exist")
     public void thisExamHasAnswers(List<TopicDTO> topics) {
 
         for (TopicDTO topic : topics) {
@@ -32,10 +32,9 @@ public class TopicGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^\"(.*)\" topic by \"(.*)\" discipline doesn't exist$")
-    public void topicExist(String topicName, String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
-        TopicDTO topic = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+    @Given("^this discipline doesn't have \"(.*)\" topic$")
+    public void topicExist(String topicName) {
+        TopicDTO topic = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
         if (topic != null) {
             getTopicConnector().delete(topic);
         }

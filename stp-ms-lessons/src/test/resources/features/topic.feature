@@ -4,7 +4,7 @@ Feature: Topic
     Given teacher "Maksym" "Mitkov" exists
 
   Scenario: system retrieve information list of topic
-    Given topic exist
+    Given topics exist
       | discipline | topic           |
       | SQL        | Join            |
       | SQL        | Join Inner      |
@@ -20,18 +20,14 @@ Feature: Topic
       | SQL        | Drop results    |
 
   Scenario: teacher create a new topic
-    Given disciplines exist
-      | disciplineId | discipline   |
-      | 1            | SQL          |
-      | 2            | Mongo        |
-    And "First" topic by "Mongo" discipline doesn't exist
+    Given "SQL" discipline exists
+    And this discipline doesn't have "First" topic
     When teacher create "First" topic
     Then operation is successful
 
   Scenario: teacher create a topic that already exist
-    Given topic exist
-      | discipline | topic |
-      | Mongo      | First |
+    Given "SQL" discipline exists
+    And this discipline has "First" topic
     When teacher creates existing "First" topic
     Then operation should be finished with 409 "Topic with name "First" already exist" error
 
@@ -44,6 +40,6 @@ Feature: Topic
 
   Scenario: Retrieve information about topic by id when it doesnt exist
     Given "Mongo" discipline exists
-    And "First" topic by "Mongo" discipline doesn't exist
+    And this discipline doesn't have "First" topic
     When retrieve information about topic by topicID
     Then operation should be finished with 404 "Topic with id "99" not found" error

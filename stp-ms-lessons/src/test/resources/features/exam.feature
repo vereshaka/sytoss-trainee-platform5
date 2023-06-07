@@ -4,7 +4,7 @@ Feature: Exam
     Given teacher "Maksym" "Mitkov" exists
 
   Scenario: teacher create exam
-    Given topic exist
+    Given topics exist
       | discipline | topic         |
       | SQL        | Set of Tables |
       | SQL        | Select        |
