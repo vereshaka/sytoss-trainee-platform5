@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.common;
 
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 
@@ -41,5 +42,15 @@ public class DataTableCommon {
         group.setName(entry.get("group"));
         group.setDiscipline(discipline);
         return group;
+    }
+
+    @DataTableType
+    public TaskDomainDTO mapTaskDomains(Map<String, String> entry) {
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        DisciplineDTO discipline = new DisciplineDTO();
+        discipline.setName(entry.get("discipline"));
+        taskDomainDTO.setName(entry.get("task domain"));
+        taskDomainDTO.setDiscipline(discipline);
+        return taskDomainDTO;
     }
 }

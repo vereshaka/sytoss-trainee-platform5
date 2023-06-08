@@ -95,4 +95,15 @@ public class DisciplineController {
             @RequestBody TaskDomain taskDomain) {
         return taskDomainService.create(disciplineId, taskDomain);
     }
+
+    @Operation(description = "Method that retrieve all task domains by discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{disciplineId}/taskDomains")
+    public List<TaskDomain> findTasksDomainByDiscipline(
+            @Parameter(description = "id of the discipline to be searched by")
+            @PathVariable("disciplineId") Long disciplineId) {
+        return taskDomainService.findByDiscipline(disciplineId);
+    }
 }
