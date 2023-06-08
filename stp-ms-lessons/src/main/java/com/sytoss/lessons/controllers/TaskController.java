@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,8 +24,8 @@ public class TaskController {
     })
     @GetMapping("/{taskId}")
     public Task getById(@Parameter(description = "id of the task to be searched by")
-                              @PathVariable("taskId")
-                              Long taskId) {
+                        @PathVariable("taskId")
+                        Long taskId) {
         return taskService.getById(taskId);
     }
 
@@ -36,5 +37,18 @@ public class TaskController {
     @PostMapping("/")
     public Task create(@RequestBody Task task) {
         return taskService.create(task);
+    }
+
+    @Operation(description = "Method that add condition to task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Task already exist!")
+    })
+    @PostMapping("/{taskId}/condition")
+    public Task addCondition(@Parameter(description = "id of the task to be searched by")
+                          @PathVariable("taskId")
+                          Long taskId,
+                          @RequestBody TaskCondition taskCondition) {
+        return taskService.addCondition(taskId, taskCondition);
     }
 }

@@ -56,6 +56,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @Autowired
     private GroupConvertor groupConvertor;
 
+    @Autowired
+    private TaskConditionConnector taskConditionConnector;
+
     @LocalServerPort
     private int applicationPort;
 
