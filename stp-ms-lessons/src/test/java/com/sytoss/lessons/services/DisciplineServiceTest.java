@@ -6,12 +6,16 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import io.cucumber.java.ja.但し;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -67,5 +71,19 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     public void shouldRaiseExceptionWhenDisciplineNotExist() {
         when(disciplineConnector.getReferenceById(1L)).thenReturn(null);
         assertThrows(DisciplineNotFoundException.class, () -> disciplineService.getById(1L));
+    }
+
+    @Test
+    public void shouldReturnDisciplinesByTeacher(){
+        List<DisciplineDTO> input = new ArrayList<>();
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        disciplineDTO.setName("SQL");
+        disciplineDTO.setTeacherId(1L);
+        input.add(disciplineDTO);
+        when(disciplineConnector.findByTeacherId(1L)).thenReturn(input);
+        List<Discipline> result = disciplineService.findDisciplines();
+        assertEquals(input.size(), result.size());
+        assertEquals(input.size(), result.size());
     }
 }

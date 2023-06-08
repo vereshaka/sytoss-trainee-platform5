@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/teacher")
 @RequiredArgsConstructor
@@ -29,5 +31,15 @@ public class TeacherController {
             @PathVariable("teacherId") Long teacherId,
             @RequestBody Discipline discipline) {
         return disciplineService.create(teacherId, discipline);
+    }
+
+    @Operation(description = "Method that retrieve disciplines by teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Teacher does not exist!"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findDisciplines() {
+        return disciplineService.findDisciplines();
     }
 }
