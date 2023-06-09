@@ -1,14 +1,12 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -56,6 +54,14 @@ public class TopicWhen extends CucumberIntegrationTest {
         Topic topic = new Topic();
         topic.setName(topicName);
         ResponseEntity<String> responseEntity = doPost(url, topic, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^link topic \"(.*)\" to this task$")
+    public void linkTopicToThisTask(String topicName) {
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/topic/" + topicDTO.getId();
+        ResponseEntity<Task> responseEntity = doPost(url, null, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

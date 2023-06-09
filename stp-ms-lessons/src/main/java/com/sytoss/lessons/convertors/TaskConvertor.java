@@ -3,7 +3,6 @@ package com.sytoss.lessons.convertors;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
@@ -29,11 +28,13 @@ public class TaskConvertor {
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
         List<Topic> topicList = new ArrayList<>();
-        source.getTopics().forEach(topicDTO -> {
-            Topic topic = new Topic();
-            topicConvertor.fromDTO(topicDTO, topic);
-            topicList.add(topic);
-        });
+        if (source.getTopics() != null) {
+            source.getTopics().forEach(topicDTO -> {
+                Topic topic = new Topic();
+                topicConvertor.fromDTO(topicDTO, topic);
+                topicList.add(topic);
+            });
+        }
         destination.setTopics(topicList);
     }
 
@@ -45,11 +46,13 @@ public class TaskConvertor {
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
-        source.getTopics().forEach(topic -> {
-            TopicDTO topicDTO = new TopicDTO();
-            topicConvertor.toDTO(topic, topicDTO);
-            topicDTOList.add(topicDTO);
-        });
+        if (source.getTopics() != null) {
+            source.getTopics().forEach(topic -> {
+                TopicDTO topicDTO = new TopicDTO();
+                topicConvertor.toDTO(topic, topicDTO);
+                topicDTOList.add(topicDTO);
+            });
+        }
         destination.setTopics(topicDTOList);
     }
 }

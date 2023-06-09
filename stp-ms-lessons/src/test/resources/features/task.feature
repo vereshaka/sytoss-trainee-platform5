@@ -24,7 +24,7 @@ Feature: Task
     And task with question "What are the different subsets of SQL?" should be created
 
   Scenario: system does not create new task when task exists
-    Given task with question "What are the different subsets of SQL?" exists
+    Given task with question "What are the different subsets of SQL?" with topic exists
     When system create task with question "What are the different subsets of SQL?"
     Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
 
@@ -41,3 +41,10 @@ Feature: Task
       | discipline | topic  | task                |
       | SQL        | Join   | What is Join?       |
       | SQL        | Join   | What is Inner Join? |
+
+  Scenario: Link task to topic
+    Given task with question "What is Join?" exists
+    And topic "Join" exists
+    When link topic "Join" to this task
+    Then operation is successful
+    And task topic should have "Join"

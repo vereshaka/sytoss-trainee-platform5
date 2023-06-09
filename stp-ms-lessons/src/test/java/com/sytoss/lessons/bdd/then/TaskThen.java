@@ -4,7 +4,9 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 
 import java.util.List;
@@ -46,5 +48,13 @@ public class TaskThen extends CucumberIntegrationTest {
             taskList.remove(foundTasks.get(0));
         }
         assertEquals(0, taskList.size());
+    }
+
+    @Then("^task topic should have \"(.*)\"$")
+    public void taskTopicShouldBe(String topicName) {
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(task.getTopics());
+        assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
     }
 }
