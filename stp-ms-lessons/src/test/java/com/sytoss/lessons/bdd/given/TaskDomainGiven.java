@@ -33,8 +33,8 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^task domain exist$")
-    public void groupsExist(List<TaskDomainDTO> taskDomains) {
+    @Given("^task domains exist$")
+    public void taskdomainExist(List<TaskDomainDTO> taskDomains) {
         for (TaskDomainDTO taskDomainDTO : taskDomains) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
             if (disciplineDTO == null) {

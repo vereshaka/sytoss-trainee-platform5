@@ -27,7 +27,7 @@ Feature: Task Domain
     Then operation should be finished with 404 "Task Domain with id "123" not found" error
 
   Scenario: Retrieve information about task domain by discipline name
-    Given task domain exist
+    Given task domains exist
       | discipline  | task domain   |
       | SQL         | Join          |
       | POSTGRE_SQL | Join          |
