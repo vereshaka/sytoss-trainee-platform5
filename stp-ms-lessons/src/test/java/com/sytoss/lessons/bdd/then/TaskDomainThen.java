@@ -29,7 +29,7 @@ public class TaskDomainThen extends CucumberIntegrationTest {
         Assertions.assertEquals(taskDomainName, taskDomain.getName());
     }
 
-    @And("^\"(.*)\" task domain with \"(.*)\" script should be$")
+    @Then("^\"(.*)\" task domain with \"(.*)\" script should be$")
     public void taskDomainWithScriptShouldBe(String nameTaskDomain, String script) {
         TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(taskDomain);

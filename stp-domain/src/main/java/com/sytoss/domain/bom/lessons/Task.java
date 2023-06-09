@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter

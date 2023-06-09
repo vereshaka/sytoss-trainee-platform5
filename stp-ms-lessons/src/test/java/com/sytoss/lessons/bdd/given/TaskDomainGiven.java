@@ -43,6 +43,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
     }
+
     @Given("^\"(.*)\" task domain with \"(.*)\" script does not exist$")
     public void taskDomainNotExist(String nameTaskDomain, String script) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndScript(nameTaskDomain, script);
