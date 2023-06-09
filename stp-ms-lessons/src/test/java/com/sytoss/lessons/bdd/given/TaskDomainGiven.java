@@ -3,8 +3,11 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Given;
+
+import java.util.List;
 
 public class TaskDomainGiven extends CucumberIntegrationTest {
 
@@ -27,6 +30,23 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, TestExecutionContext.getTestContext().getDisciplineId());
         if (taskDomainDTO != null) {
             getTaskDomainConnector().delete(taskDomainDTO);
+        }
+    }
+
+    @Given("^task domains exist$")
+    public void taskdomainExist(List<TaskDomainDTO> taskDomains) {
+        for (TaskDomainDTO taskDomainDTO : taskDomains) {
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
+            if (disciplineDTO == null) {
+                disciplineDTO = taskDomainDTO.getDiscipline();
+                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            }
+            TaskDomainDTO result = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainDTO.getName(), disciplineDTO.getId());
+            taskDomainDTO.setDiscipline(disciplineDTO);
+            if (result == null) {
+                getTaskDomainConnector().save(taskDomainDTO);
+            }
         }
     }
 }
