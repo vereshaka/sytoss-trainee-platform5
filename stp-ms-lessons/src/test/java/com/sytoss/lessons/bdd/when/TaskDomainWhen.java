@@ -41,4 +41,21 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
     }
+
+    @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
+    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldNameTaskDomain, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setName(newNameTaskDomain);
+        if(taskDomainDTO == null){
+            String url = "/api/taskDomain/123";
+            ResponseEntity<String> responseEntity = doPost(url, taskDomain, String.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }
+        if(taskDomainDTO != null){
+            String url = "/api/taskDomain/" + taskDomainDTO.getId();
+            ResponseEntity<TaskDomain> responseEntity = doPost(url, taskDomain, TaskDomain.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }
+    }
 }

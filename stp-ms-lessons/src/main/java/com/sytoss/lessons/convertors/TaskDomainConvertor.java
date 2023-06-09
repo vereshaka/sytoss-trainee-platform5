@@ -14,7 +14,7 @@ public class TaskDomainConvertor {
     private final DisciplineConvertor disciplineConvertor;
 
     public void fromDTO(TaskDomainDTO source, TaskDomain destination) {
-        destination.setId(source.getId());
+//        destination.setId(source.getId());
         if (source.getId() != null) {
             destination.setId(source.getId());
         }
