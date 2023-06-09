@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,10 +27,11 @@ public class StudentController {
     @Operation(description = "Method that updates photo of student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Student not found!")
     })
     @PostMapping("/updatePhoto")
-    public ResponseEntity<String> create(@RequestBody String email,
-                                 @RequestBody MultipartFile photo) throws IOException {
+    public MultipartFile updatePhoto(@RequestBody String email,
+                                             @RequestBody MultipartFile photo) throws IOException {
         return studentService.updatePhoto(email, photo);
     }
 }

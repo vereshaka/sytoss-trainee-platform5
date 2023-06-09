@@ -17,6 +17,7 @@ public class StudentConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setPhoto(source.getPhoto());
     }
 
     public void toDTO(Student source, StudentDTO destination) {
@@ -25,5 +26,6 @@ public class StudentConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setPhoto(source.getPhoto());
     }
 }

@@ -28,9 +28,9 @@ public class StudentDTO {
     @Column(name = "EMAIL")
     private String email;
 
-    @Column(name = "PHOTO_PATH")
-    private String photoPath;
+    @Column(name = "PHOTO")
+    private String photo;
 
-//    @Column(name = "PHOTO")
-//    private MultipartFile photo;
+    @Column(name = "IS_MODERATED")
+    boolean isModerated;
 }
