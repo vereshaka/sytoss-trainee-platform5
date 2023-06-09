@@ -129,7 +129,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", null, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomain", null, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
