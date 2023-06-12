@@ -80,7 +80,6 @@ public class MetadataConnectorImpl implements MetadataConnector {
 
     public Task createTask(String question, String etalonAnswer, List<Topic> topics, TaskDomain taskDomain) {
         Task task = new Task();
-        task.setTaskDomain(taskDomain);
         task.setQuestion(question);
         task.setTopics(topics);
         task.setEtalonAnswer(etalonAnswer);
@@ -97,7 +96,6 @@ public class MetadataConnectorImpl implements MetadataConnector {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
         taskDomain.setName("SQL");
-        task.setTaskDomain(taskDomain);
 
         List<Topic> topics = new ArrayList<>();
 

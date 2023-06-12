@@ -4,7 +4,12 @@ import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerExceptio
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +25,10 @@ public class PersonalExamService {
     private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
 
     private final PersonalExamConnector personalExamConnector;
+
+    private final TaskDomainConnector taskDomainConnector;
+
+    private final TaskDomainConvertor taskDomainConvertor;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -81,7 +90,8 @@ public class PersonalExamService {
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestion(personalExam.getAnswers().get(0).getTask().getQuestion());
-        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getScript());
+        TaskDomain taskDomain = findTaskDomainByTask(personalExam.getAnswers().get(0).getTask().getId());
+        taskModel.setSchema(taskDomain.getScript());
         taskModel.setQuestionNumber(1);
         firstTask.setTask(taskModel);
         return firstTask;
@@ -89,5 +99,19 @@ public class PersonalExamService {
 
     public PersonalExam getById(String personalExamId) {
         return personalExamConnector.getById(personalExamId);
+    }
+
+    public TaskDomain findTaskDomainByTask(Long answerTaskId) {
+        TaskDomain taskDomain = new TaskDomain();
+        List<TaskDomainDTO> taskDomainList = taskDomainConnector.findAll();
+        for (TaskDomainDTO taskDomainDTO:taskDomainList) {
+            for (TaskDTO taskDTO:taskDomainDTO.getTasks()) {
+                if (taskDTO.getId().equals(answerTaskId)) {
+                    taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
+                    break;
+                }
+            }
+        }
+        return taskDomain;
     }
 }

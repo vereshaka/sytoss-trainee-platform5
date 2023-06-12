@@ -8,7 +8,9 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +38,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
     private TaskDomainConnector taskDomainConnector;
 
     @Spy
-    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor(), new TaskConvertor(new TopicConvertor(new DisciplineConvertor())));
 
     @Test
     public void shouldCreateTaskDomain() {

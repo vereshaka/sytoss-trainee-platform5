@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TaskDomainConvertorTest extends AbstractApplicationTest {
 
     @Spy
-    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor(), new TaskConvertor(new TopicConvertor(new DisciplineConvertor())));
 
     @Test
     public void toDTOTaskDomainConvertorTest() {

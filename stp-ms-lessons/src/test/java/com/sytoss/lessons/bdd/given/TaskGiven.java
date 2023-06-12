@@ -25,7 +25,6 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);
             taskDTO.setEtalonAnswer("Etalon answer");
-            taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO.setTopics(List.of(topicDTO));
             getTaskConnector().save(taskDTO);
         }
@@ -71,7 +70,6 @@ public class TaskGiven extends CucumberIntegrationTest {
 
             TaskDTO taskDTO = new TaskDTO();
             taskDTO.setQuestion(columns.get("task"));
-            taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId()));
             taskDTO.setTopics(List.of(topicDTO));
             getTaskConnector().save(taskDTO);
         }

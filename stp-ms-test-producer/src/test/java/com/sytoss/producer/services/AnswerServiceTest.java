@@ -52,10 +52,10 @@ public class AnswerServiceTest extends AbstractJunitTest {
         // first task and the answer that we will process and save
         Task task = new Task();
         task.setId(1L);
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(10L);
-        taskDomain.setScript(".uml");
-        task.setTaskDomain(taskDomain);
+//        TaskDomain taskDomain = new TaskDomain();
+//        taskDomain.setId(10L);
+//        taskDomain.setScript(".uml");
+//        task.setTaskDomain(taskDomain);
         Answer currentAnswer = new Answer();
         currentAnswer.setId(8L);
         currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
@@ -64,10 +64,10 @@ public class AnswerServiceTest extends AbstractJunitTest {
         // second task and the answer what we return at last
         Task nextTask = new Task();
         nextTask.setId(2L);
-        TaskDomain nextTaskDomain = new TaskDomain();
-        nextTaskDomain.setId(11L);
-        nextTaskDomain.setScript(".uml");
-        nextTask.setTaskDomain(nextTaskDomain);
+//        TaskDomain nextTaskDomain = new TaskDomain();
+//        nextTaskDomain.setId(11L);
+//        nextTaskDomain.setScript(".uml");
+//        nextTask.setTaskDomain(nextTaskDomain);
         Answer nextAnswer = new Answer();
         nextAnswer.setId(9L);
         nextAnswer.setStatus(AnswerStatus.NOT_STARTED);

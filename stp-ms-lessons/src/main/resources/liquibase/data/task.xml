@@ -12,7 +12,7 @@
             <column name="QUESTION" type="VARCHAR2(100 BYTE)" />
             <column name="ETALON_ANSWER" type="VARCHAR2(400 BYTE)" />
             <column name="TASK_DOMAIN_ID" type="BIGINT">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
         </createTable>
 

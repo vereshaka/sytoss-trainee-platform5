@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity(name = "TASK_DOMAIN")
@@ -24,4 +27,8 @@ public class TaskDomainDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
+
+    @OneToMany
+    @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
+    private List<TaskDTO> tasks = new ArrayList<>();
 }

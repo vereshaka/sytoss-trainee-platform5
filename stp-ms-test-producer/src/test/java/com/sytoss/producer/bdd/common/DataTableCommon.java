@@ -48,7 +48,7 @@ public class DataTableCommon {
         TaskDomain taskDomain = new TaskDomain();
         if (params.containsKey("taskDomainId")) {
             taskDomain.setId(Long.valueOf(params.get("taskDomainId")));
-            task.setTaskDomain(taskDomain);
+            taskDomain.setTasks(List.of(task));
         }
 
         Grade grade = new Grade();
@@ -70,7 +70,7 @@ public class DataTableCommon {
 
         if (params.containsKey("script")) {
             taskDomain.setScript(params.get("script"));
-            task.setTaskDomain(taskDomain);
+            taskDomain.setTasks(List.of(task));
             answer.setTask(task);
         }
         answer.setTask(task);

@@ -40,11 +40,7 @@ public class TaskServiceTest extends AbstractApplicationTest {
         input.setId(1L);
         input.setQuestion("What is SQL?");
         input.setEtalonAnswer("SQL is life");
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainDTO.setId(1L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
-        taskDomainDTO.setDiscipline(disciplineDTO);
-        input.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         input.setTopics(topicDTOList);
         when(taskConnector.getReferenceById(any())).thenReturn(input);
@@ -63,9 +59,6 @@ public class TaskServiceTest extends AbstractApplicationTest {
         }).when(taskConnector).save(any(TaskDTO.class));
         Task input = new Task();
         input.setQuestion("question");
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(1L);
-        input.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(1L);
         input.setTopics(List.of(topic));
@@ -81,17 +74,10 @@ public class TaskServiceTest extends AbstractApplicationTest {
         topicDTO.setName("Database");
         topicDTO.setDiscipline(new DisciplineDTO());
 
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainDTO.setId(1L);
-        taskDomainDTO.setName("Task Domain");
-        DisciplineDTO disciplineDTO = new DisciplineDTO();
-        taskDomainDTO.setDiscipline(disciplineDTO);
-
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setId(1L);
         taskDTO.setQuestion("Question");
         taskDTO.setEtalonAnswer("Answer");
-        taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
         when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
@@ -100,7 +86,6 @@ public class TaskServiceTest extends AbstractApplicationTest {
         Assertions.assertEquals(1L, result.get(0).getId());
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
-        Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
         Assertions.assertEquals(1, result.get(0).getTopics().size());
     }
 }

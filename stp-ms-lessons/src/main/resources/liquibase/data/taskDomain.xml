@@ -14,6 +14,9 @@
             <column name="DISCIPLINE_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
+            <column name="TASK_DOMAIN_ID" type="BIGINT">
+                <constraints nullable="true" />
+            </column>
         </createTable>
 
         <rollback>
@@ -41,6 +44,15 @@
                                  referencedColumnNames="ID" />
         <rollback>
             <dropForeignKeyConstraint baseTableName="TASK_DOMAIN" constraintName="FK_TASK_DOMAIN2DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="VereshchakaV" id="task_domain_5">
+        <addForeignKeyConstraint baseTableName="TASK" baseColumnNames="TASK_DOMAIN_ID"
+                                 constraintName="FK_TASK_DOMAIN2TASK"
+                                 referencedTableName="TASK_DOMAIN" referencedColumnNames="ID"  />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="TASK_DOMAIN" constraintName="FK_TASK_DOMAIN2TASK" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

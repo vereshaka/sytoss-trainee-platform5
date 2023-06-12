@@ -3,6 +3,8 @@ package com.sytoss.domain.bom.lessons;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class TaskDomain {
@@ -14,4 +16,6 @@ public class TaskDomain {
     private String script;
 
     private Discipline discipline;
+
+    private List<Task> tasks;
 }

@@ -18,7 +18,5 @@ public class Task {
 
     private String etalonAnswer;
 
-    private TaskDomain taskDomain;
-
     private List<Topic> topics;
 }

@@ -34,9 +34,6 @@ public class TaskWhen extends CucumberIntegrationTest {
         String url = "/api/task/";
         Task task = new Task();
         task.setQuestion(question);
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setId(TestExecutionContext.getTestContext().getTaskDomainId());
-        task.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
         task.setTopics(List.of(topic));

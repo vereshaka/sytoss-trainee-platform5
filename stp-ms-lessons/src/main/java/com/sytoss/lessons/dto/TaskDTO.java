@@ -23,10 +23,6 @@ public class TaskDTO {
     @Column(name = "ETALON_ANSWER")
     private String etalonAnswer;
 
-    @OneToOne
-    @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
-    private TaskDomainDTO taskDomain;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "TASK2TOPIC",

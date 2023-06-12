@@ -17,17 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskConvertor {
 
-    private final TaskDomainConvertor taskDomainConvertor;
-
     private final TopicConvertor topicConvertor;
 
     public void fromDTO(TaskDTO source, Task destination) {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
-        destination.setTaskDomain(taskDomain);
         List<Topic> topicList = new ArrayList<>();
         source.getTopics().forEach(topicDTO -> {
             Topic topic = new Topic();
@@ -41,9 +36,6 @@ public class TaskConvertor {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
-        destination.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         source.getTopics().forEach(topic -> {
             TopicDTO topicDTO = new TopicDTO();

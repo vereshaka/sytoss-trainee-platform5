@@ -113,9 +113,9 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         input.setStatus(PersonalExamStatus.NOT_STARTED);
         Task task = new Task();
         task.setId(1L);
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setScript(".uml");
-        task.setTaskDomain(taskDomain);
+//        TaskDomain taskDomain = new TaskDomain();
+//        taskDomain.setScript(".uml");
+//        task.setTaskDomain(taskDomain);
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
