@@ -23,7 +23,8 @@ public class StudentConvertorTest extends AbstractJunitTest {
         student.setLastName("Lastname");
         student.setMiddleName("Middlename");
         student.setEmail("test@gmail.com");
-        student.setPhoto("test photo");
+        byte[] photoBytes = {1, 2, 3, 4, 5};
+        student.setPhoto(photoBytes);
         StudentDTO studentDTO = new StudentDTO();
         studentConvertor.toDTO(student, studentDTO);
         assertEquals(student.getId(), studentDTO.getId());
@@ -35,14 +36,15 @@ public class StudentConvertorTest extends AbstractJunitTest {
     }
 
     @Test
-    public void fromDTOTeacherConvertorTest() {
+    public void fromDTOStudentConvertorTest() {
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setId(1L);
         studentDTO.setFirstName("Firstname");
         studentDTO.setLastName("Lastname");
         studentDTO.setMiddleName("Middlename");
         studentDTO.setEmail("test@email.com");
-        studentDTO.setPhoto("test photo");
+        byte[] photoBytes = {1, 2, 3, 4, 5};
+        studentDTO.setPhoto(photoBytes);
         Student student = new Student();
         studentConvertor.fromDTO(studentDTO, student);
         assertEquals(student.getId(), studentDTO.getId());

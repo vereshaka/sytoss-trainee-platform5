@@ -29,7 +29,7 @@ public class StudentDTO {
     private String email;
 
     @Column(name = "PHOTO")
-    private String photo;
+    private byte[] photo;
 
     @Column(name = "IS_MODERATED")
     boolean isModerated;

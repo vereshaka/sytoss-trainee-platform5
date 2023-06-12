@@ -13,7 +13,7 @@
             <column name="LAST_NAME" type="VARCHAR2(100 BYTE)" />
             <column name="MIDDLE_NAME" type="VARCHAR2(100 BYTE)" />
             <column name="EMAIL" type="VARCHAR2(100 BYTE)" />
-            <column name="PHOTO" type="VARCHAR2(255 BYTE)" />
+            <column name="PHOTO" type="bytea" />
             <column name="IS_MODERATED" type="BOOLEAN" />
         </createTable>
 

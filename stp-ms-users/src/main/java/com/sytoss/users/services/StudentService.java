@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
@@ -17,14 +16,18 @@ public class StudentService {
 
     private final StudentConnector studentConnector;
 
-    public MultipartFile updatePhoto(String email, MultipartFile photo) throws IOException {
+    public MultipartFile updatePhoto(String email, MultipartFile photo) {
 
         try {
             StudentDTO studentDTO = studentConnector.getByEmail(email);
             studentDTO.setModerated(false);
-            byte[] photoBytes = photo.getBytes();
-            String photoString = Base64.getEncoder().encodeToString(photoBytes);
-            studentDTO.setPhoto(photoString);
+            byte[] photoBytes;
+            try {
+                photoBytes = photo.getBytes();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            studentDTO.setPhoto(photoBytes);
             studentConnector.save(studentDTO);
             return photo;
         } catch (EntityNotFoundException e) {

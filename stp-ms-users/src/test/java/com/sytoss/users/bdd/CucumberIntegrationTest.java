@@ -1,6 +1,7 @@
 package com.sytoss.users.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sytoss.users.connectors.StudentConnector;
 import com.sytoss.users.connectors.TeacherConnector;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -32,6 +33,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private TeacherConnector teacherConnector;
+
+    @Autowired
+    private StudentConnector studentConnector;
 
     @LocalServerPort
     private int applicationPort;

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class Student extends AbstractUser {
 
-    private String photo;
+    private byte[] photo;
 
     private boolean isModerated;
 }
