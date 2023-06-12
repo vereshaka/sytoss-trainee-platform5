@@ -5,11 +5,13 @@ import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
+import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,6 +47,9 @@ public class DisciplineControllerTest extends AbstractControllerTest {
 
     @MockBean
     private DisciplineService disciplineService;
+
+    @MockBean
+    private TaskDomainService taskDomainService;
 
     @Test
     public void shouldSaveTopic() throws JOSEException {
@@ -129,5 +134,16 @@ public class DisciplineControllerTest extends AbstractControllerTest {
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldFindTasksDomainByDiscipline() throws JOSEException {
+        when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomain", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
     }
 }

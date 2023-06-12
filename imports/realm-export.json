@@ -205,6 +205,10 @@
       {
         "name": "create_teacher",
         "description": "Allow create teacher"
+      },
+      {
+        "name": "get_task_domains_by_discipline",
+        "description": "Allow get task domains by discipline id"
       }
     ]
   }

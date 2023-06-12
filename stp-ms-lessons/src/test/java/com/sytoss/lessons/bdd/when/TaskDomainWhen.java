@@ -4,8 +4,10 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.When;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +56,17 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
             ResponseEntity<TaskDomain> responseEntity = doGet(url, requestEntity, TaskDomain.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
+    }
+
+    @When("^receive all task domains by \"(.*)\" discipline$")
+    public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
+        DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
+        String url = "/api/discipline/" + discipline.getId() + "/taskDomain";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

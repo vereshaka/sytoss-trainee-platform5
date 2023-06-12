@@ -4,12 +4,17 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +50,16 @@ public class TaskDomainService {
         } catch (EntityNotFoundException exception) {
             throw new TaskDomainNotFoundException(taskDomainId);
         }
+    }
+
+    public List<TaskDomain> findByDiscipline(Long disciplineId) {
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
+        List<TaskDomain> result = new ArrayList<>();
+        for (TaskDomainDTO taskDomainDTO : taskDomainDTOList) {
+            TaskDomain taskDomain = new TaskDomain();
+            taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
+            result.add(taskDomain);
+        }
+        return result;
     }
 }
