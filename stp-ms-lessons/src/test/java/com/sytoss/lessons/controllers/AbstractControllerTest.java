@@ -1,16 +1,13 @@
-package com.sytoss.users.bdd.common;
-
+package com.sytoss.lessons.controllers;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.users.AbstractApplicationTest;
-import com.sytoss.users.bdd.CucumberIntegrationTest;
-import io.cucumber.java.After;
-import io.cucumber.java.BeforeAll;
+import com.sytoss.lessons.AbstractApplicationTest;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.IOException;
 
-public class CucumberHooks extends CucumberIntegrationTest {
+public class AbstractControllerTest extends AbstractApplicationTest {
 
     @BeforeAll
     public static void setupJWK() throws JOSEException, IOException {
@@ -20,10 +17,5 @@ public class CucumberHooks extends CucumberIntegrationTest {
     @AfterAll
     public static void stopServer() {
         AbstractApplicationTest.stopServer();
-    }
-
-    @After
-    public void tearDown() {
-        TestExecutionContext.drop();
     }
 }

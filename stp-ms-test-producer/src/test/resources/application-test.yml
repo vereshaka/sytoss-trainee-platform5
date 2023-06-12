@@ -1,3 +1,10 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9030/realms/traineeplatform/protocol/openid-connect/certs
+
 de:
   flapdoodle:
     mongodb:

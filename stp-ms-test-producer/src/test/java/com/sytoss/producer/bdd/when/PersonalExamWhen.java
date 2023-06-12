@@ -1,9 +1,10 @@
 package com.sytoss.producer.bdd.when;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.When;
@@ -19,9 +20,10 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     private final String URI = "/api/";
 
     @When("^system create \"(.*)\" personal exam by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id$")
-    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) {
+    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(generateJWT(List.of("create_personal_exam")));
         headers.set("studentId", studentId.toString());
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setStudentId(studentId);
@@ -37,9 +39,10 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     }
 
     @When("the exam with id {word} is done")
-    public void theExamIsDoneOnTask(String examId) {
+    public void theExamIsDoneOnTask(String examId) throws JOSEException {
         String url = URI + "personalExam/" + examId + "/summary";
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("get_summary")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
@@ -69,7 +72,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     }
 
     @When("^student with (.*) id start personal exam \"(.*)\"$")
-    public void startPersonalExam(String studentId, String personalExamName) {
+    public void startPersonalExam(String studentId, String personalExamName) throws JOSEException {
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
@@ -78,8 +81,9 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         IntegrationTest.getTestContext().setFirstTaskResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
+
     @When("^student with (.*) id start second time personal exam \"(.*)\"$")
-    public void startSecondTimePersonalExam(String studentId, String personalExamName) {
+    public void startSecondTimePersonalExam(String studentId, String personalExamName) throws JOSEException {
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentId(personalExamName, Long.parseLong(studentId));
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
@@ -88,9 +92,11 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         IntegrationTest.getTestContext().setResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
-    private HttpEntity startTest(String studentId) {
+
+    private HttpEntity startTest(String studentId) throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(generateJWT(List.of("start_personal_exam")));
         headers.set("studentId", studentId);
         HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
         return requestEntity;

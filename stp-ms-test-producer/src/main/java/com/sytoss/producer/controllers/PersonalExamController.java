@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +30,7 @@ public class PersonalExamController {
     @Autowired
     private AnswerService answerService;
 
+    @PreAuthorize("hasRole('ROLE_create_personal_exam')")
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -38,6 +40,7 @@ public class PersonalExamController {
         return personalExamService.create(examConfiguration);
     }
 
+    @PreAuthorize("hasRole('ROLE_start_personal_exam')")
     @Operation(description = "Method that start exam for student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -51,6 +54,7 @@ public class PersonalExamController {
         return personalExamService.start(personalExamId, Long.valueOf(studentId));
     }
 
+    @PreAuthorize("hasRole('ROLE_get_summary')")
     @Operation(description = "Method that return personal exam with summary grade")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -61,6 +65,7 @@ public class PersonalExamController {
         return personalExamService.summary(examId);
     }
 
+    @PreAuthorize("hasRole('ROLE_answer_on_task')")
     @Operation(description = "Method for answering tasks")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,7 @@ public class TeacherController {
 
     private final DisciplineService disciplineService;
 
+    @PreAuthorize("hasRole('ROLE_create_discipline')")
     @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

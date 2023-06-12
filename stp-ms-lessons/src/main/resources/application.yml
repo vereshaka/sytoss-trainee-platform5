@@ -12,5 +12,11 @@ spring:
         ddl-auto: validate
   liquibase:
     change-log: classpath:/liquibase/db.changelog-master.xml
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
 server:
    port: 9101

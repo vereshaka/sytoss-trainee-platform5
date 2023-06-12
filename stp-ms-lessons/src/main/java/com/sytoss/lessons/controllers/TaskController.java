@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
+    @PreAuthorize("hasRole('ROLE_get_task')")
     @Operation(description = "Method that retrieve task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -28,6 +30,7 @@ public class TaskController {
         return taskService.getById(taskId);
     }
 
+    @PreAuthorize("hasRole('ROLE_create_task')")
     @Operation(description = "Method that create task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

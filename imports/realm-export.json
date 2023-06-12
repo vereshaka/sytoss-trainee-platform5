@@ -1,0 +1,211 @@
+{
+  "realm": "traineeplatform",
+  "enabled": true,
+  "users": [
+    {
+      "username": "teacher",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test"
+        }
+      ],
+      "realmRoles": [
+        "get_task_domain"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "id": "12242274-6d7f-49da-bbd6-9ac6e9420127",
+      "clientId": "trainee-platform-client",
+      "name": "trainee-platform-client",
+      "description": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "tZXTfGezo443D0DSsKtrEH1xTcBQeqoA",
+      "redirectUris": [],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "oidc.ciba.grant.enabled": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "client.secret.creation.time": "1676473426",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "54c1853a-23a9-46ad-bd17-1c60bfcc7259",
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "38ef6b16-2a76-4d63-b4e3-775ac8bd7323",
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "010e8cad-a9d0-425b-b689-133e157773a6",
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "authorizationSettings": {
+        "allowRemoteResourceManagement": true,
+        "policyEnforcementMode": "ENFORCING",
+        "resources": [
+          {
+            "name": "Default Resource",
+            "type": "urn:company-managment-client:resources:default",
+            "ownerManagedAccess": false,
+            "attributes": {},
+            "_id": "e565b471-eb75-4937-8b97-eafaf2d5ea79",
+            "uris": [
+              "/*"
+            ]
+          }
+        ],
+        "policies": [],
+        "scopes": [],
+        "decisionStrategy": "UNANIMOUS"
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "get_task_domain",
+        "description": "Allow get task domain"
+      },
+      {
+        "name": "check_task",
+        "description": "Allow check task"
+      },
+      {
+        "name": "create_topic",
+        "description": "Allow create topic"
+      },
+      {
+        "name": "find_groups_by_discipline",
+        "description": "Allow find groups by discipline id"
+      },
+      {
+        "name": "get_discipline",
+        "description": "Allow get discipline by id"
+      },
+      {
+        "name": "create_group",
+        "description": "Allow create group"
+      },
+      {
+        "name": "create_task_domain",
+        "description": "Allow create task domain"
+      },
+      {
+        "name": "create_exam",
+        "description": "Allow create exam"
+      },
+      {
+        "name": "get_task",
+        "description": "Allow get task by id"
+      },
+      {
+        "name": "create_task",
+        "description": "Allow create task"
+      },
+      {
+        "name": "create_discipline",
+        "description": "Allow create discipline"
+      },
+      {
+        "name": "find_topics_by_discipline",
+        "description": "Allow find topics by discipline id"
+      },
+      {
+        "name": "get_topic",
+        "description": "Allow get topic by id"
+      },
+      {
+        "name": "find_tasks_by_topic",
+        "description": "Allow find tasks by topic id"
+      },
+      {
+        "name": "create_personal_exam",
+        "description": "Allow create personal exam"
+      },
+      {
+        "name": "start_personal_exam",
+        "description": "Allow start personal exam"
+      },
+      {
+        "name": "get_summary",
+        "description": "Allow get summary grade on personal exam"
+      },
+      {
+        "name": "answer_on_task",
+        "description": "Allow answer on task in personal exam"
+      },
+      {
+        "name": "create_teacher",
+        "description": "Allow create teacher"
+      }
+    ]
+  }
+}

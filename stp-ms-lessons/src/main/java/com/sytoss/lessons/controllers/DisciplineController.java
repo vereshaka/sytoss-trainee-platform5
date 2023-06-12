@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class DisciplineController {
 
     private final TaskDomainService taskDomainService;
 
+    @PreAuthorize("hasRole('ROLE_create_topic')")
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -46,6 +48,7 @@ public class DisciplineController {
         return topicService.create(disciplineId, topic);
     }
 
+    @PreAuthorize("hasRole('ROLE_find_groups_by_discipline')")
     @Operation(description = "Method that retrieve groups by discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -57,6 +60,7 @@ public class DisciplineController {
         return groupService.findByDiscipline(disciplineId);
     }
 
+    @PreAuthorize("hasRole('ROLE_get_discipline')")
     @Operation(description = "Method that retrieve discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -69,6 +73,7 @@ public class DisciplineController {
         return disciplineService.getById(disciplineId);
     }
 
+    @PreAuthorize("hasRole('ROLE_create_group')")
     @Operation(description = "Method that create group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -83,6 +88,7 @@ public class DisciplineController {
         return groupService.create(disciplineId, group);
     }
 
+    @PreAuthorize("hasRole('ROLE_create_task_domain')")
     @Operation(description = "Method that create a new task domain")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

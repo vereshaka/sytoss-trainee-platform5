@@ -1,5 +1,6 @@
 package com.sytoss.producer.bdd.when;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
@@ -10,15 +11,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class AnswerWhen extends CucumberIntegrationTest {
 
     @When("student calls answer with value {string} on personal exam with id {word}")
-    public void studentCallsAnswer(String answer, String personalExamId) {
+    public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Grade());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("answer_on_task")));
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("studentId", String.valueOf(IntegrationTest.getTestContext().getStudentId()));
         String url = "/api/personalExam/" + personalExamId + "/task/answer";

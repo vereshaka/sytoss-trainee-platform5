@@ -1,7 +1,7 @@
 package com.sytoss.lessons.controllers;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.ExamService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,9 +11,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExamControllerTest extends AbstractApplicationTest {
+public class ExamControllerTest extends AbstractControllerTest {
 
     @InjectMocks
     private ExamController examController;
@@ -22,8 +24,11 @@ public class ExamControllerTest extends AbstractApplicationTest {
     private ExamService examService;
 
     @Test
-    public void shouldSaveExam() {
-        ResponseEntity<Exam> response = doPost("/api/exam/save", new Exam(), new ParameterizedTypeReference<Exam>() {
+    public void shouldSaveExam() throws JOSEException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("create_exam")));
+        HttpEntity<Exam> httpEntity = new HttpEntity<>(new Exam(), httpHeaders);
+        ResponseEntity<Exam> response = doPost("/api/exam/save", httpEntity, new ParameterizedTypeReference<Exam>() {
         });
         assertEquals(200, response.getStatusCode().value());
     }

@@ -1,11 +1,11 @@
 package com.sytoss.producer;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
+import com.sytoss.common.config.CommonKeycloakConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -14,7 +14,9 @@ import java.util.concurrent.Executor;
 @SpringBootApplication
 @EnableAsync
 @EnableFeignClients
+@Import(CommonKeycloakConfig.class)
 public class TestProducerApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(TestProducerApplication.class, args);
     }
