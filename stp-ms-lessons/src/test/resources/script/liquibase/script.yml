@@ -1,0 +1,76 @@
+databaseChangeLog:
+    - changeSet:
+      id: create-tables
+      author: compiled
+      changes:
+        - createTable:
+            tableName: Discipline
+            columns:
+              - column:
+                  name: name
+                  type: string
+              - column:
+                  name: id
+                  type: long
+        - createTable:
+            tableName: Topic
+            columns:
+              - column:
+                  name: name
+                  type: string
+              - column:
+                  name: id
+                  type: long
+        - createTable:
+            tableName: Task
+            columns:
+              - column:
+                  name: question
+                  type: string
+              - column:
+                  name: answer
+                  type: string
+              - column:
+                  name: id
+                  type: long
+        - createTable:
+            tableName: Topic2Task
+            columns:
+              - column:
+                  name: TaskId
+                  type: int
+              - column:
+                  name: TopicId
+                  type: int
+    - changeSet:
+        id: init-keys
+        author: compiled
+        changes:
+          - addForeignKeyConstraint:
+              baseTableName: Discipline
+              baseColumnNames: DisciplineId
+              constraintName: fk_discipline_2_topic
+              referencedTableName: Topic
+              referencedColumnNames: TopicId
+          - addForeignKeyConstraint:
+              baseTableName: Discipline
+              baseColumnNames: DisciplineId
+              constraintName: fk_discipline_2_task
+              referencedTableName: Task
+              referencedColumnNames: TaskId
+          - addForeignKeyConstraint:
+              baseTableName: Topic
+              baseColumnNames: TopicId
+              constraintName: fk_topic_2_task
+              referencedTableName: Task
+              referencedColumnNames: TaskId
+          - addForeignKeyConstraint:
+              baseTableName: Task
+              baseColumnNames: TaskId
+              constraintName: fk_task_2_topic
+              referencedTableName: Topic
+              referencedColumnNames: TopicId
+          - addPrimaryKey:
+              tableName: Task2Topic
+              columnNames: TaskId,TaskId
+              constraintName: pk_task_2_topic
