@@ -3,8 +3,10 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +55,10 @@ public class TaskService {
             tasksList.add(task);
         }
         return tasksList;
+    }
+
+    public Task addCondition(Long taskId, TaskCondition taskCondition) {
+        Task result = new Task();
+        return result;
     }
 }
