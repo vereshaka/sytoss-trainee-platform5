@@ -107,7 +107,7 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/{disciplineId}/taskDomain")
+    @GetMapping("/{disciplineId}/taskDomains")
     public List<TaskDomain> findTasksDomainByDiscipline(
             @Parameter(description = "id of the discipline to be searched by")
             @PathVariable("disciplineId") Long disciplineId) {

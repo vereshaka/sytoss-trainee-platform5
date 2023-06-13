@@ -22,7 +22,8 @@
         "start_personal_exam",
         "get_summary",
         "answer_on_task",
-        "create_teacher"
+        "create_teacher",
+        "find_discipline_by_teacher"
       ]
     }
   ],
@@ -248,6 +249,10 @@
       {
         "name": "get_task_domains_by_discipline",
         "description": "Allow get task domains by discipline id"
+      },
+      {
+        "name":  "find_discipline_by_teacher",
+        "description":  "Allow teacher get his/her disciplines"
       }
     ]
   }

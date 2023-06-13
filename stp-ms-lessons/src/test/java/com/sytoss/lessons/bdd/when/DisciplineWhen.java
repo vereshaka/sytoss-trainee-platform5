@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -48,6 +49,17 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         headers.setBearerAuth(generateJWT(List.of("get_discipline")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Discipline> responseEntity = doGet(url, requestEntity, Discipline.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher with id (.*) retrieve his disciplines$")
+    public void requestSentReceiveDisciplinesByTeacher(Long teacherId) throws JOSEException {
+        String url = "/api/teacher/my/disciplines";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("find_discipline_by_teacher")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

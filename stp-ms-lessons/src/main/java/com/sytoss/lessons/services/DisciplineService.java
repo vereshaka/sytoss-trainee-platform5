@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DisciplineService {
+public class DisciplineService extends AbstractService {
 
     private final DisciplineConnector disciplineConnector;
 
@@ -44,5 +47,16 @@ public class DisciplineService {
         } else {
             throw new DisciplineExistException(discipline.getName());
         }
+    }
+
+    public List<Discipline> findDisciplines() {
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherId(getCurrentUser().getId());
+        List<Discipline> result = new ArrayList<>();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            result.add(discipline);
+        }
+        return result;
     }
 }

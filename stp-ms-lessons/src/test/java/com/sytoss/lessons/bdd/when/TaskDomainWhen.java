@@ -61,7 +61,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^receive all task domains by \"(.*)\" discipline$")
     public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
-        String url = "/api/discipline/" + discipline.getId() + "/taskDomain";
+        String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);

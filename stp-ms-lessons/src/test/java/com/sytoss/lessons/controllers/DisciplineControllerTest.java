@@ -142,7 +142,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomain", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
