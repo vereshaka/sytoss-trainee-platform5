@@ -36,10 +36,6 @@ public class TaskDTO {
     private List<TopicDTO> topics;
 
     @OneToMany(fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "TASK2TASK_CONDITION",
-//            joinColumns = @JoinColumn(name = "TASK_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "TASK_CONDITION_ID"))
     @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
     private List<TaskConditionDTO> conditions = new ArrayList<>();
 }

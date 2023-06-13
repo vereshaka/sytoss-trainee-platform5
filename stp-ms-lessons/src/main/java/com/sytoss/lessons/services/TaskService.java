@@ -60,11 +60,6 @@ public class TaskService {
                     taskConditionIterator.remove();
                 }
             }
-//            for (TaskCondition taskConditionFirst : task.getTaskConditions()) {
-//                if(taskConditionFirst.equals(taskCondition)) {
-//                    task.getTaskConditions().remove(taskConditionFirst);
-//                }
-//            }
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
