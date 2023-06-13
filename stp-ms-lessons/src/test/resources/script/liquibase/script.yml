@@ -1,5 +1,5 @@
 databaseChangeLog:
-    - changeSet:
+  - changeSet:
       id: create-tables
       author: compiled
       changes:
@@ -7,23 +7,42 @@ databaseChangeLog:
             tableName: Discipline
             columns:
               - column:
-                  name: name
-                  type: string
-              - column:
                   name: id
                   type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: string
         - createTable:
             tableName: Topic
             columns:
               - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
                   name: name
                   type: string
               - column:
-                  name: id
+                  name: discipline_id
                   type: long
+            foreignKeyConstraints:
+             - foreignKeyConstraint:
+                 baseTableName: Topic
+                 baseColumnNames: discipline_id
+                 constraintName: fk_topic_2_discipline
+                 referencedTableName: Discipline
+                 referencedColumnNames: id
         - createTable:
             tableName: Task
             columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
               - column:
                   name: question
                   type: string
@@ -31,46 +50,25 @@ databaseChangeLog:
                   name: answer
                   type: string
               - column:
-                  name: id
+                  name: discipline_id
                   type: long
+            foreignKeyConstraints:
+             - foreignKeyConstraint:
+                 baseTableName: Task
+                 baseColumnNames: discipline_id
+                 constraintName: fk_task_2_discipline
+                 referencedTableName: Discipline
+                 referencedColumnNames: id
         - createTable:
-            tableName: Topic2Task
+            tableName: TopicToTask
             columns:
               - column:
-                  name: TaskId
-                  type: int
+                  name: task_id
+                  type: long
+                  constraints:
+                    primaryKey: true
               - column:
-                  name: TopicId
-                  type: int
-    - changeSet:
-        id: init-keys
-        author: compiled
-        changes:
-          - addForeignKeyConstraint:
-              baseTableName: Discipline
-              baseColumnNames: DisciplineId
-              constraintName: fk_discipline_2_topic
-              referencedTableName: Topic
-              referencedColumnNames: TopicId
-          - addForeignKeyConstraint:
-              baseTableName: Discipline
-              baseColumnNames: DisciplineId
-              constraintName: fk_discipline_2_task
-              referencedTableName: Task
-              referencedColumnNames: TaskId
-          - addForeignKeyConstraint:
-              baseTableName: Topic
-              baseColumnNames: TopicId
-              constraintName: fk_topic_2_task
-              referencedTableName: Task
-              referencedColumnNames: TaskId
-          - addForeignKeyConstraint:
-              baseTableName: Task
-              baseColumnNames: TaskId
-              constraintName: fk_task_2_topic
-              referencedTableName: Topic
-              referencedColumnNames: TopicId
-          - addPrimaryKey:
-              tableName: Task2Topic
-              columnNames: TaskId,TaskId
-              constraintName: pk_task_2_topic
+                    name: topic_id
+                    type: long
+                    constraints:
+                      primaryKey: true

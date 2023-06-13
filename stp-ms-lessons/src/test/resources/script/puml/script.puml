@@ -1,21 +1,30 @@
 @startuml
-entity Discipline #red{
-id: long
+entity Discipline {
+id: long <<PK>>
 name: string
 }
 
-entity Topic #red{
-id: long
+entity Topic {
+id: long <<PK>>
 name: string
+discipline_id: long <<FK Discipline(id)>>
 }
 
-entity Task  #red{
-id: long
+entity Task {
+id: long <<PK>>
 question: string
 answer: string
+discipline_id: long <<FK Discipline(id)>>
 }
 
-Discipline "1" --o "N topics" Topic
-Discipline "1" --o "1" Task
-Topic "N topics" o--o "N tasks" Task
+entity TopicToTask {
+task_id: long <<PK>>
+topic_id: long <<PK>>
+}
+
+Discipline ||--o{ Topic
+Discipline ||--o| Task
+Topic |o--o{ TopicToTask
+Task |o--o{ TopicToTask
+
 @enduml
