@@ -64,7 +64,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     public void removeConditionFromTask(String conditionName) {
         TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByName(conditionName);
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
-        ResponseEntity<Task> responseEntity = doPatch(url, null, Task.class);
+        ResponseEntity<Task> responseEntity = doPut(url, null, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

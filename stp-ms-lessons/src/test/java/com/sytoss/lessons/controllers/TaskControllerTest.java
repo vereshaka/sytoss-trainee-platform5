@@ -67,7 +67,7 @@ public class TaskControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldRemoveConditionFromTask() {
         when(taskService.removeCondition(anyLong(), anyLong())).thenReturn(new Task());
-        ResponseEntity<Task> result = doPatch("/api/task/12/condition/12", null, Task.class);
+        ResponseEntity<Task> result = doPut("/api/task/12/condition/12", null, Task.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

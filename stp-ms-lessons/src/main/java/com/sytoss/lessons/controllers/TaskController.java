@@ -46,7 +46,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task don't has condition!")
 
     })
-    @PatchMapping("/{taskId}/condition/{conditionId}")
+    @PutMapping("/{taskId}/condition/{conditionId}")
     public Task removeCondition(@Parameter(description = "id of the task to be searched by")
                                 @PathVariable("taskId")
                                 Long taskId,
