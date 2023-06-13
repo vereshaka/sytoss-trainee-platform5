@@ -1,9 +1,7 @@
 package com.sytoss.users.convertors;
 
 import com.sytoss.domain.bom.users.Student;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.dto.StudentDTO;
-import com.sytoss.users.dto.TeacherDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +15,7 @@ public class StudentConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
         destination.setPhoto(source.getPhoto());
     }
 
@@ -26,6 +25,7 @@ public class StudentConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
         destination.setPhoto(source.getPhoto());
     }
 }

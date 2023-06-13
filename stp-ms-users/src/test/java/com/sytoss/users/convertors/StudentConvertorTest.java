@@ -22,6 +22,7 @@ public class StudentConvertorTest extends AbstractJunitTest {
         student.setFirstName("Firstname");
         student.setLastName("Lastname");
         student.setMiddleName("Middlename");
+        student.setModerated(false);
         student.setEmail("test@gmail.com");
         byte[] photoBytes = {1, 2, 3, 4, 5};
         student.setPhoto(photoBytes);
@@ -32,6 +33,7 @@ public class StudentConvertorTest extends AbstractJunitTest {
         assertEquals(student.getMiddleName(), studentDTO.getMiddleName());
         assertEquals(student.getLastName(), studentDTO.getLastName());
         assertEquals(student.getEmail(), studentDTO.getEmail());
+        assertEquals(student.isModerated(), studentDTO.isModerated());
         assertEquals(student.getPhoto(), studentDTO.getPhoto());
     }
 
@@ -42,6 +44,7 @@ public class StudentConvertorTest extends AbstractJunitTest {
         studentDTO.setFirstName("Firstname");
         studentDTO.setLastName("Lastname");
         studentDTO.setMiddleName("Middlename");
+        studentDTO.setModerated(false);
         studentDTO.setEmail("test@email.com");
         byte[] photoBytes = {1, 2, 3, 4, 5};
         studentDTO.setPhoto(photoBytes);
@@ -51,6 +54,7 @@ public class StudentConvertorTest extends AbstractJunitTest {
         assertEquals(student.getFirstName(), studentDTO.getFirstName());
         assertEquals(student.getMiddleName(), studentDTO.getMiddleName());
         assertEquals(student.getLastName(), studentDTO.getLastName());
+        assertEquals(student.isModerated(), studentDTO.isModerated());
         assertEquals(student.getEmail(), studentDTO.getEmail());
     }
 }
