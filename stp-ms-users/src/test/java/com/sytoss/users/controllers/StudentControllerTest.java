@@ -2,28 +2,24 @@ package com.sytoss.users.controllers;
 
 import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.services.StudentService;
-import com.sytoss.users.util.UpdatePhotoRequestParams;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StudentControllerTest extends AbstractApplicationTest {
 
+    @Autowired
     @InjectMocks
     private StudentController studentController;
 
@@ -33,20 +29,23 @@ public class StudentControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldUpdatePhoto() {
 
-//        MultipartFile photo = mock(MultipartFile.class);
-
         byte[] photoBytes = { 0x01, 0x02, 0x03 };
-        MultipartFile photo = new MockMultipartFile("photo.jpg", photoBytes);
-
-        when(studentService.updatePhoto(any(), any())).thenReturn(photo);
+        File photoFile;
+        try {
+            photoFile = File.createTempFile("photo", ".jpg");
+            Files.write(photoFile.toPath(), photoBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         HttpHeaders headers = new HttpHeaders();
-        UpdatePhotoRequestParams requestParams = new UpdatePhotoRequestParams();
-        requestParams.setEmail("test email");
-        requestParams.setPhoto(photo);
-        HttpEntity<UpdatePhotoRequestParams> requestEntity = new HttpEntity<>(requestParams, headers);
-        ResponseEntity<MultipartFile> result = doPost("/api/student/updatePhoto", requestEntity, new ParameterizedTypeReference<MultipartFile>() {
-        });
-        assertEquals(200, result.getStatusCode().value());
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("photo", new FileSystemResource(photoFile));
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Void> result = getRestTemplate().postForEntity(getEndpoint("/api/student/updatePhoto"), requestEntity, Void.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }
