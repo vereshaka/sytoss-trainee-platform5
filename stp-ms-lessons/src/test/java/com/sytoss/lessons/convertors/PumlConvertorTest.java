@@ -14,10 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PumlConvertorTest {
 
-    private final PumlConvertor pumlConvertor = new PumlConvertor();
-
     @Test
     void convertToLiquibase() throws IOException {
+        PumlConvertor pumlConvertor = new PumlConvertor();
         String pumlScript = readFromFile("puml/script.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script.yml");
@@ -34,17 +33,14 @@ class PumlConvertorTest {
         }
 
         assertEquals(quantityOfStrings, pumlScriptStrings.size());
-
-        //assertEquals(liquibaseScript,pumlConvertedScript);
     }
 
     @Test
     void convertToLiquibase2() throws IOException {
+        PumlConvertor pumlConvertor = new PumlConvertor();
         String pumlScript = readFromFile("puml/script.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
-        //  writeToFile("liquibase/script.yml",pumlConvertedScript);
         String liquibaseScript = readFromFile("liquibase/script.yml");
-
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
 
@@ -53,11 +49,5 @@ class PumlConvertorTest {
         File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
         List<String> data = Files.readAllLines(Path.of(file.getPath()));
         return String.join("\n", data);
-    }
-
-    private void writeToFile(String path, String script) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
-        Files.writeString(Path.of(file.getPath()), script);
     }
 }

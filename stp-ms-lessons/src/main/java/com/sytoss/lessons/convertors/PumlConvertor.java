@@ -13,29 +13,17 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
-    private StringBuilder initKeysStringBuilder;
-
     private String indent = "  ";
 
     public String convertToLiquibase(String script) {
-        //String indent = "  ";
         List<String> entities = getEntities(script);
-        StringBuilder createTableStringBuilder = createChangeSet("create-tables");
-        indent = indent + "  ";
+        StringBuilder createTableStringBuilder = createChangeSet();
+        indent += "  ";
         List<String> entityCreateScript = entities.stream().map(this::convertPumlEntityToLiquibase).toList();
         String entityCreateScriptText = String.join("", entityCreateScript);
         createTableStringBuilder.append(entityCreateScriptText);
 
-        initKeysStringBuilder = createChangeSet("init-keys");
-
-        List<String> allLinks = getLinks(script);
-      /*  for (String link : allLinks) {
-            createForeignKeys(link, "\t  ");
-        }*/
-        StringBuilder databaseChangelogBuilder = new StringBuilder("databaseChangeLog:").append(StringUtils.LF);
-        databaseChangelogBuilder.append(createTableStringBuilder);
-        System.out.println(databaseChangelogBuilder);
-        return databaseChangelogBuilder.toString();
+        return "databaseChangeLog:\n" + createTableStringBuilder;
     }
 
     private List<String> getEntities(String script) {
@@ -132,11 +120,11 @@ public class PumlConvertor {
         return entity.toString();
     }
 
-    private StringBuilder createChangeSet(String purpose) {
+    private StringBuilder createChangeSet() {
         String innerIndent = indent + "    ";
         StringBuilder changeSet = new StringBuilder();
         changeSet.append(indent).append("- changeSet:").append(StringUtils.LF)
-                .append(innerIndent).append("id: ").append(purpose).append(StringUtils.LF)
+                .append(innerIndent).append("id: ").append("create-tables").append(StringUtils.LF)
                 .append(innerIndent).append("author: ").append("compiled").append(StringUtils.LF)
                 .append(innerIndent).append("changes:").append(StringUtils.LF);
         indent = innerIndent;
@@ -158,106 +146,4 @@ public class PumlConvertor {
                 .append(innerIndent).append("referencedColumnNames: ").append(entityName2Field);
         return addForeignKey;
     }
-
-    private String defineLinkType(HashMap<String, String> data) {
-        String link = data.get("linkType");
-        List<String> links = List.of(link.substring(0, 1), link.substring(link.length() - 1, link.length() - 2));
-        String left = "";
-        String right = "";
-        for (String part : links) {
-            String res;
-            if (part.matches("[{}]")) {
-                res = "Many";
-            } else {
-                res = "One";
-            }
-            if (links.indexOf(part) == 0) {
-                left = res;
-            } else {
-                right = res;
-            }
-        }
-        return left + "To" + right;
-    }
-
-    private List<String> getLinks(String script) {
-        Pattern allLinksPattern = Pattern.compile(".*--.*");
-        Matcher matcher = allLinksPattern.matcher(script);
-        List<String> allLinks = new ArrayList<>();
-        while (matcher.find()) {
-            allLinks.add(matcher.group(0));
-        }
-        return allLinks;
-    }
-
-
-    private HashMap<String, String> getDataInLink(String script) {
-        String signLinkType = getLinkType(script);
-        HashMap<String, String> data = new HashMap<>();
-        data.put("linkType", signLinkType);
-        List<String> names = getNamesInLink(script);
-        data.put("firstEntity", names.get(0));
-        data.put("secondEntity", names.get(1));
-        List<String> cardinals = getCardinalNumbers(script);
-        data.put("cardinalsForFirst", cardinals.get(0));
-        data.put("cardinalsForSecond", cardinals.get(1));
-        return data;
-    }
-
-    private List<String> getNamesInLink(String link) {
-        Pattern namesPattern = Pattern.compile("[^\\s|{}o][A-z]+[^\\s|{}o]");
-        Matcher namesMatcher = namesPattern.matcher(link);
-        List<String> names = new ArrayList<>();
-        while (namesMatcher.find()) {
-            names.add(namesMatcher.group(0));
-        }
-        return names;
-    }
-
-    private String getLinkType(String link) {
-        Pattern linkTypePattern = Pattern.compile("[|}o]+--[|{o]+");
-        Matcher linkTypeMatcher = linkTypePattern.matcher(link);
-        if (linkTypeMatcher.find()) {
-            return linkTypeMatcher.group(0);
-        }
-        return null;
-    }
-
-    private List<String> getCardinalNumbers(String link) {
-        Pattern cardinalNumbersPattern = Pattern.compile("\"\\S+(\\s\\S+)?\"");
-        Matcher cardinalNumbersMatcher = cardinalNumbersPattern.matcher(link);
-        List<String> cardinalNumbers = new ArrayList<>();
-        while (cardinalNumbersMatcher.find()) {
-            cardinalNumbers.add(cardinalNumbersMatcher.group(0));
-        }
-        return cardinalNumbers;
-    }
-
-
-    private void createForeignKeys(String script, String indent) {
-        HashMap<String, String> data = getDataInLink(script);
-        String wordLink = defineLinkType(data);
-        // data.put("wordLink", wordLink);
-        String firstName = data.get("firstEntity");
-        String secondName = data.get("secondEntity");
-        if (wordLink.equals("OneToOne") || wordLink.equals("OneToMany")) {
-            // initKeysStringBuilder.append(createForeignKey(firstName, secondName, indent));
-        } else if (wordLink.equals("ManyToOne")) {
-            //  initKeysStringBuilder.append(createForeignKey(secondName, firstName, indent));
-        } else {
-            //  createTableStringBuilder.append(createEntity(firstName, secondName, indent));
-            //  initKeysStringBuilder.append(createForeignKey(firstName, secondName, indent));
-            //  initKeysStringBuilder.append(createForeignKey(secondName, firstName, indent));
-            //   initKeysStringBuilder.append(createCompositePrimaryKey(secondName, firstName, indent));
-        }
-
-    }
-
-   /* private String createEntity(String entityName1, String entityName2, String indent) {
-        String name = entityName1 + "2" + entityName2;
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(entityName1 + "Id", "int");
-        parameters.put(entityName2 + "Id", "int");
-        return returnLiquibaseGroup(name, parameters);
-    }*/
 }
