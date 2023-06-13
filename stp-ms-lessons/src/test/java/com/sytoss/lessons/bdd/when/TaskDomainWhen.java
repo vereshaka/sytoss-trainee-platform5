@@ -50,7 +50,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^receive all task domains by \"(.*)\" discipline$")
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
-        String url = "/api/discipline/" + discipline.getId() + "/taskDomain";
+        String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
         ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);

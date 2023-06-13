@@ -62,12 +62,6 @@ public class TaskConvertor {
             topicDTOList.add(topicDTO);
         });
         destination.setTopics(topicDTOList);
-//        for (TaskCondition taskCondition : source.getTaskConditions()) {
-//            TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
-//            taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
-//            destination.getConditions().add(taskConditionDTO);
-//        }
-
         List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
         source.getTaskConditions().forEach(taskCondition -> {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
