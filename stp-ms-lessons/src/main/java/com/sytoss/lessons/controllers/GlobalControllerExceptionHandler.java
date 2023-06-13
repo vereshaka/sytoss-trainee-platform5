@@ -61,4 +61,14 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskExistException taskExistException, WebRequest request) {
         return ResponseEntity.status(409).body(taskExistException.getMessage());
     }
+
+    @ExceptionHandler({TaskConditionNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(TaskConditionNotFoundException taskConditionNotFound, WebRequest request) {
+        return ResponseEntity.status(404).body(taskConditionNotFound.getMessage());
+    }
+
+    @ExceptionHandler({TaskDontHasConditionException.class})
+    public ResponseEntity<?> handleValidationException(TaskDontHasConditionException taskDontHaveConditionException, WebRequest request) {
+        return ResponseEntity.status(404).body(taskDontHaveConditionException.getMessage());
+    }
 }

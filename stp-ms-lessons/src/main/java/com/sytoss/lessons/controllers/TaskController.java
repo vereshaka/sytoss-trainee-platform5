@@ -1,7 +1,6 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,16 +38,21 @@ public class TaskController {
         return taskService.create(task);
     }
 
-    @Operation(description = "Method that add condition to task")
+    @Operation(description = "Method that remove condition from task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "409", description = "Task already exist!")
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Task don't has condition!")
+
     })
-    @PostMapping("/{taskId}/condition")
-    public Task addCondition(@Parameter(description = "id of the task to be searched by")
-                          @PathVariable("taskId")
-                          Long taskId,
-                          @RequestBody TaskCondition taskCondition) {
-        return taskService.addCondition(taskId, taskCondition);
+    @PatchMapping("/{taskId}/condition/{conditionId}")
+    public Task removeCondition(@Parameter(description = "id of the task to be searched by")
+                                @PathVariable("taskId")
+                                Long taskId,
+                                @Parameter(description = "id of the task to be searched by")
+                                @PathVariable("conditionId")
+                                Long conditionId) {
+        return taskService.removeCondition(taskId, conditionId);
     }
 }

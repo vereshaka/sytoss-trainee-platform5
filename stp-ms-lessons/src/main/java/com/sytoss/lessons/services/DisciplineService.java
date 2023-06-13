@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,13 +22,14 @@ public class DisciplineService {
     private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
-        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
-        if (disciplineDTO != null) {
+        try {
+            DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
+        } catch (EntityNotFoundException e) {
+            throw new DisciplineNotFoundException(id);
         }
-        throw new DisciplineNotFoundException(id);
     }
 
     public Discipline create(Long teacherId, Discipline discipline) {

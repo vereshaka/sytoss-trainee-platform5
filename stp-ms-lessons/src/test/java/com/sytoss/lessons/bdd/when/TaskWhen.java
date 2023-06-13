@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -56,6 +57,14 @@ public class TaskWhen extends CucumberIntegrationTest {
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {
         });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^remove condition \"(.*)\" from task$")
+    public void removeConditionFromTask(String conditionName) {
+        TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByName(conditionName);
+        String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
+        ResponseEntity<Task> responseEntity = doPatch(url, null, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

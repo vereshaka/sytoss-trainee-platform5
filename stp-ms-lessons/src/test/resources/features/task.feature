@@ -41,3 +41,16 @@ Feature: Task
       | discipline | topic  | task                |
       | SQL        | Join   | What is Join?       |
       | SQL        | Join   | What is Inner Join? |
+
+  Scenario: Remove one of conditions from the task
+    Given tasks exist
+      | discipline | topic  | task             | condition |
+      | SQL        | Join   | What is Join?    | not null  |
+      | SQL        | Join   | What is Join?    | equal     |
+      | SQL        | Join   | What is Join?    | not equal |
+    When remove condition "not null" from task
+    Then operation is successful
+    And task should be received
+      | discipline | topic  | task             | condition |
+      | SQL        | Join   | What is Join?    | equal     |
+      | SQL        | Join   | What is Join?    | not equal |

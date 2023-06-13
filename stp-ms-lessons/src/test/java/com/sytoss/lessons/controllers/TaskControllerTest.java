@@ -1,25 +1,17 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.TaskService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -27,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskControllerTest extends AbstractApplicationTest {
@@ -69,6 +62,13 @@ public class TaskControllerTest extends AbstractApplicationTest {
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
         ResponseEntity<String> result = doPost("/api/task/", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldRemoveConditionFromTask() {
+        when(taskService.removeCondition(anyLong(), anyLong())).thenReturn(new Task());
+        ResponseEntity<Task> result = doPatch("/api/task/12/condition/12", null, Task.class);
+        assertEquals(200, result.getStatusCode().value());
     }
 
     public void shouldReturnListOfTasksByTopicId() {

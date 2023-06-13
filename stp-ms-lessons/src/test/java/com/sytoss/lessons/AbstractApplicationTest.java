@@ -81,8 +81,16 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 
+    public <T> ResponseEntity<T> doPatch(String uri, Object requestEntity, ParameterizedTypeReference responseType) {
+        return perform(uri, HttpMethod.PATCH, requestEntity, responseType);
+    }
+
     public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doPatch(String uri, Object requestEntity, Class responseType) {
+        return perform(uri, HttpMethod.PATCH, requestEntity, responseType);
     }
 
     public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class responseType) {
