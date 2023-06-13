@@ -1,12 +1,15 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
 
@@ -15,7 +18,8 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        ResponseEntity<Discipline> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<Discipline>(){});
+        ResponseEntity<Discipline> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<Discipline>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -33,6 +37,15 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId();
         ResponseEntity<Discipline> responseEntity = doGet(url, Void.class, Discipline.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher with id (.*) retrieve his disciplines$")
+    public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
+
+        String url = "/api/teacher/my/disciplines";
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Discipline>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
