@@ -1,11 +1,8 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
-import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -26,7 +23,7 @@ public class TaskConditionConvertorTest extends AbstractJunitTest {
         TaskCondition taskCondition = new TaskCondition();
         taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
         assertEquals(taskConditionDTO.getId(), taskCondition.getId());
-        assertEquals(taskConditionDTO.getName(), taskCondition.getName());
+        assertEquals(taskConditionDTO.getName(), taskCondition.getValue());
         assertEquals(taskConditionDTO.getType(), taskCondition.getType());
     }
 
@@ -34,12 +31,12 @@ public class TaskConditionConvertorTest extends AbstractJunitTest {
     public void toDTODisciplineConvertorTest() {
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setId(93L);
-        taskCondition.setName("SQL");
+        taskCondition.setValue("SQL");
         taskCondition.setType(ConditionType.CONTAINS);
         TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
         taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
         assertEquals(taskConditionDTO.getId(), taskCondition.getId());
-        assertEquals(taskConditionDTO.getName(), taskCondition.getName());
+        assertEquals(taskConditionDTO.getName(), taskCondition.getValue());
         assertEquals(taskConditionDTO.getType(), taskCondition.getType());
     }
 }

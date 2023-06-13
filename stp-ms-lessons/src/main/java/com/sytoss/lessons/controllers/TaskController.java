@@ -42,7 +42,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task not found!"),
-            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Task condition not found!"),
             @ApiResponse(responseCode = "404", description = "Task don't has condition!")
 
     })

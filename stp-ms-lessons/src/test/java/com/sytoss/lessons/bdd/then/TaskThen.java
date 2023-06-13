@@ -56,7 +56,7 @@ public class TaskThen extends CucumberIntegrationTest {
         for (TaskCondition taskCondition : task.getTaskConditions()) {
             for (Map<String, String> columns : rows) {
                 assertTrue(columns.get("task").equals(task.getQuestion()));
-                if (taskCondition.getName().equals(columns.get("condition"))) {
+                if (taskCondition.getValue().equals(columns.get("condition"))) {
                     count++;
                 }
             }

@@ -35,7 +35,7 @@ public class ConditionServiceTest extends AbstractApplicationTest {
         when(taskConditionConnector.getReferenceById(any())).thenReturn(input);
         TaskCondition result = conditionService.getById(1L);
         assertEquals(input.getId(), result.getId());
-        assertEquals(input.getName(), result.getName());
+        assertEquals(input.getName(), result.getValue());
         assertEquals(input.getType(), result.getType());
     }
 
