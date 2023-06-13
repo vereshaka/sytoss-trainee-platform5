@@ -53,13 +53,7 @@ public class TaskService {
         Task task = getById(taskId);
         TaskCondition taskCondition = conditionService.getById(conditionId);
         if (task.getTaskConditions().contains(taskCondition)) {
-            Iterator<TaskCondition> taskConditionIterator = task.getTaskConditions().iterator();
-            while(taskConditionIterator.hasNext()){
-                TaskCondition condition =taskConditionIterator.next();
-                if(condition.getName().equals(taskCondition.getName())){
-                    taskConditionIterator.remove();
-                }
-            }
+            task.getTaskConditions().remove(taskCondition);
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
