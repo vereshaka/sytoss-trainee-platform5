@@ -38,15 +38,9 @@ public class TaskDomainService {
 
     public TaskDomain update(Long taskDomainId, TaskDomain taskDomain) {
         TaskDomain oldTaskDomain = getById(taskDomainId);
-        if (taskDomain.getName() != null) {
-            oldTaskDomain.setName(taskDomain.getName());
-        }
-        if (taskDomain.getScript() != null) {
-            oldTaskDomain.setScript(taskDomain.getScript());
-        }
-        if (taskDomain.getDiscipline() != null) {
-            oldTaskDomain.setDiscipline(taskDomain.getDiscipline());
-        }
+        oldTaskDomain.setName(taskDomain.getName());
+        oldTaskDomain.setScript(taskDomain.getScript());
+        oldTaskDomain.setDiscipline(taskDomain.getDiscipline());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(oldTaskDomain, taskDomainDTO);
         taskDomainDTO = taskDomainConnector.save(taskDomainDTO);

@@ -38,7 +38,7 @@ public class TaskDomainControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldUpdateTaskDomain() {
         when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
-        ResponseEntity<TaskDomain> response = doPost("/api/taskDomain/123", new TaskDomain(), new ParameterizedTypeReference<TaskDomain>() {
+        ResponseEntity<TaskDomain> response = doPut("/api/taskDomain/123", new TaskDomain(), new ParameterizedTypeReference<TaskDomain>() {
         });
         assertEquals(200, response.getStatusCode().value());
     }

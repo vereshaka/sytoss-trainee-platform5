@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface TaskDomainConnector extends JpaRepository<TaskDomainDTO, Long> {
 
     TaskDomainDTO getByNameAndDisciplineId(String name, Long disciplineId);
-
-    TaskDomainDTO getByNameAndScript(String name, String script);
 }

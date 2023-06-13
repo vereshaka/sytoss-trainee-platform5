@@ -32,7 +32,7 @@ public class TaskDomainController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task domain not found"),
     })
-    @PostMapping("/{taskDomainId}")
+    @PutMapping("/{taskDomainId}")
     public TaskDomain update(@Parameter(description = "id of the task domain to be searched by")
                               @PathVariable(value = "taskDomainId") Long taskDomainId,
                              @RequestBody TaskDomain taskDomain) {

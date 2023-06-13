@@ -20,8 +20,8 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^\"(.*)\" discipline exists for \"(.*)\" \"(.*)\" teacher$")
-    public void disciplineExistsForTeacher(String nameDiscipline, String firstname, String lastname) {
+    @Given("^\"(.*)\" discipline exists for this teacher$")
+    public void disciplineExistsForTeacher(String nameDiscipline) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(nameDiscipline);
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
