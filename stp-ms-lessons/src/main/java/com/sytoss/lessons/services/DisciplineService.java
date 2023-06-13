@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DisciplineService {
+public class DisciplineService extends AbstractService {
 
     private final DisciplineConnector disciplineConnector;
 
@@ -50,7 +50,7 @@ public class DisciplineService {
     }
 
     public List<Discipline> findDisciplines() {
-        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherId(1L);
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherId(getCurrentUser().getId());
         List<Discipline> result = new ArrayList<>();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             Discipline discipline = new Discipline();
