@@ -12,7 +12,17 @@
         }
       ],
       "realmRoles": [
-        "get_task_domain"
+        "create_task_domain",
+        "create_topic",
+        "create_group",
+        "create_exam",
+        "create_task",
+        "create_discipline",
+        "create_personal_exam",
+        "start_personal_exam",
+        "get_summary",
+        "answer_on_task",
+        "create_teacher"
       ]
     }
   ],
@@ -131,16 +141,30 @@
   "roles": {
     "realm": [
       {
+        "name": "create_task_domain",
+        "description": "Allow create task domain",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "get_task_domain",
+            "get_task_domains_by_discipline"
+          ]
+        }
+      },
+      {
         "name": "get_task_domain",
         "description": "Allow get task domain"
       },
       {
-        "name": "check_task",
-        "description": "Allow check task"
-      },
-      {
         "name": "create_topic",
-        "description": "Allow create topic"
+        "description": "Allow create topic",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "get_topic",
+            "find_topics_by_discipline"
+          ]
+        }
       },
       {
         "name": "find_groups_by_discipline",
@@ -152,11 +176,13 @@
       },
       {
         "name": "create_group",
-        "description": "Allow create group"
-      },
-      {
-        "name": "create_task_domain",
-        "description": "Allow create task domain"
+        "description": "Allow create group",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "find_groups_by_discipline"
+          ]
+        }
       },
       {
         "name": "create_exam",
@@ -168,11 +194,24 @@
       },
       {
         "name": "create_task",
-        "description": "Allow create task"
+        "description": "Allow create task",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "get_task",
+            "find_tasks_by_topic"
+          ]
+        }
       },
       {
         "name": "create_discipline",
-        "description": "Allow create discipline"
+        "description": "Allow create discipline",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "get_discipline"
+          ]
+        }
       },
       {
         "name": "find_topics_by_discipline",

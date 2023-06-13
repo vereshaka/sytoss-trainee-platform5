@@ -4,7 +4,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9030/realms/traineeplatform/protocol/openid-connect/certs
-
 de:
   flapdoodle:
     mongodb:
