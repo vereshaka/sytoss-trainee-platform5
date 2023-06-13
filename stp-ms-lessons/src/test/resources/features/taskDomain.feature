@@ -26,6 +26,22 @@ Feature: Task Domain
     When system retrieve information about "First Domain" task domain
     Then operation should be finished with 404 "Task Domain with id "123" not found" error
 
+  Scenario: Retrieve information about task domain by discipline name
+    Given task domains exist
+      | discipline  | task domain   |
+      | SQL         | Join          |
+      | POSTGRE_SQL | Join          |
+      | SQL         | Select        |
+      | Mongo       | Join          |
+      | SQL         | Set of Tables |
+    When receive all task domains by "SQL" discipline
+    Then operation is successful
+    And task domains should received
+      | discipline  | task domain   |
+      | SQL         | Join          |
+      | SQL         | Select        |
+      | SQL         | Set of Tables |
+
   Scenario: Update task domain
     Given teacher "John" "Johnson" exists
     And "SQL" discipline exists for this teacher
