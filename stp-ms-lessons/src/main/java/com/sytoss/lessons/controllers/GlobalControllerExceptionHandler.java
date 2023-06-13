@@ -61,4 +61,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskExistException taskExistException, WebRequest request) {
         return ResponseEntity.status(409).body(taskExistException.getMessage());
     }
+
+    @ExceptionHandler({TaskConditionAlreadyExistException.class})
+    public ResponseEntity<?> handleValidationException(TaskConditionAlreadyExistException taskConditionAlreadyExistException, WebRequest request) {
+        return ResponseEntity.status(409).body(taskConditionAlreadyExistException.getMessage());
+    }
 }

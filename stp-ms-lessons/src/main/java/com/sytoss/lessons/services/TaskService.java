@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
@@ -58,7 +59,16 @@ public class TaskService {
     }
 
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
-        Task result = new Task();
-        return result;
+        Task result = getById(taskId);
+        if (!result.getTaskConditions().contains(taskCondition)){
+            result.getTaskConditions().add(taskCondition);
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(result, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, result);
+            return result;
+        } else {
+            throw new TaskConditionAlreadyExistException(taskCondition.getValue());
+        }
     }
 }

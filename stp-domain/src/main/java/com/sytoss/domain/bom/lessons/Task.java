@@ -21,4 +21,6 @@ public class Task {
     private TaskDomain taskDomain;
 
     private List<Topic> topics;
+
+    private List<TaskCondition> taskConditions;
 }

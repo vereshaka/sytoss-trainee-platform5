@@ -1,4 +1,4 @@
-Feature: Task
+Feature: TaskCondition
 
   Background:
     Given teacher "Maksym" "Mitkov" exists
