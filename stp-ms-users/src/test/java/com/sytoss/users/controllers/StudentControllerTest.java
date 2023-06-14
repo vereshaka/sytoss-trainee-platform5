@@ -28,7 +28,6 @@ public class StudentControllerTest extends AbstractApplicationTest {
 
     @Test
     public void shouldUpdatePhoto() {
-
         byte[] photoBytes = { 0x01, 0x02, 0x03 };
         File photoFile;
         try {
