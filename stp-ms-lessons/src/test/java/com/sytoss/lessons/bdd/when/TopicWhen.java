@@ -57,7 +57,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("^link topic \"(.*)\" to this task$")
+    @When("^assign topic \"(.*)\" to this task$")
     public void linkTopicToThisTask(String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/topic/" + topicDTO.getId();

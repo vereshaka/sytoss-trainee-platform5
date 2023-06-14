@@ -50,11 +50,12 @@ public class TaskThen extends CucumberIntegrationTest {
         assertEquals(0, taskList.size());
     }
 
-    @Then("^task topic should have \"(.*)\"$")
-    public void taskTopicShouldBe(String topicName) {
+    @Then("^task with question \"(.*)\" should be assign to \"(.*)\" topic$")
+    public void taskTopicShouldBe(String question,String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
         Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(task.getTopics());
+        assertEquals(question, task.getQuestion());
         assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
     }
 }

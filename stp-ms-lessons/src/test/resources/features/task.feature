@@ -45,6 +45,6 @@ Feature: Task
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
     And topic "Join" exists
-    When link topic "Join" to this task
+    When assign topic "Join" to this task
     Then operation is successful
-    And task topic should have "Join"
+    And task with question "What is Join?" should be assign to "Join" topic
