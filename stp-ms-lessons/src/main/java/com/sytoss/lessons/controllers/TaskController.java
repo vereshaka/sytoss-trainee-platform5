@@ -42,7 +42,7 @@ public class TaskController {
     @Operation(description = "Method that add condition to task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "409", description = "Task already exist!")
+            @ApiResponse(responseCode = "409", description = "Task condition already exist!")
     })
     @PostMapping("/{taskId}/condition")
     public Task addCondition(@Parameter(description = "id of the task to be searched by")

@@ -41,3 +41,10 @@ Feature: Task
       | discipline | topic  | task                |
       | SQL        | Join   | What is Join?       |
       | SQL        | Join   | What is Inner Join? |
+
+  Scenario: add new condition to task
+    Given task with question "What are the different subsets of SQL?" doesnt exist
+    And "Select" condition with CONTAINS type does not exist in this task
+    When system add "Select" condition with CONTAINS type to task with question "What are the different subsets of SQL?"
+    Then operation is successful
+    And "Select" condition with CONTAINS type should be in task with question "What are the different subsets of SQL?"

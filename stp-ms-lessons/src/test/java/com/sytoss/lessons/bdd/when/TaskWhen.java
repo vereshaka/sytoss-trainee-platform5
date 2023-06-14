@@ -1,11 +1,10 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -57,5 +56,21 @@ public class TaskWhen extends CucumberIntegrationTest {
         ResponseEntity<List<Task>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Task>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system add \"(.*)\" condition with (.*) type to task with question \"(.*)\"$")
+    public void requestSentAddConditionToTask(String conditionValue, ConditionType type, String taskQuestion) {
+
+        TaskCondition taskCondition = new TaskCondition();
+        taskCondition.setType(type);
+        taskCondition.setValue(conditionValue);
+
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, TestExecutionContext.getTestContext().getDisciplineId());
+
+        String url = "/api/task/" + taskDTO.getId() + "/condition";
+
+        ResponseEntity<Task> responseEntity = doPost(url, taskCondition, Task.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+
     }
 }

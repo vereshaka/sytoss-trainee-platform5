@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
@@ -46,5 +47,9 @@ public class TaskThen extends CucumberIntegrationTest {
             taskList.remove(foundTasks.get(0));
         }
         assertEquals(0, taskList.size());
+    }
+
+    @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")
+    public void conditionShouldExistInTask(String conditionName, ConditionType type, String question) {
     }
 }
