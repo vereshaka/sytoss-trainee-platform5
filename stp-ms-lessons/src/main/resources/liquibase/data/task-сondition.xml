@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-                   logicalFilePath="data/taskCondition.xml">
+                   logicalFilePath="data/task-сondition.xml">
 
     <changeSet author="KornienkoD" id="task_condition_1">
         <createTable tableName="TASK_CONDITION">

@@ -6,7 +6,10 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 
@@ -18,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TaskConvertorTest extends AbstractJunitTest {
 
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()),new TaskConditionConvertor());
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
 
     @Test
     public void fromDTOTaskConvertorTest() {
