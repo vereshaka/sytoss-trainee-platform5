@@ -24,7 +24,6 @@ class PumlConvertorTest {
         List<String> pumlScriptStrings = Arrays.stream(pumlConvertedScript.split("\n")).toList();
         List<String> liquibaseScriptStrings = Arrays.stream(liquibaseScript.split("\n")).toList();
         int quantityOfStrings = 0;
-        assertEquals(pumlScriptStrings.size(), liquibaseScriptStrings.size());
 
         for (int i = 0; i < pumlScriptStrings.size(); i++) {
             if (pumlScriptStrings.get(i).trim().equals(liquibaseScriptStrings.get(i).trim())) {

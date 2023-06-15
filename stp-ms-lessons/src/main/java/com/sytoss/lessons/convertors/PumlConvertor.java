@@ -88,7 +88,7 @@ public class PumlConvertor {
             StringBuilder primaryKeyStringBuilder = null;
             if (value.matches("\\S+\\s<<.+>>")) {
                 if (value.contains("PK")) {
-                    primaryKeyStringBuilder = createPrimaryKey(indent + "\t\t  ");
+                    primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(" ",10));
                 } else if (value.contains("FK")) {
                     Pattern pattern = Pattern.compile("<<\\S+\\s([A-z]+(\\([A-z]+\\)))>>");
                     Matcher matcher = pattern.matcher(value);
@@ -103,7 +103,7 @@ public class PumlConvertor {
                         foreignKeyConstraintsStringBuilder.append(createForeignKey(name, key, entityName2, entityName2FieldName));
                     }
                 }
-                value = value.replaceAll("<<.+>>", "");
+                value = value.replaceAll("<<.+>>", "").trim();
             }
             String columnsIndent = innerIndent + "      ";
             entity.append(innerIndent).append(StringUtils.leftPad(" ",2)).append("- column:").append(StringUtils.LF)
@@ -114,7 +114,7 @@ public class PumlConvertor {
             }
         }
         if (foreignKeyConstraintsStringBuilder != null) {
-            entity.append(innerIndent).append("foreignKeyConstraints").append(StringUtils.LF)
+            entity.append(innerIndent).append("foreignKeyConstraints:").append(StringUtils.LF)
                     .append(innerIndent).append(foreignKeyConstraintsStringBuilder).append(StringUtils.LF);
         }
         return entity.toString();

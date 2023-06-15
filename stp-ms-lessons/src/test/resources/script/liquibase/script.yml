@@ -29,12 +29,12 @@ databaseChangeLog:
                   name: discipline_id
                   type: long
             foreignKeyConstraints:
-             - foreignKeyConstraint:
-                 baseTableName: Topic
-                 baseColumnNames: discipline_id
-                 constraintName: fk_topic_2_discipline
-                 referencedTableName: Discipline
-                 referencedColumnNames: id
+              - foreignKeyConstraint:
+                  baseTableName: Topic
+                  baseColumnNames: discipline_id
+                  constraintName: fk_topic_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
         - createTable:
             tableName: Task
             columns:
@@ -53,12 +53,12 @@ databaseChangeLog:
                   name: discipline_id
                   type: long
             foreignKeyConstraints:
-             - foreignKeyConstraint:
-                 baseTableName: Task
-                 baseColumnNames: discipline_id
-                 constraintName: fk_task_2_discipline
-                 referencedTableName: Discipline
-                 referencedColumnNames: id
+              - foreignKeyConstraint:
+                  baseTableName: Task
+                  baseColumnNames: discipline_id
+                  constraintName: fk_task_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
         - createTable:
             tableName: TopicToTask
             columns:
@@ -68,7 +68,7 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
               - column:
-                    name: topic_id
-                    type: long
-                    constraints:
-                      primaryKey: true
+                  name: topic_id
+                  type: long
+                  constraints:
+                    primaryKey: true
