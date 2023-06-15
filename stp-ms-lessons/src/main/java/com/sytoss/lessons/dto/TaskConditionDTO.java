@@ -1,7 +1,6 @@
 package com.sytoss.lessons.dto;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
-import com.sytoss.domain.bom.lessons.Task;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +22,4 @@ public class TaskConditionDTO {
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private ConditionType type;
-
-/*    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
-    private TaskDTO task;*/
 }

@@ -7,7 +7,6 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +59,7 @@ public class TaskService {
 
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
-        if (!result.getTaskConditions().contains(taskCondition)){
+        if (!result.getTaskConditions().contains(taskCondition)) {
             result.getTaskConditions().add(taskCondition);
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
