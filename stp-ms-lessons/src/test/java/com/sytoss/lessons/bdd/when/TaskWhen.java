@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -60,9 +61,9 @@ public class TaskWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("^remove condition \"(.*)\" from task$")
-    public void removeConditionFromTask(String conditionName) {
-        TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByName(conditionName);
+    @When("^remove condition \"(.*)\" and \"(.*)\" type from task$")
+    public void removeConditionFromTask(String conditionName, String type) {
+        TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByNameAndType(conditionName, ConditionType.valueOf(type));
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
         ResponseEntity<Task> responseEntity = doPut(url, null, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
