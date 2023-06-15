@@ -13,12 +13,12 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
-    private String indent = "  ";
+    private String indent = StringUtils.leftPad(" ",2);
 
     public String convertToLiquibase(String script) {
         List<String> entities = getEntities(script);
         StringBuilder createTableStringBuilder = createChangeSet();
-        indent += "  ";
+        indent += StringUtils.leftPad(" ",2);
         List<String> entityCreateScript = entities.stream().map(this::convertPumlEntityToLiquibase).toList();
         String entityCreateScriptText = String.join("", entityCreateScript);
         createTableStringBuilder.append(entityCreateScriptText);
@@ -77,7 +77,7 @@ public class PumlConvertor {
 
     private String returnLiquibaseGroup(String name, Map<String, String> parameters) {
         StringBuilder entity = new StringBuilder();
-        String innerIndent = indent + "    ";
+        String innerIndent = indent + StringUtils.leftPad(" ",4);
         entity.append(indent).append("- createTable:").append(StringUtils.LF)
                 .append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF)
                 .append(innerIndent).append("columns:").append(StringUtils.LF);
@@ -106,7 +106,7 @@ public class PumlConvertor {
                 value = value.replaceAll("<<.+>>", "");
             }
             String columnsIndent = innerIndent + "      ";
-            entity.append(innerIndent).append("  ").append("- column:").append(StringUtils.LF)
+            entity.append(innerIndent).append(StringUtils.leftPad(" ",2)).append("- column:").append(StringUtils.LF)
                     .append(columnsIndent).append("name: ").append(key).append(StringUtils.LF)
                     .append(columnsIndent).append("type: ").append(value).append(StringUtils.LF);
             if (primaryKeyStringBuilder != null) {
@@ -121,7 +121,7 @@ public class PumlConvertor {
     }
 
     private StringBuilder createChangeSet() {
-        String innerIndent = indent + "    ";
+        String innerIndent = indent + StringUtils.leftPad(" ",4);
         StringBuilder changeSet = new StringBuilder();
         changeSet.append(indent).append("- changeSet:").append(StringUtils.LF)
                 .append(innerIndent).append("id: ").append("create-tables").append(StringUtils.LF)
@@ -137,8 +137,9 @@ public class PumlConvertor {
 
     private StringBuilder createForeignKey(String entityName1, String entityName1Field, String entityName2, String entityName2Field) {
         StringBuilder addForeignKey = new StringBuilder();
-        String innerIndent = indent + "          ";
-        addForeignKey.append("  ").append("- foreignKeyConstraint:").append(StringUtils.LF)
+        String innerIndent = indent + StringUtils.leftPad(" ",10);
+
+        addForeignKey.append(StringUtils.leftPad(" ",2)).append("- foreignKeyConstraint:").append(StringUtils.LF)
                 .append(innerIndent).append("baseTableName: ").append(entityName1).append(StringUtils.LF)
                 .append(innerIndent).append("baseColumnNames: ").append(entityName1Field).append(StringUtils.LF)
                 .append(innerIndent).append("constraintName: ").append("fk_").append(entityName1.toLowerCase()).append("_2_").append(entityName2.toLowerCase()).append(StringUtils.LF)
