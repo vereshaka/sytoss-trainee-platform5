@@ -1,11 +1,7 @@
 package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.AbstractUser;
-import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.services.TeacherService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.sytoss.users.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @Slf4j
-public class TeacherController {
+public class UserController {
 
-    private final TeacherService teacherService;
+    private final UserService userService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public AbstractUser me() {
         String email = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaim("email");
-        return teacherService.getOrCreateUser(email);
+        return userService.getOrCreateUser(email);
     }
 }

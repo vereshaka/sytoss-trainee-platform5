@@ -1,5 +1,6 @@
 package com.sytoss.lessons.connectors;
 
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Teacher;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,5 +9,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface UserConnector {
 
     @GetMapping("/me")
-    Teacher getMyProfile();
+    AbstractUser getMyProfile();
 }

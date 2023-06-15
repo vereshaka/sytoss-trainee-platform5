@@ -98,7 +98,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String middleName, String email, String userType) throws JOSEException {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -106,10 +106,11 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .subject("test")
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
-                .claim("email", "test@test")
-                .claim("firstName", "Ivan")
-                .claim("lastName", "Ivanovich")
-                .claim("middleName", "Ivanov")
+                .claim("email", email)
+                .claim("firstName", firstName)
+                .claim("lastName", lastName)
+                .claim("middleName", middleName)
+                .claim("userType", userType)
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 

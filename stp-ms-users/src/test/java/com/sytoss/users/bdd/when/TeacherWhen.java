@@ -18,7 +18,7 @@ public class TeacherWhen extends CucumberIntegrationTest {
     public void teacherCreating(String firstname, String middlename, String lastname) throws JOSEException {
         String url = "/api/user/me";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), firstname, lastname, middlename, "test@test.com", "teacher"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Teacher> responseEntity = doGet(url, httpEntity, Teacher.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
