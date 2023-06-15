@@ -74,6 +74,7 @@ public class UserService extends AbstractService {
             result = student;
         }
 
+        result.setVerified(false);
         return result;
     }
 }

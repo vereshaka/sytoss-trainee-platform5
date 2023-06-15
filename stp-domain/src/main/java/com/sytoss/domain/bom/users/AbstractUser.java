@@ -16,4 +16,6 @@ public abstract class AbstractUser {
     private String middleName;
 
     private String email;
+
+    private boolean verified;
 }
