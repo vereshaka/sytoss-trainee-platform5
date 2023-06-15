@@ -61,4 +61,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskExistException taskExistException, WebRequest request) {
         return ResponseEntity.status(409).body(taskExistException.getMessage());
     }
+
+    @ExceptionHandler({TaskDomainIsUsed.class})
+    public ResponseEntity<?> handleValidationException(TaskDomainIsUsed taskDomainIsUsed, WebRequest request) {
+        return ResponseEntity.status(409).body(taskDomainIsUsed.getMessage());
+    }
 }

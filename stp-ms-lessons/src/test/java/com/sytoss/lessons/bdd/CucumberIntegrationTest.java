@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
+import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -55,6 +57,13 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private GroupConvertor groupConvertor;
+
+    @Autowired
+    private TaskDomainConvertor taskDomainConvertor;
+
+    @Autowired
+    @MockBean
+    private PersonalExamConnector personalExamConnector;
 
     @LocalServerPort
     private int applicationPort;

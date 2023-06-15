@@ -1,13 +1,16 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
-import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,8 @@ public class TaskDomainService {
 
     private final DisciplineService disciplineService;
 
+    private final PersonalExamConnector personalExamConnector;
+
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         Discipline discipline = disciplineService.getById(disciplineId);
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
@@ -43,6 +48,14 @@ public class TaskDomainService {
 
     public TaskDomain update(Long taskDomainId, TaskDomain taskDomain) {
         TaskDomain oldTaskDomain = getById(taskDomainId);
+        List<PersonalExam> personalExams = personalExamConnector.findAllPersonalExamByTaskDomain(oldTaskDomain.getId());
+        for (PersonalExam personalExam : personalExams) {
+            for(Answer answer : personalExam.getAnswers()){
+                if (answer.getTask().getTaskDomain().equals(oldTaskDomain) && !answer.getStatus().equals(AnswerStatus.ANSWERED)) {
+                    throw new TaskDomainIsUsed(oldTaskDomain.getName());
+                }
+            }
+        }
         oldTaskDomain.setName(taskDomain.getName());
         oldTaskDomain.setScript(taskDomain.getScript());
         oldTaskDomain.setDiscipline(taskDomain.getDiscipline());

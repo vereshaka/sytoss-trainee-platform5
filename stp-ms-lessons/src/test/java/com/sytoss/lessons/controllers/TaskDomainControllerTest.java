@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.AbstractApplicationTest;
@@ -42,7 +43,12 @@ public class TaskDomainControllerTest extends AbstractApplicationTest {
         });
         assertEquals(200, response.getStatusCode().value());
     }
-
+    @Test
+    public void shouldNotUpdateTaskDomainWhenPersonalExamNotFinished() {
+        when(taskDomainService.update(anyLong(), any())).thenThrow(new TaskDomainIsUsed("new"));
+        ResponseEntity<String> response = doPut("/api/taskDomain/123", new TaskDomain(), String.class);
+        assertEquals(409, response.getStatusCode().value());
+    }
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));

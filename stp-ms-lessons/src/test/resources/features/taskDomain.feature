@@ -16,10 +16,10 @@ Feature: Task Domain
     Then operation should be finished with 409 "TaskDomain with name "First Domain" already exist" error
 
   Scenario: system get task domain by id
-      Given "First Domain" task domain exists
-      When system retrieve information about "First Domain" task domain
-      Then operation is successful
-      And system should been get "First Domain" information
+    Given "First Domain" task domain exists
+    When system retrieve information about "First Domain" task domain
+    Then operation is successful
+    And system should been get "First Domain" information
 
   Scenario: system get not existing task domain by id
     Given "First Domain" task domain doesnt exist
@@ -37,10 +37,10 @@ Feature: Task Domain
     When receive all task domains by "SQL" discipline
     Then operation is successful
     And task domains should received
-      | discipline  | task domain   |
-      | SQL         | Join          |
-      | SQL         | Select        |
-      | SQL         | Set of Tables |
+      | discipline | task domain   |
+      | SQL        | Join          |
+      | SQL        | Select        |
+      | SQL        | Set of Tables |
 
   Scenario: Update task domain
     Given teacher "John" "Johnson" exists
@@ -56,3 +56,15 @@ Feature: Task Domain
     And "First Domain" task domain doesnt exist
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation should be finished with 404 "Task Domain with id "123" not found" error
+
+  Scenario: Update task domain when personal exam does not finished
+    Given teacher "John" "Johnson" exists
+    And "SQL" discipline exists for this teacher
+    And "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
+    And personal exam exists
+      | examName         | status       | task domain  |
+      | SQL Querry       | Graded       | First Domain |
+      | SQL Querry Last  | Not finished | First Domain |
+      | SQL Querry Third | Graded       | First Domain |
+    When teacher updates "First Domain" task domain to "Second Domain"
+    Then operation should be finished with 409 "Task domain with First Domain because personal exam not finished" error

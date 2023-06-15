@@ -1,8 +1,11 @@
 package com.sytoss.lessons.bdd.common;
 
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +35,6 @@ public class TestExecutionContext {
     private Long taskId;
 
     private Long taskDomainId;
+
+    private List<PersonalExam> personalExams;
 }

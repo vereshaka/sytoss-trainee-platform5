@@ -52,6 +52,11 @@ public class PersonalExamService {
         return answers;
     }
 
+    public List<PersonalExam> findByTaskDomainId(Long taskDomain) {
+        List<PersonalExam> personalExams = personalExamConnector.findByAnswersTaskTaskDomainId(taskDomain);
+        return personalExams;
+    }
+
     private Discipline getDiscipline(Long disciplineId) {
         return metadataConnector.getDiscipline(disciplineId);
     }

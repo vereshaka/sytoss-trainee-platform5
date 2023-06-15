@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
 public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system create \"(.*)\" task domain$")
@@ -73,12 +76,16 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
         discipline.setTeacher(teacher);
         taskDomain.setDiscipline(discipline);
-        if(taskDomainDTO == null){
+        if(!TestExecutionContext.getTestContext().getPersonalExams().isEmpty()){
+            String url = "/api/taskDomain/" + taskDomainDTO.getId();
+            when(getPersonalExamConnector().findAllPersonalExamByTaskDomain(anyLong())).thenReturn(TestExecutionContext.getTestContext().getPersonalExams());
+            ResponseEntity<String> responseEntity = doPut(url, taskDomain, String.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }else if(taskDomainDTO == null){
             String url = "/api/taskDomain/123";
             ResponseEntity<String> responseEntity = doPut(url, taskDomain, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
-        }
-        if(taskDomainDTO != null){
+        }else {
             String url = "/api/taskDomain/" + taskDomainDTO.getId();
             ResponseEntity<TaskDomain> responseEntity = doPut(url, taskDomain, TaskDomain.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
