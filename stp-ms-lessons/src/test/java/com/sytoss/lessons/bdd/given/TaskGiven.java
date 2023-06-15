@@ -27,7 +27,7 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO.setTopics(List.of(topicDTO));
-            getTaskConnector().save(taskDTO);
+            taskDTO = getTaskConnector().save(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
     }

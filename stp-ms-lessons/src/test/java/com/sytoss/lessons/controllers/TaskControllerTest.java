@@ -71,6 +71,7 @@ public class TaskControllerTest extends AbstractApplicationTest {
         assertEquals(409, result.getStatusCode().value());
     }
 
+    @Test
     public void shouldReturnListOfTasksByTopicId() {
         when(taskService.findByTopicId(any())).thenReturn(new ArrayList<>());
         ResponseEntity<List<Task>> result = doGet("/api/topic/1/tasks", null, new ParameterizedTypeReference<List<Task>>() {

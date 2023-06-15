@@ -60,17 +60,13 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("^system add \"(.*)\" condition with (.*) type to task with question \"(.*)\"$")
     public void requestSentAddConditionToTask(String conditionValue, ConditionType type, String taskQuestion) {
-
         TaskCondition taskCondition = new TaskCondition();
+        taskCondition.setId(TestExecutionContext.getTestContext().getTaskConditionId());
         taskCondition.setType(type);
         taskCondition.setValue(conditionValue);
-
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, TestExecutionContext.getTestContext().getDisciplineId());
-
         String url = "/api/task/" + taskDTO.getId() + "/condition";
-
         ResponseEntity<Task> responseEntity = doPost(url, taskCondition, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
-
     }
 }

@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import io.cucumber.java.ja.但し;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -69,7 +69,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
 
     @Test
     public void shouldRaiseExceptionWhenDisciplineNotExist() {
-        when(disciplineConnector.getReferenceById(1L)).thenReturn(null);
+        when(disciplineConnector.getReferenceById(1L)).thenThrow(new EntityNotFoundException());
         assertThrows(DisciplineNotFoundException.class, () -> disciplineService.getById(1L));
     }
 

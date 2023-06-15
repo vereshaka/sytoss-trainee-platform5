@@ -50,6 +50,11 @@ public class TaskThen extends CucumberIntegrationTest {
     }
 
     @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")
-    public void conditionShouldExistInTask(String conditionName, ConditionType type, String question) {
+    public void conditionShouldExistInTask(String conditionValue, ConditionType type, String question) {
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
+        assertNotNull(taskDTO);
+        assertEquals(question, taskDTO.getQuestion());
+        assertEquals(conditionValue, taskDTO.getConditions().get(0).getValue());
+        assertEquals(type, taskDTO.getConditions().get(0).getType());
     }
 }

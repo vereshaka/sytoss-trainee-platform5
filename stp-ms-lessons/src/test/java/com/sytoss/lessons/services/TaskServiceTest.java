@@ -1,6 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.AbstractApplicationTest;
@@ -69,6 +70,9 @@ public class TaskServiceTest extends AbstractApplicationTest {
         Topic topic = new Topic();
         topic.setId(1L);
         input.setTopics(List.of(topic));
+        TaskCondition taskCondition = new TaskCondition();
+        taskCondition.setId(1L);
+        input.setTaskConditions(List.of(taskCondition));
         Task result = taskService.create(input);
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getQuestion(), result.getQuestion());

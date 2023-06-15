@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -22,5 +23,5 @@ public class Task {
 
     private List<Topic> topics;
 
-    private List<TaskCondition> taskConditions;
+    private List<TaskCondition> taskConditions = new ArrayList<>();
 }

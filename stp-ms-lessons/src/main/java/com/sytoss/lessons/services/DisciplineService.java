@@ -25,8 +25,8 @@ public class DisciplineService extends AbstractService {
     private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
-        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
         try {
+            DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;

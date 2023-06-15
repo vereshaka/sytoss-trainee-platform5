@@ -1,9 +1,6 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.dto.*;
@@ -39,6 +36,9 @@ public class TaskConvertorTest extends AbstractJunitTest {
         taskDomainDTO.setDiscipline(disciplineDTO);
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(topicDTOList);
+        TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+        taskConditionDTO.setId(1L);
+        taskDTO.setConditions(List.of(taskConditionDTO));
         Task task = new Task();
         taskConvertor.fromDTO(taskDTO, task);
 
@@ -67,6 +67,9 @@ public class TaskConvertorTest extends AbstractJunitTest {
         topic.setId(9L);
         topics.add(topic);
         task.setTopics(topics);
+        TaskCondition taskCondition = new TaskCondition();
+        taskCondition. setId(1L);
+        task.setTaskConditions(List.of(taskCondition));
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
 
