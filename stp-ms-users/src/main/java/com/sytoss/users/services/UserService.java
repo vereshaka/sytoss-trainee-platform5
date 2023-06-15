@@ -35,7 +35,7 @@ public class UserService extends AbstractService {
 
     public AbstractUser getOrCreateUser(String email) {
         AbstractUser result = null;
-        if (getJwt().getClaim("userType").equals("teacher")) {
+        if (getJwt().getClaim("userType").toString().equalsIgnoreCase("teacher")) {
             TeacherDTO teacherDTO = teacherConnector.getByEmail(email);
             if (teacherDTO == null) {
                 log.info("No user found for " + email + ". Start creation based on token info...");
@@ -55,7 +55,7 @@ public class UserService extends AbstractService {
             result = teacher;
         }
 
-        if (getJwt().getClaim("userType").equals("student")) {
+        if (getJwt().getClaim("userType").toString().equalsIgnoreCase("student")) {
             StudentDTO studentDTO = studentConnector.findByEmail(email);
 
             if (studentDTO == null) {
