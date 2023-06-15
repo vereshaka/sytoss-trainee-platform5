@@ -31,7 +31,7 @@ public class TopicControllerTest extends AbstractControllerTest {
     public void shouldReturnListOfTopics() throws JOSEException {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("find_topics_by_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
         });
@@ -42,7 +42,7 @@ public class TopicControllerTest extends AbstractControllerTest {
     public void shouldReturnTopicById() throws JOSEException {
         when(topicService.getById(anyLong())).thenReturn(new Topic());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_topic")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Topic> result = doGet("/api/topic/123", httpEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());

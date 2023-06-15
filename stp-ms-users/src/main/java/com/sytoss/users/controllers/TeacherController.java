@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
 @Slf4j
 public class TeacherController {
 
     private final TeacherService teacherService;
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public AbstractUser me() {
         String email = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaim("email");

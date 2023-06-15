@@ -29,10 +29,9 @@ public class TeacherControllerTest extends AbstractControllerTest {
     public void shouldSaveTeacher() throws JOSEException {
         when(teacherService.getOrCreateUser(anyString())).thenReturn(new Teacher());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_teacher")));
-        HttpEntity<Teacher> requestEntity = new HttpEntity<>(new Teacher(), headers);
-        ResponseEntity<Teacher> result = doPost("/api/teacher/", requestEntity, new ParameterizedTypeReference<Teacher>() {
-        });
+        headers.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Teacher> result = doGet("/api/user/me", requestEntity, Teacher.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

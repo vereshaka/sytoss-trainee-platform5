@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -29,13 +27,11 @@ public class TaskController extends AbstractService {
     })
     @GetMapping("/{taskId}")
     public Task getById(@Parameter(description = "id of the task to be searched by")
-                              @PathVariable("taskId")
-                              Long taskId,
-                        @AuthenticationPrincipal User user) {
+                        @PathVariable("taskId")
+                        Long taskId) {
         return taskService.getById(taskId);
     }
 
-    @PreAuthorize("hasRole('ROLE_create_task')")
     @Operation(description = "Method that create task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

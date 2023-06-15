@@ -57,7 +57,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldSaveTopic() throws JOSEException {
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_topic")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Topic> requestEntity = new HttpEntity<>(new Topic(), headers);
         ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, new ParameterizedTypeReference<Topic>() {
         });
@@ -68,7 +68,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldFindGroupsByDiscipline() throws JOSEException {
         when(groupService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("find_groups_by_discipline")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<List<Group>>() {
         });
@@ -79,7 +79,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldSaveDiscipline() throws JOSEException {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_discipline")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
@@ -90,7 +90,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_discipline")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
@@ -101,7 +101,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldGetDisciplineById() throws JOSEException {
         when(disciplineService.getById(any())).thenReturn(new Discipline());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Discipline> result = doGet("/api/discipline/123", httpEntity, Discipline.class);
         assertEquals(200, result.getStatusCode().value());
@@ -111,7 +111,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldNotGetDisciplineByIdWhenItDoesNotExist() throws JOSEException {
         when(disciplineService.getById(any())).thenThrow(new DisciplineNotFoundException(123L));
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> result = doGet("/api/discipline/123", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
@@ -122,7 +122,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldCreateGroup() throws JOSEException {
         when(groupService.create(anyLong(), any(Group.class))).thenReturn(new Group());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_group")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<Group> result = doPost("/api/discipline/123/group", requestEntity, Group.class);
         assertEquals(200, result.getStatusCode().value());
@@ -132,7 +132,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldNotCreateGroupWhenItExists() throws JOSEException {
         when(groupService.create(anyLong(), any(Group.class))).thenThrow(new GroupExistException("Test"));
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_group")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
@@ -142,7 +142,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     public void shouldFindTasksDomainByDiscipline() throws JOSEException {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });

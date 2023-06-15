@@ -16,16 +16,11 @@ public class TeacherWhen extends CucumberIntegrationTest {
 
     @When("^anonymous register in system as teacher with \"(.*)\" firstname and \"(.*)\" middlename and \"(.*)\" lastname$")
     public void teacherCreating(String firstname, String middlename, String lastname) throws JOSEException {
-        String url = "/api/teacher/";
-        Teacher teacher = new Teacher();
-        teacher.setFirstName(firstname);
-        teacher.setMiddleName(middlename);
-        teacher.setLastName(lastname);
+        String url = "/api/user/me";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_teacher")));
-        HttpEntity<Teacher> httpEntity = new HttpEntity<>(teacher, httpHeaders);
-        ResponseEntity<Teacher> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<Teacher>() {
-        });
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Teacher> responseEntity = doGet(url, httpEntity, Teacher.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

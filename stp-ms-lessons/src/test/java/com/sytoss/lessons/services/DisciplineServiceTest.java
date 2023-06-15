@@ -14,9 +14,14 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -75,8 +80,13 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    @Disabled
     public void shouldReturnDisciplinesByTeacher(){
+        Teacher user = new Teacher();
+        user.setId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         List<DisciplineDTO> input = new ArrayList<>();
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(1L);
@@ -85,7 +95,6 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
         input.add(disciplineDTO);
         when(disciplineConnector.findByTeacherId(1L)).thenReturn(input);
         List<Discipline> result = disciplineService.findDisciplines();
-        assertEquals(input.size(), result.size());
-        assertEquals(input.size(), result.size());
+        assertEquals(1, result.size());
     }
 }

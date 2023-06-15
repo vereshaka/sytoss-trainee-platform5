@@ -22,7 +22,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/groups";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("find_groups_by_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
         });
@@ -36,7 +36,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         Group group = new Group();
         group.setName(groupName);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_group")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
         ResponseEntity<Group> responseEntity = doPost(url, httpEntity, Group.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -49,7 +49,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         Group group = new Group();
         group.setName(groupName);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_group")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);

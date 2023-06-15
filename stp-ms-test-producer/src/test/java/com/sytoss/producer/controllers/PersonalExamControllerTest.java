@@ -33,7 +33,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     public void shouldCreateExam() throws JOSEException {
         when(personalExamService.create(any())).thenReturn(new PersonalExam());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_personal_exam")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), headers);
         ResponseEntity<PersonalExam> result = doPost("/api/personalExam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
@@ -42,7 +42,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     @Test
     public void shouldSummaryExam() throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("get_summary")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
@@ -52,7 +52,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     public void shouldStartTest() throws JOSEException {
         when(personalExamService.start(anyString(), anyLong())).thenReturn(new Question());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("start_personal_exam")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         headers.set("studentId", "1");
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Question> result = doGet("/api/test/123/start", requestEntity, Question.class);
@@ -69,7 +69,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         when(answerService.answer(examId, studentID, taskAnswer)).thenReturn(expectedAnswer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("answer_on_task")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         headers.set("studentId", String.valueOf(studentID));
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);

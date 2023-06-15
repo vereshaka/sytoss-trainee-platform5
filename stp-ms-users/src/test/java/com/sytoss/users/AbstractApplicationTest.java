@@ -106,6 +106,10 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .subject("test")
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
+                .claim("email", "test@test")
+                .claim("firstName", "Ivan")
+                .claim("lastName", "Ivanovich")
+                .claim("middleName", "Ivanov")
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 
@@ -138,7 +142,15 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         }
     }
 
+    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
     public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 }

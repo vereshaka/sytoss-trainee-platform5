@@ -59,7 +59,7 @@ public class ExamWhen extends CucumberIntegrationTest {
         exam.setTopics(topics);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("create_exam")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, headers);
 
         ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);

@@ -23,7 +23,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, Long studentId) throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(generateJWT(List.of("create_personal_exam")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         headers.set("studentId", studentId.toString());
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setStudentId(studentId);
@@ -42,7 +42,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     public void theExamIsDoneOnTask(String examId) throws JOSEException {
         String url = URI + "personalExam/" + examId + "/summary";
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("get_summary")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         IntegrationTest.getTestContext().setResponse(responseEntity);
@@ -96,7 +96,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     private HttpEntity startTest(String studentId) throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(generateJWT(List.of("start_personal_exam")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         headers.set("studentId", studentId);
         HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
         return requestEntity;

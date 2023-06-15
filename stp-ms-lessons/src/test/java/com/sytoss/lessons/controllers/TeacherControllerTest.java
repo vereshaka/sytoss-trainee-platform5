@@ -31,7 +31,7 @@ public class TeacherControllerTest extends AbstractControllerTest {
     public void shouldFindGroupsByDiscipline() throws JOSEException {
         when(disciplineService.findDisciplines()).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("find_discipline_by_teacher")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> result = doGet("/api/teacher/my/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });

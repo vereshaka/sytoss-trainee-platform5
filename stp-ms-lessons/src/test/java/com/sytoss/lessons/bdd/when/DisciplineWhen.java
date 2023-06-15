@@ -2,27 +2,18 @@ package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.config.TokenRequestInterceptor;
-import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
@@ -33,7 +24,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<Discipline>() {
         });
@@ -46,7 +37,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -57,7 +48,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId();
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("get_discipline")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Discipline> responseEntity = doGet(url, requestEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -67,11 +58,11 @@ public class DisciplineWhen extends CucumberIntegrationTest {
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) throws JOSEException {
         String url = "/api/teacher/my/disciplines";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("find_discipline_by_teacher")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         Teacher teacher = new Teacher();
         teacher.setId(teacherId);
-        //when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        when(getUserConnector().getMyProfile()).thenReturn(teacher);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);

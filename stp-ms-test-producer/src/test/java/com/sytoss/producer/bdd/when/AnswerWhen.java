@@ -22,7 +22,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Grade());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("answer_on_task")));
+        headers.setBearerAuth(generateJWT(List.of("123")));
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("studentId", String.valueOf(IntegrationTest.getTestContext().getStudentId()));
         String url = "/api/personalExam/" + personalExamId + "/task/answer";

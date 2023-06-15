@@ -59,11 +59,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @Autowired
     private GroupConvertor groupConvertor;
 
+    @Autowired
     @MockBean
     private UserConnector userConnector;
-
-    @MockBean
-    private TokenRequestInterceptor tokenRequestInterceptor;
 
     @LocalServerPort
     private int applicationPort;

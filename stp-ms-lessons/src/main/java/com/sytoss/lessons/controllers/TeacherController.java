@@ -6,14 +6,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/teacher")
 @RequiredArgsConstructor
@@ -21,7 +20,6 @@ public class TeacherController {
 
     private final DisciplineService disciplineService;
 
-    @PreAuthorize("hasRole('ROLE_create_discipline')")
     @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -35,7 +33,6 @@ public class TeacherController {
         return disciplineService.create(teacherId, discipline);
     }
 
-    @PreAuthorize("hasRole('ROLE_find_discipline_by_teacher')")
     @Operation(description = "Method that retrieve disciplines by teacher")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

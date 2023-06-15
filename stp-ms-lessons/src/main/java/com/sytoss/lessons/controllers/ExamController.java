@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -19,7 +20,6 @@ public class ExamController {
 
     private final ExamService examService;
 
-    @PreAuthorize("hasRole('ROLE_create_exam')")
     @Operation(description = "Method that save information about exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

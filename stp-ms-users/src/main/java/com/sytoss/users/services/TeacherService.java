@@ -7,12 +7,14 @@ import com.sytoss.users.convertors.TeacherConvertor;
 import com.sytoss.users.dto.TeacherDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TeacherService {
+public class TeacherService extends AbstractService {
 
     private final TeacherConnector teacherConnector;
 
@@ -31,8 +33,9 @@ public class TeacherService {
             log.info("No user found for " + email + ". Start creation based on token info...");
             Teacher teacher = new Teacher();
             teacher.setEmail(email);
-            teacher.setFirstName("FirstName");
-            teacher.setLastName("LastName");
+            teacher.setFirstName(getJwt().getClaim("firstName"));
+            teacher.setLastName(getJwt().getClaim("lastName"));
+            teacher.setMiddleName(getJwt().getClaim("middleName"));
             teacherDTO = new TeacherDTO();
             teacherConverter.toDTO(teacher, teacherDTO);
             teacherDTO = teacherConnector.save(teacherDTO);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -26,7 +27,6 @@ public class TopicController {
 
     private final TaskService taskService;
 
-    @PreAuthorize("hasRole('ROLE_find_topics_by_discipline')")
     @Operation(description = "Method that retrieve information about topic")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
@@ -37,7 +37,6 @@ public class TopicController {
         return topicService.findByDiscipline(discipleId);
     }
 
-    @PreAuthorize("hasRole('ROLE_get_topic')")
     @Operation(description = "Method that return topic by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
@@ -51,7 +50,6 @@ public class TopicController {
         return topicService.getById(topicId);
     }
 
-    @PreAuthorize("hasRole('ROLE_find_tasks_by_topic')")
     @Operation(description = "Method that gets tasks by topic ID")
     @ApiResponses(
             value = {

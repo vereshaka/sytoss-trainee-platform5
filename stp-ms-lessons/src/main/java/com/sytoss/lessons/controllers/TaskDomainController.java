@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/taskDomain")
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class TaskDomainController {
 
     private final TaskDomainService taskDomainService;
 
-    @PreAuthorize("hasRole('ROLE_get_task_domain')")
     @Operation(description = "Method that save information about exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

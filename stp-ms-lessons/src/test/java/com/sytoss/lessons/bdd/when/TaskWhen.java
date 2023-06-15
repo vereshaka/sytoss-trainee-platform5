@@ -22,7 +22,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     public void requestSentRetrieveTask() throws JOSEException {
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_task")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doGet(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -32,7 +32,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     public void requestSentRetrieveExistingTask() throws JOSEException {
         String url = "/api/task/" + 1;
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_task")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -50,7 +50,7 @@ public class TaskWhen extends CucumberIntegrationTest {
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
         task.setTopics(List.of(topic));
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_task")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
         if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId()) == null) {
             ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
@@ -67,7 +67,7 @@ public class TaskWhen extends CucumberIntegrationTest {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("find_tasks_by_topic")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
         });

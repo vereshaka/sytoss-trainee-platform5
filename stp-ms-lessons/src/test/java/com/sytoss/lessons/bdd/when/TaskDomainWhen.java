@@ -22,7 +22,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_task_domain")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doPost(url, httpEntity, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -34,7 +34,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("create_task_domain")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -44,7 +44,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void systemTryToFindTaskDomainById(String taskDomainName) throws JOSEException {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_task_domain")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
@@ -63,7 +63,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("get_task_domains_by_discipline")));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
