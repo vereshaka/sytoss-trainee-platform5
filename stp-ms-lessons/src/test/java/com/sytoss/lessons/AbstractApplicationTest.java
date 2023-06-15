@@ -104,6 +104,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .subject("test")
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
+                .claim("email", "test@test")
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 

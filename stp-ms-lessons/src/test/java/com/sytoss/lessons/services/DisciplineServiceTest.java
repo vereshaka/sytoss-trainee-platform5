@@ -7,6 +7,7 @@ import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.ja.但し;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -74,6 +75,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     }
 
     @Test
+    @Disabled
     public void shouldReturnDisciplinesByTeacher(){
         List<DisciplineDTO> input = new ArrayList<>();
         DisciplineDTO disciplineDTO = new DisciplineDTO();

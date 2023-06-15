@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 public class TeacherControllerTest extends AbstractControllerTest {
@@ -27,7 +27,7 @@ public class TeacherControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldSaveTeacher() throws JOSEException {
-        when(teacherService.create(any())).thenReturn(new Teacher());
+        when(teacherService.getOrCreateUser(anyString())).thenReturn(new Teacher());
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("create_teacher")));
         HttpEntity<Teacher> requestEntity = new HttpEntity<>(new Teacher(), headers);

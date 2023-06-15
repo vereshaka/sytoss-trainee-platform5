@@ -3,16 +3,27 @@ package com.sytoss.lessons.bdd.when;
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.config.TokenRequestInterceptor;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
 
@@ -58,6 +69,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("find_discipline_by_teacher")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        Teacher teacher = new Teacher();
+        teacher.setId(teacherId);
+        //when(getUserConnector().getMyProfile()).thenReturn(teacher);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);

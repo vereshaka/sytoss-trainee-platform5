@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://localhost:6432/users
     username: admin
     password: password
   jpa:
@@ -17,4 +17,4 @@ spring:
         jwt:
           jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
 server:
-   port: 9101
+   port: 9102

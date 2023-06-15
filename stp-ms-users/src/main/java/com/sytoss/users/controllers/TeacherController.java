@@ -1,31 +1,30 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.services.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/teacher")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
+@Slf4j
 public class TeacherController {
 
     private final TeacherService teacherService;
 
-    @PreAuthorize("hasRole('ROLE_create_teacher')")
-    @Operation(description = "Method that create a new teacher")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/")
-    public Teacher create(@RequestBody Teacher teacher) {
-        return teacherService.create(teacher);
+    @GetMapping("/me")
+    public AbstractUser me() {
+        String email = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaim("email");
+        return teacherService.getOrCreateUser(email);
     }
 }
