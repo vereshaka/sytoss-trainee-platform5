@@ -66,7 +66,7 @@ public class TaskWhen extends CucumberIntegrationTest {
         taskCondition.setValue(conditionValue);
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/task/" + taskDTO.getId() + "/condition";
-        ResponseEntity<Task> responseEntity = doPost(url, taskCondition, Task.class);
+        ResponseEntity<Task> responseEntity = doPut(url, taskCondition, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
