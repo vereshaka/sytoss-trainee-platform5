@@ -4,17 +4,50 @@ databaseChangeLog:
       author: ivan-larin
       changes:
         - createTable:
-            tableName: Answer
+            tableName: Authors
             columns:
               - column:
-                  name: Answer
-                  type: varchar
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              -  column:
+                   name: Name
+                   type: varchar
+                   constraints:
+                     nullable: false
         - createTable:
-            tableName: Etalon
+            tableName: Books
             columns:
               - column:
-                  name: Etalon
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: Book_name
                   type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: Author_id
+                  type: int
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: init-foreign-keys
+      author: ivan-larin
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: Books
+            baseColumnNames: Author_id
+            referencedTableName: Authors
+            referencedColumnNames: id
+            constraintName: FK_book_author
+            onDelete: CASCADE
   - changeSet:
       id: insert-answer
       author: ivan-larin
@@ -22,12 +55,65 @@ databaseChangeLog:
         - insert:
             columns:
               - column:
-                  name: Answer
-                  value: it_is_answer
-            tableName: Answer
+                  name: id
+                  value: 1
+              - column:
+                  name: Name
+                  value: Ivan Ivanov
+            tableName: Authors
         - insert:
             columns:
               - column:
-                  name: Etalon
-                  value: it_is_etalon
-            tableName: Etalon
+                  name: id
+                  value: 2
+              - column:
+                  name: Name
+                  value: Ivan Petrov
+            tableName: Authors
+        - insert:
+            columns:
+              - column:
+                  name: Book_name
+                  value: Book1
+              - column:
+                  name: Author_id
+                  value: 1
+            tableName: Books
+        - insert:
+            columns:
+              - column:
+                  name: Book_name
+                  value: Book2
+              - column:
+                  name: Author_id
+                  value: 1
+            tableName: Books
+        - insert:
+            columns:
+              - column:
+                  name: Book_name
+                  value: Book3
+              - column:
+                  name: Author_id
+                  value: 1
+            tableName: Books
+        - insert:
+            columns:
+              - column:
+                  name: Book_name
+                  value: Book4
+              - column:
+                  name: Author_id
+                  value: 2
+            tableName: Books
+        - insert:
+            columns:
+              - column:
+                  name: Book_name
+                  value: Book5
+              - column:
+                  name: Author_id
+                  value: 2
+            tableName: Books
+
+

@@ -38,9 +38,22 @@ Feature: Task
     When retrieve information about tasks by "Join" topic in "SQL" discipline
     Then operation is successful
     And tasks should be received
-      | discipline | topic  | task                |
-      | SQL        | Join   | What is Join?       |
-      | SQL        | Join   | What is Inner Join? |
+      | discipline | topic | task                |
+      | SQL        | Join  | What is Join?       |
+      | SQL        | Join  | What is Inner Join? |
+
+  Scenario: Remove one of conditions from the task
+    Given tasks exist
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | not null  | CONTAINS |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |
+    When remove condition "not null" and "CONTAINS" type from task
+    Then operation is successful
+    And task should be received
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |
 
   Scenario: add new condition to task
     Given task with question "What are the different subsets of SQL?" exists

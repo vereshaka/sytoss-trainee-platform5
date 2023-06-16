@@ -15,11 +15,12 @@ public class TaskCondition {
 
     @Override
     public boolean equals(Object object) {
-        if(object == null) return false;
-        if(!(object instanceof TaskCondition)) return false;
+        if (object == null) return false;
+        if (!(object instanceof TaskCondition)) return false;
         TaskCondition taskCondition = (TaskCondition) object;
         return taskCondition.getId() == id && (value == taskCondition.getValue() || value != null && value.equals(taskCondition.getValue())) && type == taskCondition.getType();
     }
+
     @Override
     public int hashCode() {
         int result = 17;

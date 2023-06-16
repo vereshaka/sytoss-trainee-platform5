@@ -9,7 +9,7 @@
     <include file="data/exam.xml" relativeToChangelogFile="true" />
     <include file="data/exam2topic.xml" relativeToChangelogFile="true" />
     <include file="data/taskDomain.xml" relativeToChangelogFile="true" />
-    <include file="data/taskСondition.xml" relativeToChangelogFile="true" />
+    <include file="data/task-сondition.xml" relativeToChangelogFile="true" />
     <include file="data/task.xml" relativeToChangelogFile="true" />
     <include file="data/task2topic.xml" relativeToChangelogFile="true" />
     <changeSet id="version_0.0.1" author="KornienkoD">

@@ -1,7 +1,9 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TaskDTO;
@@ -12,8 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.bson.assertions.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskThen extends CucumberIntegrationTest {
 
@@ -47,6 +48,22 @@ public class TaskThen extends CucumberIntegrationTest {
             taskList.remove(foundTasks.get(0));
         }
         assertEquals(0, taskList.size());
+    }
+
+    @Then("task should be received")
+    public void taskShouldBeReceived(DataTable table) {
+        List<Map<String, String>> rows = table.asMaps();
+        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        int count = 0;
+        for (TaskCondition taskCondition : task.getTaskConditions()) {
+            for (Map<String, String> columns : rows) {
+                assertTrue(columns.get("task").equals(task.getQuestion()));
+                if (taskCondition.getValue().equals(columns.get("condition"))) {
+                    count++;
+                }
+            }
+        }
+        assertEquals(rows.size(), count);
     }
 
     @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")

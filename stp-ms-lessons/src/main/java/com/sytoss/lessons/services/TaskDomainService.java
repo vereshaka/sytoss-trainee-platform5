@@ -41,6 +41,18 @@ public class TaskDomainService {
         }
     }
 
+    public TaskDomain update(Long taskDomainId, TaskDomain taskDomain) {
+        TaskDomain oldTaskDomain = getById(taskDomainId);
+        oldTaskDomain.setName(taskDomain.getName());
+        oldTaskDomain.setScript(taskDomain.getScript());
+        oldTaskDomain.setDiscipline(taskDomain.getDiscipline());
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainConvertor.toDTO(oldTaskDomain, taskDomainDTO);
+        taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
+        taskDomainConvertor.fromDTO(taskDomainDTO, oldTaskDomain);
+        return oldTaskDomain;
+    }
+
     public TaskDomain getById(Long taskDomainId) {
         try {
             TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainId);

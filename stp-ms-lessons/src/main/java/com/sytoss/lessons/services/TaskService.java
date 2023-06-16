@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -20,6 +22,8 @@ import java.util.List;
 public class TaskService {
 
     private final TaskConnector taskConnector;
+
+    private final TaskConditionService conditionService;
 
     private final TaskConvertor taskConvertor;
 
@@ -44,6 +48,21 @@ public class TaskService {
             return task;
         }
         throw new TaskExistException(task.getQuestion());
+    }
+
+    public Task removeCondition(Long taskId, Long conditionId) {
+        Task task = getById(taskId);
+        TaskCondition taskCondition = conditionService.getById(conditionId);
+        if (task.getTaskConditions().contains(taskCondition)) {
+            task.getTaskConditions().remove(taskCondition);
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        } else {
+            throw new TaskDontHasConditionException(taskId, conditionId);
+        }
     }
 
     public List<Task> findByTopicId(Long topicId) {

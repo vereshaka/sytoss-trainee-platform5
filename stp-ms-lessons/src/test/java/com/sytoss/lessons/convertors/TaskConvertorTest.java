@@ -38,7 +38,11 @@ public class TaskConvertorTest extends AbstractJunitTest {
         taskDTO.setTopics(topicDTOList);
         TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
         taskConditionDTO.setId(1L);
-        taskDTO.setConditions(List.of(taskConditionDTO));
+        taskConditionDTO.setType(ConditionType.CONTAINS);
+        taskConditionDTO.setValue("name");
+        List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
+        taskConditionDTOList.add(taskConditionDTO);
+        taskDTO.setConditions(taskConditionDTOList);
         Task task = new Task();
         taskConvertor.fromDTO(taskDTO, task);
 
@@ -68,8 +72,12 @@ public class TaskConvertorTest extends AbstractJunitTest {
         topics.add(topic);
         task.setTopics(topics);
         TaskCondition taskCondition = new TaskCondition();
-        taskCondition. setId(1L);
-        task.setTaskConditions(List.of(taskCondition));
+        taskCondition.setId(1L);
+        taskCondition.setType(ConditionType.CONTAINS);
+        taskCondition.setValue("name");
+        List<TaskCondition> taskConditionList = new ArrayList<>();
+        taskConditionList.add(taskCondition);
+        task.setTaskConditions(taskConditionList);
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
 

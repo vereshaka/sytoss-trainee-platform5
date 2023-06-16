@@ -12,7 +12,6 @@ public class TaskConditionGiven extends CucumberIntegrationTest {
     @Given("^\"(.*)\" condition with (.*) type does not exist in this task$")
     public void conditionExists(String conditionValue, ConditionType type) {
         TaskDTO taskDTO = getTaskConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskId());
-        //   TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndTypeAndTask(conditionValue, type, taskDTO);
         TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionValue, type);
         if (taskConditionDTO == null) {
             taskConditionDTO = new TaskConditionDTO();
