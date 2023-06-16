@@ -67,4 +67,15 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("receive all disciplines")
+    public void requestSentFindAllDisciplines() throws JOSEException {
+        String url = "/api/disciplines";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }
