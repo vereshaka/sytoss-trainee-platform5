@@ -13,16 +13,12 @@ public class TaskCondition {
 
     private ConditionType type;
 
-
-    private Long taskId;
-
     @Override
     public boolean equals(Object object) {
         if (object == null) return false;
         if (!(object instanceof TaskCondition)) return false;
         TaskCondition taskCondition = (TaskCondition) object;
-        return taskCondition.getId() == id && (value == taskCondition.getValue() || value != null && value.equals(taskCondition.getValue())) && type == taskCondition.getType()
-                && taskCondition.getTaskId() == taskId;
+        return taskCondition.getId() == id && (value == taskCondition.getValue() || value != null && value.equals(taskCondition.getValue())) && type == taskCondition.getType();
     }
 
     @Override
@@ -31,7 +27,6 @@ public class TaskCondition {
         result = 31 * result + value.hashCode();
         result = 31 * result + id.hashCode();
         result = 31 * result + type.hashCode();
-        result = 31 * result + taskId.hashCode();
         return result;
     }
 }

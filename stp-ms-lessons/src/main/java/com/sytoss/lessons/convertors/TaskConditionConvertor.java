@@ -13,13 +13,11 @@ public class TaskConditionConvertor {
         destination.setId(source.getId());
         destination.setValue(source.getName());
         destination.setType(source.getType());
-        destination.setTaskId(source.getTaskId());
     }
 
     public void toDTO(TaskCondition source, TaskConditionDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getValue());
         destination.setType(source.getType());
-        destination.setTaskId(source.getTaskId());
     }
 }
