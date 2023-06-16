@@ -1,12 +1,9 @@
 package com.sytoss.common.config;
 
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
-import com.nimbusds.oauth2.sdk.util.MapUtils;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,14 +14,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@Configuration
-@EnableMethodSecurity(prePostEnabled = true)
-public class CommonKeycloakConfig {
+
+public abstract class CommonKeycloakConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,18 +53,20 @@ public class CommonKeycloakConfig {
             public Collection<GrantedAuthority> convert(Jwt jwt) {
                 Collection<GrantedAuthority> grantedAuthorities = delegate.convert(jwt);
 
-                if (MapUtils.isEmpty(jwt.getClaim("realm_access"))) {
+                if (Objects.isNull(jwt.getClaim("realm_access"))) {
                     return grantedAuthorities;
                 }
 
                 LinkedTreeMap<String, ArrayList<String>> realmAccess = jwt.getClaim("realm_access");
-                if (MapUtils.isEmpty((Map<?, ?>) realmAccess.get("roles"))) {
+                if (Objects.isNull(realmAccess.get("roles"))) {
                     return grantedAuthorities;
                 }
 
                 ArrayList<String> roles = realmAccess.get("roles");
 
-                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role)).toList();
+                final List<SimpleGrantedAuthority> keycloakAuthorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .toList();
                 grantedAuthorities.addAll(keycloakAuthorities);
 
                 return grantedAuthorities;

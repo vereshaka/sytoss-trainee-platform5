@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/task")
 @PreAuthorize("isAuthenticated()")
-public class TaskController extends AbstractService {
+public class TaskController {
 
     private final TaskService taskService;
 
