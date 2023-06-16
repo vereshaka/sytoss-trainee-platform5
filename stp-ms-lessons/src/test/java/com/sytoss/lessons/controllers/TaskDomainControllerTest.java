@@ -41,6 +41,17 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldUpdateTaskDomain() throws JOSEException {
+        when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
+        ResponseEntity<TaskDomain> response = doPut("/api/taskDomain/123", httpEntity, new ParameterizedTypeReference<TaskDomain>() {
+        });
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
         HttpHeaders headers = new HttpHeaders();

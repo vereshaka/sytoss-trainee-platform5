@@ -26,7 +26,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskDomainServiceTest extends AbstractJunitTest {
@@ -90,6 +91,30 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
     public void shouldRaiseExceptionWhenTaskDomainNotExist() {
         when(taskDomainConnector.getReferenceById(1L)).thenThrow(new TaskDomainNotFoundException(1L));
         assertThrows(TaskDomainNotFoundException.class, () -> taskDomainService.getById(1L));
+    }
+
+    @Test
+    public void shouldUpdate() {
+        TaskDomainDTO taskDomain = new TaskDomainDTO();
+        taskDomain.setId(1L);
+        taskDomain.setName("First Domain");
+        taskDomain.setScript("Script Domain");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomain.setDiscipline(disciplineDTO);
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomain);
+        Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            TaskDomainDTO result = (TaskDomainDTO) args[0];
+            result.setName("new");
+            result.setScript("new");
+            return result;
+        }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
+        TaskDomain updateTaskDomain = new TaskDomain();
+        taskDomain.setName("new");
+        taskDomain.setScript("new");
+        TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
+        assertEquals("new", result.getName());
+        assertEquals("new", result.getScript());
     }
 
     private Discipline createReference(Long id) {

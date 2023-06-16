@@ -49,4 +49,18 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             }
         }
     }
+
+
+    @Given("^\"(.*)\" task domain with \"(.*)\" script exists for this discipline$")
+    public void taskDomainForDiscipline(String nameTaskDomain, String script) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(nameTaskDomain, TestExecutionContext.getTestContext().getDisciplineId());
+        if(taskDomainDTO == null){
+            taskDomainDTO = new TaskDomainDTO();
+            taskDomainDTO.setName(nameTaskDomain);
+            taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
+            taskDomainDTO.setScript(script);
+            taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
+        }
+        TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
+    }
 }
