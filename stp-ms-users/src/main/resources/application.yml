@@ -1,10 +1,9 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/users
+    url: jdbc:postgresql://localhost:6432/users
     username: admin
     password: password
-
   jpa:
     properties:
       hibernate:
@@ -12,5 +11,10 @@ spring:
         ddl-auto: validate
   liquibase:
     change-log: classpath:/liquibase/db.changelog-master1.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
 server:
-   port: 9101
+   port: 9102

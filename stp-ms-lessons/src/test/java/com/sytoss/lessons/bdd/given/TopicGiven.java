@@ -8,7 +8,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TopicGiven extends CucumberIntegrationTest {
 

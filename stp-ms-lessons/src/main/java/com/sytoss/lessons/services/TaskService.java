@@ -1,8 +1,10 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
@@ -19,6 +21,8 @@ import java.util.List;
 public class TaskService {
 
     private final TaskConnector taskConnector;
+
+    private final TaskConditionService conditionService;
 
     private final TaskConvertor taskConvertor;
 
@@ -47,12 +51,27 @@ public class TaskService {
         throw new TaskExistException(task.getQuestion());
     }
 
+    public Task removeCondition(Long taskId, Long conditionId) {
+        Task task = getById(taskId);
+        TaskCondition taskCondition = conditionService.getById(conditionId);
+        if (task.getTaskConditions().contains(taskCondition)) {
+            task.getTaskConditions().remove(taskCondition);
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        } else {
+            throw new TaskDontHasConditionException(taskId, conditionId);
+        }
+    }
+
     public Task assignTaskToTopic(Long taskId, Long topicId) {
         Topic topic = topicService.getById(topicId);
         Task task = getById(taskId);
-        if(task.getTopics().isEmpty()){
+        if (task.getTopics().isEmpty()) {
             task.setTopics(List.of(topic));
-        }else{
+        } else {
             task.getTopics().add(topic);
         }
         TaskDTO taskDTO = new TaskDTO();

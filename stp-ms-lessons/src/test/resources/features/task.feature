@@ -48,3 +48,16 @@ Feature: Task
     When assign topic "Join" to this task
     Then operation is successful
     And task with question "What is Join?" should be assign to "Join" topic
+
+  Scenario: Remove one of conditions from the task
+    Given tasks exist
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | not null  | CONTAINS |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |
+    When remove condition "not null" and "CONTAINS" type from task
+    Then operation is successful
+    And task should be received
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |

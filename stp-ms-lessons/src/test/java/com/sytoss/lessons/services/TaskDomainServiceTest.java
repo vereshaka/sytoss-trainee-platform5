@@ -4,12 +4,14 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,6 +93,30 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         assertThrows(TaskDomainNotFoundException.class, () -> taskDomainService.getById(1L));
     }
 
+    @Test
+    public void shouldUpdate() {
+        TaskDomainDTO taskDomain = new TaskDomainDTO();
+        taskDomain.setId(1L);
+        taskDomain.setName("First Domain");
+        taskDomain.setScript("Script Domain");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomain.setDiscipline(disciplineDTO);
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomain);
+        Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            TaskDomainDTO result = (TaskDomainDTO) args[0];
+            result.setName("new");
+            result.setScript("new");
+            return result;
+        }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
+        TaskDomain updateTaskDomain = new TaskDomain();
+        taskDomain.setName("new");
+        taskDomain.setScript("new");
+        TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
+        assertEquals("new", result.getName());
+        assertEquals("new", result.getScript());
+    }
+
     private Discipline createReference(Long id) {
         Teacher teacher = new Teacher();
         teacher.setId(1L);
@@ -96,5 +125,22 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         discipline.setTeacher(teacher);
         discipline.setName("first discipline");
         return discipline;
+    }
+
+    @Test
+    public void findTaskDomains() {
+        TaskDomainDTO taskDomain = new TaskDomainDTO();
+        taskDomain.setId(11L);
+        taskDomain.setName("Test");
+        DisciplineDTO discipline = new DisciplineDTO();
+        discipline.setId(11L);
+        discipline.setName("SQL");
+        taskDomain.setDiscipline(discipline);
+        List<TaskDomainDTO> input = new ArrayList<>();
+        input.add(taskDomain);
+        input.add(taskDomain);
+        when(taskDomainConnector.findByDisciplineId(any())).thenReturn(input);
+        List<TaskDomain> result = taskDomainService.findByDiscipline(11L);
+        assertEquals(input.size(), result.size());
     }
 }

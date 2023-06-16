@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -33,4 +34,8 @@ public class TaskDTO {
             joinColumns = @JoinColumn(name = "TASK_ID"),
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private List<TopicDTO> topics;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
+    private List<TaskConditionDTO> conditions = new ArrayList<>();
 }

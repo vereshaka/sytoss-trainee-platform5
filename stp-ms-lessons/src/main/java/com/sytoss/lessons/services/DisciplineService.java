@@ -7,27 +7,34 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class DisciplineService {
+public class DisciplineService extends AbstractService {
 
     private final DisciplineConnector disciplineConnector;
 
     private final DisciplineConvertor disciplineConvertor;
 
     public Discipline getById(Long id) {
-        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
-        if (disciplineDTO != null) {
+        try {
+            DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
+        } catch (EntityNotFoundException e) {
+            throw new DisciplineNotFoundException(id);
         }
-        throw new DisciplineNotFoundException(id);
     }
 
     public Discipline create(Long teacherId, Discipline discipline) {
@@ -44,5 +51,16 @@ public class DisciplineService {
         } else {
             throw new DisciplineExistException(discipline.getName());
         }
+    }
+
+    public List<Discipline> findDisciplines() {
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherId(getCurrentUser().getId());
+        List<Discipline> result = new ArrayList<>();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            result.add(discipline);
+        }
+        return result;
     }
 }

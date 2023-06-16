@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>sytosstraineeplatform</artifactId>
-        <groupId>com.systoss.stp</groupId>
+        <groupId>com.sytoss.stp</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -12,8 +12,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.systoss.stp</groupId>
+            <groupId>com.sytoss.stp</groupId>
             <artifactId>stp-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sytoss.stp</groupId>
+            <artifactId>stp-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -35,6 +41,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+
         <!-- SWAGGER -->
         <dependency>
             <groupId>org.springdoc</groupId>

@@ -15,10 +15,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/discipline")
@@ -94,5 +96,16 @@ public class DisciplineController {
             @PathVariable("disciplineId") Long disciplineId,
             @RequestBody TaskDomain taskDomain) {
         return taskDomainService.create(disciplineId, taskDomain);
+    }
+
+    @Operation(description = "Method that retrieve all task domains by discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{disciplineId}/taskDomains")
+    public List<TaskDomain> findTasksDomainByDiscipline(
+            @Parameter(description = "id of the discipline to be searched by")
+            @PathVariable("disciplineId") Long disciplineId) {
+        return taskDomainService.findByDiscipline(disciplineId);
     }
 }

@@ -14,8 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api")
 public class PersonalExamController {
