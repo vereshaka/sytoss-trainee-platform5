@@ -22,4 +22,7 @@ public class TaskConditionDTO {
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private ConditionType type;
+
+    @Column(name = "TASK_ID")
+    private Long taskId;
 }

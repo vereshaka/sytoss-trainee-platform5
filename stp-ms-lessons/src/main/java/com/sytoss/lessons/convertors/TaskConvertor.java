@@ -38,14 +38,15 @@ public class TaskConvertor {
             topicList.add(topic);
         });
         destination.setTopics(topicList);
-
-        List<TaskCondition> taskConditionList = new ArrayList<>();
-        source.getConditions().forEach(taskConditionDTO -> {
-            TaskCondition taskCondition = new TaskCondition();
-            taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
-            taskConditionList.add(taskCondition);
-        });
-        destination.setTaskConditions(taskConditionList);
+        if (!source.getConditions().isEmpty()) {
+            List<TaskCondition> taskConditionList = new ArrayList<>();
+            source.getConditions().forEach(taskConditionDTO -> {
+                TaskCondition taskCondition = new TaskCondition();
+                taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
+                taskConditionList.add(taskCondition);
+            });
+            destination.setTaskConditions(taskConditionList);
+        }
     }
 
     public void toDTO(Task source, TaskDTO destination) {
@@ -62,12 +63,14 @@ public class TaskConvertor {
             topicDTOList.add(topicDTO);
         });
         destination.setTopics(topicDTOList);
-        List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
-        source.getTaskConditions().forEach(taskCondition -> {
-            TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
-            taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
-            taskConditionDTOList.add(taskConditionDTO);
-        });
-        destination.setConditions(taskConditionDTOList);
+        if (!source.getTaskConditions().isEmpty()) {
+            List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
+            source.getTaskConditions().forEach(taskCondition -> {
+                TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+                taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+                taskConditionDTOList.add(taskConditionDTO);
+            });
+            destination.setConditions(taskConditionDTOList);
+        }
     }
 }
