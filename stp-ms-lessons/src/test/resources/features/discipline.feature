@@ -20,7 +20,6 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
-
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacher | discipline |
@@ -30,8 +29,20 @@ Feature: Discipline
       | 1       | H2         |
     When teacher with id 1 retrieve his disciplines
     Then operation is successful
-    And disciplines should be
+    And disciplines should be received
       | teacher | discipline |
       | 1       | SQL        |
       | 1       | Mongo      |
       | 1       | H2         |
+
+  Scenario: search disciplines
+    Given disciplines exist
+      | discipline |
+      | SQL        |
+      | Mongo      |
+    When receive all disciplines
+    Then operation is successful
+    And disciplines should be received
+      | discipline |
+      | SQL        |
+      | Mongo      |

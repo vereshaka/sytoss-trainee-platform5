@@ -2,7 +2,7 @@ Feature: Task
 
   Background:
     Given teacher "Maksym" "Mitkov" exists
-    And this teacher has "SQL" discipline
+    And "SQL" discipline exists
     And this discipline has "Join" topic
     And "First Domain" task domain exists
 
