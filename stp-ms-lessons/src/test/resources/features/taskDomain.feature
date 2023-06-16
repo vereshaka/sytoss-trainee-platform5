@@ -41,3 +41,16 @@ Feature: Task Domain
       | SQL         | Join          |
       | SQL         | Select        |
       | SQL         | Set of Tables |
+
+  Scenario: system generate scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain
+    Then operation is successful
+    And  "First Domain" should have image
+
+  Scenario: system could not generate scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain with wrong script
+    Then operation should be finished with 409 "Image have been not created" error

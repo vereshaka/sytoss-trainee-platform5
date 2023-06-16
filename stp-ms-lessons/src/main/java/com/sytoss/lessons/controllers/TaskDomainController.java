@@ -6,8 +6,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/taskDomain")
@@ -25,5 +28,16 @@ public class TaskDomainController {
     public TaskDomain getById(@Parameter(description = "id of the task domain to be searched by")
                               @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getById(taskDomainId);
+    }
+
+    @Operation(description = "Method generate image from puml", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PutMapping("/{taskDomainId}/puml")
+    public void generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
+                                    @PathVariable(value = "taskDomainId") Long taskDomainId,
+                                    @RequestBody String puml) throws IOException {
+        taskDomainService.generatePngFromPuml(taskDomainId, puml);
     }
 }

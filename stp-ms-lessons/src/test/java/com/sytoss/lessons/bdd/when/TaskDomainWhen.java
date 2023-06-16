@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -53,6 +52,24 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
         ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, null, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system generate image of scheme and save in \"(.*)\" task domain$")
+    public void requestSentCreateImageForTaskDomain(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
+        String puml = "@startuml\n" + "Bob -> Alice : hello\n" + "@enduml\n";
+        ResponseEntity<String> responseEntity = doPut(url, puml, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system generate image of scheme and save in \"(.*)\" task domain with wrong script$")
+    public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
+        String puml = "error";
+        ResponseEntity<String> responseEntity = doPut(url, puml, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

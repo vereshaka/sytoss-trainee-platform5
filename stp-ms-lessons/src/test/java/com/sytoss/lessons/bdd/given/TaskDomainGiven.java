@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Given;
 
@@ -47,6 +46,15 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             if (result == null) {
                 getTaskDomainConnector().save(taskDomainDTO);
             }
+        }
+    }
+
+    @Given("^\"(.*)\" task domain doesn't have image$")
+    public void taskDomainShouldNotHaveImage(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        if (taskDomainDTO.getImage() != null) {
+            taskDomainDTO.setImage(null);
+            getTaskDomainConnector().save(taskDomainDTO);
         }
     }
 }

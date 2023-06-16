@@ -1,10 +1,8 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
@@ -47,5 +45,11 @@ public class TaskDomainThen extends CucumberIntegrationTest {
                 }
         }
         assertEquals(quantityOftaskDomains, results.size());
+    }
+
+    @Then("^\"(.*)\" should have image$")
+    public void taskDomainShouldHaveImage(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        assertNotNull(taskDomainDTO.getImage());
     }
 }

@@ -61,4 +61,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskExistException taskExistException, WebRequest request) {
         return ResponseEntity.status(409).body(taskExistException.getMessage());
     }
+
+    @ExceptionHandler({TaskDomainCouldNotCreateImageException.class})
+    public ResponseEntity<?> handleValidationException(TaskDomainCouldNotCreateImageException taskDomainCouldNotCreateImageException, WebRequest request) {
+        return ResponseEntity.status(409).body(taskDomainCouldNotCreateImageException.getMessage());
+    }
 }
