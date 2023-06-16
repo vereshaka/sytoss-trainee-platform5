@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.TaskService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TaskControllerTest extends AbstractControllerTest {
@@ -69,6 +71,16 @@ public class TaskControllerTest extends AbstractControllerTest {
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
         ResponseEntity<String> result = doPost("/api/task/", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldRemoveConditionFromTask() throws JOSEException {
+        when(taskService.removeCondition(anyLong(), anyLong())).thenReturn(new Task());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Task> result = doPut("/api/task/12/condition/12", httpEntity, Task.class);
+        assertEquals(200, result.getStatusCode().value());
     }
 
     @Test

@@ -1,7 +1,9 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -68,5 +70,35 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
+    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) throws JOSEException {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldNameTaskDomain, disciplineDTO.getId());
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setName(newNameTaskDomain);
+        if (taskDomainDTO != null) {
+            taskDomain.setScript(taskDomainDTO.getScript());
+        }
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineDTO.getId());
+        Teacher teacher = new Teacher();
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        discipline.setTeacher(teacher);
+        taskDomain.setDiscipline(discipline);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
+        if (taskDomainDTO == null) {
+            String url = "/api/taskDomain/123";
+            ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }
+        if (taskDomainDTO != null) {
+            String url = "/api/taskDomain/" + taskDomainDTO.getId();
+            ResponseEntity<TaskDomain> responseEntity = doPut(url, httpEntity, TaskDomain.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        }
     }
 }

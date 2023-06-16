@@ -148,4 +148,15 @@ public class DisciplineControllerTest extends AbstractControllerTest {
         });
         assertEquals(200, result.getStatusCode().value());
     }
+
+    @Test
+    public void shouldFindDisciplines() throws JOSEException {
+        when(disciplineService.findAllDisciplines()).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> result = doGet("/api/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
 }

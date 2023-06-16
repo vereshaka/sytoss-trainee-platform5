@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import jakarta.persistence.EntityNotFoundException;
 import io.cucumber.java.ja.但し;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
 
     @Test
     public void shouldRaiseExceptionWhenDisciplineNotExist() {
-        when(disciplineConnector.getReferenceById(1L)).thenReturn(null);
+        when(disciplineConnector.getReferenceById(1L)).thenThrow(new EntityNotFoundException());
         assertThrows(DisciplineNotFoundException.class, () -> disciplineService.getById(1L));
     }
 
@@ -96,5 +97,19 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
         when(disciplineConnector.findByTeacherId(1L)).thenReturn(input);
         List<Discipline> result = disciplineService.findDisciplines();
         assertEquals(1, result.size());
+    }
+
+    @Test
+    public void shouldFindAllDisciplines() {
+        DisciplineDTO discipline1 = new DisciplineDTO();
+        discipline1.setId(11L);
+        discipline1.setName("Test1");
+        DisciplineDTO discipline2 = new DisciplineDTO();
+        discipline2.setId(12L);
+        discipline2.setName("Test2");
+        List<DisciplineDTO> input = List.of(discipline1, discipline2);
+        when(disciplineConnector.findAll()).thenReturn(input);
+        List<Discipline> result = disciplineService.findAllDisciplines();
+        assertEquals(input.size(), result.size());
     }
 }

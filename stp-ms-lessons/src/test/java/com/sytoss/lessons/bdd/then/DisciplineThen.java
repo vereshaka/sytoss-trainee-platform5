@@ -30,7 +30,7 @@ public class DisciplineThen extends CucumberIntegrationTest {
         Assertions.assertEquals(disciplineName, disciplineDTO.getName());
     }
 
-    @Then("^disciplines should be$")
+    @Then("^disciplines should be received$")
     public void disciplinesShouldBeReceived(List<DisciplineDTO> disciplines) {
         List<Discipline> disciplineList = (List<Discipline>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(disciplines.size(), disciplineList.size());
@@ -44,7 +44,5 @@ public class DisciplineThen extends CucumberIntegrationTest {
             disciplineList.remove(foundTDisciplines.get(0));
         }
         assertEquals(0, disciplineList.size());
-
     }
-
 }

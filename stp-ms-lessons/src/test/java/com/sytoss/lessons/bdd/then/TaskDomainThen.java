@@ -6,6 +6,7 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -47,5 +48,13 @@ public class TaskDomainThen extends CucumberIntegrationTest {
                 }
         }
         assertEquals(quantityOftaskDomains, results.size());
+    }
+
+    @Then("^\"(.*)\" task domain with \"(.*)\" script should be$")
+    public void taskDomainWithScriptShouldBe(String nameTaskDomain, String script) {
+        TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(taskDomain);
+        assertEquals(nameTaskDomain, taskDomain.getName());
+        assertEquals(script, taskDomain.getScript());
     }
 }
