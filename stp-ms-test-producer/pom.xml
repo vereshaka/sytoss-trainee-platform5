@@ -22,7 +22,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.systoss.stp</groupId>
+            <groupId>com.sytoss.stp</groupId>
             <artifactId>stp-common</artifactId>
             <version>${project.version}</version>
         </dependency>
