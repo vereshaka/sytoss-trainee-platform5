@@ -16,4 +16,8 @@ public class AbstractUser {
     private String middleName;
 
     private String email;
+
+    private byte[] photo;
+
+    private boolean isModerated;
 }

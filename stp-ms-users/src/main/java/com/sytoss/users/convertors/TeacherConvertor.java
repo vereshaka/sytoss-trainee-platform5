@@ -15,6 +15,8 @@ public class TeacherConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
+        destination.setPhoto(source.getPhoto());
     }
 
     public void toDTO(Teacher source, TeacherDTO destination) {
@@ -23,5 +25,7 @@ public class TeacherConvertor {
         destination.setLastName(source.getLastName());
         destination.setMiddleName(source.getMiddleName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
+        destination.setPhoto(source.getPhoto());
     }
 }

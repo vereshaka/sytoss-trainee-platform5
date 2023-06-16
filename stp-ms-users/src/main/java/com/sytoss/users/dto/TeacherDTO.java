@@ -26,4 +26,10 @@ public class TeacherDTO {
 
     @Column(name = "EMAIL")
     private String email;
+
+    @Column(name = "PHOTO")
+    private byte[] photo;
+
+    @Column(name = "IS_MODERATED")
+    boolean isModerated;
 }
