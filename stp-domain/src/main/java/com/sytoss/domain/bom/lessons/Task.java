@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -21,7 +22,7 @@ public class Task {
 
     private TaskDomain taskDomain;
 
-    private List<Topic> topics;
+    private List<Topic> topics = new ArrayList<>();
 
     private List<TaskCondition> taskConditions = new ArrayList<>();
 }

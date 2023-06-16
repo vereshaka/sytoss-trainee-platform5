@@ -5,7 +5,9 @@ import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 
 import java.util.List;
@@ -62,5 +64,14 @@ public class TaskThen extends CucumberIntegrationTest {
             }
         }
         assertEquals(rows.size(), count);
+    }
+
+    @Then("^task with question \"(.*)\" should be assign to \"(.*)\" topic$")
+    public void taskTopicShouldBe(String question,String topicName) {
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(task.getTopics());
+        assertEquals(question, task.getQuestion());
+        assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
     }
 }
