@@ -2,7 +2,6 @@ package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
-import com.sytoss.lessons.config.TokenRequestInterceptor;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
@@ -16,7 +15,6 @@ import org.junit.platform.suite.api.Suite;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -58,6 +56,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private GroupConvertor groupConvertor;
+
+    @Autowired
+    private TaskConditionConnector taskConditionConnector;
 
     @Autowired
     @MockBean

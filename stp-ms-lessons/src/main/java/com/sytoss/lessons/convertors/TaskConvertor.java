@@ -1,9 +1,10 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
@@ -21,6 +22,8 @@ public class TaskConvertor {
 
     private final TopicConvertor topicConvertor;
 
+    private final TaskConditionConvertor taskConditionConvertor;
+
     public void fromDTO(TaskDTO source, Task destination) {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
@@ -35,6 +38,15 @@ public class TaskConvertor {
             topicList.add(topic);
         });
         destination.setTopics(topicList);
+        if (!source.getConditions().isEmpty()) {
+            List<TaskCondition> taskConditionList = new ArrayList<>();
+            source.getConditions().forEach(taskConditionDTO -> {
+                TaskCondition taskCondition = new TaskCondition();
+                taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
+                taskConditionList.add(taskCondition);
+            });
+            destination.setTaskConditions(taskConditionList);
+        }
     }
 
     public void toDTO(Task source, TaskDTO destination) {
@@ -51,5 +63,14 @@ public class TaskConvertor {
             topicDTOList.add(topicDTO);
         });
         destination.setTopics(topicDTOList);
+        if (!source.getTaskConditions().isEmpty()) {
+            List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
+            source.getTaskConditions().forEach(taskCondition -> {
+                TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+                taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+                taskConditionDTOList.add(taskConditionDTO);
+            });
+            destination.setConditions(taskConditionDTOList);
+        }
     }
 }

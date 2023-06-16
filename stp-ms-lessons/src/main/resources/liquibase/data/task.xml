@@ -14,6 +14,7 @@
             <column name="TASK_DOMAIN_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
+            <column name="TASK_ID" type="BIGINT" />
         </createTable>
 
         <rollback>
@@ -32,6 +33,14 @@
         <createSequence sequenceName="TASK_SEQ" />
         <rollback>
             <dropSequence sequenceName="TASK_SEQ" />
+        </rollback>
+    </changeSet>
+    <changeSet author="VereshchakaV" id="task_domain_5">
+        <addForeignKeyConstraint baseTableName="TASK_CONDITION" baseColumnNames="TASK_ID"
+                                 constraintName="FK_TASK_CONDITION2TASK"
+                                 referencedTableName="TASK" referencedColumnNames="ID"  />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="TASK_DOMAIN" constraintName="FK_TASK_DOMAIN2TASK" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

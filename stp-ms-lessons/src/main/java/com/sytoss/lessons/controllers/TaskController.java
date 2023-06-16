@@ -41,4 +41,22 @@ public class TaskController {
     public Task create(@RequestBody Task task) {
         return taskService.create(task);
     }
+
+    @Operation(description = "Method that remove condition from task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Task condition not found!"),
+            @ApiResponse(responseCode = "404", description = "Task don't has condition!")
+
+    })
+    @PutMapping("/{taskId}/condition/{conditionId}")
+    public Task removeCondition(@Parameter(description = "id of the task to be searched by")
+                                @PathVariable("taskId")
+                                Long taskId,
+                                @Parameter(description = "id of the task to be searched by")
+                                @PathVariable("conditionId")
+                                Long conditionId) {
+        return taskService.removeCondition(taskId, conditionId);
+    }
 }
