@@ -50,7 +50,7 @@ public class TaskService {
     public Task assignTaskToTopic(Long taskId, Long topicId) {
         Topic topic = topicService.getById(topicId);
         Task task = getById(taskId);
-        if(task.getTopics() == null){
+        if(task.getTopics().isEmpty()){
             task.setTopics(List.of(topic));
         }else{
             task.getTopics().add(topic);
