@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,5 +37,5 @@ public class TestExecutionContext {
 
     private Long taskDomainId;
 
-    private List<PersonalExam> personalExams;
+    private List<PersonalExam> personalExams = new ArrayList<>();
 }
