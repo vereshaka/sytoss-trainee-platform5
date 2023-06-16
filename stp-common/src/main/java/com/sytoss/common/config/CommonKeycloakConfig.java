@@ -1,6 +1,7 @@
 package com.sytoss.common.config;
 
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+import com.nimbusds.oauth2.sdk.util.MapUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -19,6 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -58,12 +60,12 @@ public class CommonKeycloakConfig {
             public Collection<GrantedAuthority> convert(Jwt jwt) {
                 Collection<GrantedAuthority> grantedAuthorities = delegate.convert(jwt);
 
-                if (jwt.getClaim("realm_access") == null) {
+                if (MapUtils.isEmpty(jwt.getClaim("realm_access"))) {
                     return grantedAuthorities;
                 }
 
                 LinkedTreeMap<String, ArrayList<String>> realmAccess = jwt.getClaim("realm_access");
-                if (realmAccess.get("roles") == null) {
+                if (MapUtils.isEmpty((Map<?, ?>) realmAccess.get("roles"))) {
                     return grantedAuthorities;
                 }
 
