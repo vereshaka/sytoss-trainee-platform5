@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tables
+      author: compiled
+      changes:
+        - createTable:
+            tableName: Discipline
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: string
+        - createTable:
+            tableName: Topic
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: string
+              - column:
+                  name: discipline_id
+                  type: long
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: Topic
+                  baseColumnNames: discipline_id
+                  constraintName: fk_topic_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
+        - createTable:
+            tableName: Task
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: question
+                  type: string
+              - column:
+                  name: answer
+                  type: string
+              - column:
+                  name: discipline_id
+                  type: long
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: Task
+                  baseColumnNames: discipline_id
+                  constraintName: fk_task_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
+        - createTable:
+            tableName: TopicToTask
+            columns:
+              - column:
+                  name: task_id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: topic_id
+                  type: long
+                  constraints:
+                    primaryKey: true

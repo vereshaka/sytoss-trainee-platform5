@@ -36,6 +36,14 @@ public class TaskDomainControllerTest extends AbstractApplicationTest {
     }
 
     @Test
+    public void shouldUpdateTaskDomain() {
+        when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
+        ResponseEntity<TaskDomain> response = doPut("/api/taskDomain/123", new TaskDomain(), new ParameterizedTypeReference<TaskDomain>() {
+        });
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
         HttpHeaders headers = new HttpHeaders();
