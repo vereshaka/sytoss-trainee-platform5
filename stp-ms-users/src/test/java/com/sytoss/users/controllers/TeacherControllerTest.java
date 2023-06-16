@@ -1,7 +1,7 @@
 package com.sytoss.users.controllers;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.services.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,11 +11,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-public class TeacherControllerTest extends AbstractApplicationTest {
+public class TeacherControllerTest extends AbstractControllerTest {
 
     @InjectMocks
     private TeacherController teacherController;
@@ -24,12 +26,12 @@ public class TeacherControllerTest extends AbstractApplicationTest {
     private TeacherService teacherService;
 
     @Test
-    public void shouldSaveTeacher() {
-        when(teacherService.create(any())).thenReturn(new Teacher());
+    public void shouldSaveTeacher() throws JOSEException {
+        when(teacherService.getOrCreateUser(anyString())).thenReturn(new Teacher());
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<Teacher> requestEntity = new HttpEntity<>(new Teacher(), headers);
-        ResponseEntity<Teacher> result = doPost("/api/teacher/", requestEntity, new ParameterizedTypeReference<Teacher>() {
-        });
+        headers.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Teacher> result = doGet("/api/user/me", requestEntity, Teacher.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }
