@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
@@ -7,8 +8,9 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.config.AppConfig;
 import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -30,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class DisciplineControllerTest extends AbstractApplicationTest {
+public class DisciplineControllerTest extends AbstractControllerTest {
 
     @InjectMocks
     @Autowired
@@ -52,9 +54,10 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     private TaskDomainService taskDomainService;
 
     @Test
-    public void shouldSaveTopic() {
+    public void shouldSaveTopic() throws JOSEException {
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Topic> requestEntity = new HttpEntity<>(new Topic(), headers);
         ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, new ParameterizedTypeReference<Topic>() {
         });
@@ -62,19 +65,21 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldFindGroupsByDiscipline() {
+    public void shouldFindGroupsByDiscipline() throws JOSEException {
         when(groupService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", null, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldSaveDiscipline() {
+    public void shouldSaveDiscipline() throws JOSEException {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
@@ -82,9 +87,10 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     }
 
     @Test
-    void shouldReturnExceptionWhenSaveExistingDiscipline() {
+    void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
@@ -92,44 +98,53 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldGetDisciplineById() {
+    public void shouldGetDisciplineById() throws JOSEException {
         when(disciplineService.getById(any())).thenReturn(new Discipline());
-        ResponseEntity<Discipline> result = doGet("/api/discipline/123", null, Discipline.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Discipline> result = doGet("/api/discipline/123", httpEntity, Discipline.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldNotGetDisciplineByIdWhenItDoesNotExist() {
+    public void shouldNotGetDisciplineByIdWhenItDoesNotExist() throws JOSEException {
         when(disciplineService.getById(any())).thenThrow(new DisciplineNotFoundException(123L));
-        ResponseEntity<String> result = doGet("/api/discipline/123", null, String.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> result = doGet("/api/discipline/123", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
         assertEquals("Discipline with id \"123\" not found", result.getBody());
     }
 
     @Test
-    public void shouldCreateGroup() {
+    public void shouldCreateGroup() throws JOSEException {
         when(groupService.create(anyLong(), any(Group.class))).thenReturn(new Group());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<Group> result = doPost("/api/discipline/123/group", requestEntity, Group.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldNotCreateGroupWhenItExists() {
+    public void shouldNotCreateGroupWhenItExists() throws JOSEException {
         when(groupService.create(anyLong(), any(Group.class))).thenThrow(new GroupExistException("Test"));
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldFindTasksDomainByDiscipline() {
+    public void shouldFindTasksDomainByDiscipline() throws JOSEException {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", null, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

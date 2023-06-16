@@ -21,6 +21,11 @@
             <artifactId>stp-ms-check-task-shared</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sytoss.stp</groupId>
+            <artifactId>stp-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring Boot -->
         <dependency>

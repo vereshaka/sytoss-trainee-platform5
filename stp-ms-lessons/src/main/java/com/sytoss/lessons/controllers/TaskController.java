@@ -1,20 +1,24 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.lessons.services.AbstractService;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/task")
+@PreAuthorize("isAuthenticated()")
 public class TaskController {
 
     private final TaskService taskService;
+
 
     @Operation(description = "Method that retrieve task")
     @ApiResponses(value = {
