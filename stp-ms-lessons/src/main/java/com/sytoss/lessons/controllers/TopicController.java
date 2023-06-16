@@ -48,7 +48,8 @@ public class TopicController {
     @Operation(description = "Method that retrieve task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "404", description = "Task not found!")
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
     @PostMapping("/task/{taskId}/topic/{topicId}")
     public Task assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
