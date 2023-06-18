@@ -63,4 +63,15 @@ public class DisciplineService extends AbstractService {
         }
         return result;
     }
+
+    public List<Discipline> findAllDisciplines() {
+        List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
+        List<Discipline> disciplines = new ArrayList<>();
+        for (DisciplineDTO disciplineDTO : disciplineDTOS) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            disciplines.add(discipline);
+        }
+        return disciplines;
+    }
 }

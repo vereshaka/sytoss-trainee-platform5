@@ -52,17 +52,4 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
-
-    @Given("^this teacher has \"(.*)\" discipline$")
-    public void teacherHasDiscipline(String disciplineName) {
-
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
-        if (disciplineDTO == null) {
-            disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-            disciplineDTO = getDisciplineConnector().saveAndFlush(disciplineDTO);
-        }
-        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
-    }
 }
