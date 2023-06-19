@@ -30,3 +30,21 @@ Feature: Group
     And "AT-21-2" group exist for this discipline
     When teacher "Maksym" "Mitkov" create "AT-21-2" group for "SQL" discipline that exists
     Then operation should be finished with 409 "Group with name "AT-21-2" already exist" error
+
+  Scenario: get teacher's groups
+    Given teachers exist
+      | firstname | lastname  |
+      | Firstname | Lastname  |
+      | Volodymyr | Zelenskyi |
+    And groups exist
+      | group | teacher   |
+      | AT-11 | Lastname  |
+      | AT-12 | Lastname  |
+      | AT-11 | Mitkov    |
+      | AT-14 | Mitkov    |
+    When teacher with id 1 retrieve all his groups
+    Then operation is successful
+    And groups should received
+      | group |
+      | AT-11 |
+      | AT-14 |

@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.convertors.GroupConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,5 +48,27 @@ public class GroupService {
             return group;
         }
         throw new GroupExistException(group.getName());
+    }
+
+    public List<Group> findGroups() {
+        List<Discipline> disciplineDTOList = disciplineService.findDisciplines();
+
+        List<GroupDTO> allGroups = new ArrayList<>();
+        for(Discipline discipline : disciplineDTOList){
+            List<GroupDTO> groupDTOS = groupConnector.findByDisciplineId(discipline.getId());
+            for(GroupDTO groupDTO : groupDTOS){
+                if(!allGroups.contains(groupDTO.getId())){
+                    allGroups.add(groupDTO);
+                }
+            }
+        }
+
+        List<Group> result = new ArrayList<>();
+        for (GroupDTO groupDTO : allGroups) {
+            Group group = new Group();
+            groupConvertor.fromDTO(groupDTO, group);
+            result.add(group);
+        }
+        return result;
     }
 }

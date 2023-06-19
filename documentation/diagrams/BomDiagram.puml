@@ -63,7 +63,28 @@ value: int
 comment: string
 }
 
-entity Student{
+entity Student #red{
+id: long
+name: string
+middlename: string
+lastname: string
+email:string
+password:string
+group:string
+photo:?
+}
+
+entity Teacher #red{
+id: long
+name: string
+middlename: string
+lastname: string
+email:string
+password:string
+photo:?
+}
+
+entity Group #red{
 id: long
 name: string
 }
@@ -85,10 +106,10 @@ Task "1" o-- "N conditions" Condition
 Task "N tasks" o--o "N topics" Topic
 Task "1" o-- "1" TaskDomain
 Task "N tasks" --o "1" PersonalExam
-
+Student "1" --o "N groups" Group
 
 Exam "1" --o "N personalExams" PersonalExam
 
 Discipline "1" o-- "N topics" Topic
-
+Discipline "N disciplines" o-- "1" Teacher
 @enduml

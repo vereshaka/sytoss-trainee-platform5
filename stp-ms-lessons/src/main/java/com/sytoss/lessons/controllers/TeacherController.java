@@ -1,7 +1,9 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
+import com.sytoss.lessons.services.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,8 @@ import java.util.List;
 public class TeacherController {
 
     private final DisciplineService disciplineService;
+
+    private final GroupService groupService;
 
     @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
@@ -41,5 +45,15 @@ public class TeacherController {
     @GetMapping("/my/disciplines")
     public List<Discipline> findDisciplines() {
         return disciplineService.findDisciplines();
+    }
+
+    @Operation(description = "Method that retrieve disciplines by teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Teacher does not exist!"),
+    })
+    @GetMapping("/my/groups")
+    public List<Group> findGroups() {
+        return groupService.findGroups();
     }
 }
