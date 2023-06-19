@@ -18,8 +18,8 @@ public class UserGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^student with \"(.*)\" firstName and \"(.*)\" middleName and \"(.*)\" lastName and \"(.*)\" email exists$")
-    public void studentExists(String firstName, String middleName, String lastName, String email) {
+    @Given("^student with \"(.*)\" firstName and \"(.*)\" lastName and \"(.*)\" email exists$")
+    public void studentExists(String firstName, String lastName, String email) {
         UserDTO studentDTO = getUserConnector().getByEmail(email);
         if (studentDTO != null && !(studentDTO instanceof StudentDTO)) {
             getUserConnector().delete(studentDTO);

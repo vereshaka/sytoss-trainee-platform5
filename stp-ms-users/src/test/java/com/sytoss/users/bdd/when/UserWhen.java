@@ -50,7 +50,7 @@ public class UserWhen extends CucumberIntegrationTest {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/student/updatePhoto"), requestEntity, Void.class);
+        ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/user/updatePhoto"), requestEntity, Void.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

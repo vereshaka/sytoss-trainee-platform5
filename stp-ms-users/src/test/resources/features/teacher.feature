@@ -7,7 +7,7 @@ Feature: Teacher
     And teacher with "Ivan" firstname and "Ivanovich" lastname should exist
 
   Scenario: update photo
-    Given student with "Ivan" firstName and "Ivanov" middleName and "Ivanovich" lastName and "test@gmail.com" email exists
+    Given student with "Ivan" firstName and "Ivanovich" lastName and "test@gmail.com" email exists
     When this user upload the photo
     Then operation is successful
     And this user has photo
