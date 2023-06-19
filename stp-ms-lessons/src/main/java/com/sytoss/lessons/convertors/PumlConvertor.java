@@ -13,17 +13,23 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
-    private String indent = StringUtils.leftPad(" ",2);
+    private String indent = StringUtils.leftPad(" ", 2);
 
     public String convertToLiquibase(String script) {
         List<String> entities = getEntities(script);
-        StringBuilder createTableStringBuilder = createChangeSet();
-        indent += StringUtils.leftPad(" ",2);
+        StringBuilder createTableStringBuilder = createChangeSet("create-tables");
+        indent += StringUtils.leftPad(" ", 2);
         List<String> entityCreateScript = entities.stream().map(this::convertPumlEntityToLiquibase).toList();
         String entityCreateScriptText = String.join("", entityCreateScript);
         createTableStringBuilder.append(entityCreateScriptText);
 
-        return "databaseChangeLog:\n" + createTableStringBuilder;
+        List<String> objects = getObjects(script);
+        StringBuilder initTableStringBuilder = createChangeSet("init-tables");
+        indent += StringUtils.leftPad(" ", 2);
+        List<String> objectsCreateScript = objects.stream().map(this::convertPumlObjectToLiquibase).toList();
+        String entityInitScriptText = String.join("", objectsCreateScript);
+        initTableStringBuilder.append(entityInitScriptText);
+        return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder;
     }
 
     private List<String> getEntities(String script) {
@@ -38,14 +44,14 @@ public class PumlConvertor {
         return entities;
     }
 
-    private String getName(String entity) {
+    private String getName(String entity, int positionInScript) {
         Pattern pattern = Pattern.compile("\\S+");
         Matcher matcher = pattern.matcher(entity);
         List<String> allMatches = new ArrayList<>();
-        for (int i = 0; i <= 1 && matcher.find(); i++) {
+        for (int i = 0; i <= positionInScript && matcher.find(); i++) {
             allMatches.add(matcher.group());
         }
-        return allMatches.get(1);
+        return allMatches.get(positionInScript);
     }
 
     private Map<String, String> getParameters(String entity) {
@@ -70,14 +76,14 @@ public class PumlConvertor {
     }
 
     private String convertPumlEntityToLiquibase(String entity) {
-        String name = getName(entity);
+        String name = getName(entity, 1);
         Map<String, String> parameters = getParameters(entity);
-        return returnLiquibaseGroup(name, parameters);
+        return returnCreateTableLiquibaseGroup(name, parameters);
     }
 
-    private String returnLiquibaseGroup(String name, Map<String, String> parameters) {
+    private String returnCreateTableLiquibaseGroup(String name, Map<String, String> parameters) {
         StringBuilder entity = new StringBuilder();
-        String innerIndent = indent + StringUtils.leftPad(" ",4);
+        String innerIndent = indent + StringUtils.leftPad(" ", 4);
         entity.append(indent).append("- createTable:").append(StringUtils.LF)
                 .append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF)
                 .append(innerIndent).append("columns:").append(StringUtils.LF);
@@ -88,7 +94,7 @@ public class PumlConvertor {
             StringBuilder primaryKeyStringBuilder = null;
             if (value.matches("\\S+\\s<<.+>>")) {
                 if (value.contains("PK")) {
-                    primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(" ",10));
+                    primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(" ", 10));
                 } else if (value.contains("FK")) {
                     Pattern pattern = Pattern.compile("<<\\S+\\s([A-z]+(\\([A-z]+\\)))>>");
                     Matcher matcher = pattern.matcher(value);
@@ -106,7 +112,7 @@ public class PumlConvertor {
                 value = value.replaceAll("<<.+>>", "").trim();
             }
             String columnsIndent = innerIndent + "      ";
-            entity.append(innerIndent).append(StringUtils.leftPad(" ",2)).append("- column:").append(StringUtils.LF)
+            entity.append(innerIndent).append(StringUtils.leftPad(" ", 2)).append("- column:").append(StringUtils.LF)
                     .append(columnsIndent).append("name: ").append(key).append(StringUtils.LF)
                     .append(columnsIndent).append("type: ").append(value).append(StringUtils.LF);
             if (primaryKeyStringBuilder != null) {
@@ -120,11 +126,11 @@ public class PumlConvertor {
         return entity.toString();
     }
 
-    private StringBuilder createChangeSet() {
-        String innerIndent = indent + StringUtils.leftPad(" ",4);
+    private StringBuilder createChangeSet(String purpose) {
+        String innerIndent = indent + StringUtils.leftPad(" ", 4);
         StringBuilder changeSet = new StringBuilder();
         changeSet.append(indent).append("- changeSet:").append(StringUtils.LF)
-                .append(innerIndent).append("id: ").append("create-tables").append(StringUtils.LF)
+                .append(innerIndent).append("id: ").append(purpose).append(StringUtils.LF)
                 .append(innerIndent).append("author: ").append("compiled").append(StringUtils.LF)
                 .append(innerIndent).append("changes:").append(StringUtils.LF);
         indent = innerIndent;
@@ -137,9 +143,9 @@ public class PumlConvertor {
 
     private StringBuilder createForeignKey(String entityName1, String entityName1Field, String entityName2, String entityName2Field) {
         StringBuilder addForeignKey = new StringBuilder();
-        String innerIndent = indent + StringUtils.leftPad(" ",10);
+        String innerIndent = indent + StringUtils.leftPad(" ", 10);
 
-        addForeignKey.append(StringUtils.leftPad(" ",2)).append("- foreignKeyConstraint:").append(StringUtils.LF)
+        addForeignKey.append(StringUtils.leftPad(" ", 2)).append("- foreignKeyConstraint:").append(StringUtils.LF)
                 .append(innerIndent).append("baseTableName: ").append(entityName1).append(StringUtils.LF)
                 .append(innerIndent).append("baseColumnNames: ").append(entityName1Field).append(StringUtils.LF)
                 .append(innerIndent).append("constraintName: ").append("fk_").append(entityName1.toLowerCase()).append("_2_").append(entityName2.toLowerCase()).append(StringUtils.LF)
@@ -147,4 +153,74 @@ public class PumlConvertor {
                 .append(innerIndent).append("referencedColumnNames: ").append(entityName2Field);
         return addForeignKey;
     }
+
+    private List<String> getObjects(String script) {
+        Pattern pattern = Pattern.compile("object.+\\{(?>\\n?.+)+\\n}");
+        List<String> entities = new ArrayList<>();
+        Matcher matcher = pattern.matcher(script);
+        while (matcher.find()) {
+            for (int j = 0; j <= matcher.groupCount(); j++) {
+                entities.add(matcher.group(j));
+            }
+        }
+        return entities;
+    }
+
+    private String convertPumlObjectToLiquibase(String object) {
+        String name = getName(object, 3);
+        List<Map<String, String>> parameters = getObjectData(object);
+        return returnInitTableLiquibaseGroup(name, parameters);
+    }
+
+    private List<Map<String, String>> getObjectData(String object) {
+        Pattern parametersPattern = Pattern.compile("\\|.+\\|");
+        Matcher matcher = parametersPattern.matcher(object);
+        List<String> rows = getGroups(matcher);
+        List<String> header = getRowValues(rows.get(0));
+        List<Map<String, String>> valuesInTable = new ArrayList<>();
+
+        for (int i = 1; i < rows.size(); i++) {
+            List<String> values = getRowValues(rows.get(i));
+            values = values.stream().map(String::trim).toList();
+            HashMap<String, String> valuesInRow = new LinkedHashMap<>();
+            for (int j = 0; j < header.size(); j++) {
+                valuesInRow.put(header.get(j), values.get(j));
+            }
+            valuesInTable.add(valuesInRow);
+        }
+        return valuesInTable;
+    }
+
+    private List<String> getRowValues(String row) {
+        row = row.trim();
+        Pattern pattern = Pattern.compile("\\|=?\\s[A-z0-9?\\s]+");
+        Matcher matcher = pattern.matcher(row);
+        List<String> allMatches = new ArrayList<>();
+        while (matcher.find()) {
+            String match = matcher.group();
+            match = match.replaceAll("[|=]", "").trim();
+            allMatches.add(match);
+        }
+        return allMatches;
+    }
+
+    private String returnInitTableLiquibaseGroup(String name, List<Map<String, String>> parameters) {
+        StringBuilder object = new StringBuilder();
+        String innerIndent = indent + StringUtils.leftPad(" ", 4);
+        for (Map<String, String> map : parameters) {
+            object.append(indent).append("- insert:").append(StringUtils.LF)
+                    .append(innerIndent).append("columns:").append(StringUtils.LF);
+
+            String columnsIndent = innerIndent + "      ";
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                object.append(innerIndent).append(StringUtils.leftPad(" ", 2)).append("- column:").append(StringUtils.LF)
+                        .append(columnsIndent).append("name: ").append(entry.getKey()).append(StringUtils.LF)
+                        .append(columnsIndent).append("type: ").append(entry.getValue()).append(StringUtils.LF);
+            }
+            object.append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF);
+        }
+
+        return object.toString();
+    }
+
 }
