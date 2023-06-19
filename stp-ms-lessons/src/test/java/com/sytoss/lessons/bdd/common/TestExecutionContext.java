@@ -32,4 +32,6 @@ public class TestExecutionContext {
     private Long taskId;
 
     private Long taskDomainId;
+
+    private String token;
 }

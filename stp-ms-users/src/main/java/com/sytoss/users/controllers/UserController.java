@@ -17,11 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 @Slf4j
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     private final UserService userService;
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public AbstractUser me() {
         String email = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getClaim("email");

@@ -1,5 +1,6 @@
 package com.sytoss.users.bdd.common;
 
+import com.sytoss.users.dto.UserDTO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
@@ -22,4 +23,6 @@ public class TestExecutionContext {
     }
 
     private ResponseEntity response;
+
+    private UserDTO user;
 }

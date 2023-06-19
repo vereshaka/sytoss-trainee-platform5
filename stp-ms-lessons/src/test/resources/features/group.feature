@@ -1,7 +1,7 @@
 Feature: Group
 
   Background:
-    Given teacher "Maksym" "Mitkov" exists
+    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
   Scenario: System retrieve all groups by discipline
     Given groups exist

@@ -1,7 +1,7 @@
 Feature: Task
 
   Background:
-    Given teacher "Maksym" "Mitkov" exists
+    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
     And "SQL" discipline exists
     And this discipline has "Join" topic
     And "First Domain" task domain exists

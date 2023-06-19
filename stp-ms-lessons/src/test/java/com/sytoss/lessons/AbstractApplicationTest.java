@@ -11,6 +11,7 @@ import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -103,7 +104,10 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .subject("test")
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
-                .claim("email", "test@test")
+                .claim("email", email)
+                .claim("given_name", firstName)
+                .claim("family_name", lastName)
+                .claim("userType", userType)
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 
@@ -111,13 +115,18 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
                 claimsSet);
 
-        signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        try {
+            signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
 
         return signedJWT.serialize();
     }
 
     protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference<T> responseType) {
         HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(TestExecutionContext.getTestContext().getToken());
         if (requestEntity instanceof HttpEntity<?>) {
             return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
         } else {
