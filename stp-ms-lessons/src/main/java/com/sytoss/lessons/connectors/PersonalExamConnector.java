@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(url = "http://localhost:9102/api/", name = "personalExamConnector")
+@FeignClient(url = "${users-url}", name = "personalExamConnector")
 public interface PersonalExamConnector {
 
     @GetMapping("taskDomain/{taskDomainId}/personalExam")

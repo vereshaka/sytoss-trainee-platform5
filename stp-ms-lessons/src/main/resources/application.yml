@@ -14,3 +14,4 @@ spring:
     change-log: classpath:/liquibase/db.changelog-master.xml
 server:
    port: 9101
+users-url: http://localhost:9102/api/
