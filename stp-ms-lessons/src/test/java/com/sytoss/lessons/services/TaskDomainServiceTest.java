@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
@@ -149,6 +150,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
         personalExam.getAnswers().add(answer);
+        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExams.add(personalExam);
         when(personalExamConnector.findAllPersonalExamByTaskDomain(anyLong())).thenReturn(personalExams);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);

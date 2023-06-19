@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.when;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -62,12 +61,12 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
-    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) {
+    public void teacherUpdatesTaskDomainTo(String oldTaskDomainName, String newTaskDomainName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldNameTaskDomain, disciplineDTO.getId());
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldTaskDomainName, disciplineDTO.getId());
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setName(newNameTaskDomain);
-        if(taskDomainDTO != null) {
+        taskDomain.setName(newTaskDomainName);
+        if (taskDomainDTO != null) {
             taskDomain.setScript(taskDomainDTO.getScript());
         }
         Discipline discipline = new Discipline();
@@ -76,16 +75,16 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
         discipline.setTeacher(teacher);
         taskDomain.setDiscipline(discipline);
-        if(!TestExecutionContext.getTestContext().getPersonalExams().isEmpty()){
+        if (!TestExecutionContext.getTestContext().getPersonalExams().isEmpty()) {
             String url = "/api/taskDomain/" + taskDomainDTO.getId();
             when(getPersonalExamConnector().findAllPersonalExamByTaskDomain(anyLong())).thenReturn(TestExecutionContext.getTestContext().getPersonalExams());
             ResponseEntity<String> responseEntity = doPut(url, taskDomain, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
-        }else if(taskDomainDTO == null){
+        } else if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
             ResponseEntity<String> responseEntity = doPut(url, taskDomain, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
-        }else {
+        } else {
             String url = "/api/taskDomain/" + taskDomainDTO.getId();
             ResponseEntity<TaskDomain> responseEntity = doPut(url, taskDomain, TaskDomain.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);

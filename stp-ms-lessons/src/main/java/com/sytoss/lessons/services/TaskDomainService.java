@@ -5,9 +5,8 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -50,10 +49,8 @@ public class TaskDomainService {
         TaskDomain oldTaskDomain = getById(taskDomainId);
         List<PersonalExam> personalExams = personalExamConnector.findAllPersonalExamByTaskDomain(oldTaskDomain.getId());
         for (PersonalExam personalExam : personalExams) {
-            for(Answer answer : personalExam.getAnswers()){
-                if (answer.getTask().getTaskDomain().equals(oldTaskDomain) && !answer.getStatus().equals(AnswerStatus.ANSWERED)) {
-                    throw new TaskDomainIsUsed(oldTaskDomain.getName());
-                }
+            if (!personalExam.getStatus().equals(PersonalExamStatus.FINISHED)) {
+                throw new TaskDomainIsUsed(oldTaskDomain.getName());
             }
         }
         oldTaskDomain.setName(taskDomain.getName());

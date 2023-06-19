@@ -2,7 +2,7 @@ Feature: Task Domain
 
   Background:
     Given teacher "Maksym" "Mitkov" exists
-    And "SQL" discipline exists
+    And "SQL" discipline exists for this teacher
 
   Scenario: system create a new task domain
     Given "First Domain" task domain doesnt exist
@@ -43,24 +43,18 @@ Feature: Task Domain
       | SQL        | Set of Tables |
 
   Scenario: Update task domain
-    Given teacher "John" "Johnson" exists
-    And "SQL" discipline exists for this teacher
-    And "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
+    Given "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation is successful
     And "Second Domain" task domain with "Fisrt Domain Script" script should be
 
   Scenario: Update task domain when task domain does not exist
-    Given teacher "John" "Johnson" exists
-    And "SQL" discipline exists for this teacher
-    And "First Domain" task domain doesnt exist
+    Given "First Domain" task domain doesnt exist
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation should be finished with 404 "Task Domain with id "123" not found" error
 
   Scenario: Update task domain when personal exam does not finished
-    Given teacher "John" "Johnson" exists
-    And "SQL" discipline exists for this teacher
-    And "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
+    Given  "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
     And personal exam exists
       | examName         | status       | task domain  |
       | SQL Querry       | Graded       | First Domain |
