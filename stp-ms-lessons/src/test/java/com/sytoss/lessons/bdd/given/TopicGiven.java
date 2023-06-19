@@ -4,10 +4,10 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TopicGiven extends CucumberIntegrationTest {
 
@@ -53,5 +53,18 @@ public class TopicGiven extends CucumberIntegrationTest {
             topicResult = getTopicConnector().save(topicResult);
         }
         TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
+    }
+
+    @Given("^topic \"(.*)\" exists$")
+    public void topicExists(String topicName) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+        if(topicDTO == null){
+            topicDTO = new TopicDTO();
+            topicDTO.setName(topicName);
+            topicDTO.setDiscipline(disciplineDTO);
+            topicDTO = getTopicConnector().save(topicDTO);
+        }
+        TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
     }
 }

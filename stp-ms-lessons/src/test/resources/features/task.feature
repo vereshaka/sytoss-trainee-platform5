@@ -2,7 +2,7 @@ Feature: Task
 
   Background:
     Given teacher "Maksym" "Mitkov" exists
-    And this teacher has "SQL" discipline
+    And "SQL" discipline exists
     And this discipline has "Join" topic
     And "First Domain" task domain exists
 
@@ -24,7 +24,7 @@ Feature: Task
     And task with question "What are the different subsets of SQL?" should be created
 
   Scenario: system does not create new task when task exists
-    Given task with question "What are the different subsets of SQL?" exists
+    Given task with question "What are the different subsets of SQL?" with topic exists
     When system create task with question "What are the different subsets of SQL?"
     Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
 
@@ -41,3 +41,23 @@ Feature: Task
       | discipline | topic  | task                |
       | SQL        | Join   | What is Join?       |
       | SQL        | Join   | What is Inner Join? |
+
+  Scenario: Link task to topic
+    Given task with question "What is Join?" exists
+    And topic "Join" exists
+    When assign topic "Join" to this task
+    Then operation is successful
+    And task with question "What is Join?" should be assign to "Join" topic
+
+  Scenario: Remove one of conditions from the task
+    Given tasks exist
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | not null  | CONTAINS |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |
+    When remove condition "not null" and "CONTAINS" type from task
+    Then operation is successful
+    And task should be received
+      | discipline | topic | task          | condition | type     |
+      | SQL        | Join  | What is Join? | equal     | CONTAINS |
+      | SQL        | Join  | What is Join? | not equal | CONTAINS |

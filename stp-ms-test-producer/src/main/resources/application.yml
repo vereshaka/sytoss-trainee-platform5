@@ -2,6 +2,11 @@ spring:
   data:
     mongodb:
       uri: ${DB_URI:mongodb://admin:pwd@127.0.0.1:27017/stp?authSource=admin}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
 server:
    port: 9101
 check-task-url: http://localhost:8080
