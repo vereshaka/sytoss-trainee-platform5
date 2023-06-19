@@ -38,6 +38,15 @@ public class TaskWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
+    @When("^retrieve information about task with id (.*)$")
+    public void requestSentRetrieveExistingTask(String taskId) {
+        String url = "/api/task/" + taskId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
     @When("^system create task with question \"(.*)\"$")
     public void requestSendCreateTask(String question) {
         String url = "/api/task/";
@@ -58,6 +67,16 @@ public class TaskWhen extends CucumberIntegrationTest {
             ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
+    }
+
+    @When("^retrieve information about tasks of topic with id (.*)$")
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicKey) {
+        String url = "/api/topic/" + TestExecutionContext.getTestContext().getIdMapping().get(topicKey) + "/tasks";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")

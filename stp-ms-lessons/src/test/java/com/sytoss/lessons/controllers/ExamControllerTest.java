@@ -24,7 +24,7 @@ public class ExamControllerTest extends AbstractControllerTest {
     private ExamService examService;
 
     @Test
-    public void shouldSaveExam() throws JOSEException {
+    public void shouldSaveExam() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Exam> httpEntity = new HttpEntity<>(new Exam(), httpHeaders);
         ResponseEntity<Exam> response = doPost("/api/exam/save", httpEntity, new ParameterizedTypeReference<Exam>() {

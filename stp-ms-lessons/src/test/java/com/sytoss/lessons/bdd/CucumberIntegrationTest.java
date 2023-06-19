@@ -25,14 +25,6 @@ import java.util.ArrayList;
 
 import static io.cucumber.junit.platform.engine.Constants.*;
 
-@Suite
-@IncludeEngines("cucumber")
-
-@SelectClasspathResource("/features")
-@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @Bug and not @Skip")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.lessons.bdd")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
-
 @CucumberContextConfiguration
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @Getter

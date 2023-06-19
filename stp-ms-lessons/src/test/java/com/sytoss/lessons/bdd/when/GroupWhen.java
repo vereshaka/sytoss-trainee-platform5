@@ -19,7 +19,7 @@ public class GroupWhen extends CucumberIntegrationTest {
 
     @When("^receive all groups by \"(.*)\" discipline$")
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
-        DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
+        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + discipline.getId() + "/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);

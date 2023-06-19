@@ -3,6 +3,7 @@ Feature: Topic
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
+  @Bug
   Scenario: system retrieve information list of topic
     Given topics exist
       | discipline | topic           |
