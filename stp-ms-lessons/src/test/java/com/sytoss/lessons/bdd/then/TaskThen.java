@@ -1,11 +1,11 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
-import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
@@ -74,5 +74,13 @@ public class TaskThen extends CucumberIntegrationTest {
         assertNotNull(task.getTopics());
         assertEquals(question, task.getQuestion());
         assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
+    }
+
+    @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")
+    public void taskShouldHaveConditionWithType(String conditionValue, ConditionType type, String question) {
+        TaskDTO taskDTO = getTaskConnector().findById(TestExecutionContext.getTestContext().getTaskId()).orElse(null);
+        assertEquals(conditionValue, taskDTO.getConditions().get(0).getValue());
+        assertEquals(type, taskDTO.getConditions().get(0).getType());
+        assertEquals(question, taskDTO.getQuestion());
     }
 }
