@@ -1,6 +1,8 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
@@ -11,7 +13,11 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,7 +38,7 @@ public class ExamWhen extends CucumberIntegrationTest {
     }
 
     @When("a teacher create \"{word}\" exam from {word} to {word} with {int} tasks for \"{word}\" group in {word} discipline with {int} minutes duration")
-    public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException {
+    public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
         String url = "/api/exam/save";
 
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
@@ -52,8 +58,11 @@ public class ExamWhen extends CucumberIntegrationTest {
         exam.setDuration(duration);
         exam.setTopics(topics);
 
-        ResponseEntity<Exam> responseEntity = doPost(url, exam, new ParameterizedTypeReference<Exam>() {
-        });
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, headers);
+
+        ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

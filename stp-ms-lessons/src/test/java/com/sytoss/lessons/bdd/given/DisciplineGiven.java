@@ -20,6 +20,18 @@ public class DisciplineGiven extends CucumberIntegrationTest {
         }
     }
 
+    @Given("^\"(.*)\" discipline exists for this teacher$")
+    public void disciplineExistsForTeacher(String nameDiscipline) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(nameDiscipline);
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(nameDiscipline);
+            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+        }
+        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
+    }
+
     @Given("^discipline \"(.*)\" doesn't exist$")
     public void disciplineNotExist(String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
@@ -37,19 +49,6 @@ public class DisciplineGiven extends CucumberIntegrationTest {
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
             getDisciplineConnector().saveAndFlush(disciplineDTO);
-        }
-        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
-    }
-
-    @Given("^this teacher has \"(.*)\" discipline$")
-    public void teacherHasDiscipline(String disciplineName) {
-
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
-        if (disciplineDTO == null) {
-            disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-            disciplineDTO = getDisciplineConnector().saveAndFlush(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }

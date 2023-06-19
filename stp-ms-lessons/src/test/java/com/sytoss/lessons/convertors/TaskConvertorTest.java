@@ -1,9 +1,6 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.dto.*;
@@ -18,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TaskConvertorTest extends AbstractJunitTest {
 
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()));
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
 
     @Test
     public void fromDTOTaskConvertorTest() {
@@ -39,6 +36,13 @@ public class TaskConvertorTest extends AbstractJunitTest {
         taskDomainDTO.setDiscipline(disciplineDTO);
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(topicDTOList);
+        TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+        taskConditionDTO.setId(1L);
+        taskConditionDTO.setType(ConditionType.CONTAINS);
+        taskConditionDTO.setName("name");
+        List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
+        taskConditionDTOList.add(taskConditionDTO);
+        taskDTO.setConditions(taskConditionDTOList);
         Task task = new Task();
         taskConvertor.fromDTO(taskDTO, task);
 
@@ -67,6 +71,13 @@ public class TaskConvertorTest extends AbstractJunitTest {
         topic.setId(9L);
         topics.add(topic);
         task.setTopics(topics);
+        TaskCondition taskCondition = new TaskCondition();
+        taskCondition.setId(1L);
+        taskCondition.setType(ConditionType.CONTAINS);
+        taskCondition.setValue("name");
+        List<TaskCondition> taskConditionList = new ArrayList<>();
+        taskConditionList.add(taskCondition);
+        task.setTaskConditions(taskConditionList);
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
 

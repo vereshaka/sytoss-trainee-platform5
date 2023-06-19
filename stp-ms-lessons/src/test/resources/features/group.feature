@@ -3,7 +3,7 @@ Feature: Group
   Background:
     Given teacher "Maksym" "Mitkov" exists
 
-  Scenario: system retrieve all groups by discipline
+  Scenario: System retrieve all groups by discipline
     Given groups exist
       | discipline | group |
       | SQL        | AT-11 |

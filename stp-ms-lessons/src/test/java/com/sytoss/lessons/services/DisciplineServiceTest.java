@@ -6,12 +6,23 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import jakarta.persistence.EntityNotFoundException;
+import io.cucumber.java.ja.但し;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -65,7 +76,40 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
 
     @Test
     public void shouldRaiseExceptionWhenDisciplineNotExist() {
-        when(disciplineConnector.getReferenceById(1L)).thenReturn(null);
+        when(disciplineConnector.getReferenceById(1L)).thenThrow(new EntityNotFoundException());
         assertThrows(DisciplineNotFoundException.class, () -> disciplineService.getById(1L));
+    }
+
+    @Test
+    public void shouldReturnDisciplinesByTeacher(){
+        Teacher user = new Teacher();
+        user.setId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        List<DisciplineDTO> input = new ArrayList<>();
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        disciplineDTO.setName("SQL");
+        disciplineDTO.setTeacherId(1L);
+        input.add(disciplineDTO);
+        when(disciplineConnector.findByTeacherId(1L)).thenReturn(input);
+        List<Discipline> result = disciplineService.findDisciplines();
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void shouldFindAllDisciplines() {
+        DisciplineDTO discipline1 = new DisciplineDTO();
+        discipline1.setId(11L);
+        discipline1.setName("Test1");
+        DisciplineDTO discipline2 = new DisciplineDTO();
+        discipline2.setId(12L);
+        discipline2.setName("Test2");
+        List<DisciplineDTO> input = List.of(discipline1, discipline2);
+        when(disciplineConnector.findAll()).thenReturn(input);
+        List<Discipline> result = disciplineService.findAllDisciplines();
+        assertEquals(input.size(), result.size());
     }
 }
