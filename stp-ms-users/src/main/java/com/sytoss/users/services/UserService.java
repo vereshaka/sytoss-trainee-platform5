@@ -55,24 +55,22 @@ public class UserService extends AbstractService {
     private void registerUser(String email) {
         String userType = getJwt().getClaim("userType") != null ? getJwt().getClaim("userType").toString().toLowerCase() : "unknown";
         log.info("No user found for " + email + ". Start creation " + userType + " based on token info...");
-        AbstractUser result;
-        UserDTO userDto;
         if (userType.equalsIgnoreCase("teacher")) {
-            result = new Teacher();
-            teacherConverter.fromDTO(getJwt(), result);
-            userDto = new TeacherDTO();
-            teacherConverter.toDTO(result, userDto);
-            userDto = userConnector.save(userDto);
+            Teacher newUser = new Teacher();
+            teacherConverter.fromDTO(getJwt(), newUser);
+            TeacherDTO userDto = new TeacherDTO();
+            teacherConverter.toDTO(newUser, userDto);
+            userConnector.save(userDto);
 
         } else if (userType.equalsIgnoreCase("student")) {
-            result = new Student();
-            studentConvertor.fromDTO(getJwt(), result);
-            userDto = new StudentDTO();
-            studentConvertor.toDTO(result, userDto);
-            userDto = userConnector.save(userDto);
+            Student newUser = new Student();
+            studentConvertor.fromDTO(getJwt(), newUser);
+            StudentDTO userDto = new StudentDTO();
+            studentConvertor.toDTO(newUser, userDto);
+            userConnector.save(userDto);
         } else {
             throw new IllegalArgumentException("Unsupported user type: " + userType);
         }
-        log.info("New " + userType + " created. id: " + userDto.getId() + ", email:" + email);
+        log.info("New " + userType + " created. email:" + email);
     }
 }

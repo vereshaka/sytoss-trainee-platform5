@@ -4,7 +4,7 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.users.dto.UserDTO;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-public abstract class AbstractUserConveror {
+public abstract class AbstractUserConverter {
 
     public void fromDTO(UserDTO source, AbstractUser destination) {
         destination.setId(source.getId());
