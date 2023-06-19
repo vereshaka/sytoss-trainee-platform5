@@ -3,8 +3,11 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.StudentConverter;
 import com.sytoss.users.convertors.TeacherConvertor;
+import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -17,29 +20,36 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class UserServiceTest extends AbstractJunitTest {
 
     @Mock
-    private UserConnector teacherConnector;
-
-    @InjectMocks
-    private UserService userService;
+    private UserConnector userConnector;
 
     @Spy
     private TeacherConvertor teacherConvertor = new TeacherConvertor();
 
+    @Spy
+    private StudentConverter studentConverter = new StudentConverter();
+
+    @InjectMocks
+    private UserService userService;
+
     @Test
     public void shouldSaveTeacher() {
-        Mockito.doAnswer((Answer<UserDTO>) invocation -> {
-            final Object[] args = invocation.getArguments();
-            UserDTO result = (UserDTO) args[0];
-            result.setId(1L);
-            return result;
-        }).when(teacherConnector).save(any(UserDTO.class));
+        TeacherDTO dto = new TeacherDTO();
+        dto.setId(1L);
+        dto.setEmail("test@email.com");
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        when(userConnector.save(any(UserDTO.class))).thenReturn(dto);
 
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("firstName", "Luidji")
-                .claim("lastName", "Monk").claim("middleName", "Hoki").claim("userType", "teacher").build();
+        when(userConnector.getByEmail(anyString())).thenReturn(null).thenReturn(dto);
+
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "Luidji")
+                .claim("family_name", "Monk").claim("userType", "teacher").claim("email", "test@email.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -47,7 +57,6 @@ public class UserServiceTest extends AbstractJunitTest {
         assertEquals(1L, result.getId());
         assertEquals("Luidji", result.getFirstName());
         assertEquals("Monk", result.getLastName());
-        assertEquals("Hoki", result.getMiddleName());
         assertEquals("test@email.com", result.getEmail());
     }
 }

@@ -4,11 +4,12 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
-import com.sytoss.users.convertors.StudentConvertor;
+import com.sytoss.users.convertors.StudentConverter;
 import com.sytoss.users.convertors.TeacherConvertor;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,14 @@ public class UserService extends AbstractService {
 
     private final TeacherConvertor teacherConverter;
 
-    private final StudentConvertor studentConvertor;
+    private final StudentConverter studentConverter;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return instantiateUser(foundUser);
     }
 
+    @Transactional
     public AbstractUser getOrCreateUser(String email) {
         UserDTO userDto = userConnector.getByEmail(email);
         if (userDto == null) {
@@ -45,7 +47,7 @@ public class UserService extends AbstractService {
             teacherConverter.fromDTO(userDto, result);
         } else if (userDto instanceof StudentDTO) {
             result = new Student();
-            studentConvertor.fromDTO(userDto, result);
+            studentConverter.fromDTO(userDto, result);
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
         }
@@ -64,9 +66,9 @@ public class UserService extends AbstractService {
 
         } else if (userType.equalsIgnoreCase("student")) {
             Student newUser = new Student();
-            studentConvertor.fromDTO(getJwt(), newUser);
+            studentConverter.fromDTO(getJwt(), newUser);
             StudentDTO userDto = new StudentDTO();
-            studentConvertor.toDTO(newUser, userDto);
+            studentConverter.toDTO(newUser, userDto);
             userConnector.save(userDto);
         } else {
             throw new IllegalArgumentException("Unsupported user type: " + userType);

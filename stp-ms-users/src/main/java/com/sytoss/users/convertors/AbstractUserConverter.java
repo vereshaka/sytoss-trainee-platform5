@@ -14,7 +14,7 @@ public abstract class AbstractUserConverter {
     }
 
     public void fromDTO(Jwt source, AbstractUser destination) {
-        destination.setFirstName(source.getClaim("email"));
+        destination.setEmail(source.getClaim("email"));
         destination.setFirstName(source.getClaim("given_name"));
         destination.setLastName(source.getClaim("family_name"));
     }

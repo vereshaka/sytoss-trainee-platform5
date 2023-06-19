@@ -28,7 +28,7 @@ public class UserControllerTest extends AbstractControllerTest {
     public void shouldSaveTeacher() throws JOSEException {
         when(userService.getOrCreateUser(anyString())).thenReturn(new Teacher());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"), null, null, null, null, "teacher"));
+        headers.setBearerAuth(generateJWT(List.of("123"), null, null, null, "teacher"));
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Teacher> result = doGet("/api/user/me", requestEntity, Teacher.class);
         assertEquals(200, result.getStatusCode().value());

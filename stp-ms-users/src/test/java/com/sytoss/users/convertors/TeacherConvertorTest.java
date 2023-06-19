@@ -20,13 +20,11 @@ public class TeacherConvertorTest extends AbstractJunitTest {
         teacher.setId(1L);
         teacher.setFirstName("Luidji");
         teacher.setLastName("Monk");
-        teacher.setMiddleName("Hoki");
         teacher.setEmail("test@email.com");
-        TeacherDTO teacherDTO =  new TeacherDTO();
+        TeacherDTO teacherDTO = new TeacherDTO();
         teacherConvertor.toDTO(teacher, teacherDTO);
         assertEquals(teacher.getId(), teacherDTO.getId());
         assertEquals(teacher.getFirstName(), teacherDTO.getFirstName());
-        assertEquals(teacher.getMiddleName(), teacherDTO.getMiddleName());
         assertEquals(teacher.getLastName(), teacherDTO.getLastName());
         assertEquals(teacher.getEmail(), teacherDTO.getEmail());
     }
@@ -37,13 +35,11 @@ public class TeacherConvertorTest extends AbstractJunitTest {
         teacherDTO.setId(1L);
         teacherDTO.setFirstName("Luidji");
         teacherDTO.setLastName("Monk");
-        teacherDTO.setMiddleName("Hoki");
         teacherDTO.setEmail("test@email.com");
         Teacher teacher = new Teacher();
         teacherConvertor.fromDTO(teacherDTO, teacher);
         assertEquals(teacher.getId(), teacherDTO.getId());
         assertEquals(teacher.getFirstName(), teacherDTO.getFirstName());
-        assertEquals(teacher.getMiddleName(), teacherDTO.getMiddleName());
         assertEquals(teacher.getLastName(), teacherDTO.getLastName());
         assertEquals(teacher.getEmail(), teacherDTO.getEmail());
     }

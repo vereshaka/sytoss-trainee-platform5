@@ -41,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@DirtiesContext
 @Getter
 public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
@@ -98,7 +97,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles, String firstName, String lastName, String middleName, String email, String userType) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) throws JOSEException {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -107,9 +106,8 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
                 .claim("email", email)
-                .claim("firstName", firstName)
-                .claim("lastName", lastName)
-                .claim("middleName", middleName)
+                .claim("given_name", firstName)
+                .claim("family_name", lastName)
                 .claim("userType", userType)
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();

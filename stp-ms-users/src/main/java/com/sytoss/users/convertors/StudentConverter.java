@@ -6,7 +6,7 @@ import com.sytoss.users.dto.StudentDTO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentConvertor extends AbstractUserConverter {
+public class StudentConverter extends AbstractUserConverter {
 
     public void toDTO(Student source, StudentDTO destination) {
         super.toDTO(source, destination);
