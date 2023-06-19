@@ -53,4 +53,17 @@ public class TopicGiven extends CucumberIntegrationTest {
         }
         TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
     }
+
+    @Given("^topic \"(.*)\" exists$")
+    public void topicExists(String topicName) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+        if(topicDTO == null){
+            topicDTO = new TopicDTO();
+            topicDTO.setName(topicName);
+            topicDTO.setDiscipline(disciplineDTO);
+            topicDTO = getTopicConnector().save(topicDTO);
+        }
+        TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+    }
 }

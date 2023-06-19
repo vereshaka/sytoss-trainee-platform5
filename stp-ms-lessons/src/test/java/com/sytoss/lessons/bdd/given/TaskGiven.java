@@ -19,6 +19,22 @@ public class TaskGiven extends CucumberIntegrationTest {
 
         if (taskDTO == null) {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
+            taskDTO = new TaskDTO();
+            taskDTO.setQuestion(question);
+            taskDTO.setEtalonAnswer("Etalon answer");
+            taskDTO.setTaskDomain(taskDomainDTO);
+            getTaskConnector().save(taskDTO);
+        }
+        TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
+    }
+
+    @Given("^task with question \"(.*)\" with topic exists$")
+    public void taskExistsWithTopic(String question) {
+
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
+
+        if (taskDTO == null) {
+            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
             TopicDTO topicDTO = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId());
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);

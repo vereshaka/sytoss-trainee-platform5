@@ -32,11 +32,13 @@ public class TaskConvertor {
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
         List<Topic> topicList = new ArrayList<>();
-        source.getTopics().forEach(topicDTO -> {
-            Topic topic = new Topic();
-            topicConvertor.fromDTO(topicDTO, topic);
-            topicList.add(topic);
-        });
+        if (source.getTopics() != null) {
+            source.getTopics().forEach(topicDTO -> {
+                Topic topic = new Topic();
+                topicConvertor.fromDTO(topicDTO, topic);
+                topicList.add(topic);
+            });
+        }
         destination.setTopics(topicList);
         if (!source.getConditions().isEmpty()) {
             List<TaskCondition> taskConditionList = new ArrayList<>();
@@ -57,11 +59,13 @@ public class TaskConvertor {
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
         List<TopicDTO> topicDTOList = new ArrayList<>();
-        source.getTopics().forEach(topic -> {
-            TopicDTO topicDTO = new TopicDTO();
-            topicConvertor.toDTO(topic, topicDTO);
-            topicDTOList.add(topicDTO);
-        });
+        if (source.getTopics() != null) {
+            source.getTopics().forEach(topic -> {
+                TopicDTO topicDTO = new TopicDTO();
+                topicConvertor.toDTO(topic, topicDTO);
+                topicDTOList.add(topicDTO);
+            });
+        }
         destination.setTopics(topicDTOList);
         if (!source.getTaskConditions().isEmpty()) {
             List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();

@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
@@ -66,12 +67,12 @@ public class TaskThen extends CucumberIntegrationTest {
         assertEquals(rows.size(), count);
     }
 
-    @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")
-    public void conditionShouldExistInTask(String conditionValue, ConditionType type, String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
-        assertNotNull(taskDTO);
-        assertEquals(question, taskDTO.getQuestion());
-        assertEquals(conditionValue, taskDTO.getConditions().get(0).getValue());
-        assertEquals(type, taskDTO.getConditions().get(0).getType());
+    @Then("^task with question \"(.*)\" should be assign to \"(.*)\" topic$")
+    public void taskTopicShouldBe(String question, String topicName) {
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(task.getTopics());
+        assertEquals(question, task.getQuestion());
+        assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
     }
 }
