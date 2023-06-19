@@ -156,14 +156,14 @@ public class PumlConvertor {
 
     private List<String> getObjects(String script) {
         Pattern pattern = Pattern.compile("object.+\\{(?>\\n?.+)+\\n}");
-        List<String> entities = new ArrayList<>();
+        List<String> objects = new ArrayList<>();
         Matcher matcher = pattern.matcher(script);
         while (matcher.find()) {
             for (int j = 0; j <= matcher.groupCount(); j++) {
-                entities.add(matcher.group(j));
+                objects.add(matcher.group(j));
             }
         }
-        return entities;
+        return objects;
     }
 
     private String convertPumlObjectToLiquibase(String object) {
@@ -222,5 +222,4 @@ public class PumlConvertor {
 
         return object.toString();
     }
-
 }
