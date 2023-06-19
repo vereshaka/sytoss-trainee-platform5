@@ -1,7 +1,10 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.ArrayList;
 
 import static io.cucumber.junit.platform.engine.Constants.*;
 
@@ -72,5 +77,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
+    }
+
+    protected String getToken() {
+        return TestExecutionContext.getTestContext().getToken();
     }
 }

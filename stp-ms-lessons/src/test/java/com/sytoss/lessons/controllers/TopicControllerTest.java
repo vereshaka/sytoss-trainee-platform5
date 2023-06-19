@@ -33,10 +33,9 @@ public class TopicControllerTest extends AbstractControllerTest {
     private TaskService taskService;
 
     @Test
-    public void shouldReturnListOfTopics() throws JOSEException {
+    public void shouldReturnListOfTopics() {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
         });
@@ -44,9 +43,8 @@ public class TopicControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldAssignTaskToTopic() throws JOSEException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+    public void shouldAssignTaskToTopic() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         when(taskService.assignTaskToTopic(anyLong(), anyLong())).thenReturn(new Task());
         ResponseEntity<Task> result = doPost("/api/task/1/topic/1", httpEntity, Task.class);
@@ -54,10 +52,9 @@ public class TopicControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldReturnTopicById() throws JOSEException {
+    public void shouldReturnTopicById() {
         when(topicService.getById(anyLong())).thenReturn(new Topic());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Topic> result = doGet("/api/topic/123", httpEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());

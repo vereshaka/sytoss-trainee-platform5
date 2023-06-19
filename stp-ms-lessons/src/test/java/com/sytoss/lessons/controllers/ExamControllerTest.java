@@ -25,8 +25,7 @@ public class ExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldSaveExam() throws JOSEException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Exam> httpEntity = new HttpEntity<>(new Exam(), httpHeaders);
         ResponseEntity<Exam> response = doPost("/api/exam/save", httpEntity, new ParameterizedTypeReference<Exam>() {
         });

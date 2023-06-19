@@ -11,8 +11,8 @@ import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +24,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
@@ -124,48 +123,47 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         return signedJWT.serialize();
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(TestExecutionContext.getTestContext().getToken());
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPut(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPut(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
+    }
+
+    protected HttpHeaders getDefaultHttpHeaders() {
+        HttpHeaders result = new HttpHeaders();
+        if (StringUtils.isNoneEmpty()) {
+            result.setBearerAuth(getToken());
+        }
+        return result;
+    }
+
+    protected String getToken() {
+        return null;
     }
 }
