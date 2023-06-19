@@ -42,6 +42,16 @@ Feature: Task
       | SQL        | Join  | What is Join?       |
       | SQL        | Join  | What is Inner Join? |
 
+  Scenario: Link task to topic
+    Given task with question "What is Join?" exists
+    And topic "Join" exists
+    When assign topic "Join" to this task
+    Then operation is successful
+    And task with question "What is Join?" should be assign to "Join" topic
+      | discipline | topic | task                |
+      | SQL        | Join  | What is Join?       |
+      | SQL        | Join  | What is Inner Join? |
+
   Scenario: Remove one of conditions from the task
     Given tasks exist
       | discipline | topic | task          | condition | type     |

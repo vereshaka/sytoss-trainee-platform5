@@ -1,9 +1,7 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -34,6 +32,9 @@ public class TaskServiceTest extends AbstractApplicationTest {
     @InjectMocks
     @Autowired
     private TaskService taskService;
+
+    @MockBean
+    private TopicService topicService;
 
     @Test
     public void getTaskById() {
@@ -106,5 +107,40 @@ public class TaskServiceTest extends AbstractApplicationTest {
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
         Assertions.assertEquals(1, result.get(0).getTopics().size());
+    }
+
+    @Test
+    public void shouldAssignTaskToTopic() {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(1L);
+        Mockito.doAnswer((Answer<TaskDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            TaskDTO result = (TaskDTO) args[0];
+            return result;
+        }).when(taskConnector).save(any(TaskDTO.class));
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        disciplineDTO.setTeacherId(1L);
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        taskDTO.setTaskDomain(new TaskDomainDTO());
+        taskDTO.setQuestion("new");
+        taskDTO.setEtalonAnswer("one");
+        taskDTO.setTaskDomain(taskDomainDTO);
+        when(taskConnector.getReferenceById(anyLong())).thenReturn(taskDTO);
+        Topic topic = new Topic();
+        topic.setId(1L);
+        topic.setName("Database");
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        discipline.setTeacher(teacher);
+        topic.setDiscipline(discipline);
+        when(topicService.getById(anyLong())).thenReturn(topic);
+        Task result = taskService.assignTaskToTopic(1L, 1L);
+        assertEquals(1, result.getTopics().size());
+        assertEquals(topic.getName(), result.getTopics().get(0).getName());
     }
 }

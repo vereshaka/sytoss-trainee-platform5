@@ -1,9 +1,11 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -67,6 +69,17 @@ public class TopicWhen extends CucumberIntegrationTest {
         httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Topic> httpEntity = new HttpEntity<>(topic, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^assign topic \"(.*)\" to this task$")
+    public void linkTopicToThisTask(String topicName) throws JOSEException {
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/topic/" + topicDTO.getId();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
