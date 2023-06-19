@@ -3,12 +3,12 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.connectors.StudentConnector;
-import com.sytoss.users.connectors.TeacherConnector;
+import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.StudentConvertor;
 import com.sytoss.users.convertors.TeacherConvertor;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
+import com.sytoss.users.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,63 +18,61 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class UserService extends AbstractService {
 
-    private final TeacherConnector teacherConnector;
+    private final UserConnector userConnector;
 
     private final TeacherConvertor teacherConverter;
 
-    private final StudentConnector studentConnector;
-
     private final StudentConvertor studentConvertor;
 
-    public Teacher getById(Long teacherId) {
-        TeacherDTO teacherDTO = teacherConnector.getReferenceById(teacherId);
-        Teacher result = new Teacher();
-        teacherConverter.fromDTO(teacherDTO, result);
-        return result;
+    public AbstractUser getById(Long userId) {
+        UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return instantiateUser(foundUser);
     }
 
     public AbstractUser getOrCreateUser(String email) {
+        UserDTO userDto = userConnector.getByEmail(email);
+        if (userDto == null) {
+            registerUser(email);
+            userDto = userConnector.getByEmail(email);
+        }
+        return instantiateUser(userDto);
+    }
+
+    private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result = null;
-        if (getJwt().getClaim("userType").toString().equalsIgnoreCase("teacher")) {
-            TeacherDTO teacherDTO = teacherConnector.getByEmail(email);
-            if (teacherDTO == null) {
-                log.info("No user found for " + email + ". Start creation based on token info...");
-                Teacher teacher = new Teacher();
-                teacher.setEmail(email);
-                teacher.setFirstName(getJwt().getClaim("firstName"));
-                teacher.setLastName(getJwt().getClaim("lastName"));
-                teacher.setMiddleName(getJwt().getClaim("middleName"));
-                teacherDTO = new TeacherDTO();
-                teacherConverter.toDTO(teacher, teacherDTO);
-                teacherDTO = teacherConnector.save(teacherDTO);
-                log.info("New user created. id: " + teacherDTO.getId() + ", email:" + email);
-            }
-
-            Teacher teacher = new Teacher();
-            teacherConverter.fromDTO(teacherDTO, teacher);
-            result = teacher;
+        if (userDto instanceof TeacherDTO) {
+            result = new Teacher();
+            teacherConverter.fromDTO(userDto, result);
+        } else if (userDto instanceof StudentDTO) {
+            result = new Student();
+            studentConvertor.fromDTO(userDto, result);
+        } else {
+            throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
         }
-
-        if (getJwt().getClaim("userType").toString().equalsIgnoreCase("student")) {
-            StudentDTO studentDTO = studentConnector.findByEmail(email);
-
-            if (studentDTO == null) {
-                Student student = new Student();
-                student.setEmail(email);
-                student.setFirstName(getJwt().getClaim("firstName"));
-                student.setLastName(getJwt().getClaim("lastName"));
-                student.setMiddleName(getJwt().getClaim("middleName"));
-                studentDTO = new StudentDTO();
-                studentConvertor.toDTO(student, studentDTO);
-                studentDTO = studentConnector.save(studentDTO);
-            }
-
-            Student student = new Student();
-            studentConvertor.fromDTO(studentDTO, student);
-            result = student;
-        }
-
-        result.setVerified(false);
         return result;
+    }
+
+    private void registerUser(String email) {
+        String userType = getJwt().getClaim("userType") != null ? getJwt().getClaim("userType").toString().toLowerCase() : "unknown";
+        log.info("No user found for " + email + ". Start creation " + userType + " based on token info...");
+        AbstractUser result;
+        UserDTO userDto;
+        if (userType.equalsIgnoreCase("teacher")) {
+            result = new Teacher();
+            teacherConverter.fromDTO(getJwt(), result);
+            userDto = new TeacherDTO();
+            teacherConverter.toDTO(result, userDto);
+            userDto = userConnector.save(userDto);
+
+        } else if (userType.equalsIgnoreCase("student")) {
+            result = new Student();
+            studentConvertor.fromDTO(getJwt(), result);
+            userDto = new StudentDTO();
+            studentConvertor.toDTO(result, userDto);
+            userDto = userConnector.save(userDto);
+        } else {
+            throw new IllegalArgumentException("Unsupported user type: " + userType);
+        }
+        log.info("New " + userType + " created. id: " + userDto.getId() + ", email:" + email);
     }
 }

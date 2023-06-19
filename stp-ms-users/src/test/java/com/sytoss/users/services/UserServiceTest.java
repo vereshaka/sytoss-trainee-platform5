@@ -2,9 +2,9 @@ package com.sytoss.users.services;
 
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.users.AbstractJunitTest;
-import com.sytoss.users.connectors.TeacherConnector;
+import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.TeacherConvertor;
-import com.sytoss.users.dto.TeacherDTO;
+import com.sytoss.users.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class UserServiceTest extends AbstractJunitTest {
 
     @Mock
-    private TeacherConnector teacherConnector;
+    private UserConnector teacherConnector;
 
     @InjectMocks
     private UserService userService;
@@ -31,12 +31,12 @@ public class UserServiceTest extends AbstractJunitTest {
 
     @Test
     public void shouldSaveTeacher() {
-        Mockito.doAnswer((Answer<TeacherDTO>) invocation -> {
+        Mockito.doAnswer((Answer<UserDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
-            TeacherDTO result = (TeacherDTO) args[0];
+            UserDTO result = (UserDTO) args[0];
             result.setId(1L);
             return result;
-        }).when(teacherConnector).save(any(TeacherDTO.class));
+        }).when(teacherConnector).save(any(UserDTO.class));
 
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("firstName", "Luidji")
                 .claim("lastName", "Monk").claim("middleName", "Hoki").claim("userType", "teacher").build();

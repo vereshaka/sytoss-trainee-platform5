@@ -3,6 +3,7 @@ package com.sytoss.users.convertors;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.dto.TeacherDTO;
+import com.sytoss.users.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -21,7 +22,7 @@ public class TeacherConvertorTest extends AbstractJunitTest {
         teacher.setLastName("Monk");
         teacher.setMiddleName("Hoki");
         teacher.setEmail("test@email.com");
-        TeacherDTO teacherDTO = new TeacherDTO();
+        TeacherDTO teacherDTO =  new TeacherDTO();
         teacherConvertor.toDTO(teacher, teacherDTO);
         assertEquals(teacher.getId(), teacherDTO.getId());
         assertEquals(teacher.getFirstName(), teacherDTO.getFirstName());
