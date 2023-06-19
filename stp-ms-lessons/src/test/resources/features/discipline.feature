@@ -3,7 +3,6 @@ Feature: Discipline
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
-  @Bug
   Scenario: teacher creates a new discipline
     Given discipline "SQL" doesn't exist
     When teacher creates "SQL" discipline

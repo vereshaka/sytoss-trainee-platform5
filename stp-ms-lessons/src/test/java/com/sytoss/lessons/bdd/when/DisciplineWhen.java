@@ -23,9 +23,8 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
-        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+
+        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline);
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<Discipline>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
