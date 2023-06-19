@@ -2,37 +2,36 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-                   logicalFilePath="data/teacher.xml">
+                   logicalFilePath="data/STP-142.xml">
 
     <changeSet author="KornienkoD" id="teacher_1">
-        <createTable tableName="TEACHER">
+        <createTable tableName="APP_USER">
             <column name="ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
             <column name="FIRST_NAME" type="VARCHAR2(100 BYTE)" />
             <column name="LAST_NAME" type="VARCHAR2(100 BYTE)" />
-            <column name="MIDDLE_NAME" type="VARCHAR2(100 BYTE)" />
             <column name="EMAIL" type="VARCHAR2(100 BYTE)" />
-            <column name="PHOTO" type="bytea" />
-            <column name="IS_MODERATED" type="BOOLEAN" />
+            <column name="USER_TYPE" type="VARCHAR2(1)" />
+            <column name="GROUP_ID" type="BIGINT" />
         </createTable>
 
         <rollback>
-            <dropTable tableName="TEACHER" />
+            <dropTable tableName="APP_USER" />
         </rollback>
     </changeSet>
 
     <changeSet author="KornienkoD" id="teacher_2">
-        <addPrimaryKey tableName="TEACHER" columnNames="ID" constraintName="PK_TEACHER" />
+        <addPrimaryKey tableName="APP_USER" columnNames="ID" constraintName="PK_APP_USER" />
         <rollback>
-            <dropPrimaryKey tableName="TEACHER" constraintName="PK_TEACHER" />
+            <dropPrimaryKey tableName="APP_USER" constraintName="PK_APP_USER" />
         </rollback>
     </changeSet>
 
     <changeSet author="KornienkoD" id="teacher_3">
-        <createSequence sequenceName="TEACHER_SEQ" />
+        <createSequence sequenceName="APP_USER_SEQ" />
         <rollback>
-            <dropSequence sequenceName="TEACHER_SEQ" />
+            <dropSequence sequenceName="APP_USER_SEQ" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

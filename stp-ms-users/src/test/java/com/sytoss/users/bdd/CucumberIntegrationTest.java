@@ -1,8 +1,6 @@
 package com.sytoss.users.bdd;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.users.connectors.StudentConnector;
-import com.sytoss.users.connectors.TeacherConnector;
+import com.sytoss.users.connectors.UserConnector;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,10 +30,7 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
-    private TeacherConnector teacherConnector;
-
-    @Autowired
-    private StudentConnector studentConnector;
+    private UserConnector teacherConnector;
 
     @LocalServerPort
     private int applicationPort;
