@@ -13,9 +13,4 @@ public class StudentDTO extends UserDTO {
     @Column(name = "GROUP_ID")
     private Long primaryGroupId;
 
-    @Column(name = "PHOTO")
-    private byte[] photo;
-
-    @Column(name = "IS_MODERATED")
-    boolean isModerated;
 }

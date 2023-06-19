@@ -11,6 +11,8 @@ public abstract class AbstractUserConverter {
         destination.setFirstName(source.getFirstName());
         destination.setLastName(source.getLastName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
+        destination.setPhoto(source.getPhoto());
     }
 
     public void fromDTO(Jwt source, AbstractUser destination) {
@@ -24,5 +26,7 @@ public abstract class AbstractUserConverter {
         destination.setFirstName(source.getFirstName());
         destination.setLastName(source.getLastName());
         destination.setEmail(source.getEmail());
+        destination.setModerated(source.isModerated());
+        destination.setPhoto(source.getPhoto());
     }
 }
