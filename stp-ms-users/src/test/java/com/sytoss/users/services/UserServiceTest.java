@@ -22,11 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class UserServiceTest extends AbstractJunitTest {
 
-    @Mock
+    @Spy
     private UserConnector userConnector;
 
     @Spy
@@ -88,5 +88,6 @@ public class UserServiceTest extends AbstractJunitTest {
         model.setPrimaryGroup(new Group());
         model.getPrimaryGroup().setName("PM-93-2");
         userService.updateProfile(model);
+        verify(userConnector, times(1)).save(any(TeacherDTO.class));
     }
 }
