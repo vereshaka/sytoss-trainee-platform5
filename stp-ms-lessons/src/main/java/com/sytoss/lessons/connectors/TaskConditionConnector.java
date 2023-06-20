@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskConditionConnector extends JpaRepository<TaskConditionDTO, Long> {
 
-    TaskConditionDTO getByNameAndType(String name, ConditionType type);
+    TaskConditionDTO getByValueAndType(String value, ConditionType type);
 }

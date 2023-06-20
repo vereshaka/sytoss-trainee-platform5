@@ -4,7 +4,6 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.services.TaskService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

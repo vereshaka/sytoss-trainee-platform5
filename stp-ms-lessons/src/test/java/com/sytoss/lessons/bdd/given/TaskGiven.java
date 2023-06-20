@@ -24,7 +24,11 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setQuestion(question);
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
-            getTaskConnector().save(taskDTO);
+            taskDTO = getTaskConnector().save(taskDTO);
+        } else {
+            List<TopicDTO> topics = taskDTO.getTopics();
+            taskDTO.getTopics().removeAll(topics);
+            taskDTO = getTaskConnector().save(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
     }
@@ -41,7 +45,7 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO.setTopics(List.of(topicDTO));
-            getTaskConnector().save(taskDTO);
+            taskDTO = getTaskConnector().save(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
     }
@@ -84,13 +88,13 @@ public class TaskGiven extends CucumberIntegrationTest {
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
                 taskDTO.setQuestion(columns.get("task"));
-                String conditionName = columns.get("condition");
+                String conditionValue = columns.get("condition");
                 String type = columns.get("type");
-                if (conditionName != null) {
-                    TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByNameAndType(conditionName, ConditionType.valueOf(type));
+                if (conditionValue != null) {
+                    TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionValue, ConditionType.valueOf(type));
                     if (taskConditionDTO == null) {
                         taskConditionDTO = new TaskConditionDTO();
-                        taskConditionDTO.setName(conditionName);
+                        taskConditionDTO.setValue(conditionValue);
                         taskConditionDTO.setType(ConditionType.CONTAINS);
                         taskConditionDTO = getTaskConditionConnector().save(taskConditionDTO);
                         taskDTO.getConditions().add(taskConditionDTO);
@@ -105,10 +109,10 @@ public class TaskGiven extends CucumberIntegrationTest {
                 String conditionName = columns.get("condition");
                 String type = columns.get("type");
                 if (conditionName != null) {
-                    TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByNameAndType(conditionName, ConditionType.valueOf(type));
+                    TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionName, ConditionType.valueOf(type));
                     if (taskConditionDTO == null) {
                         taskConditionDTO = new TaskConditionDTO();
-                        taskConditionDTO.setName(conditionName);
+                        taskConditionDTO.setValue(conditionName);
                         taskConditionDTO.setType(ConditionType.CONTAINS);
                         taskConditionDTO = getTaskConditionConnector().save(taskConditionDTO);
                     }

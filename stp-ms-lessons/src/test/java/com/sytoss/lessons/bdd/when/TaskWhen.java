@@ -1,14 +1,12 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.sytoss.domain.bom.lessons.ConditionType;
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
+import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -80,7 +78,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
-    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) throws JOSEException {
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName)  {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
@@ -92,11 +90,25 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^remove condition \"(.*)\" and \"(.*)\" type from task$")
-    public void removeConditionFromTask(String conditionName, String type) throws JOSEException {
-        TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByNameAndType(conditionName, ConditionType.valueOf(type));
+    public void removeConditionFromTask(String conditionName, String type) {
+        TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionName, ConditionType.valueOf(type));
         HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
+        ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system add \"(.*)\" condition with (.*) type to task with question \"(.*)\"$")
+    public void requestSentAddConditionToTask(String conditionValue, ConditionType type, String taskQuestion) {
+        TaskCondition taskCondition = new TaskCondition();
+        taskCondition.setId(TestExecutionContext.getTestContext().getTaskConditionId());
+        taskCondition.setType(type);
+        taskCondition.setValue(conditionValue);
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, TestExecutionContext.getTestContext().getDisciplineId());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskCondition> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
+        String url = "/api/task/" + taskDTO.getId() + "/condition";
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

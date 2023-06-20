@@ -19,7 +19,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setScript("Test script");
             taskDomainDTO.setDiscipline(disciplineDTO);
-            getTaskDomainConnector().save(taskDomainDTO);
+            taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
     }

@@ -1,8 +1,8 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TopicDTO;
