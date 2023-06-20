@@ -31,7 +31,7 @@ public class UserConnectorTest extends AbstractApplicationTest {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
         groupConnector.save(groupDTO);
-        input.setGroup(groupDTO);
+        input.setPrimaryGroup(groupDTO);
         UserDTO result = userConnector.save(input);
         assertNotNull(result.getId());
         assertEquals(StudentDTO.class, result.getClass());
@@ -79,7 +79,7 @@ public class UserConnectorTest extends AbstractApplicationTest {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
         groupConnector.save(groupDTO);
-        sInput.setGroup(groupDTO);
+        sInput.setPrimaryGroup(groupDTO);
         userConnector.save(sInput);
 
         List<UserDTO> result = userConnector.findAll();

@@ -8,10 +8,10 @@ import org.apache.commons.lang3.ObjectUtils;
 @Setter
 public class Student extends AbstractUser {
 
-    private Group group;
+    private Group primaryGroup;
 
     @Override
     public boolean isValid() {
-        return super.isValid() && ObjectUtils.isNotEmpty(group);
+        return super.isValid() && ObjectUtils.isNotEmpty(primaryGroup);
     }
 }

@@ -14,6 +14,6 @@ public class GroupThen extends CucumberIntegrationTest {
     public void studentShouldHasGroup(String groupName) {
         Student student = (Student) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(student);
-        assertEquals(groupName, student.getGroup().getName());
+        assertEquals(groupName, student.getPrimaryGroup().getName());
     }
 }

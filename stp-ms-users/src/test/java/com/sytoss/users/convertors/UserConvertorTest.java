@@ -28,7 +28,7 @@ public class UserConvertorTest extends AbstractJunitTest {
         student.setEmail("test@gmail.com");
         Group group = new Group();
         group.setId(1L);
-        student.setGroup(group);
+        student.setPrimaryGroup(group);
         byte[] photoBytes = {1, 2, 3, 4, 5};
         student.setPhoto(photoBytes);
         StudentDTO studentDTO = new StudentDTO();
@@ -51,7 +51,7 @@ public class UserConvertorTest extends AbstractJunitTest {
         studentDTO.setEmail("test@email.com");
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
-        studentDTO.setGroup(groupDTO);
+        studentDTO.setPrimaryGroup(groupDTO);
         byte[] photoBytes = {1, 2, 3, 4, 5};
         studentDTO.setPhoto(photoBytes);
         Student student = new Student();

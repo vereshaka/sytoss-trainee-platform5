@@ -31,8 +31,6 @@ public class UserService extends AbstractService {
 
     private final UserConverter userConverter;
 
-    private final GroupConnector groupConnector;
-
     private final GroupService groupService;
 
     public AbstractUser getById(Long userId) {
@@ -121,7 +119,7 @@ public class UserService extends AbstractService {
         Group group = groupService.getById(groupId);
         if (group != null) {
             StudentDTO studentDTO = new StudentDTO();
-            student.setGroup(group);
+            student.setPrimaryGroup(group);
             userConverter.toDTO(student, studentDTO);
             userConnector.save(studentDTO);
             userConverter.fromDTO(studentDTO, student);

@@ -12,6 +12,6 @@ public class StudentDTO extends UserDTO {
 
     @ManyToOne
     @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
-    private GroupDTO group;
+    private GroupDTO primaryGroup;
 
 }
