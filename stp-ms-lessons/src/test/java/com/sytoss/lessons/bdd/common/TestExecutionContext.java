@@ -30,6 +30,8 @@ public class TestExecutionContext {
 
     private Long taskDomainId;
 
+    private Long taskConditionId;
+
     private String token;
 
     private List<PersonalExam> personalExams = new ArrayList<>();

@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system create \"(.*)\" task domain$")
-    public void requestSentCreateTaskDomain(String name) throws JOSEException {
+    public void requestSentCreateTaskDomain(String name)  {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
@@ -33,7 +33,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^system create \"(.*)\" task domain when it exist$")
-    public void requestSentCreateTaskDomainWhenItExist(String name) throws JOSEException {
+    public void requestSentCreateTaskDomainWhenItExist(String name)  {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
@@ -44,7 +44,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^system retrieve information about \"(.*)\" task domain$")
-    public void systemTryToFindTaskDomainById(String taskDomainName) throws JOSEException {
+    public void systemTryToFindTaskDomainById(String taskDomainName)  {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
@@ -61,12 +61,12 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^receive all task domains by \"(.*)\" discipline$")
-    public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
+    public void requestSentFindGroupsByDiscipline(String disciplineName)  {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -106,5 +106,27 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
             ResponseEntity<TaskDomain> responseEntity = doPut(url, httpEntity, TaskDomain.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
+    }
+
+    @When("^system generate image of scheme and save in \"(.*)\" task domain$")
+    public void requestSentCreateImageForTaskDomain(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
+        String puml = "@startuml\n" + "Bob -> Alice : hello\n" + "@enduml\n";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
+        ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system generate image of scheme and save in \"(.*)\" task domain with wrong script$")
+    public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
+        String puml = "error";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
+        ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

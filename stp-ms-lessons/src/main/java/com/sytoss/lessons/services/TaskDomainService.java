@@ -1,6 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
@@ -11,8 +12,10 @@ import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.sourceforge.plantuml.SourceStringReader;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +60,6 @@ public class TaskDomainService {
         taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
         taskDomainConvertor.fromDTO(taskDomainDTO, oldTaskDomain);
         return oldTaskDomain;
-
     }
 
     public TaskDomain getById(Long taskDomainId) {
@@ -80,5 +82,21 @@ public class TaskDomainService {
             result.add(taskDomain);
         }
         return result;
+    }
+
+    public void generatePngFromPuml(Long taskDomainId, String puml) {
+        ByteArrayOutputStream png = new ByteArrayOutputStream();
+        try {
+            SourceStringReader reader = new SourceStringReader(puml);
+            String result = reader.outputImage(png).getDescription();
+
+            if (!result.isEmpty()) {
+                TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainId);
+                taskDomainDTO.setImage(png.toByteArray());
+                taskDomainConnector.save(taskDomainDTO);
+            }
+        } catch (Exception e) {
+            throw new TaskDomainCouldNotCreateImageException();
+        }
     }
 }

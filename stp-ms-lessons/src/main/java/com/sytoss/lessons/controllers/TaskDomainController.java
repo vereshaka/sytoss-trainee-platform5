@@ -6,9 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -40,5 +43,16 @@ public class TaskDomainController {
                               @PathVariable(value = "taskDomainId") Long taskDomainId,
                              @RequestBody TaskDomain taskDomain) {
         return taskDomainService.update(taskDomainId, taskDomain);
+    }
+
+    @Operation(description = "Method generate image from puml", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PutMapping("/{taskDomainId}/puml")
+    public void generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
+                                    @PathVariable(value = "taskDomainId") Long taskDomainId,
+                                    @RequestBody String puml) {
+        taskDomainService.generatePngFromPuml(taskDomainId, puml);
     }
 }
