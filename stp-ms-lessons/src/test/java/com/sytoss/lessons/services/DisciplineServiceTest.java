@@ -4,12 +4,16 @@ import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,14 +29,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class DisciplineServiceTest extends AbstractApplicationTest {
+public class DisciplineServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private DisciplineConnector disciplineConnector;
 
     @InjectMocks
-    @Autowired
     private DisciplineService disciplineService;
+
+    @Spy
+    private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();
 
     @Test
     public void shouldSaveDiscipline() {
