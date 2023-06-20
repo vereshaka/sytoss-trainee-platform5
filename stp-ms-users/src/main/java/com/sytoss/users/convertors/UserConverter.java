@@ -14,7 +14,9 @@ public class UserConverter {
 
     public void toDTO(Student source, StudentDTO destination) {
         toDTO(source, (UserDTO) destination);
-        destination.setPrimaryGroupId(source.getPrimaryGroup().getId());
+        if (source.getPrimaryGroup() != null) {
+            destination.setPrimaryGroupId(source.getPrimaryGroup().getId());
+        }
     }
 
     public void fromDTO(StudentDTO source, Student destination) {
@@ -30,6 +32,7 @@ public class UserConverter {
         destination.setEmail(source.getEmail());
         destination.setModerated(source.isModerated());
         destination.setPhoto(source.getPhoto());
+        destination.setHasPhoto(source.getPhoto() != null && source.getPhoto().length > 1);
     }
 
     public void fromDTO(Jwt source, AbstractUser destination) {

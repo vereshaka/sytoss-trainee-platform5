@@ -5,13 +5,13 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.UserConverter;
+import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -36,7 +36,7 @@ public class UserServiceTest extends AbstractJunitTest {
     private UserService userService;
 
     @BeforeEach
-    protected void initSecurityContext(){
+    protected void initSecurityContext() {
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "Luidji")
                 .claim("family_name", "Monk").claim("userType", "teacher").claim("email", "test@email.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
@@ -75,7 +75,7 @@ public class UserServiceTest extends AbstractJunitTest {
     }
 
     @Test
-    public void shouldUpdateProfile(){
+    public void shouldUpdateProfile() {
         TeacherDTO dto = new TeacherDTO();
         dto.setId(1L);
         dto.setEmail("test@email.com");
@@ -89,5 +89,48 @@ public class UserServiceTest extends AbstractJunitTest {
         model.getPrimaryGroup().setName("PM-93-2");
         userService.updateProfile(model);
         verify(userConnector, times(1)).save(any(TeacherDTO.class));
+    }
+
+    @Test
+    public void shouldReturnStudentWithTrueValidFlag() {
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName("John");
+        studentDTO.setLastName("Do");
+        studentDTO.setEmail("test@test.com");
+        studentDTO.setPrimaryGroupId(1L);
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        studentDTO.setPhoto(photoBytes);
+        studentDTO.setModerated(true);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        assertTrue(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnStudentWithFalseValidFlag() {
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setEmail("test@test.com");
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        assertFalse(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnTeacherWithTrueValidFlag() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setFirstName("John");
+        teacherDTO.setLastName("Do");
+        teacherDTO.setEmail("test@test.com");
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        teacherDTO.setPhoto(photoBytes);
+        teacherDTO.setModerated(true);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
+        assertTrue(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnTeacherWithFalseValidFlag() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setEmail("test@test.com");
+        when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
+        assertFalse(userService.getOrCreateUser("test@test.com").isValid());
     }
 }
