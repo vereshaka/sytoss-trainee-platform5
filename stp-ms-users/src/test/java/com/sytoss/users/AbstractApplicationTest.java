@@ -97,7 +97,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -116,40 +116,24 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
                 claimsSet);
 
-        signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        try {
+            signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
 
         return signedJWT.serialize();
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
-    }
-
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
-        return perform(uri, HttpMethod.POST, requestEntity, responseType);
-    }
-
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 }

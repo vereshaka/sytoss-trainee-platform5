@@ -32,8 +32,7 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
     @Test
     public void shouldSaveTaskDomain() throws JOSEException {
         when(taskDomainService.create(anyLong(), any())).thenReturn(new TaskDomain());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
         ResponseEntity<TaskDomain> response = doPost("/api/discipline/123", httpEntity, new ParameterizedTypeReference<TaskDomain>() {
         });
@@ -43,8 +42,7 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
     @Test
     public void shouldUpdateTaskDomain() throws JOSEException {
         when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
         ResponseEntity<TaskDomain> response = doPut("/api/taskDomain/123", httpEntity, new ParameterizedTypeReference<TaskDomain>() {
         });
@@ -54,8 +52,7 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
         ResponseEntity<String> result = doPost("/api/discipline/123", requestEntity, new ParameterizedTypeReference<String>() {
         });
@@ -64,8 +61,7 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldReturnTaskDomainById() throws JOSEException {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doGet("/api/taskDomain/1", httpEntity, TaskDomain.class);
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
@@ -74,8 +70,7 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
     @Test
     public void shouldReturnTaskNotFoundException() throws JOSEException {
         when(taskDomainService.getById(1L)).thenThrow(new TaskDomainNotFoundException(1L));
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet("/api/taskDomain/1", httpEntity, String.class);
         Assertions.assertEquals(404, responseEntity.getStatusCode().value());

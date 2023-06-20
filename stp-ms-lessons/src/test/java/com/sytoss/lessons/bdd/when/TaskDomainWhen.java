@@ -19,34 +19,31 @@ import java.util.List;
 public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system create \"(.*)\" task domain$")
-    public void requestSentCreateTaskDomain(String name) throws JOSEException {
+    public void requestSentCreateTaskDomain(String name)  {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doPost(url, httpEntity, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system create \"(.*)\" task domain when it exist$")
-    public void requestSentCreateTaskDomainWhenItExist(String name) throws JOSEException {
+    public void requestSentCreateTaskDomainWhenItExist(String name)  {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system retrieve information about \"(.*)\" task domain$")
-    public void systemTryToFindTaskDomainById(String taskDomainName) throws JOSEException {
+    public void systemTryToFindTaskDomainById(String taskDomainName)  {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
@@ -61,19 +58,18 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^receive all task domains by \"(.*)\" discipline$")
-    public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
+    public void requestSentFindGroupsByDiscipline(String disciplineName)  {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
-    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) throws JOSEException {
+    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldNameTaskDomain, disciplineDTO.getId());
         TaskDomain taskDomain = new TaskDomain();
@@ -87,8 +83,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
         discipline.setTeacher(teacher);
         taskDomain.setDiscipline(discipline);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
@@ -103,24 +98,22 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^system generate image of scheme and save in \"(.*)\" task domain$")
-    public void requestSentCreateImageForTaskDomain(String taskDomainName) throws JOSEException {
+    public void requestSentCreateImageForTaskDomain(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
         String puml = "@startuml\n" + "Bob -> Alice : hello\n" + "@enduml\n";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
         ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system generate image of scheme and save in \"(.*)\" task domain with wrong script$")
-    public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) throws JOSEException {
+    public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/taskDomain/" + taskDomainDTO.getId() + "/puml";
         String puml = "error";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
         ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);

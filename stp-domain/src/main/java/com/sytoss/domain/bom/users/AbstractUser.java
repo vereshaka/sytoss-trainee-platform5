@@ -17,9 +17,14 @@ public abstract class AbstractUser {
 
     private String email;
 
+    private byte[] photo;
+
+    private boolean isModerated;
+
     private boolean hasPhoto;
 
     public boolean isValid() {
         return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && hasPhoto;
     }
+
 }
