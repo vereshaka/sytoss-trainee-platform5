@@ -6,15 +6,16 @@ import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
+@Transactional
 public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
-
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
 
         if (taskDTO == null) {
@@ -34,7 +35,6 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with question \"(.*)\" with topic exists$")
     public void taskExistsWithTopic(String question) {
-
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
 
         if (taskDTO == null) {
@@ -60,8 +60,6 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("tasks exist")
     public void tasksExist(DataTable tasks) {
-        getTaskConnector().deleteAll();
-        getTopicConnector().deleteAll();
         List<Map<String, String>> rows = tasks.asMaps();
         getListOfTasksFromDataTable(rows);
     }
@@ -99,8 +97,10 @@ public class TaskGiven extends CucumberIntegrationTest {
                         taskConditionDTO.setValue(conditionValue);
                         taskConditionDTO.setType(ConditionType.CONTAINS);
                         taskConditionDTO = getTaskConditionConnector().save(taskConditionDTO);
+                        taskDTO.getConditions().add(taskConditionDTO);
+                    } else {
+                        taskDTO.getConditions().add(taskConditionDTO);
                     }
-                    taskDTO.getConditions().add(taskConditionDTO);
                 }
                 taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId()));
                 taskDTO.setTopics(List.of(topicDTO));
@@ -123,6 +123,14 @@ public class TaskGiven extends CucumberIntegrationTest {
                 }
             }
             TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
+        }
+    }
+
+    @Given("^task with id (.*) doesnt exist")
+    public void taskWithIdDoesntExist(String taskId) {
+        TaskDTO taskDto = getTaskConnector().getById(1L);
+        if (taskDto != null){
+            getTaskConnector().delete(taskDto);
         }
     }
 }

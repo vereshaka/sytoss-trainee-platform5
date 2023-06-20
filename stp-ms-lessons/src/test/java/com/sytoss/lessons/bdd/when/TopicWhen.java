@@ -21,8 +21,7 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about topics by discipline$")
     public void requestSentCreatePersonalExam() throws JOSEException {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topics";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Topic>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Topic>>() {
         });
@@ -32,8 +31,7 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^retrieve information about topic by topicID$")
     public void getById() throws JOSEException {
         Long topicId = TestExecutionContext.getTestContext().getTopicId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         if (TestExecutionContext.getTestContext().getTopicId() == null) {
             topicId = 99L;
@@ -49,35 +47,32 @@ public class TopicWhen extends CucumberIntegrationTest {
     }
 
     @When("^teacher create \"(.*)\" topic$")
-    public void topicCreating(String topicName) throws JOSEException {
+    public void topicCreating(String topicName) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Topic> httpEntity = new HttpEntity<>(topic, httpHeaders);
         ResponseEntity<Topic> responseEntity = doPost(url, httpEntity, Topic.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("teacher creates existing {string} topic")
-    public void existingTopicCreating(String topicName) throws JOSEException {
+    public void existingTopicCreating(String topicName) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();
         topic.setName(topicName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Topic> httpEntity = new HttpEntity<>(topic, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^assign topic \"(.*)\" to this task$")
-    public void linkTopicToThisTask(String topicName) throws JOSEException {
+    public void linkTopicToThisTask(String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/topic/" + topicDTO.getId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);

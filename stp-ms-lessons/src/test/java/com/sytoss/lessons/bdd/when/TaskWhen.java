@@ -19,27 +19,34 @@ import java.util.List;
 public class TaskWhen extends CucumberIntegrationTest {
 
     @When("retrieve information about this task")
-    public void requestSentRetrieveTask() throws JOSEException {
+    public void requestSentRetrieveTask() {
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doGet(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("retrieve information about this existing task")
-    public void requestSentRetrieveExistingTask() throws JOSEException {
+    public void requestSentRetrieveExistingTask() {
         String url = "/api/task/" + 1;
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^retrieve information about task with id (.*)$")
+    public void requestSentRetrieveExistingTask(String taskId) {
+        String url = "/api/task/" + taskId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system create task with question \"(.*)\"$")
-    public void requestSendCreateTask(String question) throws JOSEException {
+    public void requestSendCreateTask(String question) {
         String url = "/api/task/";
         Task task = new Task();
         task.setQuestion(question);
@@ -49,8 +56,7 @@ public class TaskWhen extends CucumberIntegrationTest {
         Topic topic = new Topic();
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
         task.setTopics(List.of(topic));
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
         if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId()) == null) {
             ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
@@ -61,13 +67,22 @@ public class TaskWhen extends CucumberIntegrationTest {
         }
     }
 
+    @When("^retrieve information about tasks of topic with id (.*)$")
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicKey) {
+        String url = "/api/topic/" + TestExecutionContext.getTestContext().getIdMapping().get(topicKey) + "/tasks";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
-    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) throws JOSEException {
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName)  {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
         });
@@ -75,10 +90,9 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^remove condition \"(.*)\" and \"(.*)\" type from task$")
-    public void removeConditionFromTask(String conditionName, String type) throws JOSEException {
+    public void removeConditionFromTask(String conditionName, String type) {
         TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionName, ConditionType.valueOf(type));
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
@@ -86,15 +100,14 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^system add \"(.*)\" condition with (.*) type to task with question \"(.*)\"$")
-    public void requestSentAddConditionToTask(String conditionValue, ConditionType type, String taskQuestion) throws JOSEException {
+    public void requestSentAddConditionToTask(String conditionValue, ConditionType type, String taskQuestion) {
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setId(TestExecutionContext.getTestContext().getTaskConditionId());
         taskCondition.setType(type);
         taskCondition.setValue(conditionValue);
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, TestExecutionContext.getTestContext().getDisciplineId());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
-        HttpEntity<?> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskCondition> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
         String url = "/api/task/" + taskDTO.getId() + "/condition";
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);

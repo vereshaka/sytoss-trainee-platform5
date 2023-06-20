@@ -41,8 +41,8 @@ public class TaskThen extends CucumberIntegrationTest {
         for (Map<String, String> columns : rows) {
             List<Task> foundTasks = taskList.stream().filter(item ->
                     item.getQuestion().equals(columns.get("task")) &&
-                            item.getTopics().get(0).getName().equals(columns.get("topic")) &&
-                            item.getTopics().get(0).getDiscipline().getName().equals(columns.get("discipline"))).toList();
+                            (item.getTopics().size() == 1 && item.getTopics().get(0).getName().equals(columns.get("topic")) &&
+                                    item.getTopics().get(0).getDiscipline().getName().equals(columns.get("discipline")))).toList();
             if (foundTasks.size() == 0) {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " not found");
             }

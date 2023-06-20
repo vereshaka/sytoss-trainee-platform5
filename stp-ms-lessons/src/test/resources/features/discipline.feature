@@ -1,7 +1,7 @@
 Feature: Discipline
 
   Background:
-    Given teacher "Maksym" "Mitkov" exists
+    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
   Scenario: teacher creates a new discipline
     Given discipline "SQL" doesn't exist
@@ -35,6 +35,7 @@ Feature: Discipline
       | 1       | Mongo      |
       | 1       | H2         |
 
+  @Bug @YevgenyV #Need to re-think the logic of service method
   Scenario: search disciplines
     Given disciplines exist
       | discipline |

@@ -1,7 +1,9 @@
 package com.sytoss.users.bdd;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.users.connectors.TeacherConnector;
+import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.dto.StudentDTO;
+import com.sytoss.users.dto.UserDTO;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.sytoss.users.AbstractApplicationTest;
+
+import java.util.ArrayList;
 
 import static io.cucumber.junit.platform.engine.Constants.*;
 
@@ -31,12 +35,18 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
-    private TeacherConnector teacherConnector;
+    private UserConnector userConnector;
 
     @LocalServerPort
     private int applicationPort;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
+    }
+
+    protected String getToken() {
+        UserDTO user = TestExecutionContext.getTestContext().getUser();
+        String userType = user instanceof StudentDTO ? "student" : "teacher";
+        return generateJWT(new ArrayList<>(), user.getFirstName(), user.getLastName(), user.getEmail(), userType);
     }
 }

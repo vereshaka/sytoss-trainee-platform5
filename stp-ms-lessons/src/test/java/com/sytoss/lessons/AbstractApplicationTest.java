@@ -12,6 +12,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
@@ -39,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@DirtiesContext
 @Getter
 public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
@@ -96,7 +95,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -104,7 +103,10 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 .subject("test")
                 .issuer("test@test")
                 .claim("realm_access", realmAccess)
-                .claim("email", "test@test")
+                .claim("email", email)
+                .claim("given_name", firstName)
+                .claim("family_name", lastName)
+                .claim("userType", userType)
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 
@@ -112,52 +114,56 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
                 claimsSet);
 
-        signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        try {
+            signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
 
         return signedJWT.serialize();
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity<?>) {
-            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
-        } else {
-            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
-            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
-        }
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPut(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPut(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
-    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
+    }
+
+    protected HttpHeaders getDefaultHttpHeaders() {
+        HttpHeaders result = new HttpHeaders();
+        if (StringUtils.isNoneEmpty()) {
+            result.setBearerAuth(getToken());
+        }
+        return result;
+    }
+
+    protected String getToken() {
+        return null;
     }
 }

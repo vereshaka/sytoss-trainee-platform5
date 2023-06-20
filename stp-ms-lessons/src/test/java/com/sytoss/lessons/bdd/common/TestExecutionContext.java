@@ -1,8 +1,12 @@
 package com.sytoss.lessons.bdd.common;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -34,4 +38,16 @@ public class TestExecutionContext {
     private Long taskDomainId;
 
     private Long taskConditionId;
+
+    private String token;
+
+    @Setter(AccessLevel.NONE)
+    private Map<String, Long> idMapping = new HashMap<>();
+
+    public void registerId(String key, Long id) {
+        if (idMapping.containsKey(key)) {
+            throw new IllegalArgumentException("Key already registered. Key: " + key);
+        }
+        idMapping.put(key, id);
+    }
 }
