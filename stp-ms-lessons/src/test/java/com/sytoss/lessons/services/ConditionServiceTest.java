@@ -30,12 +30,12 @@ public class ConditionServiceTest extends AbstractApplicationTest {
     public void getTaskConditionById() {
         TaskConditionDTO input = new TaskConditionDTO();
         input.setId(1L);
-        input.setName("SQL");
+        input.setValue("SQL");
         input.setType(ConditionType.CONTAINS);
         when(taskConditionConnector.getReferenceById(any())).thenReturn(input);
         TaskCondition result = conditionService.getById(1L);
         assertEquals(input.getId(), result.getId());
-        assertEquals(input.getName(), result.getValue());
+        assertEquals(input.getValue(), result.getValue());
         assertEquals(input.getType(), result.getType());
     }
 

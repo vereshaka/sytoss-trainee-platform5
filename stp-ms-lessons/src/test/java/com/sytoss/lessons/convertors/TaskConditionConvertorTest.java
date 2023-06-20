@@ -18,12 +18,12 @@ public class TaskConditionConvertorTest extends AbstractJunitTest {
     public void fromDTOTaskConditionConvertorTest() {
         TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
         taskConditionDTO.setId(93L);
-        taskConditionDTO.setName("SQL");
+        taskConditionDTO.setValue("SQL");
         taskConditionDTO.setType(ConditionType.CONTAINS);
         TaskCondition taskCondition = new TaskCondition();
         taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
         assertEquals(taskConditionDTO.getId(), taskCondition.getId());
-        assertEquals(taskConditionDTO.getName(), taskCondition.getValue());
+        assertEquals(taskConditionDTO.getValue(), taskCondition.getValue());
         assertEquals(taskConditionDTO.getType(), taskCondition.getType());
     }
 
@@ -37,7 +37,7 @@ public class TaskConditionConvertorTest extends AbstractJunitTest {
         TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
         taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
         assertEquals(taskConditionDTO.getId(), taskCondition.getId());
-        assertEquals(taskConditionDTO.getName(), taskCondition.getValue());
+        assertEquals(taskConditionDTO.getValue(), taskCondition.getValue());
         assertEquals(taskConditionDTO.getType(), taskCondition.getType());
     }
 }

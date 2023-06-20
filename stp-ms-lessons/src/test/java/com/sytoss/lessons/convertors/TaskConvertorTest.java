@@ -39,7 +39,7 @@ public class TaskConvertorTest extends AbstractJunitTest {
         TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
         taskConditionDTO.setId(1L);
         taskConditionDTO.setType(ConditionType.CONTAINS);
-        taskConditionDTO.setName("name");
+        taskConditionDTO.setValue("name");
         List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
         taskConditionDTOList.add(taskConditionDTO);
         taskDTO.setConditions(taskConditionDTOList);

@@ -71,4 +71,14 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskDontHasConditionException taskDontHaveConditionException, WebRequest request) {
         return ResponseEntity.status(404).body(taskDontHaveConditionException.getMessage());
     }
+
+    @ExceptionHandler({TaskDomainCouldNotCreateImageException.class})
+    public ResponseEntity<?> handleValidationException(TaskDomainCouldNotCreateImageException taskDomainCouldNotCreateImageException, WebRequest request) {
+        return ResponseEntity.status(409).body(taskDomainCouldNotCreateImageException.getMessage());
+    }
+
+    @ExceptionHandler({TaskConditionAlreadyExistException.class})
+    public ResponseEntity<?> handleValidationException(TaskConditionAlreadyExistException taskConditionAlreadyExistException, WebRequest request) {
+        return ResponseEntity.status(409).body(taskConditionAlreadyExistException.getMessage());
+    }
 }

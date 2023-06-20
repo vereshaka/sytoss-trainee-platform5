@@ -24,4 +24,7 @@ public class TaskDomainDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
+
+    @Column(name = "IMAGE")
+    private byte[] image;
 }

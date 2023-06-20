@@ -16,8 +16,8 @@ public class TaskConditionDTO {
     @SequenceGenerator(name = "task_condition_id_generator", sequenceName = "TASK_CONDITION_SEQ", allocationSize = 1)
     private Long id;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "VALUE")
+    private String value;
 
     @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
