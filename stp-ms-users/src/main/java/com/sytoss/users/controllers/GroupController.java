@@ -1,7 +1,9 @@
 package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.services.GroupService;
+import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +20,8 @@ public class GroupController {
 
     private final GroupService  groupService;
 
+    private final UserService userService;
+
     @Operation(description = "Method that create group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -28,6 +32,19 @@ public class GroupController {
     public Group createGroup(
              @RequestBody Group group) {
         return groupService.create(group);
+    }
+
+    @Operation(description = "Method that assignee student to group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Group already exists!")
+    })
+    @PostMapping("/{groupId}/student")
+    public Student assignStudent(
+            @Parameter(description = "Id of group what will be has student")
+            @PathVariable("groupId") Long groupId,
+            @RequestBody Student student) {
+        return userService.assignGroup(groupId, student);
     }
 
 }

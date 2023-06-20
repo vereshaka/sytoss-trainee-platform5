@@ -3,9 +3,11 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.StudentConverter;
 import com.sytoss.users.convertors.TeacherConvertor;
+import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -27,6 +29,8 @@ public class UserService extends AbstractService {
     private final TeacherConvertor teacherConverter;
 
     private final StudentConverter studentConverter;
+
+    private final GroupConnector groupConnector;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -97,5 +101,15 @@ public class UserService extends AbstractService {
         }
         dto.setModerated(false);
         userConnector.save(dto);
+    }
+
+    public Student assignGroup(Long groupId, Student student) {
+        GroupDTO groupDTO = groupConnector.getReferenceById(groupId);
+        StudentDTO studentDTO = new StudentDTO();
+        studentConverter.toDTO(student, studentDTO);
+        studentDTO.setGroup(groupDTO);
+        userConnector.save(studentDTO);
+        studentConverter.fromDTO(studentDTO, student);
+        return student;
     }
 }
