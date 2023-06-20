@@ -1,6 +1,7 @@
 package com.sytoss.producer.connectors;
 
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -10,5 +11,5 @@ public interface PersonalExamConnector extends MongoRepository<PersonalExam, Str
 
     PersonalExam getById(String id);
 
-    List<PersonalExam> findByAnswersTaskTaskDomainId(Long id);
+    int countByAnswersTaskTaskDomainIdAndStatusNotLike(Long id, PersonalExamStatus status);
 }

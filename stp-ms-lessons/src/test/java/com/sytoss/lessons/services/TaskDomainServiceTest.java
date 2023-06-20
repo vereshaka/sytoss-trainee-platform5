@@ -108,7 +108,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         taskDomain.setScript("Script Domain");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomain.setDiscipline(disciplineDTO);
-        when(personalExamConnector.findAllPersonalExamByTaskDomain(anyLong())).thenReturn(new ArrayList<>());
+        when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(false);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomain);
         Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -152,7 +152,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         personalExam.getAnswers().add(answer);
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExams.add(personalExam);
-        when(personalExamConnector.findAllPersonalExamByTaskDomain(anyLong())).thenReturn(personalExams);
+        when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(true);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
         TaskDomain updateTaskDomain = new TaskDomain();
         assertThrows(TaskDomainIsUsed.class, () -> taskDomainService.update(1L, updateTaskDomain));

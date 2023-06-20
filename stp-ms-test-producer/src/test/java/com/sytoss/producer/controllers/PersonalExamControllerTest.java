@@ -40,6 +40,16 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    public void shouldReturnBooleanConditionIfTaskDomainIsUsed() throws JOSEException {
+        when(personalExamService.taskDomainIsUsed(anyLong())).thenReturn(true);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(generateJWT(List.of("123")));
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Boolean> result = doGet("/api/taskDomain/123/PersonalExam", requestEntity, boolean.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
     public void shouldSummaryExam() throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));

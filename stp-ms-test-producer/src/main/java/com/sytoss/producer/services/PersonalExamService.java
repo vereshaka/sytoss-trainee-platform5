@@ -52,9 +52,12 @@ public class PersonalExamService {
         return answers;
     }
 
-    public List<PersonalExam> findByTaskDomainId(Long taskDomain) {
-        List<PersonalExam> personalExams = personalExamConnector.findByAnswersTaskTaskDomainId(taskDomain);
-        return personalExams;
+    public boolean taskDomainIsUsed(Long taskDomainId) {
+        int count = personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(taskDomainId, PersonalExamStatus.FINISHED);
+        if (count > 0) {
+            return true;
+        }
+        return false;
     }
 
     private Discipline getDiscipline(Long disciplineId) {

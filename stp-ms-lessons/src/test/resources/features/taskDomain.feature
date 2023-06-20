@@ -63,4 +63,4 @@ Feature: Task Domain
       | SQL Querry Last  | Not finished | First Domain |
       | SQL Querry Third | Graded       | First Domain |
     When teacher updates "First Domain" task domain to "Second Domain"
-    Then operation should be finished with 409 "Task domain with First Domain because personal exam not finished" error
+    Then operation should be finished with 409 "Task domain with First Domain doesnt update because personal exam not finished" error

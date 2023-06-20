@@ -90,7 +90,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
             String url = "/api/taskDomain/" + taskDomainDTO.getId();
             HttpHeaders httpHeaders = getDefaultHttpHeaders();
             HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
-            when(getPersonalExamConnector().findAllPersonalExamByTaskDomain(anyLong())).thenReturn(TestExecutionContext.getTestContext().getPersonalExams());
+            when(getPersonalExamConnector().taskDomainIsUsed(anyLong())).thenReturn(true);
             ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         } else if (taskDomainDTO == null) {

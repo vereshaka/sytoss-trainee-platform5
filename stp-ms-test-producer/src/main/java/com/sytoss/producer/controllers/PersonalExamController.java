@@ -13,11 +13,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -70,8 +67,8 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/taskDomain/{taskDomainId}/PersonalExam")
-    public List<PersonalExam> findPersonalExamByTaskDomainId(@PathVariable(value = "taskDomainId") Long taskDomainId) {
-        return personalExamService.findByTaskDomainId(taskDomainId);
+    public boolean taskDomainIsUsed(@PathVariable(value = "taskDomainId") Long taskDomainId) {
+       return personalExamService.taskDomainIsUsed(taskDomainId);
     }
 
     @Operation(description = "Method for answering tasks")
