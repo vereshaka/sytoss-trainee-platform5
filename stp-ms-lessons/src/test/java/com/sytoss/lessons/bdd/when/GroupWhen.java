@@ -21,38 +21,35 @@ import static org.mockito.Mockito.when;
 public class GroupWhen extends CucumberIntegrationTest {
 
     @When("^receive all groups by \"(.*)\" discipline$")
-    public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
-        DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
+    public void requestSentFindGroupsByDiscipline(String disciplineName) {
+        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + discipline.getId() + "/groups";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
-        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher \"(.*)\" \"(.*)\" create \"(.*)\" group for \"(.*)\" discipline$")
-    public void requestSentCreateGroup(String firstName, String lastName, String groupName, String disciplineName) throws JOSEException {
+    public void requestSentCreateGroup(String firstName, String lastName, String groupName, String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + disciplineDTO.getId() + "/group";
         Group group = new Group();
         group.setName(groupName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
         ResponseEntity<Group> responseEntity = doPost(url, httpEntity, Group.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher \"(.*)\" \"(.*)\" create \"(.*)\" group for \"(.*)\" discipline that exists$")
-    public void requestSentCreateGroupThatExist(String firstName, String lastName, String groupName, String disciplineName) throws JOSEException {
+    public void requestSentCreateGroupThatExist(String firstName, String lastName, String groupName, String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + disciplineDTO.getId() + "/group";
         Group group = new Group();
         group.setName(groupName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);

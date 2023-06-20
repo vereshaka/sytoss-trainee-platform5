@@ -97,7 +97,7 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         httpServer.start();
     }
 
-    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) throws JOSEException {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {
         LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
         realmAccess.put("roles", new ArrayList<String>(roles));
 
@@ -116,7 +116,11 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
                 new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
                 claimsSet);
 
-        signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        try {
+            signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
 
         return signedJWT.serialize();
     }

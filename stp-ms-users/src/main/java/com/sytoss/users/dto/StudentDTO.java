@@ -12,4 +12,5 @@ public class StudentDTO extends UserDTO {
 
     @Column(name = "GROUP_ID")
     private Long primaryGroupId;
+
 }
