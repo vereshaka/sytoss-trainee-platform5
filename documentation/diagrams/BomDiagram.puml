@@ -1,69 +1,79 @@
 @startuml
+legend right
+    |       Color    |             Module   |
+    |<#FF5733>| common               |
+    |<#AF7AC5>| domain               |
+    |<#5DADE2>| ms-check-task        |
+    |<#1ABC9C>| ms-check-task-shared |
+    |<#F4D03F>| ms-lessons           |
+    |<#ABB2B9>| ms-test-producer     |
+    |<#E59866>| ms-users             |
+end legend
 
-entity Discipline #red{
+entity Discipline #AF7AC5{
 id: long
 name: string
 }
 
-entity Topic #red{
+entity Topic #AF7AC5{
 id: long
 name: string
 }
 
-entity Task  #red{
+entity Task #AF7AC5{
 id: long
 question: string
 answer: string
 }
 
-entity Condition  #red{
+entity Condition #AF7AC5{
 id: long
 name: string
 }
 
-entity TaskDomain  #red{
+entity TaskDomain #AF7AC5{
 id: long
 name: string
 script: string
 }
 
-entity Exam  #red{
+entity Exam #AF7AC5{
 id: long
 name: string
 }
 
-entity PersonalExam {
+entity PersonalExam #AF7AC5{
 id: long
 name: string
 date: date
 }
 
-entity Answer {
+entity Answer #AF7AC5{
 id: long
 question: string
 value: string
 }
 
-enum PersonalExamStatus{
+enum PersonalExamStatus #AF7AC5{
 In Progress,
 Not Started,
 Finished
 }
 
-enum AnswerStatus{
+enum AnswerStatus #AF7AC5{
 In Progress,
 Not Started,
 Answered,
 Graded
 }
 
-entity Grade{
+entity Grade #AF7AC5{
 id: long
 value: int
 comment: string
 }
 
-entity Student #red{
+entity Student #E59866{
 id: long
 name: string
 middlename: string
@@ -74,7 +84,7 @@ group:string
 photo:?
 }
 
-entity Teacher #red{
+entity Teacher #E59866{
 id: long
 name: string
 middlename: string
@@ -84,18 +94,18 @@ password:string
 photo:?
 }
 
-entity Group #red{
+entity Group #E59866{
 id: long
 name: string
 }
 
-entity ExamParameter #red{
+entity ExamConfiguration #ABB2B9{
 id: long
 countOfTask: int
 }
 
-ExamParameter "N examParameter" --o "1" Exam
-Topic "1" --o "1" ExamParameter
+ExamConfiguration "N examParameter" --o "1" Exam
+Topic "1" --o "1" ExamConfiguration
 Answer o-- AnswerStatus
 PersonalExam o-- PersonalExamStatus
 PersonalExam "1" o-- "N answers" Answer

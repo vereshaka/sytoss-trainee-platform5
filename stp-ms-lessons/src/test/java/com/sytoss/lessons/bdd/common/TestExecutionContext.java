@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.common;
 
 import com.sytoss.domain.bom.users.Teacher;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;

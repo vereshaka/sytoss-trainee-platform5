@@ -16,7 +16,7 @@ public class GroupGiven extends CucumberIntegrationTest {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(groupDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
             if (disciplineDTO == null) {
                 disciplineDTO = groupDTO.getDiscipline();
-                disciplineDTO.setTeacherId(2L);
+                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             GroupDTO result = getGroupConnector().getByNameAndDisciplineId(groupDTO.getName(), disciplineDTO.getId());

@@ -37,16 +37,18 @@ Feature: Group
     Then operation should be finished with 409 "Group with name "AT-21-2" already exist" error
 
   Scenario: get teacher's groups
-    And "SQL" discipline exists for this teacher
-    And groups exist
-      | discipline | group |
-      | SQL        | AT-11 |
-      | SQL        | AT-12 |
-      | Java       | AT-13 |
-      | Oracle     | TT-12 |
-    When teacher with lastname "Mitkov" retrieve all his groups
+    Given teachers have groups
+      | teacherId | discipline | group   |
+      | *4        | Mongo      | AT-11   |
+      | *4        | Mongo      | AT-12   |
+      | *5        | Java       | AT-13   |
+      | *4        | Mongo      | TT-12   |
+      | *4        | SQL        | AT-21-2 |
+    When receive all groups by teacher with id *4
     Then operation is successful
     And groups should received
-      | group |
-      | AT-11 |
-      | AT-12 |
+      | group   |
+      | AT-11   |
+      | AT-12   |
+      | TT-12   |
+      | AT-21-2 |
