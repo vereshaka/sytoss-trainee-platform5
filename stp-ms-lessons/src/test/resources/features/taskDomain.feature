@@ -54,3 +54,16 @@ Feature: Task Domain
     And "First Domain" task domain doesnt exist
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation should be finished with 404 "Task Domain with id "123" not found" error
+
+  Scenario: system generate scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain
+    Then operation is successful
+    And  "First Domain" should have image
+
+  Scenario: system could not generate scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain with wrong script
+    Then operation should be finished with 409 "Image have been not created" error
