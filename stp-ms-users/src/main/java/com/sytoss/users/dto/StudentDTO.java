@@ -10,7 +10,8 @@ import lombok.Setter;
 @Setter
 public class StudentDTO extends UserDTO {
 
-    @Column(name = "GROUP_ID")
-    private Long primaryGroupId;
+    @ManyToOne
+    @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
+    private GroupDTO group;
 
 }

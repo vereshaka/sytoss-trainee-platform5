@@ -3,6 +3,7 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.StudentConverter;
 import com.sytoss.users.convertors.TeacherConvertor;
 import com.sytoss.users.dto.StudentDTO;
@@ -33,7 +34,7 @@ public class UserServiceTest extends AbstractJunitTest {
     private TeacherConvertor teacherConvertor = new TeacherConvertor();
 
     @Spy
-    private StudentConverter studentConverter = new StudentConverter();
+    private StudentConverter studentConverter = new StudentConverter(new GroupConvertor());
 
     @InjectMocks
     private UserService userService;

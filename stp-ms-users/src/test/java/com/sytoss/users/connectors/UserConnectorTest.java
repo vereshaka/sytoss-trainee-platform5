@@ -1,6 +1,8 @@
 package com.sytoss.users.connectors;
 
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.AbstractApplicationTest;
+import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -17,13 +19,19 @@ public class UserConnectorTest extends AbstractApplicationTest {
     @Autowired
     private UserConnector userConnector;
 
+    @Autowired
+    private GroupConnector groupConnector;
+
     @Test
     public void shouldSaveStudentDTO() {
         StudentDTO input = new StudentDTO();
         input.setEmail("student@domain.com");
         input.setFirstName("FirstName");
         input.setLastName("LastName");
-        input.setPrimaryGroupId(1L);
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        groupConnector.save(groupDTO);
+        input.setGroup(groupDTO);
         UserDTO result = userConnector.save(input);
         assertNotNull(result.getId());
         assertEquals(StudentDTO.class, result.getClass());
@@ -68,7 +76,10 @@ public class UserConnectorTest extends AbstractApplicationTest {
         sInput.setEmail("student@domain.com");
         sInput.setFirstName("FirstName");
         sInput.setLastName("LastName");
-        sInput.setPrimaryGroupId(1L);
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        groupConnector.save(groupDTO);
+        sInput.setGroup(groupDTO);
         userConnector.save(sInput);
 
         List<UserDTO> result = userConnector.findAll();
