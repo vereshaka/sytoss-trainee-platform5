@@ -23,8 +23,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doPost(url, httpEntity, TaskDomain.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -35,8 +34,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -45,8 +43,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about \"(.*)\" task domain$")
     public void systemTryToFindTaskDomainById(String taskDomainName) throws JOSEException {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
@@ -64,8 +61,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     public void requestSentFindGroupsByDiscipline(String disciplineName) throws JOSEException {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId() + "/taskDomains";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<TaskDomain>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
@@ -87,8 +83,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
         discipline.setTeacher(teacher);
         taskDomain.setDiscipline(discipline);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123")));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         if (taskDomainDTO == null) {
             String url = "/api/taskDomain/123";
