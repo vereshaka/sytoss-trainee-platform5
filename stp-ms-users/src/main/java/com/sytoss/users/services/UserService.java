@@ -1,12 +1,13 @@
 package com.sytoss.users.services;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.GroupNotFoundException;
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.UserConverter;
-import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -31,6 +32,8 @@ public class UserService extends AbstractService {
     private final UserConverter userConverter;
 
     private final GroupConnector groupConnector;
+
+    private final GroupService groupService;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -115,12 +118,16 @@ public class UserService extends AbstractService {
     }
 
     public Student assignGroup(Long groupId, Student student) {
-        GroupDTO groupDTO = groupConnector.getReferenceById(groupId);
-        StudentDTO studentDTO = new StudentDTO();
-        userConverter.toDTO(student, studentDTO);
-        studentDTO.setGroup(groupDTO);
-        userConnector.save(studentDTO);
-        userConverter.fromDTO(studentDTO, student);
-        return student;
+        Group group = groupService.getById(groupId);
+        if (group != null) {
+            StudentDTO studentDTO = new StudentDTO();
+            student.setGroup(group);
+            userConverter.toDTO(student, studentDTO);
+            userConnector.save(studentDTO);
+            userConverter.fromDTO(studentDTO, student);
+            return student;
+        } else {
+            throw new GroupNotFoundException(groupId);
+        }
     }
 }

@@ -7,12 +7,21 @@ import io.cucumber.java.en.Given;
 public class GroupGiven extends CucumberIntegrationTest {
 
     @Given("^\"(.*)\" group exist$")
-    public void groupExistForDiscipline(String groupName) {
+    public void groupExist(String groupName) {
         GroupDTO groupDTO = getGroupConnector().getByName(groupName);
         if (groupDTO == null) {
             groupDTO = new GroupDTO();
             groupDTO.setName(groupName);
             getGroupConnector().save(groupDTO);
+        }
+    }
+
+    @Given("^\"(.*)\" group doesnt exist$")
+    public void groupNotExist(String groupName) {
+        GroupDTO groupDTO = getGroupConnector().getByName(groupName);
+        if (groupDTO != null) {
+            getUserConnector().deleteAll();
+            getGroupConnector().delete(groupDTO);
         }
     }
 }

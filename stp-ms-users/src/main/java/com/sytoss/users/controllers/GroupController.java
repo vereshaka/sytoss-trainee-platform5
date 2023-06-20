@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class GroupController {
 
-    private final GroupService  groupService;
+    private final GroupService groupService;
 
     private final UserService userService;
 
@@ -30,13 +30,14 @@ public class GroupController {
     })
     @PostMapping("/")
     public Group createGroup(
-             @RequestBody Group group) {
+            @RequestBody Group group) {
         return groupService.create(group);
     }
 
     @Operation(description = "Method that assignee student to group")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK")
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group not found!"),
     })
     @PostMapping("/{groupId}/student")
     public Student assignStudent(

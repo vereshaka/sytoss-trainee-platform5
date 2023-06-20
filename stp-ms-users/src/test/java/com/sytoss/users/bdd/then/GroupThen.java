@@ -10,10 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GroupThen extends CucumberIntegrationTest {
 
-//    @Then("^this student should have \"(.*)\" group$")
-//    public void studentShouldHasGroup(String groupName) {
-//        Student student = (Student) TestExecutionContext.getTestContext().getResponse().getBody();
-//        assertNotNull(student);
-//        assertEquals(groupName, student.getGroup().getName());
-//    }
+    @Then("^this student should have \"(.*)\" group$")
+    public void studentShouldHasGroup(String groupName) {
+        Student student = (Student) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(student);
+        assertEquals(groupName, student.getGroup().getName());
+    }
 }
