@@ -1,8 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
@@ -29,7 +27,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
-        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -60,14 +58,15 @@ public class GroupWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("teacher with id {long} retrieve all his groups")
-    public void receiveAllGroupsByTeacher(Long id) throws JOSEException {
+    @When("teacher with lastname {string} retrieve all his groups")
+    public void teacherWithLastnameRetrieveAllHisGroups(String surname) throws JOSEException {
         String url = "/api/teacher/my/groups";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         Teacher teacher = new Teacher();
-        teacher.setId(id);
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        teacher.setLastName(surname);
         when(getUserConnector().getMyProfile()).thenReturn(teacher);
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
