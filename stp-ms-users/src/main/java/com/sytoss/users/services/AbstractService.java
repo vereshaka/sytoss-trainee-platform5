@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.users.services.exceptions.UserNotIdentifiedException;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
