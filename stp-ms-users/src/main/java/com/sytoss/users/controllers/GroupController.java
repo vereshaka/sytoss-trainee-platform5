@@ -36,8 +36,7 @@ public class GroupController {
 
     @Operation(description = "Method that assignee student to group")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "409", description = "Group already exists!")
+            @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @PostMapping("/{groupId}/student")
     public Student assignStudent(
@@ -46,5 +45,4 @@ public class GroupController {
             @RequestBody Student student) {
         return userService.assignGroup(groupId, student);
     }
-
 }

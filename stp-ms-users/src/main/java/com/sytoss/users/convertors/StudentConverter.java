@@ -15,16 +15,20 @@ public class StudentConverter extends AbstractUserConverter {
 
     public void toDTO(Student source, StudentDTO destination) {
         super.toDTO(source, destination);
-        GroupDTO groupDTO = new GroupDTO();
-        groupConvertor.toDTO(source.getGroup(), groupDTO);
-        destination.setGroup(groupDTO);
+        if (source.getGroup() != null) {
+            GroupDTO groupDTO = new GroupDTO();
+            groupConvertor.toDTO(source.getGroup(), groupDTO);
+            destination.setGroup(groupDTO);
+        }
     }
 
     public void fromDTO(StudentDTO source, Student destination) {
         super.fromDTO(source, destination);
-        Group group = new Group();
-        groupConvertor.fromDTO(source.getGroup(), group);
-        destination.setGroup(group);
+        if (source.getGroup() != null) {
+            Group group = new Group();
+            groupConvertor.fromDTO(source.getGroup(), group);
+            destination.setGroup(group);
+        }
     }
 
 }

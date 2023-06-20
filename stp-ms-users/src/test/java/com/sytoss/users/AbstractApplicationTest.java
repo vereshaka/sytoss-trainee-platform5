@@ -12,6 +12,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -155,5 +156,17 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
     public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
+    }
+
+    protected HttpHeaders getDefaultHttpHeaders() {
+        HttpHeaders result = new HttpHeaders();
+        if (StringUtils.isNoneEmpty()) {
+            result.setBearerAuth(getToken());
+        }
+        return result;
+    }
+
+    protected String getToken() {
+        return null;
     }
 }
