@@ -28,7 +28,7 @@ public class ExamWhen extends CucumberIntegrationTest {
 
     @DataTableType
     public Topic mapTopic(Map<String, String> entry) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(entry.get("discipline"));
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"),TestExecutionContext.getTestContext().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(entry.get("topic"), disciplineDTO.getId());
 
         Topic topic = new Topic();
@@ -41,7 +41,7 @@ public class ExamWhen extends CucumberIntegrationTest {
     public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
         String url = "/api/exam/save";
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, disciplineDTO.getId());
 
         Group group = new Group();

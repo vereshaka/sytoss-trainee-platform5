@@ -41,7 +41,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^receive \"(.*)\" discipline information$")
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
-        DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
+        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + discipline.getId();
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
@@ -57,7 +57,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         Teacher teacher = new Teacher();
         teacher.setId(teacherId);
         when(getUserConnector().getMyProfile()).thenReturn(teacher);
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -67,7 +67,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/disciplines";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
