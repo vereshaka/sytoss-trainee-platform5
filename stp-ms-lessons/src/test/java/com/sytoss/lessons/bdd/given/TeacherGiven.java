@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.*;
@@ -22,12 +21,11 @@ public class TeacherGiven extends CucumberIntegrationTest {
 
     @Given("^teachers have groups")
     public void teachersHaveGroups(DataTable dataTable) {
-       // getGroupConnector().deleteAll();
         List<Map<String, String>> rows = dataTable.asMaps();
-        getListOfTasksFromDataTable(rows);
+        getListOfGroupsFromDataTable(rows);
     }
 
-    private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
+    private void getListOfGroupsFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
             String index = columns.get("teacherId");
             Long teacherId = TestExecutionContext.getTestContext().getIdMapping().get(index);
