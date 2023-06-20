@@ -81,7 +81,7 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
     public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) throws JOSEException {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();

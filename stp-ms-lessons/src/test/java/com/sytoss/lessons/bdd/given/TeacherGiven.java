@@ -32,7 +32,7 @@ public class TeacherGiven extends CucumberIntegrationTest {
             String index = columns.get("teacherId");
             Long teacherId = TestExecutionContext.getTestContext().getIdMapping().get(index);
             if(teacherId == null){
-                teacherId = 1L;
+                teacherId = 10L;
                 if(!TestExecutionContext.getTestContext().getIdMapping().isEmpty()){
                     Long maxId = Collections.max(TestExecutionContext.getTestContext().getIdMapping().entrySet(),
                             Map.Entry.comparingByValue()).getValue();
