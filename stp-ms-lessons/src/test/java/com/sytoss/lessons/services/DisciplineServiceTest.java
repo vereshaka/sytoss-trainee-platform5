@@ -3,7 +3,6 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
@@ -15,8 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -83,7 +80,7 @@ public class DisciplineServiceTest extends AbstractJunitTest {
     }
 
     @Test
-    public void shouldReturnDisciplinesByTeacher(){
+    public void shouldReturnDisciplinesByTeacher() {
         Teacher user = new Teacher();
         user.setId(1L);
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
