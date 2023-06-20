@@ -1,6 +1,7 @@
 package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,5 +36,14 @@ public class UserController {
     @PostMapping("/updatePhoto")
     public void updatePhoto(@RequestParam MultipartFile photo) {
         userService.updatePhoto(photo);
+    }
+
+    @Operation(description = "Update user profile info")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/me")
+    public void updateProfile(@RequestBody ProfileModel profileModel) {
+        userService.updateProfile(profileModel);
     }
 }

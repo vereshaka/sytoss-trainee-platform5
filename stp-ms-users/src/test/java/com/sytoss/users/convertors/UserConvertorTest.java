@@ -2,19 +2,21 @@ package com.sytoss.users.convertors;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
+import com.sytoss.users.dto.TeacherDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StudentConvertorTest extends AbstractJunitTest {
+public class UserConvertorTest extends AbstractJunitTest {
 
-    @Spy
-    private StudentConverter studentConverter = new StudentConverter(new GroupConvertor());
+    @InjectMocks
+    private UserConverter userConverter;
 
     @Test
     public void toDTOStudentConvertorTest() {
@@ -30,7 +32,7 @@ public class StudentConvertorTest extends AbstractJunitTest {
         byte[] photoBytes = {1, 2, 3, 4, 5};
         student.setPhoto(photoBytes);
         StudentDTO studentDTO = new StudentDTO();
-        studentConverter.toDTO(student, studentDTO);
+        userConverter.toDTO(student, studentDTO);
         assertEquals(student.getId(), studentDTO.getId());
         assertEquals(student.getFirstName(), studentDTO.getFirstName());
         assertEquals(student.getLastName(), studentDTO.getLastName());
@@ -53,11 +55,41 @@ public class StudentConvertorTest extends AbstractJunitTest {
         byte[] photoBytes = {1, 2, 3, 4, 5};
         studentDTO.setPhoto(photoBytes);
         Student student = new Student();
-        studentConverter.fromDTO(studentDTO, student);
+        userConverter.fromDTO(studentDTO, student);
         assertEquals(student.getId(), studentDTO.getId());
         assertEquals(student.getFirstName(), studentDTO.getFirstName());
         assertEquals(student.getLastName(), studentDTO.getLastName());
         assertEquals(student.isModerated(), studentDTO.isModerated());
         assertEquals(student.getEmail(), studentDTO.getEmail());
+    }
+
+    @Test
+    public void toDTOTeacherConvertorTest() {
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setFirstName("Luidji");
+        teacher.setLastName("Monk");
+        teacher.setEmail("test@email.com");
+        TeacherDTO teacherDTO = new TeacherDTO();
+        userConverter.toDTO(teacher, teacherDTO);
+        assertEquals(teacher.getId(), teacherDTO.getId());
+        assertEquals(teacher.getFirstName(), teacherDTO.getFirstName());
+        assertEquals(teacher.getLastName(), teacherDTO.getLastName());
+        assertEquals(teacher.getEmail(), teacherDTO.getEmail());
+    }
+
+    @Test
+    public void fromDTOTeacherConvertorTest() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setId(1L);
+        teacherDTO.setFirstName("Luidji");
+        teacherDTO.setLastName("Monk");
+        teacherDTO.setEmail("test@email.com");
+        Teacher teacher = new Teacher();
+        userConverter.fromDTO(teacherDTO, teacher);
+        assertEquals(teacher.getId(), teacherDTO.getId());
+        assertEquals(teacher.getFirstName(), teacherDTO.getFirstName());
+        assertEquals(teacher.getLastName(), teacherDTO.getLastName());
+        assertEquals(teacher.getEmail(), teacherDTO.getEmail());
     }
 }

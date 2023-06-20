@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Given;
 
@@ -20,7 +19,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setScript("Test script");
             taskDomainDTO.setDiscipline(disciplineDTO);
-            getTaskDomainConnector().save(taskDomainDTO);
+            taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
     }
@@ -50,7 +49,6 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         }
     }
 
-
     @Given("^\"(.*)\" task domain with \"(.*)\" script exists for this discipline$")
     public void taskDomainForDiscipline(String nameTaskDomain, String script) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(nameTaskDomain, TestExecutionContext.getTestContext().getDisciplineId());
@@ -62,5 +60,14 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
+    }
+
+    @Given("^\"(.*)\" task domain doesn't have image$")
+    public void taskDomainShouldNotHaveImage(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        if (taskDomainDTO.getImage() != null) {
+            taskDomainDTO.setImage(null);
+            getTaskDomainConnector().save(taskDomainDTO);
+        }
     }
 }

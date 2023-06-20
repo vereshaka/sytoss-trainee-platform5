@@ -20,7 +20,7 @@ public class GroupWhen extends CucumberIntegrationTest {
         String url = "/api/group/" + groupDTO.getId() + "/student";
         UserDTO studentDTO = TestExecutionContext.getTestContext().getUser();
         Student student = new Student();
-        getStudentConverter().fromDTO(studentDTO, student);
+        getUserConverter().fromDTO(studentDTO, student);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Student> httpEntity = new HttpEntity<>(student, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);

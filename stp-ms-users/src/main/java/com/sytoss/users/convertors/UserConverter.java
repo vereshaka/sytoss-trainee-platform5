@@ -1,10 +1,36 @@
 package com.sytoss.users.convertors;
 
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
+import com.sytoss.users.dto.GroupDTO;
+import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.UserDTO;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
 
-public abstract class AbstractUserConverter {
+@Component
+public class UserConverter {
+
+    private final GroupConvertor groupConvertor = new GroupConvertor();
+
+    public void toDTO(Student source, StudentDTO destination) {
+        toDTO(source, (UserDTO) destination);
+        if (source.getGroup() != null) {
+            GroupDTO groupDTO = new GroupDTO();
+            groupConvertor.toDTO(source.getGroup(), groupDTO);
+            destination.setGroup(groupDTO);
+        }
+    }
+
+    public void fromDTO(StudentDTO source, Student destination) {
+        fromDTO((UserDTO) source, destination);
+        if (source.getGroup() != null) {
+            Group group = new Group();
+            groupConvertor.fromDTO(source.getGroup(), group);
+            destination.setGroup(group);
+        }
+    }
 
     public void fromDTO(UserDTO source, AbstractUser destination) {
         destination.setId(source.getId());

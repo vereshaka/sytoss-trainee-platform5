@@ -3,7 +3,6 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/task.xml">
-
     <changeSet author="MitkovM" id="task_1">
         <createTable tableName="TASK">
             <column name="ID" type="BIGINT">
@@ -16,19 +15,16 @@
             </column>
             <column name="TASK_ID" type="BIGINT" />
         </createTable>
-
         <rollback>
             <dropTable tableName="TASK" />
         </rollback>
     </changeSet>
-
     <changeSet author="MitkovM" id="task_2">
         <addPrimaryKey tableName="TASK" columnNames="ID" constraintName="PK_TASK" />
         <rollback>
             <dropPrimaryKey tableName="TASK" constraintName="PK_TASK" />
         </rollback>
     </changeSet>
-
     <changeSet author="MitkovM" id="task_3">
         <createSequence sequenceName="TASK_SEQ" />
         <rollback>

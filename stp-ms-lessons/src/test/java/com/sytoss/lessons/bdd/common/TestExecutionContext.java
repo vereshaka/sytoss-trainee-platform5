@@ -37,6 +37,8 @@ public class TestExecutionContext {
 
     private Long taskDomainId;
 
+    private Long taskConditionId;
+
     private String token;
 
     @Setter(AccessLevel.NONE)
