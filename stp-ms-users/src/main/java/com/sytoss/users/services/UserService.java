@@ -4,11 +4,13 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
-import com.sytoss.users.convertors.StudentConverter;
-import com.sytoss.users.convertors.TeacherConvertor;
+import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
+import com.sytoss.users.model.ProfileModel;
+import com.sytoss.users.services.exceptions.LoadImageException;
+import com.sytoss.users.services.exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,7 @@ public class UserService extends AbstractService {
 
     private final UserConnector userConnector;
 
-    private final TeacherConvertor teacherConverter;
-
-    private final StudentConverter studentConverter;
+    private final UserConverter userConverter;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -56,10 +56,10 @@ public class UserService extends AbstractService {
         AbstractUser result = null;
         if (userDto instanceof TeacherDTO) {
             result = new Teacher();
-            teacherConverter.fromDTO(userDto, result);
+            userConverter.fromDTO(userDto, result);
         } else if (userDto instanceof StudentDTO) {
             result = new Student();
-            studentConverter.fromDTO(userDto, result);
+            userConverter.fromDTO(userDto, result);
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
         }
@@ -71,16 +71,16 @@ public class UserService extends AbstractService {
         log.info("No user found for " + email + ". Start creation " + userType + " based on token info...");
         if (userType.equalsIgnoreCase("teacher")) {
             Teacher newUser = new Teacher();
-            teacherConverter.fromDTO(getJwt(), newUser);
+            userConverter.fromDTO(getJwt(), newUser);
             TeacherDTO userDto = new TeacherDTO();
-            teacherConverter.toDTO(newUser, userDto);
+            userConverter.toDTO(newUser, userDto);
             userConnector.save(userDto);
 
         } else if (userType.equalsIgnoreCase("student")) {
             Student newUser = new Student();
-            studentConverter.fromDTO(getJwt(), newUser);
+            userConverter.fromDTO(getJwt(), newUser);
             StudentDTO userDto = new StudentDTO();
-            studentConverter.toDTO(newUser, userDto);
+            userConverter.toDTO(newUser, userDto);
             userConnector.save(userDto);
         } else {
             throw new IllegalArgumentException("Unsupported user type: " + userType);
@@ -96,6 +96,17 @@ public class UserService extends AbstractService {
             throw new LoadImageException("Could not read bytes of photo for user " + getMyEmail(), e);
         }
         dto.setModerated(false);
+        userConnector.save(dto);
+    }
+
+    @Transactional
+    public void updateProfile(ProfileModel profileModel) {
+        UserDTO dto = getMeAsDto();
+        dto.setFirstName(profileModel.getFirstName());
+        dto.setLastName(profileModel.getLastName());
+        if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
+            //TODO: yevgenyv: update group info
+        }
         userConnector.save(dto);
     }
 }
