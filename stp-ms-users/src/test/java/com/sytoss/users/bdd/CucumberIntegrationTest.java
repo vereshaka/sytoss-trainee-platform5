@@ -1,10 +1,9 @@
 package com.sytoss.users.bdd;
 
+import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
 import com.sytoss.users.connectors.GroupConnector;
-import com.sytoss.users.connectors.StudentConnector;
 import com.sytoss.users.connectors.UserConnector;
-import com.sytoss.users.convertors.AbstractUserConverter;
 import com.sytoss.users.convertors.StudentConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -19,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.sytoss.users.AbstractApplicationTest;
 
 import java.util.ArrayList;
 
