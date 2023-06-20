@@ -1,7 +1,10 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -19,15 +22,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+
 import static io.cucumber.junit.platform.engine.Constants.*;
-
-@Suite
-@IncludeEngines("cucumber")
-
-@SelectClasspathResource("/features")
-@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @Bug and not @Skip")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sytoss.lessons.bdd")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-report/cucumber.html")
 
 @CucumberContextConfiguration
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
@@ -59,6 +56,13 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private GroupConvertor groupConvertor;
 
     @Autowired
+    private TaskConditionConnector taskConditionConnector;
+
+    @Autowired
+    @MockBean
+    private UserConnector userConnector;
+
+    @Autowired
     private TaskDomainConvertor taskDomainConvertor;
 
     @Autowired
@@ -73,5 +77,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;
+    }
+
+    protected String getToken() {
+        return TestExecutionContext.getTestContext().getToken();
     }
 }

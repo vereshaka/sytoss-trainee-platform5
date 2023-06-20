@@ -4,7 +4,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/lessons
     username: admin
     password: password
-
   jpa:
     properties:
       hibernate:
@@ -12,6 +11,18 @@ spring:
         ddl-auto: validate
   liquibase:
     change-log: classpath:/liquibase/db.changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        request-interceptors[0]: com.sytoss.lessons.controllers.TokenRequestInterceptor
 server:
    port: 9101
 users-url: http://localhost:9102/api/

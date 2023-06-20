@@ -1,7 +1,7 @@
 Feature: Exam
 
   Background:
-    Given teacher "Maksym" "Mitkov" exists
+    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
   Scenario: teacher create exam
     Given topics exist

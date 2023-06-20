@@ -1,7 +1,7 @@
 Feature: Discipline
 
   Background:
-    Given teacher "Maksym" "Mitkov" exists
+    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
   Scenario: teacher creates a new discipline
     Given discipline "SQL" doesn't exist
@@ -29,8 +29,21 @@ Feature: Discipline
       | 1       | H2         |
     When teacher with id 1 retrieve his disciplines
     Then operation is successful
-    And disciplines should be
+    And disciplines should be received
       | teacher | discipline |
       | 1       | SQL        |
       | 1       | Mongo      |
       | 1       | H2         |
+
+  @Bug @YevgenyV #Need to re-think the logic of service method
+  Scenario: search disciplines
+    Given disciplines exist
+      | discipline |
+      | SQL        |
+      | Mongo      |
+    When receive all disciplines
+    Then operation is successful
+    And disciplines should be received
+      | discipline |
+      | SQL        |
+      | Mongo      |

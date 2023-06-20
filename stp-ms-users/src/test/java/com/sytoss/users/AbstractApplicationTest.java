@@ -1,5 +1,16 @@
 package com.sytoss.users;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +27,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@DirtiesContext
 @Getter
 public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
@@ -34,6 +49,12 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
 
     @Autowired
     private AbstractApplicationContext applicationContext;
+
+    @Getter
+    private static RSAKey jwk;
+
+    @Getter
+    private static HttpServer httpServer;
 
     @Test
     public void shouldLoadApplicationContext() {
@@ -52,29 +73,87 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         }
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
-            for (Map.Entry entry : ((HttpEntity) requestEntity).getHeaders().entrySet()) {
-                headers.addAll(entry.getKey().toString(), (List<? extends String>) entry.getValue());
-            }
-        }
-        HttpEntity request = new HttpEntity<>(requestEntity, headers);
-        return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
+    public static void stopServer() {
+        httpServer.stop(0);
     }
 
-    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class responseType) {
-        HttpHeaders headers = new HttpHeaders();
-        if (requestEntity instanceof HttpEntity && ((HttpEntity) requestEntity).getHeaders() != null) {
-            for (Map.Entry entry : ((HttpEntity) requestEntity).getHeaders().entrySet()) {
-                headers.addAll(entry.getKey().toString(), (List<? extends String>) entry.getValue());
-            }
-        }
-        HttpEntity request = new HttpEntity<>(requestEntity, headers);
-        return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
+    public static void setupJWK() throws JOSEException, IOException {
+        jwk = new RSAKeyGenerator(2048)
+                .keyID("1234")
+                .generate();
+
+        String publicKey = "{\n" +
+                "  \"keys\": [" +
+                jwk.toPublicJWK().toJSONString() + "]\n" +
+                "}";
+
+        httpServer = HttpServer.create(new InetSocketAddress(9030), 0);
+        httpServer.createContext("/realms/traineeplatform/protocol/openid-connect/certs", exchange -> {
+            byte[] response = publicKey.getBytes();
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, response.length);
+            exchange.getResponseBody().write(response);
+            exchange.close();
+        });
+        httpServer.start();
     }
 
-    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference responseType) {
+    protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {
+        LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
+        realmAccess.put("roles", new ArrayList<String>(roles));
+
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject("test")
+                .issuer("test@test")
+                .claim("realm_access", realmAccess)
+                .claim("email", email)
+                .claim("given_name", firstName)
+                .claim("family_name", lastName)
+                .claim("userType", userType)
+                .expirationTime(new Date(new Date().getTime() + 60 * 100000))
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(
+                new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
+                claimsSet);
+
+        try {
+            signedJWT.sign(new RSASSASigner(AbstractApplicationTest.getJwk()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+
+        return signedJWT.serialize();
+    }
+
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        if (requestEntity instanceof HttpEntity<?>) {
+            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
+        } else {
+            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
+            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
+        }
+    }
+
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, Object requestEntity, Class<T> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        if (requestEntity instanceof HttpEntity<?>) {
+            return restTemplate.exchange(getEndpoint(uri), method, (HttpEntity<?>) requestEntity, responseType);
+        } else {
+            HttpEntity<?> request = new HttpEntity<>(requestEntity, headers);
+            return restTemplate.exchange(getEndpoint(uri), method, request, responseType);
+        }
+    }
+
+    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doPost(String uri, Object requestEntity, ParameterizedTypeReference<T> responseType) {
+        return perform(uri, HttpMethod.POST, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doGet(String uri, Object requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 }

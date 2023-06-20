@@ -1,15 +1,19 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 public class DisciplineWhen extends CucumberIntegrationTest {
 
@@ -18,8 +22,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        ResponseEntity<Discipline> responseEntity = doPost(url, discipline, new ParameterizedTypeReference<Discipline>() {
-        });
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+        ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -28,7 +33,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        ResponseEntity<String> responseEntity = doPost(url, discipline, String.class);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+        ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -36,15 +43,31 @@ public class DisciplineWhen extends CucumberIntegrationTest {
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByName(disciplineName);
         String url = "/api/discipline/" + discipline.getId();
-        ResponseEntity<Discipline> responseEntity = doGet(url, Void.class, Discipline.class);
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<Discipline> responseEntity = doGet(url, requestEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher with id (.*) retrieve his disciplines$")
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
-
         String url = "/api/teacher/my/disciplines";
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, Void.class, new ParameterizedTypeReference<List<Discipline>>() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        Teacher teacher = new Teacher();
+        teacher.setId(teacherId);
+        when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("receive all disciplines")
+    public void requestSentFindAllDisciplines() {
+        String url = "/api/disciplines";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

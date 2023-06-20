@@ -7,7 +7,6 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
@@ -30,7 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class DisciplineControllerTest extends AbstractApplicationTest {
+public class DisciplineControllerTest extends AbstractControllerTest {
 
     @InjectMocks
     @Autowired
@@ -54,7 +53,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldSaveTopic() {
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Topic> requestEntity = new HttpEntity<>(new Topic(), headers);
         ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, new ParameterizedTypeReference<Topic>() {
         });
@@ -64,9 +63,9 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldFindGroupsByDiscipline() {
         when(groupService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", null, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -74,7 +73,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldSaveDiscipline() {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
@@ -84,7 +83,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
         ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
@@ -94,14 +93,18 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldGetDisciplineById() {
         when(disciplineService.getById(any())).thenReturn(new Discipline());
-        ResponseEntity<Discipline> result = doGet("/api/discipline/123", null, Discipline.class);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Discipline> result = doGet("/api/discipline/123", httpEntity, Discipline.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
     public void shouldNotGetDisciplineByIdWhenItDoesNotExist() {
         when(disciplineService.getById(any())).thenThrow(new DisciplineNotFoundException(123L));
-        ResponseEntity<String> result = doGet("/api/discipline/123", null, String.class);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> result = doGet("/api/discipline/123", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
         assertEquals("Discipline with id \"123\" not found", result.getBody());
     }
@@ -109,7 +112,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldCreateGroup() {
         when(groupService.create(anyLong(), any(Group.class))).thenReturn(new Group());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<Group> result = doPost("/api/discipline/123/group", requestEntity, Group.class);
         assertEquals(200, result.getStatusCode().value());
@@ -118,7 +121,7 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldNotCreateGroupWhenItExists() {
         when(groupService.create(anyLong(), any(Group.class))).thenThrow(new GroupExistException("Test"));
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
@@ -127,9 +130,19 @@ public class DisciplineControllerTest extends AbstractApplicationTest {
     @Test
     public void shouldFindTasksDomainByDiscipline() {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", null, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldFindDisciplines() {
+        when(disciplineService.findAllDisciplines()).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> result = doGet("/api/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

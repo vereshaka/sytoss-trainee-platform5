@@ -1,0 +1,38 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/task-сondition.xml">
+
+    <changeSet author="KornienkoD" id="task_condition_1">
+        <createTable tableName="TASK_CONDITION">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="NAME" type="VARCHAR2(100 BYTE)" />
+            <column name="TYPE" type="VARCHAR2(100 BYTE)" />
+            <column name="TASK_ID" type="BIGINT">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="TASK_CONDITION" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="task_condition_2">
+        <addPrimaryKey tableName="TASK_CONDITION" columnNames="ID" constraintName="PK_TASK_CONDITION" />
+        <rollback>
+            <dropPrimaryKey tableName="TASK_CONDITION" constraintName="PK_TASK_CONDITION" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="KornienkoD" id="task_condition_3">
+        <createSequence sequenceName="TASK_CONDITION_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="TASK_CONDITION_SEQ" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
