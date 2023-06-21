@@ -46,11 +46,13 @@ public class UserWhen extends CucumberIntegrationTest {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setBearerAuth(getToken());
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("firstName", TestExecutionContext.getTestContext().getUser().getFirstName());
+        body.add("lastName", TestExecutionContext.getTestContext().getUser().getLastName());
         body.add("photo", new FileSystemResource(photoFile));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/user/updatePhoto"), requestEntity, Void.class);
+        ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
