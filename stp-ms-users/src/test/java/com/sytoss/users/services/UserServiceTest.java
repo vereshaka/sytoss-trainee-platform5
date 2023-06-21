@@ -100,7 +100,6 @@ public class UserServiceTest extends AbstractJunitTest {
         studentDTO.setPrimaryGroupId(1L);
         byte[] photoBytes = {0x01, 0x02, 0x03};
         studentDTO.setPhoto(photoBytes);
-        studentDTO.setModerated(true);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
         assertTrue(userService.getOrCreateUser("test@test.com").isValid());
     }
@@ -121,7 +120,6 @@ public class UserServiceTest extends AbstractJunitTest {
         teacherDTO.setEmail("test@test.com");
         byte[] photoBytes = {0x01, 0x02, 0x03};
         teacherDTO.setPhoto(photoBytes);
-        teacherDTO.setModerated(true);
         when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
         assertTrue(userService.getOrCreateUser("test@test.com").isValid());
     }

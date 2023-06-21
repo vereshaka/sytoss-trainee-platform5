@@ -26,7 +26,7 @@ public abstract class AbstractUser {
     private boolean isValid;
 
     public boolean isValid() {
-        return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && hasPhoto && isModerated;
+        return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && hasPhoto;
     }
 
 }
