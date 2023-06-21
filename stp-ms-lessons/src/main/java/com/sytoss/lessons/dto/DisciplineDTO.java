@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity(name = "DISCIPLINE")
@@ -20,4 +22,10 @@ public class DisciplineDTO {
 
     @Column(name = "TEACHER_ID")
     private Long teacherId;
+
+    @OneToMany
+    @JoinTable(name = "group2discipline",
+            joinColumns = @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "GROUP_ID", referencedColumnName = "GROUP_ID"))
+    private List<GroupReferenceDTO> groupReferences;
 }

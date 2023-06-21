@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
+import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.Then;
@@ -14,9 +15,9 @@ import java.util.Objects;
 
 public class ExamThen extends CucumberIntegrationTest {
 
-    @Then("\"{word}\" exam should be from {word} to {word} with {int} tasks for \"{word}\" group with {int} minutes duration")
-    public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, String groupName, Integer duration) throws ParseException {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupName(examName, groupName);
+    @Then("\"{word}\" exam should be from {word} to {word} with {int} tasks for this group with {int} minutes duration")
+    public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, Integer duration) throws ParseException {
+        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         Date relevantFrom = dateFormat.parse(relevantFromString);
@@ -29,9 +30,9 @@ public class ExamThen extends CucumberIntegrationTest {
         Assertions.assertEquals(duration, examDTO.getDuration());
     }
 
-    @Then("\"{word}\" exam for \"{word}\" group should have topics")
-    public void examShouldHaveTopic(String examName, String groupName, List<TopicDTO> topicDTOList) {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupName(examName, groupName);
+    @Then("\"{word}\" exam for this group should have topics")
+    public void examShouldHaveTopic(String examName, List<TopicDTO> topicDTOList) {
+        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
 
         Assertions.assertTrue(topicDTOList.stream()
                 .allMatch(expectedTopic -> examDTO.getTopics().stream()
