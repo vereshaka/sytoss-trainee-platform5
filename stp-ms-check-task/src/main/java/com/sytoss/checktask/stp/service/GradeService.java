@@ -10,6 +10,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,9 +43,25 @@ public class GradeService {
     }
 
     private Grade grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if (queryResultEtalon.getResultMapList().size() != queryResultAnswer.getResultMapList().size() && queryResultEtalon.getRow(0).size() != queryResultAnswer.getRow(0).size()) {
-            return new Grade(1, "not ok");
+        if(!checkQueryResults(queryResultEtalon,queryResultAnswer)){
+            return new Grade(0, "not ok");
         }
-        return new Grade(10, "ok");
+        return new Grade(1, "ok");
+    }
+
+    private boolean checkQueryResults(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
+        if (queryResultEtalon.getResultMapList().size() != queryResultAnswer.getResultMapList().size() && queryResultEtalon.getRow(0).size() != queryResultAnswer.getRow(0).size()) {
+            return false;
+        }
+        for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
+            List<String> keyList = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
+            for (String s : keyList) {
+                if (!queryResultEtalon.getResultMapList().get(i).get(s)
+                        .equals(queryResultAnswer.getResultMapList().get(i).get(s))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
