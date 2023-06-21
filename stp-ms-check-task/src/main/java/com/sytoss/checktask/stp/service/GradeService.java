@@ -43,7 +43,7 @@ public class GradeService {
     }
 
     private Grade grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if(!checkQueryResults(queryResultEtalon,queryResultAnswer)){
+        if (!checkQueryResults(queryResultEtalon, queryResultAnswer)) {
             return new Grade(0, "not ok");
         }
         return new Grade(1, "ok");
@@ -56,17 +56,19 @@ public class GradeService {
         for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
             List<String> keyListEtalon = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
             List<String> keyListAnswer = queryResultAnswer.getResultMapList().get(i).keySet().stream().toList();
-            if(keyListAnswer.size() != keyListEtalon.size()){
+            if (keyListAnswer.size() != keyListEtalon.size()) {
                 return false;
             }
-            for(int j=0;j<keyListEtalon.size();j++){
-                if(!keyListAnswer.contains(keyListEtalon.get(i))){
-                    return false;
-                }
+            boolean allColumnsExists = keyListEtalon.stream()
+                    .allMatch(keyListAnswer::contains);
+
+            if (!allColumnsExists) {
+                return false;
             }
-            for (String s : keyListEtalon) {
-                if (!queryResultEtalon.getResultMapList().get(i).get(s)
-                        .equals(queryResultAnswer.getResultMapList().get(i).get(s))) {
+            for (String columnName : keyListEtalon) {
+                Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
+                Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
+                if (!etalonFieldValue.equals(answerFieldValue)) {
                     return false;
                 }
             }
