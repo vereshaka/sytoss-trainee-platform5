@@ -3,6 +3,8 @@ package com.sytoss.checktask.stp.service;
 import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
+import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.Grade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +40,11 @@ public class GradeService {
             }
             Grade grade = grade(queryResultEtalon, queryResultAnswer);
             if (grade.getValue() > 0) {
-                for (String condition : data.getConditions()) {
-                    if (!data.getAnswer().contains(condition)) {
-                        grade.setValue(grade.getValue() - 0.3);
+                for (TaskCondition condition : data.getConditions()) {
+                    if (condition.getType().equals(ConditionType.CONTAINS)) {
+                        if (!data.getAnswer().contains(condition.getValue())) {
+                            grade.setValue(grade.getValue() - 0.3);
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.sytoss.checktask.model;
 
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +17,5 @@ public class CheckTaskParameters {
 
     private String script;
 
-    private List<String> conditions = new ArrayList<>();
+    private List<TaskCondition> conditions = new ArrayList<>();
 }
