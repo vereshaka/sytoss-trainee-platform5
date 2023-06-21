@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/group2student.xml">
+
+    <changeSet author="VereshchakaV" id="group2student_1">
+        <createTable tableName="GROUP2STUDENT">
+            <column name="GROUP_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="STUDENT_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="GROUP2STUDENT" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="VereshchakaV" id="group2student_2">
+        <addPrimaryKey tableName="GROUP2STUDENT" columnNames="GROUP_ID, STUDENT_ID"
+                       constraintName="PK_GROUP2STUDENT" />
+        <rollback>
+            <dropPrimaryKey tableName="GROUP2STUDENT" constraintName="PK_GROUP2STUDENT" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

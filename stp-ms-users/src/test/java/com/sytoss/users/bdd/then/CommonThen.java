@@ -1,6 +1,5 @@
 package com.sytoss.users.bdd.then;
 
-
 import com.sytoss.users.bdd.common.TestExecutionContext;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
