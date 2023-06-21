@@ -36,7 +36,7 @@ public class TaskDomainController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task domain not found"),
-            @ApiResponse(responseCode = "404", description = "Task domain is used"),
+            @ApiResponse(responseCode = "409", description = "Task domain is used"),
     })
     @PutMapping("/{taskDomainId}")
     public TaskDomain update(@Parameter(description = "id of the task domain to be searched by")
