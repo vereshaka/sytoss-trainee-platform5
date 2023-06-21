@@ -32,19 +32,15 @@ public class GroupService {
     private final UserConverter userConverter;
 
     public Group getById(Long id) {
-        try {
-            GroupDTO groupDTO = getDtoById(id);
-            Group group = new Group();
-            groupConvertor.fromDTO(groupDTO, group);
-            return group;
-        } catch (EntityNotFoundException e) {
-            throw new GroupNotFoundException(id);
-        }
+        GroupDTO groupDTO = getDtoById(id);
+        Group group = new Group();
+        groupConvertor.fromDTO(groupDTO, group);
+        return group;
     }
 
     private GroupDTO getDtoById(Long id) {
         try {
-            GroupDTO groupDTO = groupConnector.getReferenceById(id);
+            GroupDTO groupDTO = groupConnector.findById(id).orElseThrow();
             return groupDTO;
         } catch (EntityNotFoundException e) {
             throw new GroupNotFoundException(id);
