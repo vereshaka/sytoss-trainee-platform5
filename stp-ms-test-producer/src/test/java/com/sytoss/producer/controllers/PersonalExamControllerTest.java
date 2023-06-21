@@ -45,7 +45,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<Boolean> result = doGet("/api/taskDomain/123/PersonalExam", requestEntity, boolean.class);
+        ResponseEntity<Boolean> result = doGet("/api/taskDomain/123/isUsedNow", requestEntity, boolean.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

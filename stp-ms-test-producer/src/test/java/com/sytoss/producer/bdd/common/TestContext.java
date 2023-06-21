@@ -11,8 +11,6 @@ public class TestContext {
 
     private ResponseEntity<String> response;
 
-    private ResponseEntity<Boolean> responseBoolean;
-
     private int statusCode;
 
     private ResponseEntity<Question> firstTaskResponse;

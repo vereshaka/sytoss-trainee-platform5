@@ -95,13 +95,13 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("^system check task domain with id: \"(.*)\" is used$")
     public void systemCheckTaskDomain(String taskDomainId) throws JOSEException {
-        String url = "/api/taskDomain/" + Long.parseLong(taskDomainId) + "/PersonalExam";
+        String url = "/api/taskDomain/" + Long.parseLong(taskDomainId) + "/isUsedNow";
         log.info("Send request to " + url);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<Boolean> responseEntity = doGet(url, requestEntity, boolean.class);
-        IntegrationTest.getTestContext().setResponseBoolean(responseEntity);
+        ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
+        IntegrationTest.getTestContext().setResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 

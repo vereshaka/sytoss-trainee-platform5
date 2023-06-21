@@ -66,7 +66,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/taskDomain/{taskDomainId}/PersonalExam")
+    @GetMapping("/taskDomain/{taskDomainId}/isUsedNow")
     public boolean taskDomainIsUsed(@PathVariable(value = "taskDomainId") Long taskDomainId) {
        return personalExamService.taskDomainIsUsed(taskDomainId);
     }

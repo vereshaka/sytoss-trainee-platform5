@@ -84,6 +84,6 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
     @Then("^should return \"(.*)\"$")
     public void shouldReturnIsTaskDomainUsed(String isUsed) {
-        assertEquals(Boolean.valueOf(isUsed), IntegrationTest.getTestContext().getResponseBoolean().getBody());
+        assertEquals(Boolean.valueOf(isUsed), Boolean.valueOf(IntegrationTest.getTestContext().getResponse().getBody()));
     }
 }
