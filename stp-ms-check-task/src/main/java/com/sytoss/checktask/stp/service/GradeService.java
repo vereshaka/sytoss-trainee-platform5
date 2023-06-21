@@ -36,14 +36,22 @@ public class GradeService {
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
-            return grade(queryResultEtalon, queryResultAnswer);
+            Grade grade = grade(queryResultEtalon, queryResultAnswer);
+            if (grade.getValue() > 0) {
+                for (String condition : data.getConditions()) {
+                    if (!data.getAnswer().contains(condition)) {
+                        grade.setValue(grade.getValue() - 0.3);
+                    }
+                }
+            }
+            return grade;
         } finally {
             helperServiceProviderObject.dropDatabase();
         }
     }
 
     private Grade grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if(!checkQueryResults(queryResultEtalon,queryResultAnswer)){
+        if (!checkQueryResults(queryResultEtalon, queryResultAnswer)) {
             return new Grade(0, "not ok");
         }
         return new Grade(1, "ok");
@@ -56,11 +64,11 @@ public class GradeService {
         for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
             List<String> keyListEtalon = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
             List<String> keyListAnswer = queryResultAnswer.getResultMapList().get(i).keySet().stream().toList();
-            if(keyListAnswer.size() != keyListEtalon.size()){
+            if (keyListAnswer.size() != keyListEtalon.size()) {
                 return false;
             }
-            for(int j=0;j<keyListEtalon.size();j++){
-                if(!keyListAnswer.contains(keyListEtalon.get(i))){
+            for (int j = 0; j < keyListEtalon.size(); j++) {
+                if (!keyListAnswer.contains(keyListEtalon.get(i))) {
                     return false;
                 }
             }

@@ -25,6 +25,11 @@ public class GivenStepTest extends CucumberIntegrationTest {
         TestContext.getInstance().getCheckTaskParameters().setEtalon(answer);
     }
 
+    @Given("^answer should contains \"(.*)\"$")
+    public void givenCondition(String condition) {
+        TestContext.getInstance().getCheckTaskParameters().setConditions(List.of(condition));
+    }
+
     @Given("check SQL is {string}")
     public void givenAnswerScript(String answer) {
         TestContext.getInstance().getCheckTaskParameters().setAnswer(answer);
