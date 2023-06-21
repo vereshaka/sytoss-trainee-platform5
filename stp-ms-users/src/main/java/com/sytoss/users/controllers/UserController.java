@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -29,21 +30,16 @@ public class UserController {
         return userService.getOrCreateUser(email);
     }
 
-    @Operation(description = "Method that updates photo of student")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/updatePhoto")
-    public void updatePhoto(@RequestBody MultipartFile photo) {
-        userService.updatePhoto(photo);
-    }
-
     @Operation(description = "Update user profile info")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/me")
-    public void updateProfile(@RequestBody ProfileModel profileModel) {
+    @PostMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void updateProfile(@RequestParam String firstName,
+                              @RequestParam String lastName,
+                              @RequestParam MultipartFile photo) {
+        ProfileModel profileModel = new ProfileModel(firstName, lastName, null, photo);
+        userService.updatePhoto(profileModel.getPhoto());
         userService.updateProfile(profileModel);
     }
 }
