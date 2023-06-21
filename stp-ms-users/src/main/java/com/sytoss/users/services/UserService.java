@@ -1,9 +1,11 @@
 package com.sytoss.users.services;
 
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +31,8 @@ public class UserService extends AbstractService {
     private final UserConnector userConnector;
 
     private final UserConverter userConverter;
+
+    private final GroupConvertor groupConvertor;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -112,5 +118,16 @@ public class UserService extends AbstractService {
             //TODO: yevgenyv: update group info
         }
         userConnector.save(dto);
+    }
+
+    public List<Group> findGroupByStudentId(Long studentId) {
+        StudentDTO studentDTO = (StudentDTO) getDTOById(studentId);
+        List<Group> groups = new ArrayList<>();
+        studentDTO.getGroups().forEach((groupDTO -> {
+            Group group = new Group();
+            groupConvertor.fromDTO(groupDTO, group);
+            groups.add(group);
+        }));
+        return groups;
     }
 }

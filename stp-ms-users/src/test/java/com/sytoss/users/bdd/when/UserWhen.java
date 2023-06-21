@@ -1,11 +1,14 @@
 package com.sytoss.users.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 @Transactional
 public class UserWhen extends CucumberIntegrationTest {
@@ -53,6 +57,17 @@ public class UserWhen extends CucumberIntegrationTest {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("receive all groups of student")
+    public void receiveAllGroupsOfStudent() {
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/groups";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
