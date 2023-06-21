@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 class GradeServiceTest extends AbstractApplicationTest {
 
     @Test
-    void checkAndGradeCorrectAnswer1() {
+    void checkAndGradeCorrectAnswer() {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setAnswer("select * from Authors");
         checkTaskParameters.setEtalon("select * from Authors");
