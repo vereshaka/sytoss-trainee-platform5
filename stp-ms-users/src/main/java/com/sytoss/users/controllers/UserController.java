@@ -34,7 +34,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/updatePhoto")
-    public void updatePhoto(@RequestParam MultipartFile photo) {
+    public void updatePhoto(@RequestBody MultipartFile photo) {
         userService.updatePhoto(photo);
     }
 
