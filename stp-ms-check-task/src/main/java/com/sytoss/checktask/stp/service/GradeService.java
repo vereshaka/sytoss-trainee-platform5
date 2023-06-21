@@ -54,8 +54,17 @@ public class GradeService {
             return false;
         }
         for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
-            List<String> keyList = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
-            for (String s : keyList) {
+            List<String> keyListEtalon = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
+            List<String> keyListAnswer = queryResultAnswer.getResultMapList().get(i).keySet().stream().toList();
+            if(keyListAnswer.size() != keyListEtalon.size()){
+                return false;
+            }
+            for(int j=0;j<keyListEtalon.size();j++){
+                if(!keyListAnswer.contains(keyListEtalon.get(i))){
+                    return false;
+                }
+            }
+            for (String s : keyListEtalon) {
                 if (!queryResultEtalon.getResultMapList().get(i).get(s)
                         .equals(queryResultAnswer.getResultMapList().get(i).get(s))) {
                     return false;
