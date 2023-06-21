@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity(name = "GROUPS")
@@ -17,5 +19,13 @@ public class GroupDTO {
 
     @Column(name = "NAME")
     private String name;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "GROUP2STUDENT",
+            joinColumns = @JoinColumn(name = "GROUP_ID"),
+            inverseJoinColumns = @JoinColumn(name = "STUDENT_ID"))
+    private List<StudentDTO> students;
+
 
 }
