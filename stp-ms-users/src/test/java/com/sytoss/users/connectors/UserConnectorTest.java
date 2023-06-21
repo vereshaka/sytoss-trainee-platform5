@@ -1,6 +1,5 @@
 package com.sytoss.users.connectors;
 
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;

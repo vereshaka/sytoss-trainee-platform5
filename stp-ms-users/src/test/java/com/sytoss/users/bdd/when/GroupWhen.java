@@ -1,6 +1,5 @@
 package com.sytoss.users.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
@@ -16,22 +15,19 @@ import org.springframework.http.ResponseEntity;
 public class GroupWhen extends CucumberIntegrationTest {
 
     @When("^teacher assignee this student to \"(.*)\" group$")
-    public void assigneeStudentToGroup(String groupName) throws JOSEException {
+    public void assigneeStudentToGroup(String groupName) {
         Long groupId;
         GroupDTO groupDTO = getGroupConnector().getByName(groupName);
-        UserDTO studentDTO = TestExecutionContext.getTestContext().getUser();
-        Student student = new Student();
-        getUserConverter().fromDTO(studentDTO, student);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Student> httpEntity = new HttpEntity<>(student, httpHeaders);
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         if (groupDTO == null) {
             groupId = 99L;
-            String url = "/api/group/" + groupId + "/student";
+            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getId();
             ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         } else {
             groupId = groupDTO.getId();
-            String url = "/api/group/" + groupId + "/student";
+            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getId();
             ResponseEntity<Student> responseEntity = doPost(url, httpEntity, Student.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }

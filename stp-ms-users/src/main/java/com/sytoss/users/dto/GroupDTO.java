@@ -20,7 +20,7 @@ public class GroupDTO {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "GROUP2STUDENT",
             joinColumns = @JoinColumn(name = "GROUP_ID"),

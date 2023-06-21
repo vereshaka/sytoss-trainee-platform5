@@ -10,16 +10,12 @@ import org.springframework.stereotype.Component;
 public class GroupConvertor {
 
     public void fromDTO(GroupDTO source, Group destination) {
-        if (source.getId() != null) {
-            destination.setId(source.getId());
-        }
+        destination.setId(source.getId());
         destination.setName(source.getName());
     }
 
     public void toDTO(Group source, GroupDTO destination) {
-        if (source.getId() != null) {
-            destination.setId(source.getId());
-        }
+        destination.setId(source.getId());
         destination.setName(source.getName());
     }
 }
