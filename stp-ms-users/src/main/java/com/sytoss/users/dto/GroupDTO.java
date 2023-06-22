@@ -1,9 +1,10 @@
-package com.sytoss.lessons.dto;
+package com.sytoss.users.dto;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +20,12 @@ public class GroupDTO {
     @Column(name = "NAME")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
-    private DisciplineDTO discipline;
+    @ManyToMany
+    @JoinTable(
+            name = "GROUP2STUDENT",
+            joinColumns = @JoinColumn(name = "GROUP_ID"),
+            inverseJoinColumns = @JoinColumn(name = "STUDENT_ID"))
+    private List<StudentDTO> students;
+
+
 }

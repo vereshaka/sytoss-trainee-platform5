@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -69,6 +70,15 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("link this discipline to group with id {long}")
+    public void linkDisciplineToGroup(Long groupId) {
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/group/" + groupId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Void> responseEntity = doPost(url, httpEntity, Void.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

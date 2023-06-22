@@ -21,10 +21,9 @@ import static org.mockito.Mockito.when;
 @Slf4j
 public class GroupWhen extends CucumberIntegrationTest {
 
-    @When("^receive all groups by \"(.*)\" discipline$")
-    public void requestSentFindGroupsByDiscipline(String disciplineName) {
-        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
-        String url = "/api/discipline/" + discipline.getId() + "/groups";
+    @When("receive all groups by discipline with id {long}")
+    public void requestSentFindGroupsByDiscipline(Long disciplineId) {
+        String url = "/api/discipline/" + disciplineId + "/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {

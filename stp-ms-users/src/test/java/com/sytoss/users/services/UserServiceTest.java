@@ -11,7 +11,6 @@ import com.sytoss.users.model.ProfileModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -36,7 +35,7 @@ public class UserServiceTest extends AbstractJunitTest {
     private UserService userService;
 
     @BeforeEach
-    protected void initSecurityContext(){
+    protected void initSecurityContext() {
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "Luidji")
                 .claim("family_name", "Monk").claim("userType", "teacher").claim("email", "test@email.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
@@ -75,7 +74,7 @@ public class UserServiceTest extends AbstractJunitTest {
     }
 
     @Test
-    public void shouldUpdateProfile(){
+    public void shouldUpdateProfile() {
         TeacherDTO dto = new TeacherDTO();
         dto.setId(1L);
         dto.setEmail("test@email.com");
