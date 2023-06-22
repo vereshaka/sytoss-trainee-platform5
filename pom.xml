@@ -83,6 +83,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.33.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -170,67 +175,15 @@
                     </properties>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.33.0</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <registry>docker.io/sytoss</registry>
-                            <name>stp-domain</name>
-                            <build>
-                                <tags>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <dockerFileDir>${project.basedir}/stp-domain</dockerFileDir>
-                            </build>
-                        </image>
-                        <image>
-                            <registry>docker.io/sytoss</registry>
-                            <name>stp-ms-lessons</name>
-                            <build>
-                                <tags>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <dockerFileDir>${project.basedir}/stp-ms-lessons</dockerFileDir>
-                            </build>
-                        </image>
-                        <image>
-                            <registry>docker.io/sytoss</registry>
-                            <name>stp-ms-test-producer</name>
-                            <build>
-                                <tags>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <dockerFileDir>${project.basedir}/stp-ms-test-producer</dockerFileDir>
-                            </build>
-                        </image>
-                        <image>
-                            <registry>docker.io/sytoss</registry>
-                            <name>stp-ms-users</name>
-                            <build>
-                                <tags>
-                                    <tag>${project.version}</tag>
-                                </tags>
-                                <dockerFileDir>${project.basedir}/stp-ms-users</dockerFileDir>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>build-image</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>stop</goal>
-                            <goal>remove</goal>
-                            <goal>build</goal>
-                            <goal>push</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>io.fabric8</groupId>-->
+<!--                <artifactId>docker-maven-plugin</artifactId>-->
+<!--                <version>0.33.0</version>-->
+<!--                <configuration>-->
+<!--                    <imageName>stp/sytosstraineeplatform:${project.version}</imageName>-->
+<!--                    <skip>${dockerfile.skip}</skip>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>
