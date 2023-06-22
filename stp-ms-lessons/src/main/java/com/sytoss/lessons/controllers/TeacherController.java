@@ -1,7 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +53,7 @@ public class TeacherController {
             @ApiResponse(responseCode = "404", description = "Teacher does not exist!"),
     })
     @GetMapping("/my/groups")
-    public List<Group> getMyGroups() {
+    public List<GroupReferenceDTO> getMyGroups() {
         return groupService.findGroups();
     }
 }

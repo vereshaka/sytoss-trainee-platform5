@@ -48,13 +48,13 @@ public class TeacherGiven extends CucumberIntegrationTest {
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
 
-            String groupName = columns.get("group");
-            GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(disciplineName, disciplineDTO.getId());
+            Long groupId = Long.parseLong(columns.get("group"));
+            GroupReferenceDTO groupDTO = getGroupReferenceConnector().findByGroupId(groupId);
             if (groupDTO == null) {
-                groupDTO = new GroupDTO();
-                groupDTO.setName(groupName);
-                groupDTO.setDiscipline(disciplineDTO);
-                getGroupConnector().save(groupDTO);
+                groupDTO = new GroupReferenceDTO();
+                groupDTO.setGroupId(groupId);
+                groupDTO.setDisciplineId(disciplineDTO.getId());
+                getGroupReferenceConnector().save(groupDTO);
             }
         }
     }
