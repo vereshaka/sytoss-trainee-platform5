@@ -47,7 +47,7 @@ public class AnswerService {
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setScript(taskDomain.getScript());
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        answer.grade(score);
+        answer.score(score);
         personalExamConnector.save(personalExam);
     }
 

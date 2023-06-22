@@ -35,7 +35,7 @@ public class Answer {
         }
     }
 
-    public void grade(Score score) {
+    public void score(Score score) {
         setScore(score);
         setStatus(AnswerStatus.GRADED);
     }
