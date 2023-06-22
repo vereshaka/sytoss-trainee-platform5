@@ -38,7 +38,7 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("^retrieve information about task with id (.*)$")
     public void requestSentRetrieveExistingTask(String taskId) {
-        String url = "/api/task/" + taskId;
+        String url = "/api/task/" + TestExecutionContext.getTestContext().getIdMapping().get(taskId);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
