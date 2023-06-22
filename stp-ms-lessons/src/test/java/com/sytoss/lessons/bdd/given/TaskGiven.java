@@ -35,6 +35,7 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with question \"(.*)\" with topic exists$")
     public void taskExistsWithTopic(String question) {
+        getTaskConnector().deleteAll();
         TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
 
         if (taskDTO == null) {
