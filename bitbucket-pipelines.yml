@@ -8,18 +8,11 @@ pipelines:
           name: Build
           script:
             - mvn clean install
-    deploy_to_dev:
+    deploy_dockerhub:
       - step:
-          name: Deploy to develop
+          name: Deploy to DockerHub
           script:
             - mvn clean install
-            - cd .. && ls -l
-            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
-            - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
-            - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
-            - cd server
-            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
-            - git add . && git commit -m "build [skip ci]" && git push
     deploy_to_prod:
       - step:
           name: Deploy to prod

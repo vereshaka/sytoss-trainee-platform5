@@ -1,4 +1,4 @@
-FROM sytoss/openjdk:17-alpine
+FROM sytoss/openjdk:17.0.2-slim
 
 RUN groupadd stpuser
 RUN useradd -r -g stpuser stpuser
