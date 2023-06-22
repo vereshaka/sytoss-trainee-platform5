@@ -2,8 +2,9 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -11,10 +12,10 @@ import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +25,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class TaskServiceTest extends AbstractApplicationTest {
+public class TaskServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private TaskConnector taskConnector;
 
     @InjectMocks
-    @Autowired
     private TaskService taskService;
 
-    @MockBean
+    @Mock
     private TopicService topicService;
+
+    @Spy
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
 
     @Test
     public void getTaskById() {

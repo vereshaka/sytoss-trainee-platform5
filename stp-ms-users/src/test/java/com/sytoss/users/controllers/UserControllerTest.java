@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.UserService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -58,25 +59,13 @@ public class UserControllerTest extends AbstractControllerTest {
         headers.setBearerAuth(generateJWT(List.of("123"), null, null, null, "teacher"));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("firstName", "name");
+        body.add("lastName", "name");
         body.add("photo", new FileSystemResource(photoFile));
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<Void> result = getRestTemplate().postForEntity(getEndpoint("/api/user/updatePhoto"), requestEntity, Void.class);
+        ResponseEntity<Void> result = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    public void shouldUpdateProfile(){
-        ProfileModel request = new ProfileModel();
-        request.setPrimaryGroup(new Group());
-        request.getPrimaryGroup().setName("PM-93-2");
-
-        doNothing().when(userService).updateProfile(any(ProfileModel.class));
-
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(request, headers);
-        ResponseEntity<Teacher> result = doPost("/api/user/me", requestEntity, Teacher.class);
-        assertEquals(200, result.getStatusCode().value());
     }
 }

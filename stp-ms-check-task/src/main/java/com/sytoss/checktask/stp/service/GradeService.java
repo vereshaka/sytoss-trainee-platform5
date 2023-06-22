@@ -72,14 +72,16 @@ public class GradeService {
             if (keyListAnswer.size() != keyListEtalon.size()) {
                 return false;
             }
-            for (int j = 0; j < keyListEtalon.size(); j++) {
-                if (!keyListAnswer.contains(keyListEtalon.get(i))) {
-                    return false;
-                }
+            boolean allColumnsExists = keyListEtalon.stream()
+                    .allMatch(keyListAnswer::contains);
+
+            if (!allColumnsExists) {
+                return false;
             }
-            for (String s : keyListEtalon) {
-                if (!queryResultEtalon.getResultMapList().get(i).get(s)
-                        .equals(queryResultAnswer.getResultMapList().get(i).get(s))) {
+            for (String columnName : keyListEtalon) {
+                Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
+                Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
+                if (!etalonFieldValue.equals(answerFieldValue)) {
                     return false;
                 }
             }
