@@ -38,7 +38,7 @@
                     <images>
                         <image>
                             <registry>docker.io</registry>
-                            <name>sytoss/stp-common:${project.version}</name>
+                            <name>sytoss/${project.artifactId}:${project.version}</name>
                             <build>
                                 <dockerFileDir>${project.basedir}</dockerFileDir>
                             </build>

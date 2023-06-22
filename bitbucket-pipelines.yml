@@ -15,6 +15,7 @@ pipelines:
             - mvn clean install
             - mvn docker:build
             - mvn docker:push
+            - docker system prune -a -f
     deploy_to_prod:
       - step:
           name: Deploy to prod
