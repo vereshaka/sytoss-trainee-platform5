@@ -51,7 +51,7 @@ public class DisciplineGiven extends AbstractGiven {
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             for (DisciplineDTO disciplineDtoFromTable:disciplines) {
-                if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
+                if (disciplineDTO.getName().equals(disciplineDtoFromTable.getName())) {
                     getDisciplineConnector().deleteById(disciplineDTO.getId());
                 }
             }
