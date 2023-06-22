@@ -3,27 +3,30 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskConditionNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.TaskConditionConnector;
+import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ConditionServiceTest extends AbstractApplicationTest {
+public class ConditionServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private TaskConditionConnector taskConditionConnector;
 
+    @Spy
+    private TaskConditionConvertor taskConditionConvertor = new TaskConditionConvertor();
+
     @InjectMocks
-    @Autowired
     private TaskConditionService conditionService;
 
     @Test

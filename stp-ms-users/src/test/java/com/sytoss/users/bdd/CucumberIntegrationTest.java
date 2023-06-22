@@ -1,7 +1,10 @@
 package com.sytoss.users.bdd;
 
+import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.UserDTO;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -15,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import com.sytoss.users.AbstractApplicationTest;
 
 import java.util.ArrayList;
 
@@ -36,6 +38,12 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private UserConnector userConnector;
+
+    @Autowired
+    private GroupConnector groupConnector;
+
+    @Autowired
+    private UserConverter userConverter;
 
     @LocalServerPort
     private int applicationPort;

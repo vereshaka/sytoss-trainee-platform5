@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.UserConverter;
+import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -18,6 +19,8 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -97,7 +100,7 @@ public class UserServiceTest extends AbstractJunitTest {
         studentDTO.setFirstName("John");
         studentDTO.setLastName("Do");
         studentDTO.setEmail("test@test.com");
-        studentDTO.setPrimaryGroupId(1L);
+        studentDTO.setGroups(List.of(new GroupDTO()));
         byte[] photoBytes = {0x01, 0x02, 0x03};
         studentDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);

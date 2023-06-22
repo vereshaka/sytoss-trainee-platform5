@@ -29,8 +29,12 @@ public class UserService extends AbstractService {
     private final UserConverter userConverter;
 
     public AbstractUser getById(Long userId) {
-        UserDTO foundUser = userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserDTO foundUser = getDTOById(userId);
         return instantiateUser(foundUser);
+    }
+
+    private UserDTO getDTOById(Long userId) {
+        return userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     protected UserDTO getMeAsDto() {

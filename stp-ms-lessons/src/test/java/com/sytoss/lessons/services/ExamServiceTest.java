@@ -5,13 +5,19 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.ExamConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.ExamConvertor;
+import com.sytoss.lessons.convertors.GroupConvertor;
+import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -20,15 +26,17 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 
-public class ExamServiceTest extends AbstractApplicationTest {
+public class ExamServiceTest extends AbstractJunitTest {
 
     @InjectMocks
     @Autowired
     private ExamService examService;
 
-    @MockBean
+    @Mock
     private ExamConnector examConnector;
 
+    @Spy
+    private ExamConvertor examConvertor = new ExamConvertor(new GroupConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()));
 
     @Test
     public void shouldSaveExam() {

@@ -6,20 +6,19 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class ExamConvertor {
 
-    @Autowired
-    private GroupConvertor groupConvertor;
+    private final GroupConvertor groupConvertor;
 
-    @Autowired
-    private TopicConvertor topicConvertor;
+    private final TopicConvertor topicConvertor;
 
     public void toDTO(Exam source, ExamDTO destination) {
         destination.setId(source.getId());
