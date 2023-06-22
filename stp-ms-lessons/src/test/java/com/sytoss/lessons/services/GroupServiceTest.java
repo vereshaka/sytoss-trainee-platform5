@@ -38,7 +38,7 @@ public class GroupServiceTest extends AbstractJunitTest {
     private DisciplineService disciplineService;
 
     @Test
-    public void findGroups() {
+    public void getMyGroups() {
         GroupDTO group = new GroupDTO();
         group.setId(11L);
         group.setName("Test");

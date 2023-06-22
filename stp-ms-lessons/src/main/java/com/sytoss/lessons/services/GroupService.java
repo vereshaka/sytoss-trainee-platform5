@@ -7,6 +7,9 @@ import com.sytoss.lessons.connectors.GroupConnector;
 import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupDTO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,13 +20,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class GroupService {
+public class GroupService extends AbstractService{
 
     private final GroupConnector groupConnector;
 
     private final GroupConvertor groupConvertor;
 
     private final DisciplineService disciplineService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public List<Group> findByDiscipline(Long disciplineId) {
         List<GroupDTO> groupDTOList = groupConnector.findByDisciplineId(disciplineId);
@@ -51,20 +57,15 @@ public class GroupService {
     }
 
     public List<Group> findGroups() {
-        List<Discipline> disciplineDTOList = disciplineService.findDisciplines();
-
-        List<GroupDTO> allGroups = new ArrayList<>();
-        for(Discipline discipline : disciplineDTOList){
-            List<GroupDTO> groupDTOS = groupConnector.findByDisciplineId(discipline.getId());
-            for(GroupDTO groupDTO : groupDTOS){
-                if(!allGroups.contains(groupDTO.getId())){
-                    allGroups.add(groupDTO);
-                }
-            }
-        }
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<GroupDTO> criteriaQuery = criteriaBuilder.createQuery(GroupDTO.class);
+        Root<GroupDTO> dtoRoot = criteriaQuery.from(GroupDTO.class);
+        Join<GroupDTO,DisciplineDTO> join = dtoRoot.join("discipline", JoinType.INNER);
+        criteriaQuery.where(criteriaBuilder.equal(join.get("teacherId"),getCurrentUser().getId()));
+        List<GroupDTO> groupDTOS = entityManager.createQuery(criteriaQuery).getResultList();
 
         List<Group> result = new ArrayList<>();
-        for (GroupDTO groupDTO : allGroups) {
+        for (GroupDTO groupDTO : groupDTOS) {
             Group group = new Group();
             groupConvertor.fromDTO(groupDTO, group);
             result.add(group);

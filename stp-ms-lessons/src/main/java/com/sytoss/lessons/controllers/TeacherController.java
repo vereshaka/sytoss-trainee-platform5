@@ -53,7 +53,7 @@ public class TeacherController {
             @ApiResponse(responseCode = "404", description = "Teacher does not exist!"),
     })
     @GetMapping("/my/groups")
-    public List<Group> findGroups() {
+    public List<Group> getMyGroups() {
         return groupService.findGroups();
     }
 }
