@@ -35,7 +35,6 @@ Feature: Discipline
       | 1       | Mongo      |
       | 1       | H2         |
 
-  @Bug @YevgenyV #Need to re-think the logic of service method
   Scenario: search disciplines
     Given disciplines exist
       | discipline |
