@@ -1,6 +1,5 @@
 package com.sytoss.provider.bdd.common;
 
-import com.sytoss.provider.dto.UserDTO;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +26,6 @@ public class TestExecutionContext {
     }
 
     private ResponseEntity response;
-
-    private UserDTO user;
 
     @Setter(AccessLevel.NONE)
     private Map<String, Long> idMapping = new HashMap<>();
