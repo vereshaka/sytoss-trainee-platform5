@@ -32,16 +32,17 @@ public class UserThen extends CucumberIntegrationTest {
     }
 
     @Then("should receive information about group of student")
-    public void shouldReceiveInformationAboutGroupOOfStudent(List<GroupDTO> groupDTOList) {
+    public void shouldReceiveGroupsByStudent(List<GroupDTO> groupDTOList) {
         List<Group> groupList = new ArrayList<>();
         groupDTOList.forEach(groupDTO -> {
             Group group = new Group();
             getGroupConvertor().fromDTO(groupDTO, group);
             groupList.add(group);
         });
-        List<Group> resultGroupDTOList = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<Group> responseGroupList = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
+        Assertions.assertEquals(groupList.size(), responseGroupList.size());
         Assertions.assertTrue(groupList.stream()
-                .allMatch(expectedGroup -> Objects.requireNonNull(resultGroupDTOList).stream()
+                .allMatch(expectedGroup -> Objects.requireNonNull(responseGroupList).stream()
                         .anyMatch(actualGroup -> actualGroup.getName().equals(expectedGroup.getName())
                         )
                 )

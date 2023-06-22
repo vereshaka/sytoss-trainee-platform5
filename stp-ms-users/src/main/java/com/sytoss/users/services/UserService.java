@@ -120,14 +120,14 @@ public class UserService extends AbstractService {
         userConnector.save(dto);
     }
 
-    public List<Group> findGroupByStudentId(Long studentId) {
-        StudentDTO studentDTO = (StudentDTO) getDTOById(studentId);
+    public List<Group> findByStudent() {
+        StudentDTO studentDTO = (StudentDTO) getMeAsDto();
         List<Group> groups = new ArrayList<>();
-        studentDTO.getGroups().forEach((groupDTO -> {
+        studentDTO.getGroups().forEach((groupDTO) -> {
             Group group = new Group();
             groupConvertor.fromDTO(groupDTO, group);
             groups.add(group);
-        }));
+        });
         return groups;
     }
 }

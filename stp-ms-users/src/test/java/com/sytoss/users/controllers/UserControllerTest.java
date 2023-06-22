@@ -65,21 +65,21 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldReturnStudentGroups() {
-        when(userService.findGroupByStudentId(1L)).thenReturn(List.of(new Group()));
+        when(userService.findByStudent()).thenReturn(List.of(new Group()));
         HttpHeaders httpHeaders = getDefaultHttpHeaders("student");
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Group>> responseEntity = doGet("/api/user/1/groups", httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> responseEntity = doGet("/api/user/my/groups", httpEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
     public void shouldReturnStudentNotFoundException() {
-        when(userService.findGroupByStudentId(1L)).thenThrow(new UserNotFoundException("User not found"));
+        when(userService.findByStudent()).thenThrow(new UserNotFoundException("User not found"));
         HttpHeaders httpHeaders = getDefaultHttpHeaders("student");
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> responseEntity = doGet("/api/user/1/groups", httpEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> responseEntity = doGet("/api/user/my/groups", httpEntity, new ParameterizedTypeReference<String>() {
         });
-        assertEquals(HttpStatus.valueOf(500), responseEntity.getStatusCode());
+        assertEquals(HttpStatus.valueOf(404), responseEntity.getStatusCode());
     }
 }

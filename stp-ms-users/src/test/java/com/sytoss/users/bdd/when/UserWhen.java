@@ -1,7 +1,6 @@
 package com.sytoss.users.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
@@ -38,7 +37,7 @@ public class UserWhen extends CucumberIntegrationTest {
 
     @When("^this user upload the photo$")
     public void updateStudentPhoto() {
-        byte[] photoBytes = { 0x01, 0x02, 0x03 };
+        byte[] photoBytes = {0x01, 0x02, 0x03};
         File photoFile;
         try {
             photoFile = File.createTempFile("photo", ".jpg");
@@ -60,9 +59,9 @@ public class UserWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("receive all groups of student")
+    @When("student receive his groups")
     public void receiveAllGroupsOfStudent() {
-        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/groups";
+        String url = "/api/user/my/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 

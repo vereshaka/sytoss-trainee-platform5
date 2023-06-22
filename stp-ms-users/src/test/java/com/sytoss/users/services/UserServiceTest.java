@@ -109,15 +109,23 @@ public class UserServiceTest extends AbstractJunitTest {
         studentDTO.setFirstName("John");
         studentDTO.setLastName("Do");
         studentDTO.setGroups(List.of(createGroupDTO("First Group"), createGroupDTO("Second Group"), createGroupDTO("Third Group")));
-        when(userConnector.findById(1L)).thenReturn(Optional.of(studentDTO));
-        List<Group> groups = userService.findGroupByStudentId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+                .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        List<Group> groups = userService.findByStudent();
         assertEquals(3, groups.size());
     }
 
     @Test
     public void shouldReturnStudentNotFoundException() {
-        when(userConnector.findById(1L)).thenThrow(new UserNotFoundException("User not found"));
-        assertThrows(UserNotFoundException.class, () -> userService.findGroupByStudentId(1L));
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+                .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(userConnector.getByEmail("test@test.com")).thenThrow(new UserNotFoundException("User not found"));
+        assertThrows(UserNotFoundException.class, () -> userService.findByStudent());
     }
 
     private GroupDTO createGroupDTO(String name) {

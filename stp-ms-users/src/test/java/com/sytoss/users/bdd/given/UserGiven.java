@@ -51,7 +51,7 @@ public class UserGiven extends CucumberIntegrationTest {
     @Given("this student assign to group")
     public void thisStudentAssignToGroup(List<GroupDTO> groupDTOList) {
         StudentDTO studentDTO = (StudentDTO) getUserConnector().getByEmail(TestExecutionContext.getTestContext().getUser().getEmail());
-        groupDTOList.forEach((groupDTO) -> getGroupConnector().save(groupDTO));
+        groupDTOList.forEach(getGroupConnector()::save);
 
         studentDTO.setGroups(groupDTOList);
         getUserConnector().save(studentDTO);

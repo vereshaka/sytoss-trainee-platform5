@@ -51,9 +51,8 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/{studentId}/groups")
-    public List<Group> findGroupByStudentId(@Parameter(description = "id of student for searching groups")
-                                                @PathVariable("studentId") Long studentId) {
-        return userService.findGroupByStudentId(studentId);
+    @GetMapping("/my/groups")
+    public List<Group> findGroupByStudent() {
+        return userService.findByStudent();
     }
 }

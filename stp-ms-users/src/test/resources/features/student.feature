@@ -7,7 +7,7 @@ Feature: Student
       | group first  |
       | group second |
       | group third  |
-    When receive all groups of student
+    When student receive his groups
     Then operation is successful
     And should receive information about group of student
       | group        |
