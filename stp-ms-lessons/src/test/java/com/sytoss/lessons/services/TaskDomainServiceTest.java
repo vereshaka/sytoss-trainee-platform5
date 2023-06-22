@@ -1,11 +1,17 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -38,6 +44,9 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
 
     @Mock
     private TaskDomainConnector taskDomainConnector;
+
+    @Mock
+    private PersonalExamConnector personalExamConnector;
 
     @Spy
     private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
@@ -99,6 +108,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         taskDomain.setScript("Script Domain");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomain.setDiscipline(disciplineDTO);
+        when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(false);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomain);
         Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -113,6 +123,39 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
         assertEquals("new", result.getName());
         assertEquals("new", result.getScript());
+    }
+
+    @Test
+    public void shouldNotUpdate() {
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        taskDomainDTO.setName("First Domain");
+        taskDomainDTO.setScript("Script Domain");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setName("new");
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        List<PersonalExam> personalExams = new ArrayList<>();
+        PersonalExam personalExam = new PersonalExam();
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setId(1L);
+        taskDomain.setName("First Domain");
+        taskDomain.setScript("Script Domain");
+        Discipline discipline = new Discipline();
+        discipline.setName("new");
+        discipline.setTeacher(new Teacher());
+        taskDomain.setDiscipline(discipline);
+        com.sytoss.domain.bom.personalexam.Answer answer = new com.sytoss.domain.bom.personalexam.Answer();
+        Task task = new Task();
+        task.setTaskDomain(taskDomain);
+        answer.setTask(task);
+        answer.setStatus(AnswerStatus.NOT_STARTED);
+        personalExam.getAnswers().add(answer);
+        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
+        personalExams.add(personalExam);
+        when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(true);
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
+        TaskDomain updateTaskDomain = new TaskDomain();
+        assertThrows(TaskDomainIsUsed.class, () -> taskDomainService.update(1L, updateTaskDomain));
     }
 
     private Discipline createReference(Long id) {

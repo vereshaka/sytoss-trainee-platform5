@@ -81,4 +81,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskConditionAlreadyExistException taskConditionAlreadyExistException, WebRequest request) {
         return ResponseEntity.status(409).body(taskConditionAlreadyExistException.getMessage());
     }
+
+    @ExceptionHandler({TaskDomainIsUsed.class})
+    public ResponseEntity<?> handleValidationException(TaskDomainIsUsed taskDomainIsUsed, WebRequest request) {
+        return ResponseEntity.status(409).body(taskDomainIsUsed.getMessage());
+    }
 }

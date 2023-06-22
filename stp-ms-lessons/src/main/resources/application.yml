@@ -24,4 +24,5 @@ feign:
         readTimeout: 5000
         request-interceptors[0]: com.sytoss.lessons.controllers.TokenRequestInterceptor
 server:
-  port: 9101
+   port: 9101
+users-url: http://localhost:9102/api/

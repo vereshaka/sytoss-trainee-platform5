@@ -1,5 +1,10 @@
 package com.sytoss.lessons.bdd.common;
 
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -22,6 +27,21 @@ public class DataTableCommon {
         }
 
         return disciplineDTO;
+    }
+
+    @DataTableType
+    public PersonalExam mapPersonalExam(Map<String, String> entry) {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setName(entry.get("examName"));
+        Task task = new Task();
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setName(entry.get("task domain"));
+        task.setTaskDomain(taskDomain);
+        Answer answer = new Answer();
+        answer.setTask(task);
+        answer.setStatus(AnswerStatus.NOT_STARTED);
+        personalExam.getAnswers().add(answer);
+        return personalExam;
     }
 
     @DataTableType

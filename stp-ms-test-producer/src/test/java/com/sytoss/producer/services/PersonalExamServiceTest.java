@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -148,6 +147,13 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         input.setAnswers(Arrays.asList(answer));
         when(personalExamConnector.getById("5")).thenReturn(input);
         assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5", 1L));
+    }
+
+    @Test
+    public void shouldShouldReturnTrueWhenTaskDomainIsUsed() {
+        when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
+        boolean isUsed = personalExamService.taskDomainIsUsed(1L);
+        assertTrue(isUsed);
     }
 
     private Task createTask(String question) {
