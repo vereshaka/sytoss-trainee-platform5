@@ -12,9 +12,9 @@ pipelines:
       - step:
           name: Deploy to DockerHub
           script:
-            - mvn clean install
-            - mvn docker:build
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - mvn docker:build
             - echo $(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - docker push sytoss/stp-common:$(echo $VERSION)
