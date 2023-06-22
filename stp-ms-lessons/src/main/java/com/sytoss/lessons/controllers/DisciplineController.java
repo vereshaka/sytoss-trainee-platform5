@@ -5,7 +5,6 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
-import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,8 +27,6 @@ import java.util.List;
 public class DisciplineController {
 
     private final TopicService topicService;
-
-    private final GroupService groupService;
 
     private final DisciplineService disciplineService;
 
@@ -56,7 +53,7 @@ public class DisciplineController {
     public List<Group> findByDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                         @PathVariable("disciplineId")
                                         Long disciplineId) {
-        return groupService.findByDiscipline(disciplineId);
+        return disciplineService.getGroups(disciplineId);
     }
 
     @Operation(description = "Method that retrieve discipline")
@@ -69,20 +66,6 @@ public class DisciplineController {
                                     @PathVariable("disciplineId")
                                     Long disciplineId) {
         return disciplineService.getById(disciplineId);
-    }
-
-    @Operation(description = "Method that create group")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "404", description = "Discipline not found!"),
-            @ApiResponse(responseCode = "409", description = "Group already exists!")
-    })
-    @PostMapping("/discipline/{disciplineId}/group")
-    public Group createGroup(@Parameter(description = "id of the discipline to be searched by")
-                             @PathVariable("disciplineId")
-                             Long disciplineId,
-                             @RequestBody Group group) {
-        return groupService.create(disciplineId, group);
     }
 
     @Operation(description = "Method that create a new task domain")
@@ -116,5 +99,19 @@ public class DisciplineController {
     @GetMapping("/disciplines")
     public List<Discipline> findAllDisciplines() {
         return disciplineService.findAllDisciplines();
+    }
+
+    @Operation(description = "Method that join group to discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group Not Found!")
+    })
+    @PostMapping("/discipline/{disciplineId}/group/{groupId}")
+    public void assignGroup(
+            @Parameter(description = "id of the discipline to join")
+            @PathVariable("disciplineId") Long disciplineId,
+            @Parameter(description = "id of the group to join discipline")
+            @PathVariable("groupId") Long groupId) {
+        disciplineService.assignGroupToDiscipline(disciplineId, groupId);
     }
 }

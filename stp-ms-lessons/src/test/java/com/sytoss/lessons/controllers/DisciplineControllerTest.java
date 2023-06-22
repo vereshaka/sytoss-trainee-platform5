@@ -1,7 +1,6 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
-import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -9,7 +8,6 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.services.DisciplineService;
-import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
@@ -42,9 +40,6 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     private TopicConnector topicConnector;
 
     @MockBean
-    private GroupService groupService;
-
-    @MockBean
     private DisciplineService disciplineService;
 
     @MockBean
@@ -62,7 +57,7 @@ public class DisciplineControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() {
-        when(groupService.findByDiscipline(any())).thenReturn(new ArrayList<>());
+        when(disciplineService.getGroups(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<List<Group>>() {
@@ -110,24 +105,6 @@ public class DisciplineControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    public void shouldCreateGroup() {
-        when(groupService.create(anyLong(), any(Group.class))).thenReturn(new Group());
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
-        ResponseEntity<Group> result = doPost("/api/discipline/123/group", requestEntity, Group.class);
-        assertEquals(200, result.getStatusCode().value());
-    }
-
-    @Test
-    public void shouldNotCreateGroupWhenItExists() {
-        when(groupService.create(anyLong(), any(Group.class))).thenThrow(new GroupExistException("Test"));
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
-        ResponseEntity<String> result = doPost("/api/discipline/123/group", requestEntity, String.class);
-        assertEquals(409, result.getStatusCode().value());
-    }
-
-    @Test
     public void shouldFindTasksDomainByDiscipline() {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders();
@@ -144,6 +121,14 @@ public class DisciplineControllerTest extends AbstractControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> result = doGet("/api/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldLinkGroupToDiscipline() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Void> result = doPost("/api/discipline/2/group/5", httpEntity, Void.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

@@ -39,6 +39,8 @@ public class TestExecutionContext {
 
     private Long taskConditionId;
 
+    private Long groupReferenceId;
+
     private String token;
 
     @Setter(AccessLevel.NONE)
