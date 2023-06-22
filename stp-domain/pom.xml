@@ -30,7 +30,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <registry>docker.io/sytoss</registry>
+                            <registry>docker.io</registry>
                             <name>sytoss/stp-domain:${project.version}</name>
                             <build>
                                 <dockerFileDir>${project.basedir}</dockerFileDir>

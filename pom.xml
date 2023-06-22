@@ -83,11 +83,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.33.0</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -175,15 +170,22 @@
                     </properties>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>io.fabric8</groupId>-->
-<!--                <artifactId>docker-maven-plugin</artifactId>-->
-<!--                <version>0.33.0</version>-->
-<!--                <configuration>-->
-<!--                    <imageName>stp/sytosstraineeplatform:${project.version}</imageName>-->
-<!--                    <skip>${dockerfile.skip}</skip>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.33.0</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <registry>docker.io</registry>
+                            <name>sytoss/sytosstraineeplatform:${project.version}</name>
+                            <build>
+                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

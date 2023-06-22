@@ -13,6 +13,8 @@ pipelines:
           name: Deploy to DockerHub
           script:
             - mvn clean install
+            - mvn docker:build
+            - mvn docker:push
     deploy_to_prod:
       - step:
           name: Deploy to prod

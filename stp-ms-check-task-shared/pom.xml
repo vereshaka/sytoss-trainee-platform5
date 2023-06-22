@@ -25,7 +25,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <registry>docker.io/sytoss</registry>
+                            <registry>docker.io</registry>
                             <name>sytoss/stp-ms-check-task-shared:${project.version}</name>
                             <build>
                                 <dockerFileDir>${project.basedir}</dockerFileDir>
