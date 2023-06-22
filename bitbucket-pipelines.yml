@@ -26,6 +26,8 @@ pipelines:
             - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
             - docker push sytoss/stp-ms-users:$(echo $VERSION)
             - docker system prune -a -f
+          services:
+            - docker
     deploy_to_prod:
       - step:
           name: Deploy to prod
