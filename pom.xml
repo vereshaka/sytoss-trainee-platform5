@@ -22,6 +22,7 @@
         <module>stp-ms-lessons</module>
         <module>stp-ms-check-task</module>
         <module>stp-ms-check-task-shared</module>
+        <module>stp-ms-image-provider</module>
         <module>stp-ms-test-producer</module>
         <module>stp-ms-users</module>
     </modules>
