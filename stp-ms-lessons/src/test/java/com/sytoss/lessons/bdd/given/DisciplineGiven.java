@@ -50,7 +50,7 @@ public class DisciplineGiven extends AbstractGiven {
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
-            for (DisciplineDTO disciplineDtoFromTable:disciplines) {
+            for (DisciplineDTO disciplineDtoFromTable : disciplines) {
                 if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
                     getDisciplineConnector().deleteById(disciplineDTO.getId());
                 }
