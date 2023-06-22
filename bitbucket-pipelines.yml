@@ -5,14 +5,28 @@ pipelines:
   branches:
     develop:
       - step:
-          name: Build
+          name: Build and push
           script:
             - mvn clean install
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - mvn docker:build
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - docker push sytoss/stp-common:$(echo $VERSION)
+            - docker push sytoss/stp-domain:$(echo $VERSION)
+            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
+            - docker push sytoss/stp-ms-check-task-shared:$(echo $VERSION)
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+              - docker
     deploy_dockerhub:
       - step:
           name: Deploy to DockerHub
           script:
-            - echo $(cat pom.xml | grep "<version>" )
             - mvn clean install -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - ls -l
