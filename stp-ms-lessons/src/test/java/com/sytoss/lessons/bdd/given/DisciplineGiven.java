@@ -48,6 +48,14 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("disciplines exist")
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
+        List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            for (DisciplineDTO disciplineDtoFromTable:disciplines) {
+                if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
+                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                }
+            }
+        }
         for (DisciplineDTO discipline : disciplines) {
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
             if (disciplineResult == null) {
