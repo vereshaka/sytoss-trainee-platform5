@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
@@ -7,10 +8,12 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
@@ -47,6 +50,12 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
 
     @Mock
     private PersonalExamConnector personalExamConnector;
+
+    @Mock
+    private CheckTaskConnector checkTaskConnector;
+
+    @Mock
+    private TaskService taskService;
 
     @Spy
     private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
@@ -117,6 +126,7 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
             result.setScript("new");
             return result;
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
+        when(taskService.findByDomainId(anyLong())).thenReturn(new ArrayList<>());
         TaskDomain updateTaskDomain = new TaskDomain();
         taskDomain.setName("new");
         taskDomain.setScript("new");
@@ -156,6 +166,35 @@ public class TaskDomainServiceTest extends AbstractJunitTest {
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
         TaskDomain updateTaskDomain = new TaskDomain();
         assertThrows(TaskDomainIsUsed.class, () -> taskDomainService.update(1L, updateTaskDomain));
+    }
+
+    @Test
+    public void shouldNotUpdateWhenEtalonIsNotValid() {
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setId(1L);
+        taskDomain.setName("First Domain");
+        taskDomain.setScript("Script Domain");
+        Discipline discipline = new Discipline();
+        discipline.setName("new");
+        discipline.setTeacher(new Teacher());
+        taskDomain.setDiscipline(discipline);
+        Task task = new Task();
+        task.setTaskDomain(taskDomain);
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        taskDomainDTO.setName("First Domain");
+        taskDomainDTO.setScript("Script Domain");
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
+        when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(false);
+        when(taskService.findByDomainId(anyLong())).thenReturn(List.of(task));
+        IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
+        isCheckEtalon.setException("error");
+        when(checkTaskConnector.checkEtalon(any())).thenReturn(isCheckEtalon);
+        TaskDomain updateTaskDomain = new TaskDomain();
+        updateTaskDomain.setId(1L);
+        assertThrows(EtalonIsNotValidException.class, () -> taskDomainService.update(1L, updateTaskDomain));
     }
 
     private Discipline createReference(Long id) {

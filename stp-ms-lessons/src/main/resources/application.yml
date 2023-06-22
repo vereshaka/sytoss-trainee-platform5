@@ -26,3 +26,4 @@ feign:
 server:
    port: 9101
 users-url: http://localhost:9102/api/
+check-task-url: http://localhost:9010/api/

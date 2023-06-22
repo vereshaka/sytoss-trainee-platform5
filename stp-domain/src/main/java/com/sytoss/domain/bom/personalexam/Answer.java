@@ -23,7 +23,7 @@ public class Answer {
     private AnswerStatus status;
 
     @JsonView(PersonalExam.Public.class)
-    private Grade grade;
+    private Score score;
 
     public void inProgress() {
         if (this.status.equals(AnswerStatus.NOT_STARTED)) {
@@ -35,8 +35,8 @@ public class Answer {
         }
     }
 
-    public void grade(Grade grade) {
-        setGrade(grade);
+    public void grade(Score score) {
+        setScore(score);
         setStatus(AnswerStatus.GRADED);
     }
 
