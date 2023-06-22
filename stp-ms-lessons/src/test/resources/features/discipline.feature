@@ -47,3 +47,8 @@ Feature: Discipline
       | discipline |
       | SQL        |
       | Mongo      |
+
+  Scenario: Link task to topic
+    Given "SQL" discipline exists
+    When link this discipline to group with id 17
+    Then operation is successful

@@ -32,9 +32,8 @@ public class ExamDTO {
     @Column(name = "DURATION")
     private Integer duration;
 
-    @ManyToOne
-    @JoinColumn(name = "GROUPS_ID", referencedColumnName = "ID")
-    private GroupDTO group;
+    @Column(name = "GROUP_ID")
+    private Long groupId;
 
     @Column(name = "NUMBER_OF_TASKS")
     private Integer numberOfTasks;

@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
 public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system create \"(.*)\" task domain$")
@@ -69,11 +72,11 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
-    public void teacherUpdatesTaskDomainTo(String oldNameTaskDomain, String newNameTaskDomain) {
+    public void teacherUpdatesTaskDomainTo(String oldTaskDomainName, String newTaskDomainName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldNameTaskDomain, disciplineDTO.getId());
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldTaskDomainName, disciplineDTO.getId());
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setName(newNameTaskDomain);
+        taskDomain.setName(newTaskDomainName);
         if (taskDomainDTO != null) {
             taskDomain.setScript(taskDomainDTO.getScript());
         }
@@ -83,15 +86,23 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
         discipline.setTeacher(teacher);
         taskDomain.setDiscipline(discipline);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
-        if (taskDomainDTO == null) {
-            String url = "/api/taskDomain/123";
+        if (!TestExecutionContext.getTestContext().getPersonalExams().isEmpty()) {
+            String url = "/api/taskDomain/" + taskDomainDTO.getId();
+            HttpHeaders httpHeaders = getDefaultHttpHeaders();
+            HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
+            when(getPersonalExamConnector().taskDomainIsUsed(anyLong())).thenReturn(true);
             ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
-        }
-        if (taskDomainDTO != null) {
+        } else if (taskDomainDTO == null) {
+            String url = "/api/taskDomain/123";
+            HttpHeaders httpHeaders = getDefaultHttpHeaders();
+            HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
+            ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+            TestExecutionContext.getTestContext().setResponse(responseEntity);
+        } else {
             String url = "/api/taskDomain/" + taskDomainDTO.getId();
+            HttpHeaders httpHeaders = getDefaultHttpHeaders();
+            HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
             ResponseEntity<TaskDomain> responseEntity = doPut(url, httpEntity, TaskDomain.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }

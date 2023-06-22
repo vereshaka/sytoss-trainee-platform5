@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class PersonalExamThen extends CucumberIntegrationTest {
@@ -80,5 +81,9 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
         assertEquals(time, firstTask.getExam().getTime());
         assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());
+    }
+    @Then("^should return \"(.*)\"$")
+    public void shouldReturnIsTaskDomainUsed(String isUsed) {
+        assertEquals(Boolean.valueOf(isUsed), Boolean.valueOf(IntegrationTest.getTestContext().getResponse().getBody()));
     }
 }

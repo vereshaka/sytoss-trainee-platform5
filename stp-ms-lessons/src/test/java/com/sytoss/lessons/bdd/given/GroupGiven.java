@@ -3,46 +3,28 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GroupGiven extends CucumberIntegrationTest {
 
     @Given("^groups exist$")
-    public void groupsExist(List<GroupDTO> groups) {
-        for (GroupDTO groupDTO : groups) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(groupDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
+    public void groupsExist(List<GroupReferenceDTO> groups) {
+        for (GroupReferenceDTO groupReferenceDTO : groups) {
+            Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDisciplineId());
+            DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
             if (disciplineDTO == null) {
-                disciplineDTO = groupDTO.getDiscipline();
+                disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+                getDisciplineConnector().save(disciplineDTO);
             }
-            GroupDTO result = getGroupConnector().getByNameAndDisciplineId(groupDTO.getName(), disciplineDTO.getId());
-            groupDTO.setDiscipline(disciplineDTO);
+            GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
             if (result == null) {
-                getGroupConnector().save(groupDTO);
+                getGroupReferenceConnector().save(groupReferenceDTO);
             }
-        }
-    }
-
-    @Given("^\"(.*)\" group does not exist for this discipline$")
-    public void groupDoesNotExistForDiscipline(String groupName) {
-        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
-        if (groupDTO != null) {
-            getGroupConnector().delete(groupDTO);
-        }
-    }
-
-    @Given("^\"(.*)\" group exist for this discipline$")
-    public void groupExistForDiscipline(String groupName) {
-        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
-        if (groupDTO == null) {
-            groupDTO = new GroupDTO();
-            groupDTO.setName(groupName);
-            groupDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
-            getGroupConnector().save(groupDTO);
         }
     }
 }

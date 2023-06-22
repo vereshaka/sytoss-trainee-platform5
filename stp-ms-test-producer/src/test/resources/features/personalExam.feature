@@ -31,3 +31,14 @@ Feature: PersonalExam
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
     When student with 2 id start second time personal exam "Exam"
     Then operation should be finished with 409 "Exam is already in progress!" error
+
+  Scenario: Student is not allowed to start test when
+    Given personal "Exam" exam for student with 2 id and IN_PROGRESS status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script | taskDomainId |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   | 1            |
+    And personal "Exam" exam for student with 2 id and FINISHED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script | taskDomainId |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   | 1            |
+    When system check task domain with id: "1" is used
+    Then operation is successful
+    And should return "true"

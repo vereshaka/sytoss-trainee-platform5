@@ -3,6 +3,8 @@ package com.sytoss.checktask.stp.service;
 import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
+import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.Grade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,16 +38,54 @@ public class GradeService {
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
-            return grade(queryResultEtalon, queryResultAnswer);
+            Grade grade = grade(queryResultEtalon, queryResultAnswer);
+            if (grade.getValue() > 0) {
+                for (TaskCondition condition : data.getConditions()) {
+                    if (condition.getType().equals(ConditionType.CONTAINS)) {
+                        if (!data.getAnswer().contains(condition.getValue())) {
+                            grade.setValue(grade.getValue() - 0.3);
+                            break;
+                        }
+                    }
+                }
+            }
+            return grade;
         } finally {
             helperServiceProviderObject.dropDatabase();
         }
     }
 
     private Grade grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if (queryResultEtalon.getResultMapList().size() != queryResultAnswer.getResultMapList().size() && queryResultEtalon.getRow(0).size() != queryResultAnswer.getRow(0).size()) {
-            return new Grade(1, "not ok");
+        if (!checkQueryResults(queryResultEtalon, queryResultAnswer)) {
+            return new Grade(0, "not ok");
         }
-        return new Grade(10, "ok");
+        return new Grade(1, "ok");
+    }
+
+    private boolean checkQueryResults(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
+        if (queryResultEtalon.getResultMapList().size() != queryResultAnswer.getResultMapList().size() && queryResultEtalon.getRow(0).size() != queryResultAnswer.getRow(0).size()) {
+            return false;
+        }
+        for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
+            List<String> keyListEtalon = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
+            List<String> keyListAnswer = queryResultAnswer.getResultMapList().get(i).keySet().stream().toList();
+            if (keyListAnswer.size() != keyListEtalon.size()) {
+                return false;
+            }
+            boolean allColumnsExists = keyListEtalon.stream()
+                    .allMatch(keyListAnswer::contains);
+
+            if (!allColumnsExists) {
+                return false;
+            }
+            for (String columnName : keyListEtalon) {
+                Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
+                Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
+                if (!etalonFieldValue.equals(answerFieldValue)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
