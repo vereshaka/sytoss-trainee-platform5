@@ -44,6 +44,7 @@ public class GradeService {
                     if (condition.getType().equals(ConditionType.CONTAINS)) {
                         if (!data.getAnswer().contains(condition.getValue())) {
                             grade.setValue(grade.getValue() - 0.3);
+                            break;
                         }
                     }
                 }
