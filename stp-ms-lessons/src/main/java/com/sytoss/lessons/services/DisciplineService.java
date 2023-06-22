@@ -3,10 +3,13 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,8 @@ public class DisciplineService extends AbstractService {
     private final DisciplineConnector disciplineConnector;
 
     private final DisciplineConvertor disciplineConvertor;
+
+    private final GroupReferenceConnector groupReferenceConnector;
 
     public Discipline getById(Long id) {
         try {
@@ -73,5 +78,25 @@ public class DisciplineService extends AbstractService {
             disciplines.add(discipline);
         }
         return disciplines;
+    }
+
+    public void assignGroupToDiscipline(Long disciplineId, Long groupId) {
+        getById(disciplineId);
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineId);
+        groupReferenceConnector.save(groupReferenceDTO);
+    }
+
+    public List<Group> getGroups(Long disciplineId) {
+
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
+        List<Group> result = new ArrayList<>();
+        Discipline discipline = getById(disciplineId);
+        for (GroupReferenceDTO item : groups) {
+            Group group = new Group();
+            group.setId(item.getGroupId());
+            group.setDiscipline(discipline);
+            result.add(group);
+        }
+        return result;
     }
 }

@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
@@ -55,13 +55,10 @@ public class DataTableCommon {
     }
 
     @DataTableType
-    public GroupDTO mapGroups(Map<String, String> entry) {
-        GroupDTO group = new GroupDTO();
-        DisciplineDTO discipline = new DisciplineDTO();
-        discipline.setName(entry.get("discipline"));
-        group.setName(entry.get("group"));
-        group.setDiscipline(discipline);
-        return group;
+    public GroupReferenceDTO mapGroups(Map<String, String> entry) {
+        Long groupId = Long.parseLong(entry.get("group"));
+        Long disciplineId = Long.parseLong(entry.get("discipline"));
+        return new GroupReferenceDTO(groupId, disciplineId);
     }
 
     @DataTableType

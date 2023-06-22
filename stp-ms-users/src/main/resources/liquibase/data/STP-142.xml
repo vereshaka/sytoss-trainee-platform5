@@ -34,4 +34,13 @@
             <dropSequence sequenceName="APP_USER_SEQ" />
         </rollback>
     </changeSet>
+
+    <changeSet author="VereshchakaV" id="teacher_4">
+        <addForeignKeyConstraint baseTableName="APP_USER" baseColumnNames="GROUP_ID"
+                                 constraintName="FK_APP_USER2GROUPS" referencedTableName="GROUPS"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="APP_USER" constraintName="FK_APP_USER2GROUPS" />
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

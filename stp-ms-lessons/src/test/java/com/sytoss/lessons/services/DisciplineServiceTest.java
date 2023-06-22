@@ -2,17 +2,21 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractApplicationTest;
+import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -23,16 +27,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-public class DisciplineServiceTest extends AbstractApplicationTest {
+public class DisciplineServiceTest extends AbstractJunitTest {
 
-    @MockBean
+    @Mock
     private DisciplineConnector disciplineConnector;
 
+    @Mock
+    private GroupReferenceConnector groupReferenceConnector;
+
     @InjectMocks
-    @Autowired
     private DisciplineService disciplineService;
+
+    @Spy
+    private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();
 
     @Test
     public void shouldSaveDiscipline() {
@@ -77,7 +87,7 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
     }
 
     @Test
-    public void shouldReturnDisciplinesByTeacher(){
+    public void shouldReturnDisciplinesByTeacher() {
         Teacher user = new Teacher();
         user.setId(1L);
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
@@ -107,5 +117,25 @@ public class DisciplineServiceTest extends AbstractApplicationTest {
         when(disciplineConnector.findAll()).thenReturn(input);
         List<Discipline> result = disciplineService.findAllDisciplines();
         assertEquals(input.size(), result.size());
+    }
+
+    @Test
+    public void testAssignGroupToDiscipline() {
+        Long disciplineId = 1L;
+        Long groupId = 1L;
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        disciplineService.assignGroupToDiscipline(disciplineId, groupId);
+        verify(groupReferenceConnector).save(any(GroupReferenceDTO.class));
+    }
+
+    @Test
+    public void getGroups() {
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>(List.of(mock(GroupReferenceDTO.class), mock(GroupReferenceDTO.class)));
+        when(groupReferenceConnector.findByDisciplineId(anyLong())).thenReturn(groupReferenceDTOS);
+        List<Group> resultList = disciplineService.getGroups(5L);
+        assertEquals(2, resultList.size());
     }
 }

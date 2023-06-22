@@ -1,30 +1,19 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.domain.bom.users.AbstractUser;
-import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.suite.api.ConfigurationParameter;
-import org.junit.platform.suite.api.IncludeEngines;
-import org.junit.platform.suite.api.SelectClasspathResource;
-import org.junit.platform.suite.api.Suite;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.ArrayList;
-
-import static io.cucumber.junit.platform.engine.Constants.*;
 
 @CucumberContextConfiguration
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
@@ -53,9 +42,6 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private TopicConvertor topicConvertor;
 
     @Autowired
-    private GroupConvertor groupConvertor;
-
-    @Autowired
     private TaskConditionConnector taskConditionConnector;
 
     @Autowired
@@ -73,7 +59,7 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     private int applicationPort;
 
     @Autowired
-    private GroupConnector groupConnector;
+    private GroupReferenceConnector groupReferenceConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

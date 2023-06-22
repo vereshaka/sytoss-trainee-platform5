@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ExamConnector extends JpaRepository<ExamDTO, Long> {
 
-    ExamDTO getByNameAndGroupName(String examName, String groupName);
+    ExamDTO getByNameAndGroupId(String examName, Long groupId);
 }
