@@ -26,28 +26,4 @@ public class GroupWhen extends CucumberIntegrationTest {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
-
-    @When("^teacher \"(.*)\" \"(.*)\" create \"(.*)\" group for \"(.*)\" discipline$")
-    public void requestSentCreateGroup(String firstName, String lastName, String groupName, String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
-        String url = "/api/discipline/" + disciplineDTO.getId() + "/group";
-        Group group = new Group();
-        group.setName(groupName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
-        ResponseEntity<Group> responseEntity = doPost(url, httpEntity, Group.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
-    }
-
-    @When("^teacher \"(.*)\" \"(.*)\" create \"(.*)\" group for \"(.*)\" discipline that exists$")
-    public void requestSentCreateGroupThatExist(String firstName, String lastName, String groupName, String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
-        String url = "/api/discipline/" + disciplineDTO.getId() + "/group";
-        Group group = new Group();
-        group.setName(groupName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
-        ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
-    }
 }
