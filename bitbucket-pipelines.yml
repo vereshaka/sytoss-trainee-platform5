@@ -14,6 +14,7 @@ pipelines:
           script:
             - mvn clean install -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - ls -l
             - mvn docker:build
             - echo $(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
