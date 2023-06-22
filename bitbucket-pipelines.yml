@@ -14,7 +14,17 @@ pipelines:
           script:
             - mvn clean install
             - mvn docker:build
-            - mvn docker:push
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - echo $(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep <version> | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - docker push sytoss/stp-common:$(echo $VERSION)
+            - docker push sytoss/stp-domain:$(echo $VERSION)
+            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
+            - docker push sytoss/stp-ms-check-task-shared:$(echo $VERSION)
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
             - docker system prune -a -f
     deploy_to_prod:
       - step:
@@ -22,10 +32,10 @@ pipelines:
           script:
             - mvn clean install
             - cd .. && ls -l
-            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
+            - git clone https://$USERNAME:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
             - cd server && git checkout master && cd ..
             - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
             - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
             - cd server
-            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
+            - git config --global user.email $EMAIL
             - git add . && git commit -m "build [skip ci]" && git push
