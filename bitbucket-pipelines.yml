@@ -12,6 +12,7 @@ pipelines:
       - step:
           name: Deploy to DockerHub
           script:
+            - echo $(cat pom.xml | grep <version> )
             - mvn clean install -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - ls -l
