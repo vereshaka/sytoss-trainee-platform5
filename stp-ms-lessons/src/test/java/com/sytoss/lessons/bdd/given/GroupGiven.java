@@ -27,23 +27,4 @@ public class GroupGiven extends CucumberIntegrationTest {
             }
         }
     }
-
-//    @Given("^\"(.*)\" group does not exist for this discipline$")
-//    public void groupDoesNotExistForDiscipline(String groupName) {
-//        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
-//        if (groupDTO != null) {
-//            getGroupConnector().delete(groupDTO);
-//        }
-//    }
-//
-//    @Given("^\"(.*)\" group exist for this discipline$")
-//    public void groupExistForDiscipline(String groupName) {
-//        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, TestExecutionContext.getTestContext().getDisciplineId());
-//        if (groupDTO == null) {
-//            groupDTO = new GroupDTO();
-//            groupDTO.setName(groupName);
-//            groupDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
-//            getGroupConnector().save(groupDTO);
-//        }
-//    }
 }
