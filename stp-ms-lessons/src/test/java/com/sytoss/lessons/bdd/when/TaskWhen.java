@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -55,6 +55,12 @@ public class TaskWhen extends CucumberIntegrationTest {
         task.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
+        Discipline discipline = new Discipline();
+        discipline.setId(TestExecutionContext.getTestContext().getDisciplineId());
+        Teacher teacher = new Teacher();
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        discipline.setTeacher(teacher);
+        topic.setDiscipline(discipline);
         task.setTopics(List.of(topic));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
@@ -78,7 +84,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
-    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName)  {
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";

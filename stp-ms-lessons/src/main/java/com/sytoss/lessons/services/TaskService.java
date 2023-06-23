@@ -41,7 +41,7 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getId());
+        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getDiscipline().getId());
         if (taskDTO == null) {
             taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);

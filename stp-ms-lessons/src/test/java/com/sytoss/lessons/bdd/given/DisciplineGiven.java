@@ -78,13 +78,12 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
-
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-            getDisciplineConnector().saveAndFlush(disciplineDTO);
+            disciplineDTO =  getDisciplineConnector().save(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
