@@ -1,9 +1,7 @@
 package com.sytoss.lessons.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +20,13 @@ public class GroupReferenceDTO {
     private Long groupId;
 
     @Id
-    @Column(name = "DISCIPLINE_ID")
-    private Long disciplineId;
+    @ManyToOne
+    @JsonIgnore
+            // @JoinColumn(referencedColumnName = "ID")
+    private DisciplineDTO discipline;
+
+   /* @MapsId("DISCIPLINE_ID")
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "ID")
+    private DisciplineDTO discipline;*/
 }

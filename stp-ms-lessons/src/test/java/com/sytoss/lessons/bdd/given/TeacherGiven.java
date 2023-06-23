@@ -53,7 +53,7 @@ public class TeacherGiven extends CucumberIntegrationTest {
             if (groupDTO == null) {
                 groupDTO = new GroupReferenceDTO();
                 groupDTO.setGroupId(groupId);
-                groupDTO.setDisciplineId(disciplineDTO.getId());
+                groupDTO.setDiscipline(disciplineDTO);
                 getGroupReferenceConnector().save(groupDTO);
             }
         }

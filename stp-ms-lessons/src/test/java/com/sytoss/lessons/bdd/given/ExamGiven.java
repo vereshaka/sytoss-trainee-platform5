@@ -11,7 +11,7 @@ public class ExamGiven extends CucumberIntegrationTest {
     @Given("\"{word}\" discipline has group with id {long}")
     public void disciplineHasGroup(String disciplineName, Long groupId) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName,TestExecutionContext.getTestContext().getTeacherId());
-        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO.getId());
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
         getGroupReferenceConnector().save(groupReferenceDTO);
         TestExecutionContext.getTestContext().setGroupReferenceId(groupId);
     }

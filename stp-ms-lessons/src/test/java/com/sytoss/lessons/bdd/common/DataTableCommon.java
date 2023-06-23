@@ -38,7 +38,9 @@ public class DataTableCommon {
     public GroupReferenceDTO mapGroups(Map<String, String> entry) {
         Long groupId = Long.parseLong(entry.get("group"));
         Long disciplineId = Long.parseLong(entry.get("discipline"));
-        return new GroupReferenceDTO(groupId, disciplineId);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(disciplineId);
+        return new GroupReferenceDTO(groupId,disciplineDTO);
     }
 
     @DataTableType
