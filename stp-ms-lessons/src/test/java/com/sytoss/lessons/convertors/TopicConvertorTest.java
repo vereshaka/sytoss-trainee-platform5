@@ -3,7 +3,7 @@ package com.sytoss.lessons.convertors;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TopicConvertorTest extends AbstractJunitTest {
+public class TopicConvertorTest extends StpUnitTest {
 
     @Spy
     private TopicConvertor topicConvertor = new TopicConvertor(new DisciplineConvertor());

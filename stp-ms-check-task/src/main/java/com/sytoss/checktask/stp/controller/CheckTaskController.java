@@ -21,11 +21,10 @@ public class CheckTaskController {
 
     @ApiResponses(
             value = {@ApiResponse(responseCode = "200", description = "Success|OK"),
-                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "")),
-                    @ApiResponse(responseCode = "406", description = "Not Acceptable", content = @Content(mediaType = ""))})
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+                    @ApiResponse(responseCode = "406", description = "Not Acceptable")})
     @RequestMapping(method = RequestMethod.POST)
-    public Grade check(
-            @RequestBody CheckTaskParameters body) {
+    public Grade check(@RequestBody CheckTaskParameters body) {
         return gradeService.checkAndGrade(body);
     }
 }

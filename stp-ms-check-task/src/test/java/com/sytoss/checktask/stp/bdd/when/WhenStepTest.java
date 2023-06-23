@@ -1,28 +1,26 @@
 package com.sytoss.checktask.stp.bdd.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
+import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
+import com.sytoss.domain.bom.personalexam.Grade;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-public class WhenStepTest extends CucumberIntegrationTest {
+public class WhenStepTest extends CheckTaskIntegrationTest {
 
     @When("request coming to process")
-    public void studentsAnswerIsCheckingWith() throws JsonProcessingException {
+    public void studentsAnswerIsCheckingWith() {
         String url = "/api/task/check";
 
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders headers = getDefaultHttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestLine = new ObjectMapper().writeValueAsString(TestContext.getInstance().getCheckTaskParameters());
-        HttpEntity<String> request = new HttpEntity<>(requestLine, headers);
+        HttpEntity<CheckTaskParameters> request = new HttpEntity<>(getTestExecutionContext().getDetails().getCheckTaskParameters(), headers);
 
-        ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        TestContext.getInstance().setResponseEntity(responseEntity);
+        ResponseEntity<Grade> responseEntity = doPost(url, request, Grade.class);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 }

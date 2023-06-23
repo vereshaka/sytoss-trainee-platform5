@@ -2,7 +2,7 @@ package com.sytoss.users.services;
 
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.users.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.TeacherDTO;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class UserServiceTest extends AbstractJunitTest {
+public class UserServiceTest extends StpUnitTest {
 
     @Spy
     private UserConnector userConnector;
