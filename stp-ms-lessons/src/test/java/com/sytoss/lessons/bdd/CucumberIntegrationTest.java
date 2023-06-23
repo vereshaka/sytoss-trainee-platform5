@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -46,6 +47,13 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @Autowired
     @MockBean
     private UserConnector userConnector;
+
+    @Autowired
+    private TaskDomainConvertor taskDomainConvertor;
+
+    @Autowired
+    @MockBean
+    private PersonalExamConnector personalExamConnector;
 
     @LocalServerPort
     private int applicationPort;

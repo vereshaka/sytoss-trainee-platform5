@@ -17,3 +17,13 @@ Feature: check answer
     Then request should be processed successfully
     And Grade value is 0
     And Grade message is "not ok"
+
+  Scenario: Check student's answer with condition
+    Given Request contains database script as in "script1.yml"
+    And etalon SQL is "select * from Authors ORDER BY Name"
+    And check SQL is "select * from Authors"
+    And answer should contains "ORDER BY" condition with "CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 0.7
+    And Grade message is "ok"

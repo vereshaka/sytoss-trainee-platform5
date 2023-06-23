@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -48,7 +49,14 @@ public class TaskDomainControllerTest extends AbstractControllerTest {
         });
         assertEquals(200, response.getStatusCode().value());
     }
-
+    @Test
+    public void shouldNotUpdateTaskDomainWhenPersonalExamNotFinished() {
+        when(taskDomainService.update(anyLong(), any())).thenThrow(new TaskDomainIsUsed("new"));
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
+        ResponseEntity<String> response = doPut("/api/taskDomain/123", requestEntity, String.class);
+        assertEquals(409, response.getStatusCode().value());
+    }
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));

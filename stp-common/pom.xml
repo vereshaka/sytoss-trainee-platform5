@@ -27,4 +27,5 @@
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
     </dependencies>
+
 </project>

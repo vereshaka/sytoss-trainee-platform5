@@ -10,7 +10,7 @@ import lombok.*;
 public class Grade {
 
     @JsonView(PersonalExam.Public.class)
-    private float value;
+    private double value;
 
     @JsonView(PersonalExam.Public.class)
     private String comment;

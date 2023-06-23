@@ -5,31 +5,52 @@ pipelines:
   branches:
     develop:
       - step:
-          name: Build
+          name: Build and push
           script:
             - mvn clean install
-    deploy_to_dev:
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/resources/Dockerfile .
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+              - docker
+    deploy_dockerhub:
       - step:
-          name: Deploy to develop
+          name: Deploy to DockerHub
           script:
-            - mvn clean install
-            - cd .. && ls -l
-            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
-            - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
-            - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
-            - cd server
-            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
-            - git add . && git commit -m "build [skip ci]" && git push
+            - mvn clean install -DskipTests -Darguments=-DskipTests
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/resources/Dockerfile .
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
     deploy_to_prod:
       - step:
           name: Deploy to prod
           script:
             - mvn clean install
             - cd .. && ls -l
-            - git clone https://Vitaliyvvv:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
+            - git clone https://$USERNAME:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
             - cd server && git checkout master && cd ..
             - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
             - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
             - cd server
-            - git config --global user.email "vitaliy.vereshchaka@sytoss.com"
+            - git config --global user.email $EMAIL
             - git add . && git commit -m "build [skip ci]" && git push

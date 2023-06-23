@@ -2,9 +2,11 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -27,6 +29,8 @@ public class TaskDomainService {
 
     private final DisciplineService disciplineService;
 
+    private final PersonalExamConnector personalExamConnector;
+
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         Discipline discipline = disciplineService.getById(disciplineId);
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
@@ -44,6 +48,10 @@ public class TaskDomainService {
 
     public TaskDomain update(Long taskDomainId, TaskDomain taskDomain) {
         TaskDomain oldTaskDomain = getById(taskDomainId);
+        boolean isUsed = personalExamConnector.taskDomainIsUsed(oldTaskDomain.getId());
+        if (isUsed) {
+            throw new TaskDomainIsUsed(oldTaskDomain.getName());
+        }
         oldTaskDomain.setName(taskDomain.getName());
         oldTaskDomain.setScript(taskDomain.getScript());
         oldTaskDomain.setDiscipline(taskDomain.getDiscipline());

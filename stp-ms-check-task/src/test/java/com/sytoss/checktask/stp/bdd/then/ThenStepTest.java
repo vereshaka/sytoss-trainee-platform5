@@ -16,8 +16,8 @@ public class ThenStepTest extends CucumberIntegrationTest {
         TestContext.getInstance().setGrade(grade);
     }
 
-    @Then("Grade value is {int}")
-    public void gradeValueIs(int value) {
+    @Then("Grade value is {double}")
+    public void gradeValueIs(double value) {
         Assertions.assertEquals(value, TestContext.getInstance().getGrade().getValue());
     }
 
