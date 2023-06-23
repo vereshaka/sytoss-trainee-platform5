@@ -5,7 +5,7 @@ RUN useradd -r -g stpuser stpuser
 
 USER stpuser
 
-ADD /target/*.jar /jar/stp-ms-image-provider.jar
+ADD stp-ms-image-provider/target/*.jar /jar/stp-ms-image-provider.jar
 
 EXPOSE 9100
 

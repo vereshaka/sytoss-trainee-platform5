@@ -5,7 +5,7 @@ RUN useradd -r -g stpuser stpuser
 
 USER stpuser
 
-ADD /target/*.jar /jar/stp-ms-user.jar
+ADD stp-ms-users/target/*.jar /jar/stp-ms-user.jar
 
 EXPOSE 9105
 

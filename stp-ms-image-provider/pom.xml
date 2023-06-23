@@ -65,7 +65,7 @@
                             <registry>docker.io</registry>
                             <name>sytoss/${project.artifactId}:${project.version}</name>
                             <build>
-                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                                <dockerFileDir>${project.basedir}/src/main/resources</dockerFileDir>
                             </build>
                         </image>
                     </images>
