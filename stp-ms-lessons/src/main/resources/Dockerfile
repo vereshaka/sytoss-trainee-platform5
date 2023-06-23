@@ -5,7 +5,7 @@ RUN useradd -r -g stpuser stpuser
 
 USER stpuser
 
-ADD /target/*.jar /jar/stp-ms-lesson.jar
+ADD stp-ms-lessons/target/*.jar /jar/stp-ms-lesson.jar
 
 EXPOSE 9103
 

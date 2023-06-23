@@ -8,14 +8,13 @@ pipelines:
           name: Build and push
           script:
             - mvn clean install
-            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
-            - mvn docker:build
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
-            - docker push sytoss/stp-common:$(echo $VERSION)
-            - docker push sytoss/stp-domain:$(echo $VERSION)
-            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
-            - docker push sytoss/stp-ms-check-task-shared:$(echo $VERSION)
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/resources/Dockerfile .
             - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
             - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
             - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
@@ -28,15 +27,13 @@ pipelines:
           name: Deploy to DockerHub
           script:
             - mvn clean install -DskipTests -Darguments=-DskipTests
-            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
-            - ls -l
-            - mvn docker:build
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
-            - docker push sytoss/stp-common:$(echo $VERSION)
-            - docker push sytoss/stp-domain:$(echo $VERSION)
-            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
-            - docker push sytoss/stp-ms-check-task-shared:$(echo $VERSION)
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/resources/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/resources/Dockerfile .
             - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
             - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
             - docker push sytoss/stp-ms-lessons:$(echo $VERSION)

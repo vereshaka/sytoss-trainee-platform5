@@ -5,7 +5,7 @@ RUN useradd -r -g stpuser stpuser
 
 USER stpuser
 
-ADD /target/*.jar /jar/stp-ms-test=producer.jar
+ADD stp-ms-test-producer/target/*.jar /jar/stp-ms-test=producer.jar
 
 EXPOSE 9104
 
