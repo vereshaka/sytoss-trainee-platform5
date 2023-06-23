@@ -1,7 +1,7 @@
 package com.sytoss.domain.bom;
 
 import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,11 @@ public class PersonalExamTest {
     }
 
     private Answer createNewAnswerWithGrade(float value) {
-        Grade grade = new Grade();
-        grade.setValue(value);
+        Score score = new Score();
+        score.setValue(value);
 
         Answer answer = new Answer();
-        answer.setGrade(grade);
+        answer.setScore(score);
         answer.setStatus(AnswerStatus.GRADED);
 
         return answer;

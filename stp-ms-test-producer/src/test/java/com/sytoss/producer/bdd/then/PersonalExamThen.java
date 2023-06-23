@@ -61,8 +61,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
                 Answer answerResult = i.next();
                 if (answer.getValue().equals(answerResult.getValue()) &&
                         answer.getStatus().equals(answerResult.getStatus()) &&
-                        answer.getGrade().getValue() == answerResult.getGrade().getValue() &&
-                        answer.getGrade().getComment().equals(answerResult.getGrade().getComment())) {
+                        answer.getScore().getValue() == answerResult.getScore().getValue() &&
+                        answer.getScore().getComment().equals(answerResult.getScore().getComment())) {
                     i.remove();
                 }
             }
