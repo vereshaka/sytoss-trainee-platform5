@@ -111,7 +111,7 @@ public class TaskGiven extends CucumberIntegrationTest {
     public void taskWithIdDoesntExist(String taskId) {
         TaskDTO taskDto = getTaskConnector().getById(1L);
         if (taskDto != null) {
-         //   getTaskConnector().delete(taskDto);
+           getTaskConnector().delete(taskDto);
         }
     }
 }
