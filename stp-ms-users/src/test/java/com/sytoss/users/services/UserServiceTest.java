@@ -96,11 +96,14 @@ public class UserServiceTest extends AbstractJunitTest {
 
     @Test
     public void shouldReturnStudentWithTrueValidFlag() {
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setFirstName("John");
         studentDTO.setLastName("Do");
         studentDTO.setEmail("test@test.com");
-        studentDTO.setGroups(List.of(new GroupDTO()));
+        studentDTO.setPrimaryGroup(groupDTO);
+        studentDTO.setGroups(List.of(groupDTO));
         byte[] photoBytes = {0x01, 0x02, 0x03};
         studentDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
