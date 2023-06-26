@@ -9,7 +9,7 @@ import java.util.List;
 public class AbstractGiven extends CucumberIntegrationTest {
 
     protected void deleteTopics(List<TopicDTO> topics){
-            //TODO: yevgenyv: if topics contains references this operation should be failed
+        //TODO: yevgenyv: if topics contains references this operation should be failed
         getTopicConnector().deleteAll(topics);
     }
 
