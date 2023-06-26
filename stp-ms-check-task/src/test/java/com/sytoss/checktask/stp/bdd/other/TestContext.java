@@ -3,7 +3,7 @@ package com.sytoss.checktask.stp.bdd.other;
 
 import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.Score;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.ObjectProvider;
@@ -15,13 +15,11 @@ import static org.mockito.Mockito.mock;
 @Setter
 public class TestContext {
 
-    private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider = mock(ObjectProvider.class);
-
     private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
     private ResponseEntity<String> responseEntity;
 
-    private Grade grade;
+    private Score score;
 
     private static final ThreadLocal<TestContext> testContext = new ThreadLocal<>();
 

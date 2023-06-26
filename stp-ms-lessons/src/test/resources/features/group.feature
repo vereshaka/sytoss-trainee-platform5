@@ -19,3 +19,20 @@ Feature: Group
       | discipline | group |
       | 1          | 11    |
       | 1          | 12    |
+
+  Scenario: get teacher's groups
+    Given teachers have groups
+      | teacherId | discipline | group|
+      | *4        | Mongo      | 11   |
+      | *4        | Mongo      | 12   |
+      | *5        | Java       | 13   |
+      | *4        | Mongo      | 14   |
+      | *4        | SQL        | 21   |
+    When receive all groups by teacher with id *4
+    Then operation is successful
+    And groups should received
+      | group   | discipline |
+      | 11      | 1          |
+      | 12      | 2          |
+      | 14      | 3          |
+      | 21      | 4          |

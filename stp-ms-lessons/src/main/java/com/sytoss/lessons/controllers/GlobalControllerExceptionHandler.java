@@ -86,4 +86,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(TaskDomainIsUsed taskDomainIsUsed, WebRequest request) {
         return ResponseEntity.status(409).body(taskDomainIsUsed.getMessage());
     }
+
+    @ExceptionHandler({EtalonIsNotValidException.class})
+    public ResponseEntity<?> handleValidationException(EtalonIsNotValidException etalonIsNotValidException, WebRequest request) {
+        return ResponseEntity.status(409).body(etalonIsNotValidException.getMessage());
+    }
 }

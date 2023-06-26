@@ -6,14 +6,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.connectors.TopicConnector;
-import com.sytoss.lessons.services.DisciplineService;
-import com.sytoss.lessons.services.TaskDomainService;
-import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,31 +20,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class DisciplineControllerTest extends AbstractControllerTest {
-
-    @InjectMocks
-    @Autowired
-    private DisciplineController disciplineController;
-
-    @MockBean
-    private TopicService topicService;
-
-    @MockBean
-    private TopicConnector topicConnector;
-
-    @MockBean
-    private DisciplineService disciplineService;
-
-    @MockBean
-    private TaskDomainService taskDomainService;
+public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldSaveTopic() {
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Topic> requestEntity = new HttpEntity<>(new Topic(), headers);
-        ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, new ParameterizedTypeReference<Topic>() {
-        });
+        ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

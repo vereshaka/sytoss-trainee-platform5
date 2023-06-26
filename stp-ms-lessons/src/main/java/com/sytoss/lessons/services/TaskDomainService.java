@@ -1,11 +1,16 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.personalexam.CheckEtalonParametrs;
+import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -31,6 +36,10 @@ public class TaskDomainService {
 
     private final PersonalExamConnector personalExamConnector;
 
+    private final CheckTaskConnector checkTaskConnector;
+
+    private final TaskService taskService;
+
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         Discipline discipline = disciplineService.getById(disciplineId);
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
@@ -51,6 +60,17 @@ public class TaskDomainService {
         boolean isUsed = personalExamConnector.taskDomainIsUsed(oldTaskDomain.getId());
         if (isUsed) {
             throw new TaskDomainIsUsed(oldTaskDomain.getName());
+        }
+        List<Task> tasks = taskService.findByDomainId(oldTaskDomain.getId());
+        for (Task task : tasks) {
+            CheckEtalonParametrs input = new CheckEtalonParametrs();
+            input.setEtalon(task.getEtalonAnswer());
+            input.setScript(taskDomain.getScript());
+            IsCheckEtalon isCheckEtalon = checkTaskConnector.checkEtalon(input);
+            if (!isCheckEtalon.isChecked()) {
+                throw new EtalonIsNotValidException("etalon isn't correct for task with question \"" + task.getQuestion()
+                        + "\"\nWith message exception\n" + isCheckEtalon.getException());
+            }
         }
         oldTaskDomain.setName(taskDomain.getName());
         oldTaskDomain.setScript(taskDomain.getScript());

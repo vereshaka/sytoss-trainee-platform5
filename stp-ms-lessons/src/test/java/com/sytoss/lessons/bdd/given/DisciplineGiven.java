@@ -48,6 +48,17 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("disciplines exist")
     public void disciplinesExist(List<DisciplineDTO> disciplines) {
+        List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            for (DisciplineDTO disciplineDtoFromTable : disciplines) {
+                if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
+                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                }
+                if (!(disciplineDTO.getTeacherId().equals(disciplineDtoFromTable.getTeacherId()))) {
+                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                }
+            }
+        }
         for (DisciplineDTO discipline : disciplines) {
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
             if (disciplineResult == null) {
@@ -58,7 +69,7 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(nameDiscipline);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline,TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(nameDiscipline);
@@ -78,7 +89,6 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
-
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();

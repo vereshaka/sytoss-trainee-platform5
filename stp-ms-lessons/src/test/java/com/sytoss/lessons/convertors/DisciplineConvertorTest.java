@@ -2,14 +2,14 @@ package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DisciplineConvertorTest extends AbstractJunitTest {
+public class DisciplineConvertorTest extends StpUnitTest {
 
     @Spy
     private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();

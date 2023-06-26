@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @CucumberContextConfiguration
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @Getter
+@Deprecated
 public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired

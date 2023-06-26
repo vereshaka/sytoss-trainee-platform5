@@ -2,7 +2,7 @@ package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.dto.*;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TaskConvertorTest extends AbstractJunitTest {
+public class TaskConvertorTest extends StpUnitTest {
 
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());

@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Grade {
+public class Score {
 
     @JsonView(PersonalExam.Public.class)
     private double value;

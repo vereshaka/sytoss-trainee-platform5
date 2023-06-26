@@ -1,8 +1,8 @@
-package com.sytoss.lessons;
+package com.sytoss.stp.test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class})
-public class AbstractJunitTest {
+public abstract class StpUnitTest {
 }
