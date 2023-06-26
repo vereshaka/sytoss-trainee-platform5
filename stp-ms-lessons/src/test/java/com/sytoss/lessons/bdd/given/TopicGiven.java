@@ -38,7 +38,6 @@ public class TopicGiven extends AbstractGiven {
 
     @Given("topics exist")
      public void thisExamHasAnswers(List<TopicDTO> topics) {
-
         Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
         Map<Long, List<Long>> finalTopics = new HashMap<>();
         for (TopicDTO topic : topics) {

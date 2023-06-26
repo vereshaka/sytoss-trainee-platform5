@@ -10,19 +10,12 @@ import java.util.List;
 public class AbstractGiven extends CucumberIntegrationTest {
 
     protected void deleteTopics(List<TopicDTO> topics) {
-        for (TopicDTO topicDTO : topics) {
-            deleteExams(getExamConnector().findByTopicsId(topicDTO.getId()));
-            deleteTasks(getTaskConnector().findByTopicsId(topicDTO.getId()));
-        }
+            //TODO: yevgenyv: if topics contains references this operation should be failed
         getTopicConnector().deleteAll(topics);
     }
 
-    protected void deleteTasks(List<TaskDTO> tasks) {
+    protected void deleteTasks(List<TaskDTO> tasks){
         //TODO: yevgenyv: if tasks contains references this operation should be failed
         getTaskConnector().deleteAll(tasks);
-    }
-
-    protected void deleteExams(List<ExamDTO> exams) {
-        getExamConnector().deleteAll(exams);
     }
 }
