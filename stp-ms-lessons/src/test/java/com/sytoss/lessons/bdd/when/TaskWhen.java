@@ -93,6 +93,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     public void removeConditionFromTask(String conditionName, String type) {
         TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionName, ConditionType.valueOf(type));
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(getToken());
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
