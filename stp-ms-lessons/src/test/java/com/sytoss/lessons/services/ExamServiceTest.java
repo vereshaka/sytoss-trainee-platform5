@@ -9,7 +9,6 @@ import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
-import com.sytoss.lessons.convertors.GroupConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Date;
 import java.util.List;
@@ -36,7 +34,7 @@ public class ExamServiceTest extends AbstractJunitTest {
     private ExamConnector examConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new GroupConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()));
+    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()));
 
     @Test
     public void shouldSaveExam() {

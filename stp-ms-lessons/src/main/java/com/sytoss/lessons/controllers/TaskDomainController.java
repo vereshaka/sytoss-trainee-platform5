@@ -32,10 +32,11 @@ public class TaskDomainController {
         return taskDomainService.getById(taskDomainId);
     }
 
-    @Operation(description = "Method that save information about exam")
+    @Operation(description = "Method that update task domain")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task domain not found"),
+            @ApiResponse(responseCode = "409", description = "Task domain is used"),
     })
     @PutMapping("/{taskDomainId}")
     public TaskDomain update(@Parameter(description = "id of the task domain to be searched by")

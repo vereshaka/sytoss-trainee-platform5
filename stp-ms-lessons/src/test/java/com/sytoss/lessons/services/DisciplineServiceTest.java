@@ -2,11 +2,14 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.AbstractJunitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,12 +27,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 public class DisciplineServiceTest extends AbstractJunitTest {
 
     @Mock
     private DisciplineConnector disciplineConnector;
+
+    @Mock
+    private GroupReferenceConnector groupReferenceConnector;
 
     @InjectMocks
     private DisciplineService disciplineService;
@@ -110,5 +117,25 @@ public class DisciplineServiceTest extends AbstractJunitTest {
         when(disciplineConnector.findAll()).thenReturn(input);
         List<Discipline> result = disciplineService.findAllDisciplines();
         assertEquals(input.size(), result.size());
+    }
+
+    @Test
+    public void testAssignGroupToDiscipline() {
+        Long disciplineId = 1L;
+        Long groupId = 1L;
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        disciplineService.assignGroupToDiscipline(disciplineId, groupId);
+        verify(groupReferenceConnector).save(any(GroupReferenceDTO.class));
+    }
+
+    @Test
+    public void getGroups() {
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>(List.of(mock(GroupReferenceDTO.class), mock(GroupReferenceDTO.class)));
+        when(groupReferenceConnector.findByDisciplineId(anyLong())).thenReturn(groupReferenceDTOS);
+        List<Group> resultList = disciplineService.getGroups(5L);
+        assertEquals(2, resultList.size());
     }
 }

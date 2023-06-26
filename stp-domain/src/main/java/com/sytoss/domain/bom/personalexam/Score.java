@@ -7,10 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Grade {
+public class Score {
 
     @JsonView(PersonalExam.Public.class)
-    private float value;
+    private double value;
 
     @JsonView(PersonalExam.Public.class)
     private String comment;

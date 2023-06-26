@@ -52,6 +52,11 @@ public class PersonalExamService {
         return answers;
     }
 
+    public boolean taskDomainIsUsed(Long taskDomainId) {
+        int count = personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(taskDomainId, PersonalExamStatus.FINISHED);
+        return count > 0;
+    }
+
     private Discipline getDiscipline(Long disciplineId) {
         return metadataConnector.getDiscipline(disciplineId);
     }

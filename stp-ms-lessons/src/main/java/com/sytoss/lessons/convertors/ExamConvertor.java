@@ -4,8 +4,8 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.ExamDTO;
-import com.sytoss.lessons.dto.GroupDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import org.apache.commons.lang3.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExamConvertor {
 
-    private final GroupConvertor groupConvertor;
-
     private final TopicConvertor topicConvertor;
 
     public void toDTO(Exam source, ExamDTO destination) {
@@ -27,10 +25,9 @@ public class ExamConvertor {
         destination.setRelevantTo(source.getRelevantTo());
         destination.setRelevantFrom(source.getRelevantFrom());
 
-        GroupDTO groupDTO = new GroupDTO();
-        groupConvertor.toDTO(source.getGroup(), groupDTO);
-
-        destination.setGroup(groupDTO);
+        if (ObjectUtils.isNotEmpty(source.getGroup())) {
+            destination.setGroupId(source.getGroup().getId());
+        }
 
         List<TopicDTO> topicDTOList = new ArrayList<>();
 
@@ -51,8 +48,11 @@ public class ExamConvertor {
         destination.setRelevantTo(source.getRelevantTo());
         destination.setRelevantFrom(source.getRelevantFrom());
 
-        Group group = new Group();
-        groupConvertor.fromDTO(source.getGroup(), group);
+        if (ObjectUtils.isNotEmpty(source.getGroupId())) {
+            Group group = new Group();
+            group.setId(source.getGroupId());
+            destination.setGroup(group);
+        }
 
         List<Topic> topicList = new ArrayList<>();
 
@@ -62,7 +62,6 @@ public class ExamConvertor {
             topicList.add(topic);
         });
 
-        destination.setGroup(group);
         destination.setTopics(topicList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
     }

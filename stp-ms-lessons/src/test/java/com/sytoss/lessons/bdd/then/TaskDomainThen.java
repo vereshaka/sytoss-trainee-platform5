@@ -49,10 +49,10 @@ public class TaskDomainThen extends CucumberIntegrationTest {
     }
 
     @Then("^\"(.*)\" task domain with \"(.*)\" script should be$")
-    public void taskDomainWithScriptShouldBe(String nameTaskDomain, String script) {
+    public void taskDomainWithScriptShouldBe(String taskDomainName, String script) {
         TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(taskDomain);
-        assertEquals(nameTaskDomain, taskDomain.getName());
+        assertEquals(taskDomainName, taskDomain.getName());
         assertEquals(script, taskDomain.getScript());
     }
 

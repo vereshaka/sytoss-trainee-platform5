@@ -20,4 +20,5 @@
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
     </dependencies>
+
 </project>

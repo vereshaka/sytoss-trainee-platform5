@@ -35,7 +35,6 @@ Feature: Discipline
       | 1       | Mongo      |
       | 1       | H2         |
 
-  @Bug @YevgenyV #Need to re-think the logic of service method
   Scenario: search disciplines
     Given disciplines exist
       | discipline |
@@ -47,3 +46,8 @@ Feature: Discipline
       | discipline |
       | SQL        |
       | Mongo      |
+
+  Scenario: Link task to topic
+    Given "SQL" discipline exists
+    When link this discipline to group with id 17
+    Then operation is successful

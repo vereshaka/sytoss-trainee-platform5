@@ -1,7 +1,7 @@
 package com.sytoss.producer.connectors;
 
 import com.sytoss.checktask.model.CheckTaskParameters;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.Score;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface CheckTaskConnector {
 
     @PostMapping("/api/task/check")
-    Grade checkAnswer(@RequestBody CheckTaskParameters checkTaskParameters);
+    Score checkAnswer(@RequestBody CheckTaskParameters checkTaskParameters);
 }

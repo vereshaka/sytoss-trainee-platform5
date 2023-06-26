@@ -2,22 +2,18 @@ package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.When;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,10 +38,10 @@ public class ExamWhen extends CucumberIntegrationTest {
         String url = "/api/exam/save";
 
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
-        GroupDTO groupDTO = getGroupConnector().getByNameAndDisciplineId(groupName, disciplineDTO.getId());
+        GroupReferenceDTO groupReferenceDTO = getGroupReferenceConnector().findByGroupId(TestExecutionContext.getTestContext().getGroupReferenceId());
 
         Group group = new Group();
-        getGroupConvertor().fromDTO(groupDTO, group);
+        group.setId(TestExecutionContext.getTestContext().getGroupReferenceId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 

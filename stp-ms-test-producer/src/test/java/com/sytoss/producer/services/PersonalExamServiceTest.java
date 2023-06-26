@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -150,6 +149,13 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5", 1L));
     }
 
+    @Test
+    public void shouldShouldReturnTrueWhenTaskDomainIsUsed() {
+        when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
+        boolean isUsed = personalExamService.taskDomainIsUsed(1L);
+        assertTrue(isUsed);
+    }
+
     private Task createTask(String question) {
         Task task = new Task();
         task.setQuestion(question);
@@ -160,15 +166,15 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         Answer answer = new Answer();
         answer.setStatus(answerStatus);
         answer.setValue(value);
-        answer.setGrade(createGrade(grade, comment));
+        answer.setScore(createGrade(grade, comment));
         return answer;
     }
 
-    private Grade createGrade(float gradeValue, String comment) {
-        Grade grade = new Grade();
-        grade.setValue(gradeValue);
-        grade.setComment(comment);
+    private Score createGrade(float gradeValue, String comment) {
+        Score score = new Score();
+        score.setValue(gradeValue);
+        score.setComment(comment);
 
-        return grade;
+        return score;
     }
 }
