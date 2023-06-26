@@ -23,6 +23,7 @@ public class PumlConvertor {
         String entityCreateScriptText = String.join("", entityCreateScript);
         createTableStringBuilder.append(entityCreateScriptText);
 
+        indent = StringUtils.leftPad(StringUtils.SPACE, 2);
         List<String> objects = getObjects(script);
         StringBuilder initTableStringBuilder = createChangeSet("init-tables");
         indent += StringUtils.leftPad(StringUtils.SPACE, 2);
@@ -180,6 +181,9 @@ public class PumlConvertor {
         List<Map<String, String>> valuesInTable = new ArrayList<>();
 
         for (int i = 1; i < rows.size(); i++) {
+            if(rows.get(i).contains("|=")){
+                continue;
+            }
             List<String> values = getRowValues(rows.get(i));
             values = values.stream().map(String::trim).toList();
             HashMap<String, String> valuesInRow = new LinkedHashMap<>();
