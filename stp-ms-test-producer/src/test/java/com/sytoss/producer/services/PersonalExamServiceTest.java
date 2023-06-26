@@ -166,15 +166,15 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Answer answer = new Answer();
         answer.setStatus(answerStatus);
         answer.setValue(value);
-        answer.setGrade(createGrade(grade, comment));
+        answer.setScore(createGrade(grade, comment));
         return answer;
     }
 
-    private Grade createGrade(float gradeValue, String comment) {
-        Grade grade = new Grade();
-        grade.setValue(gradeValue);
-        grade.setComment(comment);
+    private Score createGrade(float gradeValue, String comment) {
+        Score score = new Score();
+        score.setValue(gradeValue);
+        score.setComment(comment);
 
-        return grade;
+        return score;
     }
 }

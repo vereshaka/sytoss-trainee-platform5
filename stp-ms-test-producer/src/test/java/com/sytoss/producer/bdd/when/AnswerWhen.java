@@ -2,7 +2,7 @@ package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.checktask.model.CheckTaskParameters;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.When;
@@ -20,7 +20,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
 
     @When("student calls answer with value {string} on personal exam with id {word}")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
-        when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Grade());
+        when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Score());
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         headers.setContentType(MediaType.APPLICATION_JSON);
