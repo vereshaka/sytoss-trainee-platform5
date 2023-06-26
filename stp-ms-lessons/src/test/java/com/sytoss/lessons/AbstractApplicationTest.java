@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Getter
+@Deprecated
 public abstract class AbstractApplicationTest extends StpUnitTest {
 
     @Autowired

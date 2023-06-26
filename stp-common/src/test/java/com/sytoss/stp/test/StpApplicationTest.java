@@ -49,7 +49,15 @@ public abstract class StpApplicationTest extends StpUnitTest {
     @Autowired
     private AbstractApplicationContext applicationContext;
 
-    private static RSAKey JWK;
+    private static RSAKey JWK = createJWK();
+
+    private static RSAKey createJWK() {
+        try {
+            return new RSAKeyGenerator(2048).keyID("1234").generate();
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static HttpServer httpServer;
 
@@ -61,10 +69,6 @@ public abstract class StpApplicationTest extends StpUnitTest {
     @BeforeAll
     public static void init() {
         try {
-            JWK = new RSAKeyGenerator(2048)
-                    .keyID("1234")
-                    .generate();
-
             String publicKey = "{\n" +
                     "  \"keys\": [" +
                     JWK.toPublicJWK().toJSONString() + "]\n" +
@@ -142,6 +146,14 @@ public abstract class StpApplicationTest extends StpUnitTest {
 
     public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
+        return perform(uri, HttpMethod.PUT, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
     public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {

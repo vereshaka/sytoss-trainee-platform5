@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 
 import java.io.IOException;
 
+@Deprecated
 public class CucumberHooks extends CucumberIntegrationTest {
 
     @BeforeAll
