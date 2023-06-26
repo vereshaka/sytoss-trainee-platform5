@@ -15,7 +15,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
+          jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
 feign:
   client:
     config:
