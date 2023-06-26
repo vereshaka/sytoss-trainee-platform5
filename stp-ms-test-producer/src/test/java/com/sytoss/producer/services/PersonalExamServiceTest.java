@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PersonalExamServiceTest extends AbstractJunitTest {
+public class PersonalExamServiceTest extends StpUnitTest {
 
     @Mock
     private MetadataConnectorImpl metadataConnector;
@@ -166,15 +166,15 @@ public class PersonalExamServiceTest extends AbstractJunitTest {
         Answer answer = new Answer();
         answer.setStatus(answerStatus);
         answer.setValue(value);
-        answer.setGrade(createGrade(grade, comment));
+        answer.setScore(createGrade(grade, comment));
         return answer;
     }
 
-    private Grade createGrade(float gradeValue, String comment) {
-        Grade grade = new Grade();
-        grade.setValue(gradeValue);
-        grade.setComment(comment);
+    private Score createGrade(float gradeValue, String comment) {
+        Score score = new Score();
+        score.setValue(gradeValue);
+        score.setComment(comment);
 
-        return grade;
+        return score;
     }
 }

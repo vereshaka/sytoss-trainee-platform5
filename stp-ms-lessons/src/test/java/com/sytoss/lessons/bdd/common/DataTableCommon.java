@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -55,10 +56,12 @@ public class DataTableCommon {
     }
 
     @DataTableType
-    public GroupReferenceDTO mapGroups(Map<String, String> entry) {
+    public GroupReferenceDTO mapGroupReferences(Map<String, String> entry) {
         Long groupId = Long.parseLong(entry.get("group"));
         Long disciplineId = Long.parseLong(entry.get("discipline"));
-        return new GroupReferenceDTO(groupId, disciplineId);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(disciplineId);
+        return new GroupReferenceDTO(groupId,disciplineDTO);
     }
 
     @DataTableType
@@ -69,5 +72,13 @@ public class DataTableCommon {
         taskDomainDTO.setName(entry.get("task domain"));
         taskDomainDTO.setDiscipline(discipline);
         return taskDomainDTO;
+    }
+
+    @DataTableType
+    public Group mapGroups(Map<String, String> entry) {
+        Long groupId = Long.parseLong(entry.get("group"));
+        Group group = new Group();
+        group.setId(groupId);
+        return group;
     }
 }

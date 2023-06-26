@@ -9,8 +9,6 @@ import java.util.List;
 @Repository
 public interface DisciplineConnector extends JpaRepository<DisciplineDTO, Long> {
 
-    DisciplineDTO getByName(String name);
-
     DisciplineDTO getByNameAndTeacherId(String disciplineName, Long teacherId);
 
     List<DisciplineDTO> findByTeacherId(Long teacherId);

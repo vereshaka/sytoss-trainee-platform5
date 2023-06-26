@@ -8,10 +8,28 @@ import io.cucumber.java.en.Given;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class GroupGiven extends CucumberIntegrationTest {
 
-    @Given("^this teacher has \"(.*)\" discipline with id (.*) contains groups with id \"([^\\\"]*)\"$")
+    @Given("^groups exist$")
+    public void groupsExist(List<GroupReferenceDTO> groups) {
+        for (GroupReferenceDTO groupReferenceDTO : groups) {
+            Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
+            DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                getDisciplineConnector().save(disciplineDTO);
+            }
+            GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
+            if (result == null) {
+                getGroupReferenceConnector().save(groupReferenceDTO);
+            }
+        }
+    }
+
+    @Given("^teacher has \"(.*)\" discipline with id (.*) contains groups with id \"([^\\\"]*)\"$")
     public void groupsExist(String disciplineName, String disciplineId, String groupIdsString) {
 
         String[] numberStrings = groupIdsString.split(", ");
@@ -34,7 +52,7 @@ public class GroupGiven extends CucumberIntegrationTest {
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
 
         for (Long groupId : groupIds) {
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO.getId());
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
             groupReferenceDTOS.add(groupReferenceDTO);
             getGroupReferenceConnector().save(groupReferenceDTO);
         }
