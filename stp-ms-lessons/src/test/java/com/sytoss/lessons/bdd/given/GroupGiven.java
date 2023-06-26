@@ -14,7 +14,7 @@ public class GroupGiven extends CucumberIntegrationTest {
     @Given("^groups exist$")
     public void groupsExist(List<GroupReferenceDTO> groups) {
         for (GroupReferenceDTO groupReferenceDTO : groups) {
-            Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDisciplineId());
+            Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
             DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
