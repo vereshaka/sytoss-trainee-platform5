@@ -2,6 +2,7 @@ package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.GroupNotFoundException;
+import com.sytoss.users.services.exceptions.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,4 +23,8 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(404).body(groupNotFoundException.getMessage());
     }
 
+    @ExceptionHandler({UserNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(UserNotFoundException userNotFoundException, WebRequest request) {
+        return ResponseEntity.status(404).body(userNotFoundException.getMessage());
+    }
 }

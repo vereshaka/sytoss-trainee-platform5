@@ -4,7 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class DisciplineServiceTest extends AbstractJunitTest {
+public class DisciplineServiceTest extends StpUnitTest {
 
     @Mock
     private DisciplineConnector disciplineConnector;

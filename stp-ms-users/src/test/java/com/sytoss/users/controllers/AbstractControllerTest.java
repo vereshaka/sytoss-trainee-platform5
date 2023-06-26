@@ -22,15 +22,15 @@ public class AbstractControllerTest extends AbstractApplicationTest {
         AbstractApplicationTest.stopServer();
     }
 
-    protected HttpHeaders getDefaultHttpHeaders() {
+    protected HttpHeaders getDefaultHttpHeaders(String userType) {
         HttpHeaders result = new HttpHeaders();
         if (StringUtils.isNoneEmpty()) {
-            result.setBearerAuth(getToken());
+            result.setBearerAuth(getToken(userType));
         }
         return result;
     }
 
-    protected String getToken() {
-        return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "teacher");
+    protected String getToken(String userType) {
+        return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", userType);
     }
 }

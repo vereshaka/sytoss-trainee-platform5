@@ -3,7 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class TopicServiceTest extends AbstractJunitTest {
+public class TopicServiceTest extends StpUnitTest {
 
     @Mock
     private DisciplineService disciplineService;

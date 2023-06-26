@@ -4,11 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.lessons.services.TaskService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,14 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class TaskControllerTest extends AbstractControllerTest {
-
-    @InjectMocks
-    @Autowired
-    private TaskController taskController;
-
-    @MockBean
-    private TaskService taskService;
+public class TaskControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldGetTakById() throws JOSEException {

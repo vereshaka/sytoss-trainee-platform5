@@ -7,6 +7,6 @@ USER stpuser
 
 ADD stp-ms-users/target/*.jar /jar/stp-ms-user.jar
 
-EXPOSE 9105
+EXPOSE 9102
 
 ENTRYPOINT [ "java","-jar","/jar/stp-ms-user.jar" ]

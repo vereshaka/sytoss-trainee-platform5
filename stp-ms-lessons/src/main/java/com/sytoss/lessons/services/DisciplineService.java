@@ -82,7 +82,8 @@ public class DisciplineService extends AbstractService {
 
     public void assignGroupToDiscipline(Long disciplineId, Long groupId) {
         getById(disciplineId);
-        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineId);
+        DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(disciplineId);
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
         groupReferenceConnector.save(groupReferenceDTO);
     }
 
