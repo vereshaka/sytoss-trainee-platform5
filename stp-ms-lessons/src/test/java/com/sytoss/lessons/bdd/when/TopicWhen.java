@@ -23,7 +23,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topics";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Topic>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Topic>>() {
+        ResponseEntity<List<Topic>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
