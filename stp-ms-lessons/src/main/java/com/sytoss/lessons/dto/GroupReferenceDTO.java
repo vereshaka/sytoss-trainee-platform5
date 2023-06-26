@@ -22,11 +22,5 @@ public class GroupReferenceDTO {
     @Id
     @ManyToOne
     @JsonIgnore
-            // @JoinColumn(referencedColumnName = "ID")
     private DisciplineDTO discipline;
-
-   /* @MapsId("DISCIPLINE_ID")
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "ID")
-    private DisciplineDTO discipline;*/
 }
