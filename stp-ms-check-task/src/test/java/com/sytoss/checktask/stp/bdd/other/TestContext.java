@@ -15,8 +15,6 @@ import static org.mockito.Mockito.mock;
 @Setter
 public class TestContext {
 
-    private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider = mock(ObjectProvider.class);
-
     private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
     private ResponseEntity<String> responseEntity;

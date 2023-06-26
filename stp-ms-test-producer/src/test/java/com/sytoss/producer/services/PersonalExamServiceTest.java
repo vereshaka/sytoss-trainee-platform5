@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class PersonalExamServiceTest extends AbstractJunitTest {
+public class PersonalExamServiceTest extends StpUnitTest {
 
     @Mock
     private MetadataConnectorImpl metadataConnector;

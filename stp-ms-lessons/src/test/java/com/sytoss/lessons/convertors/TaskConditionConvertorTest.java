@@ -2,14 +2,14 @@ package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TaskConditionConvertorTest extends AbstractJunitTest {
+public class TaskConditionConvertorTest extends StpUnitTest {
 
     @Spy
     private TaskConditionConvertor taskConditionConvertor = new TaskConditionConvertor();

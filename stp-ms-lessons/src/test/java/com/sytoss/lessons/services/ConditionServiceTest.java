@@ -3,7 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskConditionNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConditionConnector;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class ConditionServiceTest extends AbstractJunitTest {
+public class ConditionServiceTest extends StpUnitTest {
 
     @Mock
     private TaskConditionConnector taskConditionConnector;

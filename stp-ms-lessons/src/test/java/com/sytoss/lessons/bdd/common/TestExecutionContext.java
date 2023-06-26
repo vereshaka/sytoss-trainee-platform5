@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Getter
 @Setter
+@Deprecated
 public class TestExecutionContext {
 
     private static final ThreadLocal<TestExecutionContext> testContext = new ThreadLocal<>();

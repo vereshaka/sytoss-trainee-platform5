@@ -2,11 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.lessons.services.DisciplineService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,14 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class TeacherControllerTest extends AbstractControllerTest {
-
-    @InjectMocks
-    @Autowired
-    private TeacherController teacherController;
-
-    @MockBean
-    private DisciplineService disciplineService;
+public class TeacherControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() throws JOSEException {
