@@ -1,17 +1,12 @@
 package com.sytoss.lessons.controllers;
 
-import com.nimbusds.jose.JOSEException;
-import com.sytoss.lessons.AbstractApplicationTest;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.services.*;
 import com.sytoss.stp.test.StpApplicationTest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class LessonsControllerTest extends StpApplicationTest {
