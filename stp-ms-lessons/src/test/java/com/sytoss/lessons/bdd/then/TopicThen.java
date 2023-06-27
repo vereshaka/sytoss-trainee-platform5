@@ -8,6 +8,7 @@ import com.sytoss.lessons.services.TopicService;
 import io.cucumber.java.en.Then;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.sytoss.lessons.bdd.common.TestExecutionContext.getTestContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,5 +36,13 @@ public class TopicThen extends CucumberIntegrationTest {
         Topic answer = (Topic) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(topicName, answer.getName());
         assertEquals(TestExecutionContext.getTestContext().getTopicId(), answer.getId());
+    }
+
+    @Then("^topic's icon should be received$")
+    public void topicIconShouldBeReceived() {
+        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
+        TopicDTO topicDTO = optionalTopicDTO.orElse(null);
+        byte[] icon = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertEquals(topicDTO.getIcon().length, icon.length);
     }
 }

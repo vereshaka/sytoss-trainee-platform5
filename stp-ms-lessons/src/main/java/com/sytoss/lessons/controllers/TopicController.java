@@ -73,4 +73,16 @@ public class TopicController {
             @PathVariable(value = "topicId") Long topicId) {
         return taskService.findByTopicId(topicId);
     }
+
+    @Operation(description = "Method that retrieve topic's icon")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Topic not found!")
+    })
+    @GetMapping("/topic/{topicId}/icon")
+    public @ResponseBody byte[] getIcon(@Parameter(description = "id of the topic to search icon")
+                                        @PathVariable("topicId")
+                                        Long topicId) {
+        return topicService.getIcon(topicId);
+    }
 }
