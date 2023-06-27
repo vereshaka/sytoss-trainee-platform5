@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,5 +48,13 @@ public class UserThen extends CucumberIntegrationTest {
                         )
                 )
         );
+    }
+
+    @Then("^student's photo should be received$")
+    public void userPhotoShouldBeReceived() {
+        Optional<UserDTO> optionalDisciplineDTO = getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId());
+        UserDTO studentDTO = optionalDisciplineDTO.orElse(null);
+        byte[] photo = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertEquals(studentDTO.getPhoto().length, photo.length);
     }
 }

@@ -132,4 +132,8 @@ public class UserService extends AbstractService {
         });
         return groups;
     }
+
+    public byte[] getPhoto() {
+        return getMeAsDto().getPhoto();
+    }
 }

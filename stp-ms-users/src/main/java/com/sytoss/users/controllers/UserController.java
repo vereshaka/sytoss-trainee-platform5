@@ -55,4 +55,13 @@ public class UserController {
     public List<Group> findGroupByStudent() {
         return userService.findByStudent();
     }
+
+    @Operation(description = "Method that retrieve user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getPhoto() {
+        return userService.getPhoto();
+    }
 }
