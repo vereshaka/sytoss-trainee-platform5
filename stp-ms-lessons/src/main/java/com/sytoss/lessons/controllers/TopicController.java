@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,7 +80,7 @@ public class TopicController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
-    @GetMapping("/topic/{topicId}/icon")
+    @GetMapping(value = "/topic/{topicId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the topic to search icon")
                                         @PathVariable("topicId")
                                         Long topicId) {
