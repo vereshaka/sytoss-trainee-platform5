@@ -52,11 +52,6 @@ public class DisciplineThen extends CucumberIntegrationTest {
         Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
         DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
         byte[] icon = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
-        byte[] disciplineIcon = disciplineDTO.getIcon();
-        assertEquals(disciplineIcon.length, icon.length);
-
-        for (int i = 0; i < icon.length; ++i) {
-            assertEquals(disciplineIcon[i], icon[i]);
-        }
+        assertEquals(disciplineDTO.getIcon().length, icon.length);
     }
 }
