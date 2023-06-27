@@ -13,5 +13,5 @@ public class GroupReferencePK implements Serializable {
 
     private Long groupId;
 
-    private Long disciplineId;
+    private Long discipline;
 }

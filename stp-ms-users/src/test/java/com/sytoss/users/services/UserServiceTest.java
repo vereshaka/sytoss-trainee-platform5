@@ -4,21 +4,27 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.AbstractJunitTest;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
+import com.sytoss.users.services.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -29,11 +35,14 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTest extends AbstractJunitTest {
 
-    @Spy
+    @Mock
     private UserConnector userConnector;
 
     @Spy
     private UserConverter userConverter;
+
+    @Spy
+    private GroupConvertor groupConvertor;
 
     @InjectMocks
     private UserService userService;
@@ -95,6 +104,33 @@ public class UserServiceTest extends AbstractJunitTest {
     }
 
     @Test
+    public void shouldReturnGroupsOfStudent() {
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setId(1L);
+        studentDTO.setEmail("test@test.com");
+        studentDTO.setFirstName("John");
+        studentDTO.setLastName("Do");
+        studentDTO.setGroups(List.of(createGroupDTO("First Group"), createGroupDTO("Second Group"), createGroupDTO("Third Group")));
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+                .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        List<Group> groups = userService.findByStudent();
+        assertEquals(3, groups.size());
+    }
+
+    @Test
+    public void shouldReturnStudentNotFoundException() {
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+                .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        when(userConnector.getByEmail("test@test.com")).thenThrow(new UserNotFoundException("User not found"));
+        assertThrows(UserNotFoundException.class, () -> userService.findByStudent());
+    }
+
+    @Test
     public void shouldReturnStudentWithTrueValidFlag() {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
@@ -136,5 +172,11 @@ public class UserServiceTest extends AbstractJunitTest {
         teacherDTO.setEmail("test@test.com");
         when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
         assertFalse(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    private GroupDTO createGroupDTO(String name) {
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setName(name);
+        return groupDTO;
     }
 }

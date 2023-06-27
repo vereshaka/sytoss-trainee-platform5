@@ -15,15 +15,15 @@ public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^groups should received$")
     public void groupsShouldBeReceived(List<GroupReferenceDTO> groups) {
-        List<Group> results = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<GroupReferenceDTO> results = (List<GroupReferenceDTO>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
         int quantityOfGroups = 0;
 
-        for (Group result : results) {
+        for (GroupReferenceDTO result : results) {
             for (GroupReferenceDTO groupDTO : groups)
-                if (result.getId().equals(groupDTO.getGroupId())) {
+                if (result.getGroupId().equals(groupDTO.getGroupId())) {
                     quantityOfGroups++;
                 }
         }
