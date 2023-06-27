@@ -5,8 +5,9 @@ import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonal
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.Score;
+import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -47,8 +48,11 @@ public class AnswerService {
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setScript(taskDomain.getScript());
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        answer.score(score);
+        double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
+        Grade grade = new Grade();
+        grade.setValue(gradeValue);
+        grade.setComment(score.getComment());
+        answer.grade(grade);
         personalExamConnector.save(personalExam);
     }
-
 }
