@@ -81,4 +81,14 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         ResponseEntity<Void> responseEntity = doPost(url, httpEntity, Void.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("^receive this discipline's icon$")
+    public void getDisciplineIcon() {
+//        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/icon";
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
+        ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }

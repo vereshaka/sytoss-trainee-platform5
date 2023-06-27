@@ -13,6 +13,10 @@
             <column name="TEACHER_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>
+            <column name="SHORT_DESCRIPTION" type="VARCHAR2(100 BYTE)" />
+            <column name="FULL_DESCRIPTION" type="VARCHAR2(100 BYTE)" />
+            <column name="DURATION" type="DOUBLE" />
+            <column name="ICON" type="bytea" />
         </createTable>
 
         <rollback>

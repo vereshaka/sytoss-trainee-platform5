@@ -98,4 +98,21 @@ public class DisciplineGiven extends AbstractGiven {
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
+
+    @Given("^this discipline has icon with bytes \"([^\\\"]*)\"$")
+    public void disciplineHasIcon(String iconBytes) {
+
+        String[] numberStrings = iconBytes.split(", ");
+
+        byte[] icon = new byte[numberStrings.length];
+
+        for (int i = 0; i < numberStrings.length; i++) {
+            icon[i] = Byte.parseByte(numberStrings[i]);
+        }
+
+        Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
+        DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
+        disciplineDTO.setIcon(icon);
+        getDisciplineConnector().save(disciplineDTO);
+    }
 }
