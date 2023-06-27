@@ -122,7 +122,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Discipline not found!")
     })
-    @GetMapping("/discipline/{disciplineId}/icon")
+    @GetMapping(value = "/discipline/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the discipline to search icon")
                                     @PathVariable("disciplineId")
                                     Long disciplineId) {
