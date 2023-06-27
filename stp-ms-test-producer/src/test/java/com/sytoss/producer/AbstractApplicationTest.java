@@ -11,6 +11,7 @@ import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
+import com.sytoss.stp.test.StpUnitTest;
 import de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoProperties;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @EnableConfigurationProperties({MongoProperties.class, EmbeddedMongoProperties.class})
-public abstract class AbstractApplicationTest extends AbstractJunitTest {
+public abstract class AbstractApplicationTest extends StpUnitTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

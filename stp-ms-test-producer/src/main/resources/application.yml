@@ -6,7 +6,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9080/realms/traineeplatform/protocol/openid-connect/certs
+          jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
 server:
-   port: 9101
-check-task-url: http://localhost:8080
+   port: 9103
+check-task-url: http://localhost:9010/api/

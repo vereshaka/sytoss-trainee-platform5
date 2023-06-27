@@ -1,19 +1,15 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
-import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -22,7 +18,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
-class GroupServiceTest extends AbstractJunitTest {
+class GroupServiceTest extends StpUnitTest {
 
     @Mock
     private GroupReferenceConnector groupConnector;

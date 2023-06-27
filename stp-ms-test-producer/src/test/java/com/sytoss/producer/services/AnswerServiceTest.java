@@ -7,7 +7,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
-import com.sytoss.producer.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class AnswerServiceTest extends AbstractJunitTest {
+public class AnswerServiceTest extends StpUnitTest {
 
     @Mock
     private PersonalExamConnector personalExamConnector;
