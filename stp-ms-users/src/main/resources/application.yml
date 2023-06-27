@@ -1,3 +1,5 @@
+server:
+  port: ${APP_PORT:9102}
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
@@ -16,5 +18,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
-server:
-   port: 9102
