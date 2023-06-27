@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonal
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class PersonalExamService {
 
     private final PersonalExamConnector personalExamConnector;
 
+    private final ImageConnector imageConnector;
+
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
@@ -28,7 +31,11 @@ public class PersonalExamService {
         personalExam.setDate(new Date());
         personalExam.setTime(examConfiguration.getTime());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
-        personalExam.setAnswers(generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration));
+        List<Answer> answers = generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration);
+        personalExam.setAnswers(answers);
+        for(Answer answer : answers){
+           answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+        }
         personalExam.setStudentId(examConfiguration.getStudentId());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
