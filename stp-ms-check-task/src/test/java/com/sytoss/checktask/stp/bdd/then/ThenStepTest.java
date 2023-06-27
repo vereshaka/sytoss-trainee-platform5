@@ -1,13 +1,16 @@
 package com.sytoss.checktask.stp.bdd.then;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.bdd.other.TestContext;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,5 +42,16 @@ public class ThenStepTest extends StpIntegrationTest {
     public void shouldReturnEtalonIsNotValid() {
         ResponseEntity<IsCheckEtalon> response = getTestExecutionContext().getResponse();
         assertFalse(response.getBody().isChecked());
+    }
+
+    @Then("^query result should be$")
+    public void shouldReturnEtalonIsNotValid(DataTable table) {
+        ResponseEntity<QueryResult> response = getTestExecutionContext().getResponse();
+        List<Map<String, String>> rows = table.asMaps();
+        for (Map<String, String> column : rows) {
+
+        }
+
+        assertFalse(response.getBody().getResultMapList().isEmpty());
     }
 }

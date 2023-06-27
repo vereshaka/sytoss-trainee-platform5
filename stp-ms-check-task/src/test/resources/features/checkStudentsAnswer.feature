@@ -41,3 +41,19 @@ Feature: check answer
     When request sent to check etalon answer
     Then request should be processed successfully
     And should return that etalon is not valid
+
+  Scenario: Check current сorrect student's answer
+    Given Request contains database script as in "script1.yml"
+    And check SQL is "select * from Authors"
+    When request sent to check "request"
+    Then request should be processed successfully
+    And query result should be
+      | id | name        |
+      | 1  | Ivan Ivanov |
+      | 2  | Ivan Petrov |
+
+  Scenario: Check current incorrect student's answer
+    Given Request contains database script as in "script1.yml"
+    And check SQL is "select Authors"
+    When request sent to check "request"
+    Then operation should be finished with "406" error

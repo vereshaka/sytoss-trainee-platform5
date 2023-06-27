@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.checktask.stp.service.ScoreService;
@@ -30,7 +30,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         when(scoreService.checkAndScore(any())).thenThrow(new WrongEtalonException("", new RuntimeException()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer("select * from Authors");
+        checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select  Authors");
         checkTaskParameters.setScript(readFromFile("script1.json"));
         RequestEntity httpEntity = new RequestEntity(checkTaskParameters, null, null);
@@ -46,7 +46,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         when(scoreService.checkAndScore(any())).thenThrow(new DatabaseCommunicationException("", new RuntimeException()));
 
         CheckTaskParameters checkAnswerRequestBody = new CheckTaskParameters();
-        checkAnswerRequestBody.setAnswer("select * from answer");
+        checkAnswerRequestBody.setRequest("select * from answer");
         checkAnswerRequestBody.setEtalon("select etalon");
         checkAnswerRequestBody.setScript("{: [{changeSet: {author {columns: [{column: {name: Answer, type: varchar}}], tableName: Answer}}, {createTable: {columns: [{column: {name: Etalon, type: varchar}}], tableName: Etalon}}], id: create_answer}}, {changeSet: {author: ivan-larin, changes: [{insert: {columns: [{column: {name: Answer, value: it_is_answer}}], tableName: Answer}}, {insert: {columns: [{column: {name: Etalon, value: it_is_etalon}}], tableName: Etalon}}], id: insert-answer}}]}");
         RequestEntity httpEntity = new RequestEntity(checkAnswerRequestBody, null, null);

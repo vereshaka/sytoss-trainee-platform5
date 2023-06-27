@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CheckEtalonParametrs {
+public class CheckRequestParameters {
 
-    private String etalon;
+    private String request;
 
     private String script;
 }

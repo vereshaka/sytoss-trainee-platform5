@@ -1,7 +1,7 @@
 package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;

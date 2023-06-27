@@ -1,12 +1,10 @@
 package com.sytoss.checktask.stp.bdd.other;
 
 
-import com.sytoss.checktask.model.CheckTaskParameters;
-import com.sytoss.checktask.stp.service.DatabaseHelperService;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.http.ResponseEntity;
 
 import static org.mockito.Mockito.mock;

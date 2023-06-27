@@ -36,6 +36,6 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("check SQL is {string}")
     public void givenAnswerScript(String answer) {
-        getTestExecutionContext().getDetails().getCheckTaskParameters().setAnswer(answer);
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
     }
 }
