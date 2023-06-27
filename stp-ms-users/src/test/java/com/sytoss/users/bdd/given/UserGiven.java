@@ -56,4 +56,13 @@ public class UserGiven extends CucumberIntegrationTest {
         studentDTO.setGroups(groupDTOList);
         getUserConnector().save(studentDTO);
     }
+
+    @Given("this user has profile photo")
+    public void thisUserHasProfilePhoto() {
+        UserDTO userDTO = TestExecutionContext.getTestContext().getUser();
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        userDTO.setPhoto(photoBytes);
+        userDTO = getUserConnector().save(userDTO);
+        TestExecutionContext.getTestContext().setUser(userDTO);
+    }
 }

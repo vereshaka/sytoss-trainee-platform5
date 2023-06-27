@@ -130,4 +130,9 @@ public class UserService extends AbstractService {
         });
         return groups;
     }
+
+    public byte[] getUserPhoto(Long userId) {
+        UserDTO userDTO = getDTOById(userId);
+        return userDTO.getPhoto();
+    }
 }
