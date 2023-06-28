@@ -77,4 +77,13 @@ public class TopicWhen extends CucumberIntegrationTest {
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("^receive this topic's icon$")
+    public void getTopicIcon() {
+        String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/icon";
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }

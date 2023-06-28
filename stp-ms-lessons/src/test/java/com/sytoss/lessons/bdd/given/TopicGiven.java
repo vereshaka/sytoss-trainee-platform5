@@ -10,6 +10,7 @@ import io.cucumber.java.en.Given;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TopicGiven extends AbstractGiven {
 
@@ -92,5 +93,18 @@ public class TopicGiven extends AbstractGiven {
             topicDTO = getTopicConnector().save(topicDTO);
         }
         TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+    }
+
+    @Given("^this topic has icon with bytes \"([^\\\"]*)\"$")
+    public void topicHasIcon(String iconBytes) {
+        String[] numberStrings = iconBytes.split(", ");
+        byte[] icon = new byte[numberStrings.length];
+        for (int i = 0; i < numberStrings.length; i++) {
+            icon[i] = Byte.parseByte(numberStrings[i]);
+        }
+        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
+        TopicDTO topicDTO = optionalTopicDTO.orElse(null);
+        topicDTO.setIcon(icon);
+        getTopicConnector().save(topicDTO);
     }
 }
