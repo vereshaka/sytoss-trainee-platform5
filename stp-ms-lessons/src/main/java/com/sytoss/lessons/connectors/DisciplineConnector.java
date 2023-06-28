@@ -12,6 +12,4 @@ public interface DisciplineConnector extends JpaRepository<DisciplineDTO, Long> 
     DisciplineDTO getByNameAndTeacherId(String disciplineName, Long teacherId);
 
     List<DisciplineDTO> findByTeacherId(Long teacherId);
-
-    DisciplineDTO getById(Long disciplineId);
 }
