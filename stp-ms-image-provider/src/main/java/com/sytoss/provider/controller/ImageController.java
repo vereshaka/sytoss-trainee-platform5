@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ImageController {
 
-    private ImageService imageService;
+    private final ImageService imageService;
 
     @PostMapping("/convert/image")
-    public Long convertImage(@RequestBody String question){
+    public Long convertImage(@RequestBody String question) {
         return imageService.generatePngFromQuestion(question);
     }
 }

@@ -44,14 +44,14 @@ public class ImageService extends AbstractService {
         graphics.setFont(font);
 
         graphics.setColor(Color.WHITE);
-        graphics.fillRect(0,0,width,height);
+        graphics.fillRect(0, 0, width, height);
         graphics.setColor(Color.BLACK);
         graphics.drawString(question, 10, 75);
         graphics.dispose();
 
         File imageFile = null;
         try {
-            imageFile = File.createTempFile("img", ".png", new File("D:/sytoss-trainee-platform5/stp-ms-image-provider/src/main/resources/images/"));
+            imageFile = File.createTempFile("img", ".png");
             ImageIO.write(image, "png", imageFile);
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());

@@ -22,7 +22,7 @@ public class PersonalExamService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    private final ImageConnector imageConnector;
+   private final ImageConnector imageConnector;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
