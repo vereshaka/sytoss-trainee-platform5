@@ -65,8 +65,7 @@ public class UserGiven extends CucumberIntegrationTest {
         for (int i = 0; i < numberStrings.length; i++) {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
-        Optional<UserDTO> optionalDisciplineDTO = getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId());
-        UserDTO studentDTO = optionalDisciplineDTO.orElse(null);
+        UserDTO studentDTO = getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId()).orElse(null);
         studentDTO.setPhoto(icon);
         getUserConnector().save(studentDTO);
     }

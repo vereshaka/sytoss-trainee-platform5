@@ -59,6 +59,7 @@ public class UserController {
     @Operation(description = "Method that retrieve user's photo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Photo not found!")
     })
     @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getPhoto() {

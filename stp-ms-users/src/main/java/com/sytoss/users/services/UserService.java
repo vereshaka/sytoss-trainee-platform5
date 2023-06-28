@@ -13,6 +13,7 @@ import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.exceptions.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
+import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,6 +135,9 @@ public class UserService extends AbstractService {
     }
 
     public byte[] getPhoto() {
+        if (getMeAsDto().getPhoto().length == 0) {
+            throw new UserPhotoNotFoundException("The user does not have a photo!");
+        }
         return getMeAsDto().getPhoto();
     }
 }
