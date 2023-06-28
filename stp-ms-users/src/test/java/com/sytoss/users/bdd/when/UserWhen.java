@@ -1,10 +1,12 @@
 package com.sytoss.users.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,6 +23,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @Transactional
 public class UserWhen extends CucumberIntegrationTest {
@@ -66,6 +72,26 @@ public class UserWhen extends CucumberIntegrationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @DataTableType
+    public Discipline mapDiscipline(Map<String, String> row) {
+        Discipline discipline = new Discipline();
+        discipline.setName(row.get("discipline"));
+        return discipline;
+    }
+
+    @When("student receive his disciplines")
+    public void receiveAllDisciplinesOfStudent(List<Discipline> disciplines) {
+        String url = "/api/user/my/disciplines";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        Discipline discipline = new Discipline();
+        discipline.setName("new");
+        when(getDisciplineConnector().findMyDiscipline(anyLong())).thenReturn(disciplines);
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }

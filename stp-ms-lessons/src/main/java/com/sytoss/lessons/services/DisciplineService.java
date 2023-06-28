@@ -13,8 +13,6 @@ import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -99,5 +97,16 @@ public class DisciplineService extends AbstractService {
             result.add(group);
         }
         return result;
+    }
+
+    public List<Discipline> findAllMyDiscipline(Long groupId) {
+        List<Discipline> disciplines = new ArrayList<>();
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByGroupReferencesGroupId(groupId);
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            disciplines.add(discipline);
+        }
+        return disciplines;
     }
 }

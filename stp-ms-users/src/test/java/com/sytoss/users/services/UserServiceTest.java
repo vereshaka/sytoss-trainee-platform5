@@ -1,8 +1,10 @@
 package com.sytoss.users.services;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
+import com.sytoss.users.connectors.DisciplineConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
@@ -23,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,6 +46,9 @@ public class UserServiceTest extends StpUnitTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Mock
+    private DisciplineConnector disciplineConnector;
 
     @BeforeEach
     protected void initSecurityContext() {
@@ -71,6 +74,24 @@ public class UserServiceTest extends StpUnitTest {
         assertEquals("Luidji", result.getFirstName());
         assertEquals("Monk", result.getLastName());
         assertEquals("test@email.com", result.getEmail());
+    }
+
+    @Test
+    public void shouldRetrieveMyDiscipline() {
+        StudentDTO dto = new StudentDTO();
+        dto.setId(1L);
+        dto.setEmail("test@email.com");
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        dto.setGroups(List.of(groupDTO));
+
+        when(userConnector.getByEmail(anyString())).thenReturn(dto);
+        List<Discipline> disciplineList = new ArrayList<>(List.of(new Discipline()));
+        when(disciplineConnector.findMyDiscipline(anyLong())).thenReturn(disciplineList);
+        List<Discipline> result = userService.findMyDisciplines();
+        assertEquals(1, result.size());
     }
 
     @Test

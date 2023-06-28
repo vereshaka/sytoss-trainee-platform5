@@ -1,5 +1,6 @@
 package com.sytoss.users.bdd.then;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
@@ -10,6 +11,7 @@ import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,5 +49,20 @@ public class UserThen extends CucumberIntegrationTest {
                         )
                 )
         );
+    }
+    @Then("should receive information about discipline of student")
+    public void shouldReceiveDisciplineByStudent(List<Discipline> disciplines) {
+        List<Discipline> responseDisciplineList = (List<Discipline>) TestExecutionContext.getTestContext().getResponse().getBody();
+        Assertions.assertEquals(disciplines.size(), responseDisciplineList.size());
+//        Iterator<Discipline> disciplineIterator = responseDisciplineList.iterator();
+//        while (disciplineIterator.hasNext()){
+//            Discipline discipline = disciplineIterator.next();
+//            for(Discipline discipline1 : disciplines){
+//                if(discipline1.getName().equals(discipline.getName())){
+//
+//                }
+//            }
+//        }
+//        assertEquals(0, responseDisciplineList.size());
     }
 }

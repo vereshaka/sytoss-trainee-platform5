@@ -1,9 +1,11 @@
 package com.sytoss.users.services;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.users.connectors.DisciplineConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
@@ -33,6 +35,8 @@ public class UserService extends AbstractService {
     private final UserConverter userConverter;
 
     private final GroupConvertor groupConvertor;
+
+    private final DisciplineConnector disciplineConnector;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -131,5 +135,14 @@ public class UserService extends AbstractService {
             groups.add(group);
         });
         return groups;
+    }
+
+    public List<Discipline> findMyDisciplines() {
+        List<Group> groups = findByStudent();
+        List<Discipline> disciplineList = new ArrayList<>();
+        for(Group group : groups){
+               disciplineList.addAll(disciplineConnector.findMyDiscipline(group.getId()));
+        }
+        return disciplineList;
     }
 }

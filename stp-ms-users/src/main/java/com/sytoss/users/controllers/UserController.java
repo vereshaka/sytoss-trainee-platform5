@@ -1,11 +1,11 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +54,14 @@ public class UserController {
     @GetMapping("/my/groups")
     public List<Group> findGroupByStudent() {
         return userService.findByStudent();
+    }
+
+    @Operation(description = "find my disciplines")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findDisciplineByStudent() {
+        return userService.findMyDisciplines();
     }
 }
