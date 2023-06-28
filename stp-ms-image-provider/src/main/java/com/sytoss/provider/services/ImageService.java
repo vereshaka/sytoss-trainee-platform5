@@ -59,4 +59,9 @@ public class ImageService extends AbstractService {
         }
         return imageFile;
     }
+
+    public byte[] getById(Long id) {
+        ImageDTO imageDTO = imageConnector.getReferenceById(id);
+        return imageDTO.getImageBytes();
+    }
 }

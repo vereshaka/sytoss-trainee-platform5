@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +22,6 @@ class ImageControllerTest extends StpApplicationTest {
 
     @MockBean
     private ImageService imageService;
-
     @InjectMocks
     private ImageController imageController;
 
@@ -37,5 +38,16 @@ class ImageControllerTest extends StpApplicationTest {
         ResponseEntity<String> responseEntity = doPost("/api/convert/image", requestEntity, String.class);
 
         Assertions.assertEquals(400, responseEntity.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldGetImageById() {
+        byte[] photoBytes = new byte[]{};
+        when(imageService.getById(any())).thenReturn(photoBytes);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/question-image/5", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
     }
 }
