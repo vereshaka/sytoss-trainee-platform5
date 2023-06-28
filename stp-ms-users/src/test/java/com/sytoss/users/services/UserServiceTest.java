@@ -189,7 +189,7 @@ public class UserServiceTest extends StpUnitTest {
         dto.setPhoto(photoBytes);
 
         when(userConnector.getByEmail(userEmail)).thenReturn(dto);
-        byte[] result = userService.getPhoto();
+        byte[] result = userService.getMyPhoto();
         assertEquals(photoBytes, result);
     }
 }

@@ -134,7 +134,7 @@ public class UserService extends AbstractService {
         return groups;
     }
 
-    public byte[] getPhoto() {
+    public byte[] getMyPhoto() {
         if (getMeAsDto().getPhoto().length == 0) {
             throw new UserPhotoNotFoundException("The user does not have a photo!");
         }

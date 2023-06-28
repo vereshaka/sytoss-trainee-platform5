@@ -86,7 +86,7 @@ public class UserControllerTest extends AbstractControllerTest {
     @Test
     public void shouldReturnUserPhoto() {
         byte[] iconBytes = {0x01, 0x02, 0x03};
-        when(userService.getPhoto()).thenReturn(iconBytes);
+        when(userService.getMyPhoto()).thenReturn(iconBytes);
         HttpHeaders httpHeaders = getDefaultHttpHeaders("student");
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> result = doGet("/api/user/me/photo", httpEntity, byte[].class);

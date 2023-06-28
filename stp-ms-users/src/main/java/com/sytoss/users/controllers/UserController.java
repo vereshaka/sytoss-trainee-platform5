@@ -62,7 +62,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Photo not found!")
     })
     @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] getPhoto() {
-        return userService.getPhoto();
+    public @ResponseBody byte[] getMyPhoto() {
+        return userService.getMyPhoto();
     }
 }
