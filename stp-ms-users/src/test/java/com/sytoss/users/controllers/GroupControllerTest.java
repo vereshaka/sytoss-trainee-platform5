@@ -1,6 +1,5 @@
 package com.sytoss.users.controllers;
 
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.services.GroupService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
