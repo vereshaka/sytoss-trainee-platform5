@@ -1,9 +1,6 @@
 package com.sytoss.provider.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +10,8 @@ import lombok.Setter;
 public class ImageDTO {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "image_id_generator")
+    @SequenceGenerator(name = "image_id_generator", sequenceName = "IMAGE_SEQ", allocationSize = 1)
     private Long id;
 
     @Column(name = "IMAGE_BYTES")

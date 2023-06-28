@@ -2,6 +2,7 @@ package com.sytoss.provider.services;
 
 import com.sytoss.provider.connector.ImageConnector;
 import com.sytoss.provider.dto.ImageDTO;
+import com.sytoss.provider.exceptions.ConvertToImageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,12 +50,12 @@ public class ImageService extends AbstractService {
         graphics.drawString(question, 10, 75);
         graphics.dispose();
 
-        File imageFile = null;
+        File imageFile;
         try {
             imageFile = File.createTempFile("img", ".png");
             ImageIO.write(image, "png", imageFile);
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            throw new ConvertToImageException("Error during image creating", e);
         }
         return imageFile;
     }
