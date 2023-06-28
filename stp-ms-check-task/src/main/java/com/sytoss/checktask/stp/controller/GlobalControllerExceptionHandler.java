@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.checktask.stp.exceptions.AnswerIsNotValidException;
+import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +24,9 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(406).body(wrongEtalonException.getMessage());
     }
 
-    @ExceptionHandler({AnswerIsNotValidException.class})
-    public ResponseEntity<?> handleValidationException(AnswerIsNotValidException answerIsNotValidException) {
-        log.error("Global Exception Handler", answerIsNotValidException);
-        return ResponseEntity.status(406).body(answerIsNotValidException.getMessage());
+    @ExceptionHandler({RequestIsNotValidException.class})
+    public ResponseEntity<?> handleValidationException(RequestIsNotValidException requestIsNotValidException) {
+        log.error("Global Exception Handler", requestIsNotValidException);
+        return ResponseEntity.status(406).body(requestIsNotValidException.getMessage());
     }
 }

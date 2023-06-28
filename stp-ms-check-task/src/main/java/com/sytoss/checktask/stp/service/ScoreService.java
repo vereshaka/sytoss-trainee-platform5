@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
@@ -120,7 +121,7 @@ public class ScoreService {
             try {
                 result = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
-                throw new WrongEtalonException("Request is not valid", e);
+                throw new RequestIsNotValidException("Request is not valid", e);
             }
             return result;
         } finally {
