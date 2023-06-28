@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 import static org.bson.assertions.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class DisciplineThen extends CucumberIntegrationTest {
@@ -44,5 +46,20 @@ public class DisciplineThen extends CucumberIntegrationTest {
             disciplineList.remove(foundTDisciplines.get(0));
         }
         assertEquals(0, disciplineList.size());
+    }
+
+    @Then("should receive information about discipline of student")
+    public void shouldReceiveInformationAboutDisciplineOfStudent(List<DisciplineDTO> disciplines) {
+        List<Discipline> disciplineList = (List<Discipline>) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(disciplineList.size());
+        int count = 0;
+        for(DisciplineDTO discipline : disciplines){
+            for( Discipline answer: disciplineList){
+                if(discipline.getName().equals(answer.getName())){
+                    count++;
+                }
+            }
+        }
+        assertEquals(disciplines.size(), count);
     }
 }

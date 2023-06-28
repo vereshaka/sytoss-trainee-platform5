@@ -90,7 +90,6 @@ public class UserWhen extends CucumberIntegrationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         Discipline discipline = new Discipline();
         discipline.setName("new");
-        when(getDisciplineConnector().findMyDiscipline(anyLong())).thenReturn(disciplines);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);

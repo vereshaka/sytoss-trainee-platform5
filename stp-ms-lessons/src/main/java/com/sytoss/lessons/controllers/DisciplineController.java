@@ -106,9 +106,9 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/my/{groupId}/disciplines")
-    public List<Discipline> findAllMyDisciplines(@PathVariable("groupId") Long groupId) {
-        return disciplineService.findAllMyDiscipline(groupId);
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findAllMyDisciplines() {
+        return disciplineService.findAllMyDiscipline();
     }
 
     @Operation(description = "Method that join group to discipline")

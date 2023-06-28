@@ -6,6 +6,7 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Given;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ public class GroupGiven extends CucumberIntegrationTest {
 
     @Given("^groups exist$")
     public void groupsExist(List<GroupReferenceDTO> groups) {
+        List<Long> groupId = new ArrayList<>();
         for (GroupReferenceDTO groupReferenceDTO : groups) {
             Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
             DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
@@ -23,8 +25,10 @@ public class GroupGiven extends CucumberIntegrationTest {
             }
             GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
             if (result == null) {
-                getGroupReferenceConnector().save(groupReferenceDTO);
+                result = getGroupReferenceConnector().save(groupReferenceDTO);
             }
+            groupId.add(result.getGroupId());
         }
+        TestExecutionContext.getTestContext().setGroupId(groupId);
     }
 }

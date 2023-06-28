@@ -18,4 +18,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
-lessons-url: http://localhost:9101/api/

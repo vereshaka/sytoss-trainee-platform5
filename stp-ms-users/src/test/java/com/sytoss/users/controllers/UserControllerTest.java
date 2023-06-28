@@ -43,10 +43,10 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldRetrieveMyDisciplines() {
-        when(userService.findMyDisciplines()).thenReturn(new ArrayList<>());
+        when(userService.findGroupsId()).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders("teacher");
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<List<Discipline>> result = doGet("/api/user/my/disciplines", requestEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        ResponseEntity<List<Long>> result = doGet("/api/user/my/groupsId", requestEntity, new ParameterizedTypeReference<List<Long>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

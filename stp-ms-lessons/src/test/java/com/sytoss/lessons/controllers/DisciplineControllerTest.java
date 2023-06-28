@@ -43,10 +43,10 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldFindDisciplinesByStudent() {
-        when(disciplineService.findAllMyDiscipline(anyLong())).thenReturn(new ArrayList<>());
+        when(disciplineService.findAllMyDiscipline()).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Discipline>> result = doGet("/api/my/1/disciplines", httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Discipline>> result = doGet("/api/my/disciplines", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

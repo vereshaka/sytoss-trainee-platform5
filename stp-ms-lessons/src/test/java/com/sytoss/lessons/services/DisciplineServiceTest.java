@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
@@ -44,6 +45,9 @@ public class DisciplineServiceTest extends StpUnitTest {
     @Spy
     private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();
 
+    @Mock
+    private UserConnector userConnector;
+
     @Test
     public void shouldSaveDiscipline() {
         when(disciplineConnector.getByNameAndTeacherId("SQL", 1L)).thenReturn(null);
@@ -65,9 +69,10 @@ public class DisciplineServiceTest extends StpUnitTest {
         DisciplineDTO discipline = new DisciplineDTO();
         discipline.setId(11L);
         discipline.setName("Test1");
+        when(userConnector.findMyGroupId()).thenReturn(List.of(1L,2L));
         when(disciplineConnector.findByGroupReferencesGroupId(anyLong())).thenReturn(List.of(discipline));
-        List<Discipline> disciplineList = disciplineService.findAllMyDiscipline(1L);
-        assertEquals(1, disciplineList.size());
+        List<Discipline> disciplineList = disciplineService.findAllMyDiscipline();
+        assertEquals(2, disciplineList.size());
     }
 
     public Teacher createReference(Long id) {

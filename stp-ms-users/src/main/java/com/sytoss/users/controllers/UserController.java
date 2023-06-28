@@ -56,12 +56,12 @@ public class UserController {
         return userService.findByStudent();
     }
 
-    @Operation(description = "find my disciplines")
+    @Operation(description = "find my groups Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/my/disciplines")
-    public List<Discipline> findDisciplineByStudent() {
-        return userService.findMyDisciplines();
+    @GetMapping("/my/groupsId")
+    public List<Long> findDisciplineByStudent() {
+        return userService.findGroupsId();
     }
 }
