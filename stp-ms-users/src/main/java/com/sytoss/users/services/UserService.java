@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -26,7 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService extends AbstractService {
+public class UserService extends AbstractStpService {
 
     private final UserConnector userConnector;
 

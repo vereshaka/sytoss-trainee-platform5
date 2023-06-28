@@ -1,4 +1,4 @@
-package com.sytoss.checktask.stp;
+package com.sytoss.checktask.stp.bdd;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
