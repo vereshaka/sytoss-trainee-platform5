@@ -62,7 +62,6 @@ public class UserGiven extends CucumberIntegrationTest {
         UserDTO userDTO = TestExecutionContext.getTestContext().getUser();
         byte[] photoBytes = {0x01, 0x02, 0x03};
         userDTO.setPhoto(photoBytes);
-        userDTO = getUserConnector().save(userDTO);
-        TestExecutionContext.getTestContext().setUser(userDTO);
+        getUserConnector().save(userDTO);
     }
 }
