@@ -49,8 +49,7 @@ public class DisciplineThen extends CucumberIntegrationTest {
 
     @Then("^discipline's icon should be received$")
     public void disciplineIconShouldBeReceived() {
-        Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
-        DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
         byte[] icon = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(disciplineDTO.getIcon().length, icon.length);
     }

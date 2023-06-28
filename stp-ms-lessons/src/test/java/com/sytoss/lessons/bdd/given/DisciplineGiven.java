@@ -110,8 +110,7 @@ public class DisciplineGiven extends AbstractGiven {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
 
-        Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId());
-        DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
         disciplineDTO.setIcon(icon);
         getDisciplineConnector().save(disciplineDTO);
     }
