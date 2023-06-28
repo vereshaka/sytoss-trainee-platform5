@@ -19,7 +19,7 @@ class ImageServiceTest extends StpUnitTest {
     private ImageService imageService;
 
     @Test
-    void convertToImage() {
+    void generatePngFromQuestion() {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(1L);
         when(imageConnector.save(any())).thenReturn(imageDTO);
