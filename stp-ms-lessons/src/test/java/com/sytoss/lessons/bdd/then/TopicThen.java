@@ -40,8 +40,7 @@ public class TopicThen extends CucumberIntegrationTest {
 
     @Then("^topic's icon should be received$")
     public void topicIconShouldBeReceived() {
-        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
-        TopicDTO topicDTO = optionalTopicDTO.orElse(null);
+        TopicDTO topicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId()).orElse(null);
         byte[] icon = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(topicDTO.getIcon().length, icon.length);
     }
