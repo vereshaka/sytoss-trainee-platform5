@@ -12,11 +12,10 @@ Feature: Task
     Then operation is successful
     And should return task with "What are the different subsets of SQL?" question
 
-  @Bug
   Scenario: Retrieve information about task when it doesnt exist
-    Given task with id 1 doesnt exist
-    When retrieve information about task with id 1
-    Then operation should be finished with 404 "Task with id "1" not found" error
+    Given task with id *6 doesnt exist
+    When retrieve information about task with id *6
+    Then operation should be finished with 404 "Task with id "12345" not found" error
 
   Scenario: system create new task
     Given task with question "What are the different subsets of SQL?" doesnt exist
