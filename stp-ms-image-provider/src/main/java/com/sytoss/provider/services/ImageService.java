@@ -1,23 +1,41 @@
 package com.sytoss.provider.services;
 
+import com.sytoss.provider.connector.ImageConnector;
+import com.sytoss.provider.dto.ImageDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+@Service
+@RequiredArgsConstructor
 public class ImageService extends AbstractService {
 
-    private int paragraphStart;
-    private int paragraphEnd;
+    private final ImageConnector imageConnector;
 
     public Long generatePngFromQuestion(String question) {
-        convertToImage(question);
-        return 1L;
+        File imageFile = convertToImage(question);
+        byte[] imageBytes;
+        try {
+            imageBytes = Files.readAllBytes(Path.of(imageFile.getPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setImageBytes(imageBytes);
+        imageDTO = imageConnector.save(imageDTO);
+        return imageDTO.getId();
     }
 
     private File convertToImage(String question) {
-        int width = 1920;
-        int height = 1080;
+        int width = 600;
+        int height = 600;
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics graphics = image.getGraphics();
@@ -38,8 +56,6 @@ public class ImageService extends AbstractService {
         } catch (Exception e) {
             System.out.println("An error occurred: " + e.getMessage());
         }
-        System.out.println(imageFile.getAbsolutePath());
         return imageFile;
     }
-
 }
