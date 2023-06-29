@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.bson.assertions.Assertions.fail;
@@ -44,5 +45,12 @@ public class DisciplineThen extends CucumberIntegrationTest {
             disciplineList.remove(foundTDisciplines.get(0));
         }
         assertEquals(0, disciplineList.size());
+    }
+
+    @Then("^discipline's icon should be received$")
+    public void disciplineIconShouldBeReceived() {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
+        byte[] icon = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertEquals(disciplineDTO.getIcon().length, icon.length);
     }
 }
