@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 
-public class ExamServiceTest extends AbstractJunitTest {
+public class ExamServiceTest extends StpUnitTest {
 
     @InjectMocks
     @Autowired

@@ -72,145 +72,145 @@ databaseChangeLog:
                   type: long
                   constraints:
                     primaryKey: true
-        - changeSet:
-            id: init-tables
-            author: compiled
-            changes:
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 1
-                    - column:
-                        name: name
-                        type: SQL
-                  tableName: dDiscipline
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 2
-                    - column:
-                        name: name
-                        type: Mongo
-                  tableName: dDiscipline
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 1
-                    - column:
-                        name: name
-                        type: Insert
-                    - column:
-                        name: discipline_id
-                        type: 1
-                  tableName: dTopic
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 2
-                    - column:
-                        name: name
-                        type: Select
-                    - column:
-                        name: discipline_id
-                        type: 2
-                  tableName: dTopic
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 3
-                    - column:
-                        name: name
-                        type: Join
-                    - column:
-                        name: discipline_id
-                        type: 1
-                  tableName: dTopic
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 1
-                    - column:
-                        name: question
-                        type: What is Join?
-                    - column:
-                        name: discipline_id
-                        type: 1
-                  tableName: dTask
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 2
-                    - column:
-                        name: question
-                        type: What is Inner Join?
-                    - column:
-                        name: discipline_id
-                        type: 1
-                  tableName: dTask
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 3
-                    - column:
-                        name: question
-                        type: What is Join?
-                    - column:
-                        name: discipline_id
-                        type: 1
-                  tableName: dTask
-              - insert:
-                  columns:
-                    - column:
-                        name: id
-                        type: 4
-                    - column:
-                        name: question
-                        type: What is Select?
-                    - column:
-                        name: discipline_id
-                        type: 2
-                  tableName: dTask
-              - insert:
-                  columns:
-                    - column:
-                        name: task_id
-                        type: 1
-                    - column:
-                        name: topic_id
-                        type: 1
-                  tableName: dTopicToTask
-              - insert:
-                  columns:
-                    - column:
-                        name: task_id
-                        type: 2
-                    - column:
-                        name: topic_id
-                        type: 3
-                  tableName: dTopicToTask
-              - insert:
-                  columns:
-                    - column:
-                        name: task_id
-                        type: 3
-                    - column:
-                        name: topic_id
-                        type: 2
-                  tableName: dTopicToTask
-              - insert:
-                  columns:
-                    - column:
-                        name: task_id
-                        type: 4
-                    - column:
-                        name: topic_id
-                        type: 1
-                  tableName: dTopicToTask
+  - changeSet:
+      id: init-tables
+      author: compiled
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 1
+              - column:
+                  name: name
+                  type: SQL
+            tableName: dDiscipline
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 2
+              - column:
+                  name: name
+                  type: Mongo
+            tableName: dDiscipline
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 1
+              - column:
+                  name: name
+                  type: Insert
+              - column:
+                  name: discipline_id
+                  type: 1
+            tableName: dTopic
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 2
+              - column:
+                  name: name
+                  type: Select
+              - column:
+                  name: discipline_id
+                  type: 2
+            tableName: dTopic
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 3
+              - column:
+                  name: name
+                  type: Join
+              - column:
+                  name: discipline_id
+                  type: 1
+            tableName: dTopic
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 1
+              - column:
+                  name: question
+                  type: What is Join?
+              - column:
+                  name: discipline_id
+                  type: 1
+            tableName: dTask
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 2
+              - column:
+                  name: question
+                  type: What is Inner Join?
+              - column:
+                  name: discipline_id
+                  type: 1
+            tableName: dTask
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 3
+              - column:
+                  name: question
+                  type: What is Join?
+              - column:
+                  name: discipline_id
+                  type: 1
+            tableName: dTask
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  type: 4
+              - column:
+                  name: question
+                  type: What is Select?
+              - column:
+                  name: discipline_id
+                  type: 2
+            tableName: dTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  type: 1
+              - column:
+                  name: topic_id
+                  type: 1
+            tableName: dTopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  type: 2
+              - column:
+                  name: topic_id
+                  type: 3
+            tableName: dTopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  type: 3
+              - column:
+                  name: topic_id
+                  type: 2
+            tableName: dTopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  type: 4
+              - column:
+                  name: topic_id
+                  type: 1
+            tableName: dTopicToTask

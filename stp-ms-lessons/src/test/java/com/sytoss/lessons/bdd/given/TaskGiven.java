@@ -21,31 +21,12 @@ public class TaskGiven extends CucumberIntegrationTest {
 
         if (taskDTO == null) {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
-            taskDTO = new TaskDTO();
-            taskDTO.setQuestion(question);
-            taskDTO.setEtalonAnswer("Etalon answer");
-            taskDTO.setTaskDomain(taskDomainDTO);
-            taskDTO = getTaskConnector().save(taskDTO);
-        } else {
-            List<TopicDTO> topics = taskDTO.getTopics();
-            taskDTO.getTopics().removeAll(topics);
-            taskDTO = getTaskConnector().save(taskDTO);
-        }
-        TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
-    }
-
-    @Given("^task with question \"(.*)\" with topic exists$")
-    public void taskExistsWithTopic(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
-
-        if (taskDTO == null) {
-            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
             TopicDTO topicDTO = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId());
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);
+            taskDTO.setTopics(List.of(topicDTO));
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
-            taskDTO.setTopics(List.of(topicDTO));
             taskDTO = getTaskConnector().save(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
@@ -114,9 +95,15 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with id (.*) doesnt exist")
     public void taskWithIdDoesntExist(String taskId) {
-        TaskDTO taskDto = getTaskConnector().getById(1L);
-        if (taskDto != null) {
+        if(TestExecutionContext.getTestContext().getIdMapping().get(taskId) != null){
+            TaskDTO taskDto = getTaskConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
+        }else{
+            TaskDTO taskDto = getTaskConnector().getById(12345L);
+            if(taskDto != null) {
+                getTaskConnector().delete(taskDto);
+            }
+            TestExecutionContext.getTestContext().registerId(taskId, 12345L);
         }
     }
 }

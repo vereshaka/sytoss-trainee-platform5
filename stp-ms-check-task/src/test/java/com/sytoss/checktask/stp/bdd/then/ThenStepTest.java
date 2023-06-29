@@ -1,28 +1,42 @@
 package com.sytoss.checktask.stp.bdd.then;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
+import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.en.Then;
-import org.junit.jupiter.api.Assertions;
+import org.springframework.http.ResponseEntity;
 
-public class ThenStepTest extends CucumberIntegrationTest {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ThenStepTest extends CheckTaskIntegrationTest {
 
     @Then("request should be processed successfully")
-    public void requestShouldBeProcessedSuccessfully() throws JsonProcessingException {
-        Assertions.assertEquals(200, TestContext.getInstance().getResponseEntity().getStatusCode().value());
-        Grade grade = getMapper().readValue(TestContext.getInstance().getResponseEntity().getBody(), Grade.class);
-        TestContext.getInstance().setGrade(grade);
+    public void requestShouldBeProcessedSuccessfully() {
+        ResponseEntity response = getTestExecutionContext().getResponse();
+        assertEquals(200, response.getStatusCode().value());
     }
 
     @Then("Grade value is {double}")
     public void gradeValueIs(double value) {
-        Assertions.assertEquals(value, TestContext.getInstance().getGrade().getValue());
+        ResponseEntity<Score> response = getTestExecutionContext().getResponse();
+        assertEquals(value, response.getBody().getValue());
     }
 
     @Then("Grade message is {string}")
     public void gradeMessageIs(String message) {
-        Assertions.assertEquals(message, TestContext.getInstance().getGrade().getComment());
+        ResponseEntity<Score> response = getTestExecutionContext().getResponse();
+        assertEquals(message, response.getBody().getComment());
+    }
+
+    @Then("^should return that etalon is valid$")
+    public void shouldReturnEtalonIsValid() {
+        ResponseEntity<IsCheckEtalon> response = getTestExecutionContext().getResponse();
+        assertTrue(response.getBody().isChecked());
+    }
+
+    @Then("^should return that etalon is not valid$")
+    public void shouldReturnEtalonIsNotValid() {
+        ResponseEntity<IsCheckEtalon> response = getTestExecutionContext().getResponse();
+        assertFalse(response.getBody().isChecked());
     }
 }

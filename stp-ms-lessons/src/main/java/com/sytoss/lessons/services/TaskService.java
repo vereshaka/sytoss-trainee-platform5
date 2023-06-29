@@ -41,7 +41,7 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getId());
+        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getDiscipline().getId());
         if (taskDTO == null) {
             taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
@@ -105,5 +105,16 @@ public class TaskService {
         } else {
             throw new TaskConditionAlreadyExistException(taskCondition.getValue());
         }
+    }
+
+    public List<Task> findByDomainId(Long taskDomainId) {
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<Task> result = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOList) {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            result.add(task);
+        }
+        return result;
     }
 }

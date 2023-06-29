@@ -11,6 +11,7 @@ import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
+import com.sytoss.stp.test.StpUnitTest;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Getter
-public abstract class AbstractApplicationTest extends AbstractJunitTest {
+public abstract class AbstractApplicationTest extends StpUnitTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -130,11 +131,19 @@ public abstract class AbstractApplicationTest extends AbstractJunitTest {
         return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }
 
+    protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
+        return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
+    }
+
     public <T> ResponseEntity<T> doPost(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.POST, requestEntity, responseType);
     }
 
     public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.GET, requestEntity, responseType);
+    }
+
+    public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
 

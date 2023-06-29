@@ -4,6 +4,7 @@ import com.sytoss.users.AbstractApplicationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
 import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -44,6 +45,9 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     @Autowired
     private UserConverter userConverter;
+
+    @Autowired
+    private GroupConvertor groupConvertor;
 
     @LocalServerPort
     private int applicationPort;

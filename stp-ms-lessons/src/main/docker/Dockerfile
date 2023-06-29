@@ -7,6 +7,6 @@ USER stpuser
 
 ADD stp-ms-lessons/target/*.jar /jar/stp-ms-lesson.jar
 
-EXPOSE 9103
+EXPOSE 9101
 
 ENTRYPOINT [ "java","-jar","/jar/stp-ms-lesson.jar" ]

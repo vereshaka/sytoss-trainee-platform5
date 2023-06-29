@@ -1,6 +1,4 @@
-package com.sytoss.users.services.exceptions;
-
-import com.sytoss.domain.bom.exceptions.business.BusinessException;
+package com.sytoss.domain.bom.exceptions.business;
 
 public class UserNotIdentifiedException extends BusinessException {
 
