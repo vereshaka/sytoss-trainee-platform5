@@ -23,9 +23,8 @@ Feature: Task
     Then operation is successful
     And task with question "What are the different subsets of SQL?" should be created
 
-  @Bug
   Scenario: system does not create new task when task exists
-    Given task with question "What are the different subsets of SQL?" with topic exists
+    Given task with question "What are the different subsets of SQL?" exists
     When system create task with question "What are the different subsets of SQL?"
     Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
 
@@ -61,6 +60,7 @@ Feature: Task
       | SQL        | Join  | What is Join?       |
       | SQL        | Join  | What is Inner Join? |
 
+  @Bug
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
     And topic "Join" exists
@@ -83,7 +83,7 @@ Feature: Task
       | SQL        | Join  | What is Join? | not equal | CONTAINS |
 
   Scenario: add new condition to task
-    Given task with question "What are the different subsets of SQL?" with topic exists
+    Given task with question "What are the different subsets of SQL?" exists
     And "Select" condition with CONTAINS type does not exist in this task
     When system add "Select" condition with CONTAINS type to task with question "What are the different subsets of SQL?"
     Then operation is successful
