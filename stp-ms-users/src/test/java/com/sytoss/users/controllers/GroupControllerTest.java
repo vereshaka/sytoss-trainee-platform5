@@ -2,9 +2,7 @@ package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.users.bdd.common.TestExecutionContext;
 import com.sytoss.users.services.GroupService;
-import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -40,5 +38,13 @@ public class GroupControllerTest extends AbstractControllerTest {
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
         ResponseEntity<String> result = doPost("/api/group/", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldAssignStudent() {
+        HttpHeaders headers = getDefaultHttpHeaders("teacher");
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<Void> responseEntity = doPost("/api/group/5/student/9", requestEntity, Void.class);
+        assertEquals(200, responseEntity.getStatusCode().value());
     }
 }
