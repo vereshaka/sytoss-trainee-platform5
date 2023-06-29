@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -26,7 +27,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService extends AbstractService {
+public class UserService extends AbstractStpService {
 
     private final UserConnector userConnector;
 
@@ -65,11 +66,13 @@ public class UserService extends AbstractService {
     private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result = null;
         if (userDto instanceof TeacherDTO) {
-            result = new Teacher();
-            userConverter.fromDTO(userDto, result);
+            Teacher teacher = new Teacher();
+            userConverter.fromDTO((TeacherDTO) userDto, teacher);
+            result = teacher;
         } else if (userDto instanceof StudentDTO) {
-            result = new Student();
-            userConverter.fromDTO(userDto, result);
+            Student student = new Student();
+            userConverter.fromDTO((StudentDTO) userDto, student);
+            result = student;
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
         }
@@ -129,5 +132,10 @@ public class UserService extends AbstractService {
             groups.add(group);
         });
         return groups;
+    }
+
+    public byte[] getUserPhoto(Long userId) {
+        UserDTO userDTO = getDTOById(userId);
+        return userDTO.getPhoto();
     }
 }

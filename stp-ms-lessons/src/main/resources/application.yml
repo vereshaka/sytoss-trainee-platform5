@@ -1,9 +1,11 @@
+server:
+  port: ${APP_PORT:9101}
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:7432/lessons
-    username: admin
-    password: password
+    url: ${DB_URI:jdbc:postgresql://localhost:7432/lessons}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:password}
   jpa:
     properties:
       hibernate:
@@ -23,7 +25,5 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         request-interceptors[0]: com.sytoss.lessons.controllers.TokenRequestInterceptor
-server:
-   port: 9101
 users-url: http://localhost:9102/api/
 check-task-url: http://localhost:9010/api/

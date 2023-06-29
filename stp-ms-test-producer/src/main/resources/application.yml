@@ -1,3 +1,5 @@
+server:
+  port: ${APP_PORT:9103}
 spring:
   data:
     mongodb:
@@ -7,6 +9,4 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
-server:
-   port: 9103
 check-task-url: http://localhost:9010/api/
