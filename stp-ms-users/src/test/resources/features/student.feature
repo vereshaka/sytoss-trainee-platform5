@@ -1,7 +1,9 @@
 Feature: Student
 
-  Scenario: receive all groups of student
+  Background:
     Given student with "FirstName" firstName and "LastName" lastName and "test1@gmail.com" email exists
+
+  Scenario: receive all groups of student
     And this student assign to group
       | group        |
       | group first  |
@@ -14,6 +16,12 @@ Feature: Student
       | group first  |
       | group second |
       | group third  |
+
+  Scenario: retrieve photo
+    Given this user has profile photo
+    When retrieve photo of this user
+    Then operation is successful
+    And should return photo
 
   Scenario: get user's icon
     Given student with "Ivan" firstName and "Ivanovich" lastName and "test@gmail.com" email exists

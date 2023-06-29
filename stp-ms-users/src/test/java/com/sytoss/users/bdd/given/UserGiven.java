@@ -58,6 +58,14 @@ public class UserGiven extends CucumberIntegrationTest {
         getUserConnector().save(studentDTO);
     }
 
+    @Given("this user has profile photo")
+    public void thisUserHasProfilePhoto() {
+        UserDTO userDTO = TestExecutionContext.getTestContext().getUser();
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        userDTO.setPhoto(photoBytes);
+        getUserConnector().save(userDTO);
+    }
+
     @Given("^this student has photo with bytes \"([^\\\"]*)\"$")
     public void userHasPhoto(String photoBytes) {
         String[] numberStrings = photoBytes.split(", ");

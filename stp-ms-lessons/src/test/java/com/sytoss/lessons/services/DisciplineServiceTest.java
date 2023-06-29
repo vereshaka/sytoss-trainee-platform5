@@ -138,4 +138,16 @@ public class DisciplineServiceTest extends StpUnitTest {
         List<Group> resultList = disciplineService.getGroups(5L);
         assertEquals(2, resultList.size());
     }
+
+    @Test
+    public void testGetIcon() {
+        Long disciplineId = 1L;
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(disciplineId);
+        disciplineDTO.setIcon(iconBytes);
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(disciplineDTO);
+        byte[] result = disciplineService.getIcon(disciplineId);
+        assertEquals(iconBytes, result);
+    }
 }

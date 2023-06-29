@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 public class GroupThen extends CucumberIntegrationTest {
@@ -19,6 +20,11 @@ public class GroupThen extends CucumberIntegrationTest {
         StudentDTO studentDTO = (StudentDTO) getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId()).orElseThrow();
         List<GroupDTO> filter = studentDTO.getGroups().stream().filter(item -> item.getName().equals(groupName)).toList();
         assertEquals(1, filter.size());
+    }
 
+    @Then("^\"(.*)\" group should exist$")
+    public void groupShouldBe(String groupName) {
+        GroupDTO groupDTO = getGroupConnector().getByName(groupName);
+        assertNotNull(groupDTO);
     }
 }

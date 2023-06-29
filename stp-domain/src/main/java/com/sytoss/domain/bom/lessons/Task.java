@@ -24,4 +24,6 @@ public class Task {
     private List<Topic> topics = new ArrayList<>();
 
     private List<TaskCondition> taskConditions = new ArrayList<>();
+
+    private Long imageId;
 }

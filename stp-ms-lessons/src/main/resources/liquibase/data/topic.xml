@@ -10,6 +10,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="NAME" type="VARCHAR2(100 BYTE)" />
+            <column name="SHORT_DESCRIPTION" type="VARCHAR2(100 BYTE)" />
+            <column name="FULL_DESCRIPTION" type="VARCHAR2(100 BYTE)" />
+            <column name="DURATION" type="DOUBLE" />
+            <column name="ICON" type="bytea" />
             <column name="DISCIPLINE_ID" type="BIGINT">
                 <constraints nullable="false" />
             </column>

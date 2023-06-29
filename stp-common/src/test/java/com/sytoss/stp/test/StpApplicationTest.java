@@ -49,6 +49,8 @@ public abstract class StpApplicationTest extends StpUnitTest {
     @Autowired
     private AbstractApplicationContext applicationContext;
 
+    private static HttpServer httpServer;
+
     private static RSAKey JWK = createJWK();
 
     private static RSAKey createJWK() {
@@ -58,8 +60,6 @@ public abstract class StpApplicationTest extends StpUnitTest {
             throw new RuntimeException(e);
         }
     }
-
-    private static HttpServer httpServer;
 
     @Test
     public void shouldLoadApplicationContext() {

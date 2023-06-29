@@ -23,6 +23,18 @@ public class DisciplineDTO {
     @Column(name = "TEACHER_ID")
     private Long teacherId;
 
+    @Column(name = "SHORT_DESCRIPTION")
+    private String shortDescription;
+
+    @Column(name = "FULL_DESCRIPTION")
+    private String fullDescription;
+
+    @Column(name = "DURATION")
+    private Double duration;
+
+    @Column(name = "ICON")
+    private byte[] icon;
+
     @OneToMany
     @JoinTable(name = "group2discipline",
             joinColumns = @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID"),

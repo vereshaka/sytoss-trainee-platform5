@@ -16,6 +16,10 @@ public class TopicConvertor {
     public void fromDTO(TopicDTO source, Topic destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
+        destination.setShortDescription(source.getShortDescription());
+        destination.setFullDescription(source.getFullDescription());
+        destination.setDuration(source.getDuration());
+        destination.setIcon(source.getIcon());
         Discipline discipline = new Discipline();
         disciplineConvertor.fromDTO(source.getDiscipline(), discipline);
         destination.setDiscipline(discipline);
@@ -24,6 +28,10 @@ public class TopicConvertor {
     public void toDTO(Topic source, TopicDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
+        destination.setShortDescription(source.getShortDescription());
+        destination.setFullDescription(source.getFullDescription());
+        destination.setDuration(source.getDuration());
+        destination.setIcon(source.getIcon());
         DisciplineDTO discipline = new DisciplineDTO();
         disciplineConvertor.toDTO(source.getDiscipline(), discipline);
         destination.setDiscipline(discipline);

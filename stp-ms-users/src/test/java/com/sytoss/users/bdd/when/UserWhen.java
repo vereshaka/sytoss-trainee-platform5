@@ -70,6 +70,16 @@ public class UserWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
+    @When("retrieve photo of this user")
+    public void retrievePhotoOfThisUser() {
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/photo";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
     @When("^receive this student's photo")
     public void getUserPhoto() {
         String url = "/api/user/me/photo";
