@@ -34,4 +34,11 @@ class ImageServiceTest extends StpUnitTest {
         when(imageConnector.save(any())).thenReturn(imageDTO);
         Assertions.assertDoesNotThrow(() -> imageService.generatePngFromQuestion("Anything"));
     }
+
+    @Test
+    void savePhoto() {
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setId(1L);
+        Assertions.assertDoesNotThrow(()->imageService.savePhoto(imageDTO,"Anything"));
+    }
 }

@@ -4,6 +4,7 @@ import com.sytoss.provider.connector.ImageConnector;
 import com.sytoss.provider.dto.ImageDTO;
 import com.sytoss.provider.exceptions.ConvertToImageException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -21,16 +22,10 @@ public class ImageService extends AbstractService {
     private final ImageConnector imageConnector;
 
     public Long generatePngFromQuestion(String question) {
-        File imageFile = convertToImage(question);
-        byte[] imageBytes;
-        try {
-            imageBytes = Files.readAllBytes(Path.of(imageFile.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         ImageDTO imageDTO = new ImageDTO();
-        imageDTO.setImageBytes(imageBytes);
+        imageDTO.setImageBytes(new byte[]{});
         imageDTO = imageConnector.save(imageDTO);
+        savePhoto(imageDTO,question);
         return imageDTO.getId();
     }
 
@@ -58,5 +53,18 @@ public class ImageService extends AbstractService {
             throw new ConvertToImageException("Error during image creating", e);
         }
         return imageFile;
+    }
+
+    @Async
+    protected void savePhoto(ImageDTO imageDTO, String question) {
+        File imageFile = convertToImage(question);
+        byte[] imageBytes;
+        try {
+            imageBytes = Files.readAllBytes(Path.of(imageFile.getPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        imageDTO.setImageBytes(imageBytes);
+        imageConnector.save(imageDTO);
     }
 }
