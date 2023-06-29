@@ -6,9 +6,13 @@ import com.sytoss.stp.test.cucumber.TestExecutionContext;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+
 @Getter
 @CucumberContextConfiguration
 public class CucumberIntegrationTest extends StpIntegrationTest {
+
+    @Autowired
+    private ImageConnector imageConnector;
 
     @Override
     protected TestExecutionContext<?> getTestExecutionContext() {
@@ -19,7 +23,4 @@ public class CucumberIntegrationTest extends StpIntegrationTest {
     protected Object createDetails() {
         return null;
     }
-
-    @Autowired
-    private ImageConnector imageConnector;
 }

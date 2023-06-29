@@ -1,8 +1,10 @@
 package com.sytoss.provider.controller;
 
 import com.sytoss.provider.exceptions.ConvertToImageException;
+import com.sytoss.provider.exceptions.ImageNotFoundException;
 import com.sytoss.provider.services.ImageService;
 import com.sytoss.stp.test.StpApplicationTest;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -63,5 +65,15 @@ class ImageControllerTest extends StpApplicationTest {
         ResponseEntity<byte[]> result = doGet("/api/question-image/5", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldGetImageByIdWhichDoesntExist() {
+        when(imageService.getById(any())).thenThrow(new ImageNotFoundException("123", new EntityNotFoundException()));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/question-image/5", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(404, result.getStatusCode().value());
     }
 }

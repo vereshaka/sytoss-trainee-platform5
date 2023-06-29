@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
@@ -21,5 +22,11 @@ public class ImageThen extends CucumberIntegrationTest {
     public void imageIdShouldBe() {
         byte[] photoBytes = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
         Assertions.assertNotNull(photoBytes);
+    }
+
+    @Then("^operation should be finished with (\\w+) \"(.*)\" error$")
+    public void raiseError(Integer status, String error) {
+        assertEquals(status, TestExecutionContext.getTestContext().getResponse().getStatusCode().value());
+        assertArrayEquals(error.getBytes(), (byte[]) TestExecutionContext.getTestContext().getResponse().getBody());
     }
 }
