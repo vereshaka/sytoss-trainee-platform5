@@ -1,10 +1,10 @@
 package com.sytoss.users.bdd.when;
 
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
 import com.sytoss.users.dto.GroupDTO;
-import com.sytoss.users.dto.UserDTO;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -31,5 +31,16 @@ public class GroupWhen extends CucumberIntegrationTest {
             ResponseEntity<Student> responseEntity = doPost(url, httpEntity, Student.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
+    }
+
+    @When("^\"(.*)\" group is created$")
+    public void requestSentCreateGroupThatExist(String groupName) {
+        String url = "/api/group/";
+        Group group = new Group();
+        group.setName(groupName);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Group> httpEntity = new HttpEntity<>(group, httpHeaders);
+        ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }
