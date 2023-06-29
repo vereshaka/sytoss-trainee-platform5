@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserThen extends CucumberIntegrationTest {
 
@@ -26,7 +25,7 @@ public class UserThen extends CucumberIntegrationTest {
     }
 
     @Then("^this user has photo")
-    public void userHasPhoto(){
+    public void userHasPhoto() {
         UserDTO userDto = getUserConnector().getByEmail(TestExecutionContext.getTestContext().getUser().getEmail());
         assertNotNull(userDto.getPhoto());
     }
@@ -47,5 +46,13 @@ public class UserThen extends CucumberIntegrationTest {
                         )
                 )
         );
+    }
+
+    @Then("should return photo")
+    public void shouldReturnPhoto() {
+        byte[] photo = TestExecutionContext.getTestContext().getUser().getPhoto();
+        byte[] userPhoto = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertNotNull(userPhoto);
+        assertArrayEquals(photo, userPhoto);
     }
 }
