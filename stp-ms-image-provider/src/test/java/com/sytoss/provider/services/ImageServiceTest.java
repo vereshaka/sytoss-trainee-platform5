@@ -39,6 +39,6 @@ class ImageServiceTest extends StpUnitTest {
     void savePhoto() {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setId(1L);
-        Assertions.assertDoesNotThrow(()->imageService.savePhoto(imageDTO,"Anything"));
+        Assertions.assertDoesNotThrow(() -> imageService.savePhoto(imageDTO, "Anything"));
     }
 }

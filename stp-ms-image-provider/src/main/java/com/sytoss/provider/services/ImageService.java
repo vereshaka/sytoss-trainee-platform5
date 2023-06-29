@@ -25,7 +25,7 @@ public class ImageService extends AbstractService {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setImageBytes(new byte[]{});
         imageDTO = imageConnector.save(imageDTO);
-        savePhoto(imageDTO,question);
+        savePhoto(imageDTO, question);
         return imageDTO.getId();
     }
 

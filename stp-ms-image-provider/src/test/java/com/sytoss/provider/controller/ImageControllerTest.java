@@ -38,4 +38,17 @@ class ImageControllerTest extends StpApplicationTest {
 
         Assertions.assertEquals(400, responseEntity.getStatusCode().value());
     }
+
+    @Test
+    void convertImageWithoutError() {
+        HttpHeaders headers = getDefaultHttpHeaders();
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("question", "anything");
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<String> responseEntity = doPost("/api/convert/image", requestEntity, String.class);
+
+        Assertions.assertEquals(200, responseEntity.getStatusCode().value());
+    }
 }
