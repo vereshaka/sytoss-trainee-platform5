@@ -18,7 +18,7 @@ public class ImageController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "400", description = "Bad request")
-            })
+    })
     @PostMapping("/convert/image")
     public Long convertImage(@RequestBody String question) {
         return imageService.generatePngFromQuestion(question);
