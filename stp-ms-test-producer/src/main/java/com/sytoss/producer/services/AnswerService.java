@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.producer.connectors.CheckTaskConnector;
+import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
