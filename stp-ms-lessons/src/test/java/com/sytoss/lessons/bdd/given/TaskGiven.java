@@ -8,6 +8,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,31 +21,12 @@ public class TaskGiven extends CucumberIntegrationTest {
 
         if (taskDTO == null) {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
-            taskDTO = new TaskDTO();
-            taskDTO.setQuestion(question);
-            taskDTO.setEtalonAnswer("Etalon answer");
-            taskDTO.setTaskDomain(taskDomainDTO);
-            taskDTO = getTaskConnector().save(taskDTO);
-        } else {
-            List<TopicDTO> topics = taskDTO.getTopics();
-            taskDTO.getTopics().removeAll(topics);
-            taskDTO = getTaskConnector().save(taskDTO);
-        }
-        TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
-    }
-
-    @Given("^task with question \"(.*)\" with topic exists$")
-    public void taskExistsWithTopic(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
-
-        if (taskDTO == null) {
-            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
             TopicDTO topicDTO = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId());
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);
+            taskDTO.setTopics(List.of(topicDTO));
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
-            taskDTO.setTopics(List.of(topicDTO));
             taskDTO = getTaskConnector().save(taskDTO);
         }
         TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
@@ -66,24 +48,7 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
-            String disciplineName = columns.get("discipline");
-            Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
-            if (disciplineDTO == null) {
-                disciplineDTO = new DisciplineDTO();
-                disciplineDTO.setName(disciplineName);
-                disciplineDTO.setTeacherId(teacherId);
-                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
-            }
-
-            String topicName = columns.get("topic");
-            TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
-            if (topicDTO == null) {
-                topicDTO = new TopicDTO();
-                topicDTO.setName(topicName);
-                topicDTO.setDiscipline(disciplineDTO);
-                topicDTO = getTopicConnector().save(topicDTO);
-            }
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(columns.get("task"), disciplineDTO.getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
@@ -103,7 +68,9 @@ public class TaskGiven extends CucumberIntegrationTest {
                     }
                 }
                 taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId()));
-                taskDTO.setTopics(List.of(topicDTO));
+                List<TopicDTO> topicDTOList = new ArrayList<>();
+                topicDTOList.add(getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId()));
+                taskDTO.setTopics(topicDTOList);
                 taskDTO = getTaskConnector().save(taskDTO);
             } else {
                 String conditionName = columns.get("condition");

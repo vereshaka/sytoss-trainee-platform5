@@ -15,7 +15,12 @@ public abstract class StpIntegrationTest<T> extends StpApplicationTest {
     }
 
     protected TestExecutionContext<T> getTestExecutionContext() {
-        return TestExecutionContext.<T>getTestContext();
+        TestExecutionContext<T> testContext = TestExecutionContext.<T>getTestContext();
+        if (testContext.getDetails() == null) {
+            testContext.setDetails(createDetails());
+        }
+        return testContext;
     }
 
+    protected abstract T createDetails();
 }

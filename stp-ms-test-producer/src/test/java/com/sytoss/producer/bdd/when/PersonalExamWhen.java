@@ -14,6 +14,9 @@ import org.springframework.http.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 @Slf4j
 public class PersonalExamWhen extends CucumberIntegrationTest {
 
@@ -25,6 +28,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(generateJWT(List.of("123")));
         headers.set("studentId", studentId.toString());
+        when(getImageConnector().convertImage(anyString())).thenReturn(1L);
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setStudentId(studentId);
         examConfiguration.setExamName(examName);

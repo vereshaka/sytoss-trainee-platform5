@@ -1,6 +1,5 @@
 package com.sytoss.checktask.stp.bdd.other;
 
-
 import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
 import com.sytoss.domain.bom.personalexam.Score;
@@ -14,6 +13,8 @@ import static org.mockito.Mockito.mock;
 @Getter
 @Setter
 public class TestContext {
+
+    private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider = mock(ObjectProvider.class);
 
     private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
@@ -34,4 +35,3 @@ public class TestContext {
         testContext.set(null);
     }
 }
-

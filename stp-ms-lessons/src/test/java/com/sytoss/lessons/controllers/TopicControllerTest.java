@@ -45,4 +45,14 @@ public class TopicControllerTest extends LessonsControllerTest {
         ResponseEntity<Topic> result = doGet("/api/topic/123", httpEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());
     }
+
+    @Test
+    public void shouldReturnTopicIcon() {
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        when(topicService.getIcon(anyLong())).thenReturn(iconBytes);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/topic/4/icon", httpEntity, byte[].class);
+        assertEquals(200, result.getStatusCode().value());
+    }
 }

@@ -73,6 +73,11 @@ public class TaskServiceTest extends StpUnitTest {
         input.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(1L);
+        Discipline discipline = new Discipline();
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        discipline.setTeacher(teacher);
+        topic.setDiscipline(discipline);
         input.setTopics(List.of(topic));
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setId(1L);

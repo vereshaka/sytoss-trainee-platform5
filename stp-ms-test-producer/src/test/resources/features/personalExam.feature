@@ -42,3 +42,18 @@ Feature: PersonalExam
     When system check task domain with id: "1" is used
     Then operation is successful
     And should return "true"
+
+  Scenario: system create personal exam with a photo retrieve
+    Given tasks exist
+      | discipline | topic           | task       |
+      | SQL        | Join            | Inner Join |
+      | SQL        | Join            | Left Join  |
+      | SQL        | Sorting results | SELECT     |
+      | Java       | Sorting results | SELECT     |
+    When system create "First" personal exam by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id
+    Then operation is successful
+    And "First" exam by "SQL" discipline and "Join" topic for student with 1 id should have tasks
+      | task       |
+      | Inner Join |
+      | Left Join  |
+    And tasks from exam should have id image

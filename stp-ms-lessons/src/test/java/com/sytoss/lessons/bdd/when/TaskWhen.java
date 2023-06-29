@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -55,6 +55,12 @@ public class TaskWhen extends CucumberIntegrationTest {
         task.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(TestExecutionContext.getTestContext().getTopicId());
+        Discipline discipline = new Discipline();
+        discipline.setId(TestExecutionContext.getTestContext().getDisciplineId());
+        Teacher teacher = new Teacher();
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        discipline.setTeacher(teacher);
+        topic.setDiscipline(discipline);
         task.setTopics(List.of(topic));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
@@ -93,6 +99,7 @@ public class TaskWhen extends CucumberIntegrationTest {
     public void removeConditionFromTask(String conditionName, String type) {
         TaskConditionDTO taskConditionDTO = getTaskConditionConnector().getByValueAndType(conditionName, ConditionType.valueOf(type));
         HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(getToken());
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/condition/" + taskConditionDTO.getId();
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);

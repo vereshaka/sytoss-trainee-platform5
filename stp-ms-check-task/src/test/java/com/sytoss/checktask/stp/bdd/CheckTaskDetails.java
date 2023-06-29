@@ -11,5 +11,5 @@ public class CheckTaskDetails {
 
     private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
 
-    private Score grade;
+    private Score score;
 }

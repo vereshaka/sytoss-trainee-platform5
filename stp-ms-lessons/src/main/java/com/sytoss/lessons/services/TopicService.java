@@ -64,4 +64,12 @@ public class TopicService {
         }
     }
 
+    public byte[] getIcon(Long id) {
+        try {
+            TopicDTO topicDTO = topicConnector.getReferenceById(id);
+            return topicDTO.getIcon();
+        } catch (EntityNotFoundException e) {
+            throw new TopicNotFoundException(id);
+        }
+    }
 }
