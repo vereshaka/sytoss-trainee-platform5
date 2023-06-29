@@ -3,7 +3,7 @@ package com.sytoss.users.convertors;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.AbstractJunitTest;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
@@ -13,7 +13,7 @@ import org.mockito.Spy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserConvertorTest extends AbstractJunitTest {
+public class UserConvertorTest extends StpUnitTest {
 
     @InjectMocks
     private UserConverter userConverter;

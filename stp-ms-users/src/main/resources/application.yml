@@ -1,9 +1,11 @@
+server:
+  port: ${APP_PORT:9102}
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6432/users
-    username: admin
-    password: password
+    url: ${DB_URI:jdbc:postgresql://localhost:6432/users}
+    username: ${DB_USER:admin}
+    password: ${DB_PASSWORD:password}
   jpa:
     properties:
       hibernate:
@@ -16,5 +18,3 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
-server:
-   port: 9102

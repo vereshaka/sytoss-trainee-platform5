@@ -11,6 +11,7 @@ import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
+import com.sytoss.stp.test.StpUnitTest;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Getter
-public abstract class AbstractApplicationTest extends AbstractJunitTest {
+@Deprecated
+public abstract class AbstractApplicationTest extends StpUnitTest {
 
     @Autowired
     private TestRestTemplate restTemplate;

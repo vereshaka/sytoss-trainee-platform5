@@ -106,4 +106,15 @@ public class TaskService {
             throw new TaskConditionAlreadyExistException(taskCondition.getValue());
         }
     }
+
+    public List<Task> findByDomainId(Long taskDomainId) {
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<Task> result = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOList) {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            result.add(task);
+        }
+        return result;
+    }
 }

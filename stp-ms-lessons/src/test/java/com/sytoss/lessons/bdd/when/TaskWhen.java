@@ -38,7 +38,7 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("^retrieve information about task with id (.*)$")
     public void requestSentRetrieveExistingTask(String taskId) {
-        String url = "/api/task/" + taskId;
+        String url = "/api/task/" + TestExecutionContext.getTestContext().getIdMapping().get(taskId);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
@@ -84,8 +84,8 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
-    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByName(disciplineName);
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName)  {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName,TestExecutionContext.getTestContext().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();

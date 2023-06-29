@@ -5,7 +5,9 @@ import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.CheckEtalonParametrs;
+import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
@@ -17,11 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GradeService {
+public class ScoreService {
 
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
-    public Grade checkAndGrade(CheckTaskParameters data) {
+    public Score checkAndScore(CheckTaskParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
             helperServiceProviderObject.generateDatabase(data.getScript());
@@ -29,7 +31,7 @@ public class GradeService {
             try {
                 queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getAnswer());
             } catch (SQLException e) {
-                return new Grade(0, e.getMessage());
+                return new Score(0, e.getMessage());
             }
 
             QueryResult queryResultEtalon;
@@ -38,28 +40,28 @@ public class GradeService {
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
-            Grade grade = grade(queryResultEtalon, queryResultAnswer);
-            if (grade.getValue() > 0) {
+            Score score = grade(queryResultEtalon, queryResultAnswer);
+            if (score.getValue() > 0) {
                 for (TaskCondition condition : data.getConditions()) {
                     if (condition.getType().equals(ConditionType.CONTAINS)) {
                         if (!data.getAnswer().contains(condition.getValue())) {
-                            grade.setValue(grade.getValue() - 0.3);
+                            score.setValue(score.getValue() - 0.3);
                             break;
                         }
                     }
                 }
             }
-            return grade;
+            return score;
         } finally {
             helperServiceProviderObject.dropDatabase();
         }
     }
 
-    private Grade grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
+    private Score grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
         if (!checkQueryResults(queryResultEtalon, queryResultAnswer)) {
-            return new Grade(0, "not ok");
+            return new Score(0, "not ok");
         }
-        return new Grade(1, "ok");
+        return new Score(1, "ok");
     }
 
     private boolean checkQueryResults(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
@@ -87,5 +89,25 @@ public class GradeService {
             }
         }
         return true;
+    }
+
+    public IsCheckEtalon checkEtalon(CheckEtalonParametrs data) {
+        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
+        try {
+            helperServiceProviderObject.generateDatabase(data.getScript());
+            IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
+
+            try {
+                helperServiceProviderObject.getExecuteQueryResult(data.getEtalon());
+            } catch (SQLException e) {
+                isCheckEtalon.setChecked(false);
+                isCheckEtalon.setException(e.getMessage());
+                return isCheckEtalon;
+            }
+            isCheckEtalon.setChecked(true);
+            return isCheckEtalon;
+        } finally {
+            helperServiceProviderObject.dropDatabase();
+        }
     }
 }

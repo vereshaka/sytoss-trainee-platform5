@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
-import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.DataTableType;
 
 import java.util.List;
@@ -51,11 +51,11 @@ public class DataTableCommon {
             task.setTaskDomain(taskDomain);
         }
 
-        Grade grade = new Grade();
+        Score score = new Score();
         if (params.containsKey("grade") && params.get("grade") != null) {
-            grade.setValue(Float.parseFloat(params.get("grade")));
-            grade.setComment(params.get("comment"));
-            answer.setGrade(grade);
+            score.setValue(Float.parseFloat(params.get("grade")));
+            score.setComment(params.get("comment"));
+            answer.setScore(score);
         }
 
         Topic topic = new Topic();

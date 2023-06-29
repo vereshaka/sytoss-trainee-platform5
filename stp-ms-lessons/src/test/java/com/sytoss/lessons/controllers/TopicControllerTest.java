@@ -1,13 +1,8 @@
 package com.sytoss.lessons.controllers;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.lessons.services.TaskService;
-import com.sytoss.lessons.services.TopicService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,16 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class TopicControllerTest extends AbstractControllerTest {
-
-    @InjectMocks
-    private TopicController topicController;
-
-    @MockBean
-    private TopicService topicService;
-
-    @MockBean
-    private TaskService taskService;
+public class TopicControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldReturnListOfTopics() {
@@ -57,6 +43,16 @@ public class TopicControllerTest extends AbstractControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Topic> result = doGet("/api/topic/123", httpEntity, Topic.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnTopicIcon() {
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        when(topicService.getIcon(anyLong())).thenReturn(iconBytes);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/topic/4/icon", httpEntity, byte[].class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

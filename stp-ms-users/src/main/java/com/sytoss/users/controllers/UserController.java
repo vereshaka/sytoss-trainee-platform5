@@ -1,6 +1,7 @@
 package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -41,5 +44,24 @@ public class UserController {
         ProfileModel profileModel = new ProfileModel(firstName, lastName, null, photo);
         userService.updatePhoto(profileModel.getPhoto());
         userService.updateProfile(profileModel);
+    }
+
+    @Operation(description = "Get groups by student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/groups")
+    public List<Group> findGroupByStudent() {
+        return userService.findByStudent();
+    }
+
+    @Operation(description = "Receive user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
+    })
+    @GetMapping(value = "/{userId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getUserPhoto(@PathVariable("userId") Long userId) {
+        return userService.getUserPhoto(userId);
     }
 }

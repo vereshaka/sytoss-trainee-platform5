@@ -69,6 +69,5 @@ public class GroupService {
         userConverter.toDTO(user, studentDTO);
         groupDTO.getStudents().add(studentDTO);
         groupConnector.save(groupDTO);
-
     }
 }

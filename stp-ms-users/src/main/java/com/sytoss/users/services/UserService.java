@@ -1,9 +1,12 @@
 package com.sytoss.users.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
@@ -18,15 +21,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService extends AbstractService {
+public class UserService extends AbstractStpService {
 
     private final UserConnector userConnector;
 
     private final UserConverter userConverter;
+
+    private final GroupConvertor groupConvertor;
 
     public AbstractUser getById(Long userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -59,11 +66,13 @@ public class UserService extends AbstractService {
     private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result = null;
         if (userDto instanceof TeacherDTO) {
-            result = new Teacher();
-            userConverter.fromDTO(userDto, result);
+            Teacher teacher = new Teacher();
+            userConverter.fromDTO((TeacherDTO) userDto, teacher);
+            result = teacher;
         } else if (userDto instanceof StudentDTO) {
-            result = new Student();
-            userConverter.fromDTO(userDto, result);
+            Student student = new Student();
+            userConverter.fromDTO((StudentDTO) userDto, student);
+            result = student;
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
         }
@@ -112,5 +121,21 @@ public class UserService extends AbstractService {
             //TODO: yevgenyv: update group info
         }
         userConnector.save(dto);
+    }
+
+    public List<Group> findByStudent() {
+        StudentDTO studentDTO = (StudentDTO) getMeAsDto();
+        List<Group> groups = new ArrayList<>();
+        studentDTO.getGroups().forEach((groupDTO) -> {
+            Group group = new Group();
+            groupConvertor.fromDTO(groupDTO, group);
+            groups.add(group);
+        });
+        return groups;
+    }
+
+    public byte[] getUserPhoto(Long userId) {
+        UserDTO userDTO = getDTOById(userId);
+        return userDTO.getPhoto();
     }
 }

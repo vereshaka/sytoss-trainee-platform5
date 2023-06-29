@@ -22,20 +22,19 @@ Feature: Discipline
 
   Scenario: get teacher's discipline
     Given disciplines exist
-      | teacher | discipline |
-      | 1       | SQL        |
-      | 1       | Mongo      |
-      | 2       | SQL        |
-      | 1       | H2         |
+      | teacherId | discipline |
+      | 1         | SQL        |
+      | 1         | Mongo      |
+      | 2         | SQL        |
+      | 1         | H2         |
     When teacher with id 1 retrieve his disciplines
     Then operation is successful
     And disciplines should be received
-      | teacher | discipline |
-      | 1       | SQL        |
-      | 1       | Mongo      |
-      | 1       | H2         |
+      | teacherId | discipline |
+      | 1         | SQL        |
+      | 1         | Mongo      |
+      | 1         | H2         |
 
-  @Bug @YevgenyV #Need to re-think the logic of service method
   Scenario: search disciplines
     Given disciplines exist
       | discipline |
