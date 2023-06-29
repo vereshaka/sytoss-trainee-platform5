@@ -11,4 +11,9 @@ public class CheckTaskIntegrationTest extends StpIntegrationTest {
     protected TestExecutionContext<CheckTaskDetails> getTestExecutionContext() {
         return super.getTestExecutionContext();
     }
+
+    @Override
+    protected Object createDetails() {
+        return new CheckTaskDetails();
+    }
 }

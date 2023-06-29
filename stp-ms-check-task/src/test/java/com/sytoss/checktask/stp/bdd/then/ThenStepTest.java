@@ -1,8 +1,9 @@
 package com.sytoss.checktask.stp.bdd.then;
 
+import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
 import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
+
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
@@ -22,18 +23,20 @@ public class ThenStepTest extends CheckTaskIntegrationTest {
 
     @Then("request should be processed successfully")
     public void requestShouldBeProcessedSuccessfully() {
-        ResponseEntity<Score> response = getTestExecutionContext().getResponse();
+        ResponseEntity response = getTestExecutionContext().getResponse();
         assertEquals(200, response.getStatusCode().value());
     }
 
     @Then("Grade value is {double}")
     public void gradeValueIs(double value) {
-        assertEquals(value, TestContext.getInstance().getScore().getValue());
+        ResponseEntity<Score> response = getTestExecutionContext().getResponse();
+        assertEquals(value, response.getBody().getValue());
     }
 
     @Then("Grade message is {string}")
     public void gradeMessageIs(String message) {
-        assertEquals(message, TestContext.getInstance().getScore().getComment());
+        ResponseEntity<Score> response = getTestExecutionContext().getResponse();
+        assertEquals(message, response.getBody().getComment());
     }
 
     @Then("^should return that etalon is valid$")

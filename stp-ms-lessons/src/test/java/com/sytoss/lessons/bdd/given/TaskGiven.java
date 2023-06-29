@@ -128,9 +128,15 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with id (.*) doesnt exist")
     public void taskWithIdDoesntExist(String taskId) {
-        TaskDTO taskDto = getTaskConnector().getById(1L);
-        if (taskDto != null){
+        if(TestExecutionContext.getTestContext().getIdMapping().get(taskId) != null){
+            TaskDTO taskDto = getTaskConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
+        }else{
+            TaskDTO taskDto = getTaskConnector().getById(12345L);
+            if(taskDto != null) {
+                getTaskConnector().delete(taskDto);
+            }
+            TestExecutionContext.getTestContext().registerId(taskId, 12345L);
         }
     }
 }

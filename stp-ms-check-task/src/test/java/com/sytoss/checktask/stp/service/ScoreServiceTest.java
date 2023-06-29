@@ -90,6 +90,4 @@ class ScoreServiceTest extends StpUnitTest {
         Assertions.assertEquals(0.7, score.getValue());
         Assertions.assertEquals("ok", score.getComment());
     }
-
-
 }

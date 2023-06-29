@@ -3,7 +3,8 @@ package com.sytoss.checktask.stp.bdd.when;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
+import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,11 +20,12 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
         HttpHeaders headers = getDefaultHttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestLine = new ObjectMapper().writeValueAsString(TestContext.getInstance().getCheckTaskParameters());
+        String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
         HttpEntity<String> request = new HttpEntity<>(requestLine, headers);
 
-        ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        TestContext.getInstance().setResponseEntity(responseEntity);
+        ResponseEntity<Object> responseEntity1 = doPost(url, request, Object.class);
+        ResponseEntity<Score> responseEntity = doPost(url, request, Score.class);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^request sent to check etalon answer$")
@@ -33,11 +35,11 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
         HttpHeaders headers =getDefaultHttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestLine = new ObjectMapper().writeValueAsString(TestContext.getInstance().getCheckTaskParameters());
+        String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
         HttpEntity<String> request = new HttpEntity<>(requestLine, headers);
 
-        ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        TestContext.getInstance().setResponseEntity(responseEntity);
+        ResponseEntity<IsCheckEtalon> responseEntity = doPost(url, request, IsCheckEtalon.class);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^request sent to check \"request\"$")
@@ -47,10 +49,10 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
         HttpHeaders headers =getDefaultHttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestLine = new ObjectMapper().writeValueAsString(TestContext.getInstance().getCheckTaskParameters());
+        String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
         HttpEntity<String> request = new HttpEntity<>(requestLine, headers);
 
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        TestContext.getInstance().setResponseEntity(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 }
