@@ -20,11 +20,11 @@ public class PersonalExamTest {
     }
 
     private Answer createNewAnswerWithGrade(float value) {
-        Grade score = new Grade();
-        score.setValue(value);
+        Grade grade = new Grade();
+        grade.setValue(value);
 
         Answer answer = new Answer();
-        answer.setGrade(score);
+        answer.setGrade(grade);
         answer.setStatus(AnswerStatus.GRADED);
 
         return answer;
