@@ -3,6 +3,8 @@ package com.sytoss.provider.services;
 import com.sytoss.provider.connector.ImageConnector;
 import com.sytoss.provider.dto.ImageDTO;
 import com.sytoss.provider.exceptions.ConvertToImageException;
+import com.sytoss.provider.exceptions.ImageNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -66,5 +68,15 @@ public class ImageService extends AbstractService {
         }
         imageDTO.setImageBytes(imageBytes);
         imageConnector.save(imageDTO);
+    }
+
+    public byte[] getById(Long id) {
+        try {
+            ImageDTO imageDTO = imageConnector.getReferenceById(id);
+            return imageDTO.getImageBytes();
+        } catch (EntityNotFoundException e) {
+            throw new ImageNotFoundException("Image not found", e);
+        }
+
     }
 }

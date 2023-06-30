@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +22,15 @@ public class ImageController {
     @PostMapping("/convert/image")
     public Long convertImage(@RequestBody String question) {
         return imageService.generatePngFromQuestion(question);
+    }
+
+    @Operation(description = "Get image by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Image not found")
+    })
+    @GetMapping("/question-image/{question_image_id}")
+    public byte[] getImage(@PathVariable("question_image_id") Long id) {
+        return imageService.getById(id);
     }
 }

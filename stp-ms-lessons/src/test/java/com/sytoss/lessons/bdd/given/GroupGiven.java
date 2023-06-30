@@ -14,6 +14,7 @@ public class GroupGiven extends CucumberIntegrationTest {
 
     @Given("^groups exist$")
     public void groupsExist(List<GroupReferenceDTO> groups) {
+        List<Long> groupId = new ArrayList<>();
         for (GroupReferenceDTO groupReferenceDTO : groups) {
             Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
             DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
@@ -24,9 +25,11 @@ public class GroupGiven extends CucumberIntegrationTest {
             }
             GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
             if (result == null) {
-                getGroupReferenceConnector().save(groupReferenceDTO);
+                result = getGroupReferenceConnector().save(groupReferenceDTO);
             }
+            groupId.add(result.getGroupId());
         }
+        TestExecutionContext.getTestContext().setGroupId(groupId);
     }
 
     @Given("^teacher has \"(.*)\" discipline with id (.*) contains groups with id \"([^\\\"]*)\"$")

@@ -7,6 +7,8 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
+import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.stp.test.StpUnitTest;
@@ -18,6 +20,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,7 +55,6 @@ public class AnswerServiceTest extends StpUnitTest {
         Discipline discipline = new Discipline();
         discipline.setId(22L);
         input.setDiscipline(discipline);
-
         // first task and the answer that we will process and save
         Task task = new Task();
         task.setId(1L);
@@ -80,6 +82,9 @@ public class AnswerServiceTest extends StpUnitTest {
         input.setAmountOfTasks(1);
         input.setTime(10);
         input.setStudentId(studentId);
+        Score score = new Score();
+        score.setValue(0);
+        when(checkTaskConnector.checkAnswer(any())).thenReturn(score);
         when(personalExamConnector.getById(examId)).thenReturn(input);
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();

@@ -103,6 +103,16 @@ public class DisciplineController {
         return disciplineService.findAllDisciplines();
     }
 
+
+    @Operation(description = "Method that retrieve list of my disciplines")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findAllMyDisciplines() {
+        return disciplineService.findAllMyDiscipline();
+    }
+
     @Operation(description = "Method that join group to discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
