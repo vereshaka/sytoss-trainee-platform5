@@ -4,7 +4,6 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +19,9 @@ import static org.mockito.Mockito.when;
 @Slf4j
 public class GroupWhen extends CucumberIntegrationTest {
 
-    @When("receive all groups by discipline with id {long}")
-    public void requestSentFindGroupsByDiscipline(Long disciplineId) {
-        String url = "/api/discipline/" + disciplineId + "/groups";
+    @When("^receive all groups by discipline with id (.*)$")
+    public void requestSentFindGroupsByDiscipline(String disciplineId) {
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getIdMapping().get(disciplineId) + "/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
