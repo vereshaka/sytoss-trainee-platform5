@@ -78,7 +78,7 @@ public class UserWhen extends CucumberIntegrationTest {
 
     @When("retrieve photo of this user")
     public void retrievePhotoOfThisUser() {
-        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/photo";
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getEncryptedId() + "/photo";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

@@ -37,7 +37,7 @@ public class PersonalExamService extends AbstractStpService {
         for(Answer answer : answers){
            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
-        personalExam.setStudentId(examConfiguration.getStudentId());
+      //  personalExam.setStudentId(examConfiguration.getStudentId());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
@@ -76,7 +76,7 @@ public class PersonalExamService extends AbstractStpService {
     }
 
     public Question start(String personalExamId) {
-        Long studentId = Long.valueOf(getMyId());
+        String studentId = getMyId();
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudentId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);

@@ -62,7 +62,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found!")
     })
     @GetMapping(value = "/{userId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getUserPhoto(@PathVariable("userId") Long userId) {
+    public byte[] getUserPhoto(@PathVariable("userId") String userId) {
         return userService.getUserPhoto(userId);
     }
 

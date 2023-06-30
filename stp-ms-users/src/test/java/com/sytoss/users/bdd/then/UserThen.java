@@ -1,6 +1,5 @@
 package com.sytoss.users.bdd.then;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
@@ -11,7 +10,6 @@ import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,7 +58,7 @@ public class UserThen extends CucumberIntegrationTest {
 
     @Then("^student's photo should be received$")
     public void userPhotoShouldBeReceived() {
-        UserDTO studentDTO = getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId()).orElse(null);
+        UserDTO studentDTO = getUserConnector().getByEncryptedId(TestExecutionContext.getTestContext().getUser().getEncryptedId());
         byte[] photo = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(studentDTO.getPhoto().length, photo.length);
     }

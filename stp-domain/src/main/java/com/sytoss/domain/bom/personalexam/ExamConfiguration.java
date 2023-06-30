@@ -19,5 +19,5 @@ public class ExamConfiguration {
 
     private int quantityOfTask;
 
-    private Long studentId;
+    private String studentId;
 }

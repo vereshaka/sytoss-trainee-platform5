@@ -16,6 +16,7 @@ import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.exceptions.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
 import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +38,17 @@ public class UserService extends AbstractStpService {
 
     private final GroupConvertor groupConvertor;
 
-    public AbstractUser getById(Long userId) {
+    public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
         return instantiateUser(foundUser);
     }
 
-    private UserDTO getDTOById(Long userId) {
-        return userConnector.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    private UserDTO getDTOById(String userId) {
+        try {
+            return userConnector.getByEncryptedId(userId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException("User not found", e);
+        }
     }
 
     protected UserDTO getMeAsDto() {
@@ -69,7 +74,7 @@ public class UserService extends AbstractStpService {
         AbstractUser result = null;
         if (userDto instanceof TeacherDTO) {
             Teacher teacher = new Teacher();
-            userConverter.fromDTO((TeacherDTO) userDto, teacher);
+            userConverter.fromDTO(userDto, teacher);
             result = teacher;
         } else if (userDto instanceof StudentDTO) {
             Student student = new Student();
@@ -136,7 +141,7 @@ public class UserService extends AbstractStpService {
         return groups;
     }
 
-    public byte[] getUserPhoto(Long userId) {
+    public byte[] getUserPhoto(String userId) {
         UserDTO userDTO = getDTOById(userId);
         return userDTO.getPhoto();
     }

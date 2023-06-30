@@ -22,6 +22,8 @@ public abstract class AbstractUser {
 
     private boolean isModerated;
 
+    private String encryptedId;
+
     public boolean isValid() {
         return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && ObjectUtils.isNotEmpty(photo);
     }
