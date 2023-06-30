@@ -22,3 +22,10 @@ Feature: Student
     When retrieve photo of this user
     Then operation is successful
     And should return photo
+
+  Scenario: get user's icon
+    Given student with "Ivan" firstName and "Ivanovich" lastName and "test@gmail.com" email exists
+    And this student has photo with bytes "1, 2, 3"
+    When receive this student's photo
+    Then operation is successful
+    And student's photo should be received

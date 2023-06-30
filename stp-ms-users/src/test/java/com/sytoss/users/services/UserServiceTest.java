@@ -24,9 +24,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -178,5 +175,21 @@ public class UserServiceTest extends StpUnitTest {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setName(name);
         return groupDTO;
+    }
+
+    @Test
+    public void testGetPhoto() {
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        StudentDTO dto = new StudentDTO();
+        String userEmail = "test@email.com";
+        dto.setId(1L);
+        dto.setEmail(userEmail);
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        dto.setPhoto(photoBytes);
+
+        when(userConnector.getByEmail(userEmail)).thenReturn(dto);
+        byte[] result = userService.getMyPhoto();
+        assertEquals(photoBytes, result);
     }
 }

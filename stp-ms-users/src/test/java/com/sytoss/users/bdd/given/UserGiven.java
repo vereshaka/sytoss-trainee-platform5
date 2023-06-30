@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Transactional
 public class UserGiven extends CucumberIntegrationTest {
@@ -63,5 +64,17 @@ public class UserGiven extends CucumberIntegrationTest {
         byte[] photoBytes = {0x01, 0x02, 0x03};
         userDTO.setPhoto(photoBytes);
         getUserConnector().save(userDTO);
+    }
+
+    @Given("^this student has photo with bytes \"([^\\\"]*)\"$")
+    public void userHasPhoto(String photoBytes) {
+        String[] numberStrings = photoBytes.split(", ");
+        byte[] icon = new byte[numberStrings.length];
+        for (int i = 0; i < numberStrings.length; i++) {
+            icon[i] = Byte.parseByte(numberStrings[i]);
+        }
+        UserDTO studentDTO = getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId()).orElse(null);
+        studentDTO.setPhoto(icon);
+        getUserConnector().save(studentDTO);
     }
 }
