@@ -38,4 +38,6 @@ public class TestExecutionContext<T> {
         }
         idMapping.put(key, id);
     }
+
+    private Long imageId;
 }
