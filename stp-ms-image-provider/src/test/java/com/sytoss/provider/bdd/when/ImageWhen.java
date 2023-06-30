@@ -11,8 +11,9 @@ import org.springframework.http.ResponseEntity;
 public class ImageWhen extends CucumberIntegrationTest {
 
     @When("^retrieve image by id (.*)")
-    public void retrieveImageById(Long id) {
-        String url = "/api/question-image/" + id;
+    public void retrieveImageById(String id) {
+        Long idValue = TestExecutionContext.getTestContext().getIdMapping().get(id);
+        String url = "/api/question-image/" + idValue;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<byte[]> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

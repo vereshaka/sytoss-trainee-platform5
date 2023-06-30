@@ -75,7 +75,7 @@ public class ImageService extends AbstractService {
             ImageDTO imageDTO = imageConnector.getReferenceById(id);
             return imageDTO.getImageBytes();
         } catch (EntityNotFoundException e) {
-            throw new ImageNotFoundException("Image with id \"" + id + "\" not found", e);
+            throw new ImageNotFoundException("Image not found", e);
         }
 
     }
