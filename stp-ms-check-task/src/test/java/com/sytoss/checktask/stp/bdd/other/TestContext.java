@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.bdd.other;
 
 import com.sytoss.checktask.stp.service.DatabaseHelperService;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.Getter;
@@ -17,6 +18,8 @@ public class TestContext {
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider = mock(ObjectProvider.class);
 
     private CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
+
+    private CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
 
     private ResponseEntity<String> responseEntity;
 

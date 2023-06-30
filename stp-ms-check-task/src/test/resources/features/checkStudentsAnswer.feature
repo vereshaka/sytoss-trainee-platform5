@@ -30,7 +30,7 @@ Feature: check answer
 
   Scenario: Check etalon's answer
     Given Request contains database script as in "script1.yml"
-    And etalon SQL is "select * from Books"
+    And check SQL is "select * from Books"
     When request sent to check etalon answer
     Then request should be processed successfully
     And should return that etalon is valid
@@ -56,4 +56,4 @@ Feature: check answer
     Given Request contains database script as in "script1.yml"
     And check SQL is "select Authors"
     When request sent to check "request"
-    #Then operation should be finished with "406" error
+    Then operation should be finished with "406" error

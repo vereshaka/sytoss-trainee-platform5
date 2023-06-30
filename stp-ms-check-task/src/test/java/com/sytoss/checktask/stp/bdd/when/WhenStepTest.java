@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
 import com.sytoss.checktask.stp.bdd.other.TestContext;
-import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
-import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
