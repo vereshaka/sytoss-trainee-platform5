@@ -38,7 +38,7 @@ public class AnswerService extends AbstractStpService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         personalExamConnector.save(personalExam);
-        return personalExam.getNextAnswer()
+        return personalExam.getNextAnswer();
     }
 
     @Async
