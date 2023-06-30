@@ -37,6 +37,8 @@ public class TestExecutionContext {
 
     private String token;
 
+    private List<Long> groupId;
+
     private List<PersonalExam> personalExams = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)

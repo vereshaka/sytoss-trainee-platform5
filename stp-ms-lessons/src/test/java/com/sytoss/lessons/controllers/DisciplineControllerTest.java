@@ -42,6 +42,16 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     }
 
     @Test
+    public void shouldFindDisciplinesByStudent() {
+        when(disciplineService.findAllMyDiscipline()).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Discipline>> result = doGet("/api/my/disciplines", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
     public void shouldSaveDiscipline() {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();

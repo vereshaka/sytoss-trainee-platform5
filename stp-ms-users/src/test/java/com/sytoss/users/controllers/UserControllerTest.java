@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.services.UserService;
@@ -16,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,6 +38,16 @@ public class UserControllerTest extends AbstractControllerTest {
         HttpHeaders headers = getDefaultHttpHeaders("teacher");
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Teacher> result = doGet("/api/user/me", requestEntity, Teacher.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldRetrieveMyDisciplines() {
+        when(userService.findGroupsId()).thenReturn(new ArrayList<>());
+        HttpHeaders headers = getDefaultHttpHeaders("teacher");
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<List<Long>> result = doGet("/api/user/my/groupsId", requestEntity, new ParameterizedTypeReference<List<Long>>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 

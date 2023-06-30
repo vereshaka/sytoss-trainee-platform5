@@ -90,4 +90,15 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("student receive his disciplines")
+    public void studentReceiveHisDisciplines() {
+        String url = "/api/my/disciplines";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        when(getUserConnector().findMyGroupId()).thenReturn(TestExecutionContext.getTestContext().getGroupId());
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }

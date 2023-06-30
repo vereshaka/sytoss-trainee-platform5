@@ -56,12 +56,12 @@ public class DataTableCommon {
     }
 
     @DataTableType
-    public GroupReferenceDTO mapGroupReferences(Map<String, String> entry) {
+    public GroupReferenceDTO mapGroupsDTO(Map<String, String> entry) {
         Long groupId = Long.parseLong(entry.get("group"));
         Long disciplineId = Long.parseLong(entry.get("discipline"));
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(disciplineId);
-        return new GroupReferenceDTO(groupId,disciplineDTO);
+        return new GroupReferenceDTO(groupId, disciplineDTO);
     }
 
     @DataTableType
