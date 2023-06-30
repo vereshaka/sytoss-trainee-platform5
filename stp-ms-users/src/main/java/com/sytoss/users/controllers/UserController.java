@@ -56,6 +56,26 @@ public class UserController {
         return userService.findByStudent();
     }
 
+    @Operation(description = "Receive user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
+    })
+    @GetMapping(value = "/{userId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getUserPhoto(@PathVariable("userId") Long userId) {
+        return userService.getUserPhoto(userId);
+    }
+
+    @Operation(description = "Method that retrieve user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Photo not found!")
+    })
+    @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getMyPhoto() {
+        return userService.getMyPhoto();
+    }
+
     @Operation(description = "find my groups Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

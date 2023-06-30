@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TopicServiceTest extends StpUnitTest {
@@ -100,5 +101,17 @@ public class TopicServiceTest extends StpUnitTest {
 
     public Discipline createReference(Long id) {
         return Discipline.builder().id(id).name("first discipline").teacher(new Teacher()).build();
+    }
+
+    @Test
+    public void testGetIcon() {
+        Long topicId = 1L;
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setId(topicId);
+        topicDTO.setIcon(iconBytes);
+        when(topicConnector.getReferenceById(anyLong())).thenReturn(topicDTO);
+        byte[] result = topicService.getIcon(topicId);
+        assertEquals(iconBytes, result);
     }
 }

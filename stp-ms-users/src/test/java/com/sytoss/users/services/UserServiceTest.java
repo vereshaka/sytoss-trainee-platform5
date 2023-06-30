@@ -46,7 +46,6 @@ public class UserServiceTest extends StpUnitTest {
     @InjectMocks
     private UserService userService;
 
-
     @BeforeEach
     protected void initSecurityContext() {
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "Luidji")
@@ -194,5 +193,21 @@ public class UserServiceTest extends StpUnitTest {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setName(name);
         return groupDTO;
+    }
+
+    @Test
+    public void testGetPhoto() {
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        StudentDTO dto = new StudentDTO();
+        String userEmail = "test@email.com";
+        dto.setId(1L);
+        dto.setEmail(userEmail);
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        dto.setPhoto(photoBytes);
+
+        when(userConnector.getByEmail(userEmail)).thenReturn(dto);
+        byte[] result = userService.getMyPhoto();
+        assertEquals(photoBytes, result);
     }
 }

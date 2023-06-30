@@ -6,7 +6,7 @@ import io.cucumber.java.en.Given;
 
 public class GroupGiven extends CucumberIntegrationTest {
 
-    @Given("^\"(.*)\" group exist$")
+    @Given("^\"(.*)\" group exists$")
     public void groupExist(String groupName) {
         GroupDTO groupDTO = getGroupConnector().getByName(groupName);
         if (groupDTO == null) {

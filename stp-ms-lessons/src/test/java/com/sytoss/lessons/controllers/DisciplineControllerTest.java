@@ -117,4 +117,14 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         ResponseEntity<Void> result = doPost("/api/discipline/2/group/5", httpEntity, Void.class);
         assertEquals(200, result.getStatusCode().value());
     }
+
+    @Test
+    public void shouldReturnDisciplineIcon() {
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        when(disciplineService.getIcon(anyLong())).thenReturn(iconBytes);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/discipline/4/icon", httpEntity, byte[].class);
+        assertEquals(200, result.getStatusCode().value());
+    }
 }

@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -14,6 +15,7 @@ import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.exceptions.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
+import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserService extends AbstractService {
+public class UserService extends AbstractStpService {
 
     private final UserConnector userConnector;
 
@@ -132,6 +134,18 @@ public class UserService extends AbstractService {
             groups.add(group);
         });
         return groups;
+    }
+
+    public byte[] getUserPhoto(Long userId) {
+        UserDTO userDTO = getDTOById(userId);
+        return userDTO.getPhoto();
+    }
+
+    public byte[] getMyPhoto() {
+        if (getMeAsDto().getPhoto().length == 0) {
+            throw new UserPhotoNotFoundException("The user does not have a photo!");
+        }
+        return getMeAsDto().getPhoto();
     }
 
     public List<Long> findGroupsId() {

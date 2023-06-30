@@ -19,6 +19,18 @@ public class TopicDTO {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "SHORT_DESCRIPTION")
+    private String shortDescription;
+
+    @Column(name = "FULL_DESCRIPTION")
+    private String fullDescription;
+
+    @Column(name = "DURATION")
+    private Double duration;
+
+    @Column(name = "ICON")
+    private byte[] icon;
+
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;

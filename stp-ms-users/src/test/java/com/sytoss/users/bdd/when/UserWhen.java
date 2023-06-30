@@ -76,22 +76,29 @@ public class UserWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
+    @When("retrieve photo of this user")
+    public void retrievePhotoOfThisUser() {
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/photo";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^receive this student's photo")
+    public void getUserPhoto() {
+        String url = "/api/user/me/photo";
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
     @DataTableType
     public Discipline mapDiscipline(Map<String, String> row) {
         Discipline discipline = new Discipline();
         discipline.setName(row.get("discipline"));
         return discipline;
-    }
-
-    @When("student receive his disciplines")
-    public void receiveAllDisciplinesOfStudent(List<Discipline> disciplines) {
-        String url = "/api/user/my/disciplines";
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        Discipline discipline = new Discipline();
-        discipline.setName("new");
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
-        });
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

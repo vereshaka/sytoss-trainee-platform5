@@ -70,3 +70,10 @@ Feature: Discipline
     Given "SQL" discipline exists
     When link this discipline to group with id 17
     Then operation is successful
+
+  Scenario: get discipline's icon
+    Given "SQL" discipline exists
+    And this discipline has icon with bytes "1, 2, 3"
+    When receive this discipline's icon
+    Then operation is successful
+    And discipline's icon should be received

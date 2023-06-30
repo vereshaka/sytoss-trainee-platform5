@@ -73,4 +73,12 @@ public class DataTableCommon {
         taskDomainDTO.setDiscipline(discipline);
         return taskDomainDTO;
     }
+
+    @DataTableType
+    public Group mapGroups(Map<String, String> entry) {
+        Long groupId = Long.parseLong(entry.get("group"));
+        Group group = new Group();
+        group.setId(groupId);
+        return group;
+    }
 }

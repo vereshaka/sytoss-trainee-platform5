@@ -14,6 +14,9 @@ import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -100,6 +103,15 @@ public class DisciplineService extends AbstractService {
             result.add(group);
         }
         return result;
+    }
+
+    public byte[] getIcon(Long id) {
+        try {
+            DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
+            return disciplineDTO.getIcon();
+        } catch (EntityNotFoundException e) {
+            throw new DisciplineNotFoundException(id);
+        }
     }
 
     public List<Discipline> findAllMyDiscipline() {
