@@ -42,6 +42,10 @@ public class PersonalExam {
     @JsonView(PersonalExam.Public.class)
     private float summaryGrade;
 
+    private double maxGrade;
+
+    private double sumOfCoef;
+
     public void start() {
         if (status.equals(PersonalExamStatus.NOT_STARTED)) {
             status = PersonalExamStatus.IN_PROGRESS;
@@ -57,7 +61,7 @@ public class PersonalExam {
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
-                summaryGrade += answer.getScore().getValue();
+                summaryGrade += answer.getGrade().getValue();
             }
         });
     }
@@ -81,5 +85,7 @@ public class PersonalExam {
         return null;
     }
 
-    public static class Public {}
+    public static class Public {
+
+    }
 }

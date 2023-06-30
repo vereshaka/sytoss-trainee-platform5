@@ -37,11 +37,11 @@ public class TopicGiven extends AbstractGiven {
     }
 
     @Given("topics exist")
-     public void thisExamHasAnswers(List<TopicDTO> topics) {
+    public void thisExamHasAnswers(List<TopicDTO> topics) {
         Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
         Map<Long, List<Long>> finalTopics = new HashMap<>();
         for (TopicDTO topic : topics) {
-             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setName(topic.getDiscipline().getName());
@@ -110,5 +110,18 @@ public class TopicGiven extends AbstractGiven {
             topicDTO = getTopicConnector().save(topicDTO);
         }
         TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+    }
+
+    @Given("^this topic has icon with bytes \"([^\\\"]*)\"$")
+    public void topicHasIcon(String iconBytes) {
+        String[] numberStrings = iconBytes.split(", ");
+        byte[] icon = new byte[numberStrings.length];
+        for (int i = 0; i < numberStrings.length; i++) {
+            icon[i] = Byte.parseByte(numberStrings[i]);
+        }
+        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
+        TopicDTO topicDTO = optionalTopicDTO.orElse(null);
+        topicDTO.setIcon(icon);
+        getTopicConnector().save(topicDTO);
     }
 }

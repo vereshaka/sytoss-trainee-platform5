@@ -5,9 +5,14 @@ import com.sytoss.domain.bom.users.Teacher;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@FeignClient(url = "http://localhost:9102/api/user", name = "userConnector")
+import java.util.List;
+
+@FeignClient(url = "${users-url}", name = "userConnector")
 public interface UserConnector {
 
-    @GetMapping("/me")
+    @GetMapping("user/me")
     AbstractUser getMyProfile();
+
+    @GetMapping("my/groupsId")
+    List<Long> findMyGroupId();
 }

@@ -1,6 +1,7 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
@@ -15,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class PersonalExamThen extends CucumberIntegrationTest {
@@ -61,8 +61,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
                 Answer answerResult = i.next();
                 if (answer.getValue().equals(answerResult.getValue()) &&
                         answer.getStatus().equals(answerResult.getStatus()) &&
-                        answer.getScore().getValue() == answerResult.getScore().getValue() &&
-                        answer.getScore().getComment().equals(answerResult.getScore().getComment())) {
+                        answer.getGrade().getValue() == answerResult.getGrade().getValue() &&
+                        answer.getGrade().getComment().equals(answerResult.getGrade().getComment())) {
                     i.remove();
                 }
             }
@@ -82,8 +82,22 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         assertEquals(time, firstTask.getExam().getTime());
         assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());
     }
+
     @Then("^should return \"(.*)\"$")
     public void shouldReturnIsTaskDomainUsed(String isUsed) {
         assertEquals(Boolean.valueOf(isUsed), Boolean.valueOf(IntegrationTest.getTestContext().getResponse().getBody()));
+    }
+
+    @Then("tasks from exam should have id image")
+    public void tasksFromExamShouldHaveIdImage() throws JsonProcessingException {
+        PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+        int quantityOfImages = 0;
+        List<Task> tasks = personalExamAnswer.getAnswers().stream().map(Answer::getTask).toList();
+        for (Task task : tasks) {
+            if (task.getImageId() != null) {
+                quantityOfImages++;
+            }
+        }
+        assertEquals(tasks.size(), quantityOfImages);
     }
 }

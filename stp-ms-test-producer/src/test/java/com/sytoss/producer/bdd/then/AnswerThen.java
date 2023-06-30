@@ -30,18 +30,19 @@ public class AnswerThen extends CucumberIntegrationTest {
         assertEquals(answerStatus, personalExam.getAnswers().get(0).getStatus().toString());
     }
 
-    @Then("answer with id {long} of personal exam with id {word} should have value {string} and change status to {word}")
-    public void taskWithNumberShouldHaveAnswer(long answerId, String examId, String string, String status) {
+    @Then("^answer with id (.*) of personal exam with id (.*) should have value \"(.*)\" and change status to (.*) and grade (.*)$")
+    public void taskWithNumberShouldHaveAnswer(String answerId, String examId, String string, String status, String grade) {
 
         PersonalExam personalExam = getPersonalExamConnector().getById(examId);
 
         Optional<Answer> foundAnswer = personalExam.getAnswers().stream()
-                .filter(answerTmp -> answerTmp.getId().equals(answerId))
+                .filter(answerTmp -> answerTmp.getId().equals(Long.parseLong(answerId)))
                 .findFirst();
 
         Answer answer = foundAnswer.orElse(null);
 
         Assertions.assertEquals(answer.getValue(), string);
+        assertEquals(Double.valueOf(grade), answer.getGrade().getValue());
         Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
     }
 

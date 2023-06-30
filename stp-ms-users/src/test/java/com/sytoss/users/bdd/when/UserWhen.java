@@ -1,10 +1,12 @@
 package com.sytoss.users.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.CucumberIntegrationTest;
 import com.sytoss.users.bdd.common.TestExecutionContext;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,6 +23,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @Transactional
 public class UserWhen extends CucumberIntegrationTest {
@@ -68,5 +74,31 @@ public class UserWhen extends CucumberIntegrationTest {
         ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("retrieve photo of this user")
+    public void retrievePhotoOfThisUser() {
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/photo";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^receive this student's photo")
+    public void getUserPhoto() {
+        String url = "/api/user/me/photo";
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @DataTableType
+    public Discipline mapDiscipline(Map<String, String> row) {
+        Discipline discipline = new Discipline();
+        discipline.setName(row.get("discipline"));
+        return discipline;
     }
 }

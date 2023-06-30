@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +35,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
     @InjectMocks
     private PersonalExamService personalExamService;
+
+    @Mock
+    private ImageConnector imageConnector;
 
     @Test
     public void createExam() {
@@ -58,6 +63,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         examConfiguration.setTopics(topics);
         examConfiguration.setQuantityOfTask(2);
         examConfiguration.setStudentId(1L);
+        when(imageConnector.convertImage(anyString())).thenReturn(1L);
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
         assertEquals("1ada", personalExam.getId());
@@ -166,12 +172,12 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Answer answer = new Answer();
         answer.setStatus(answerStatus);
         answer.setValue(value);
-        answer.setScore(createGrade(grade, comment));
+        answer.setGrade(createGrade(grade, comment));
         return answer;
     }
 
-    private Score createGrade(float gradeValue, String comment) {
-        Score score = new Score();
+    private Grade createGrade(float gradeValue, String comment) {
+        Grade score = new Grade();
         score.setValue(gradeValue);
         score.setComment(comment);
 

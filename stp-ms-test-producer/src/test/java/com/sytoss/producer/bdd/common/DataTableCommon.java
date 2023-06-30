@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.DataTableType;
 
@@ -40,22 +41,24 @@ public class DataTableCommon {
         if (params.containsKey("etalon")) {
             task.setEtalonAnswer(params.get("etalon"));
         }
+        if (params.containsKey("coef")) {
+            task.setCoef(Double.parseDouble(params.get("coef")));
+        }
         if (params.containsKey("task")) {
             task.setQuestion(params.get("task"));
             answer.setTask(task);
         }
-
         TaskDomain taskDomain = new TaskDomain();
         if (params.containsKey("taskDomainId")) {
             taskDomain.setId(Long.valueOf(params.get("taskDomainId")));
             task.setTaskDomain(taskDomain);
         }
 
-        Score score = new Score();
+        Grade grade = new Grade();
         if (params.containsKey("grade") && params.get("grade") != null) {
-            score.setValue(Float.parseFloat(params.get("grade")));
-            score.setComment(params.get("comment"));
-            answer.setScore(score);
+            grade.setValue(Float.parseFloat(params.get("grade")));
+            grade.setComment(params.get("comment"));
+            answer.setGrade(grade);
         }
 
         Topic topic = new Topic();

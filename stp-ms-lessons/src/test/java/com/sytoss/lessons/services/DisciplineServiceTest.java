@@ -4,12 +4,13 @@ import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.stp.test.StpUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -44,6 +45,9 @@ public class DisciplineServiceTest extends StpUnitTest {
     @Spy
     private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();
 
+    @Mock
+    private UserConnector userConnector;
+
     @Test
     public void shouldSaveDiscipline() {
         when(disciplineConnector.getByNameAndTeacherId("SQL", 1L)).thenReturn(null);
@@ -58,6 +62,17 @@ public class DisciplineServiceTest extends StpUnitTest {
         Discipline result = disciplineService.create(1L, input);
         assertEquals(1L, result.getTeacher().getId());
         assertEquals("SQL", result.getName());
+    }
+
+    @Test
+    public void shouldRetrieveDisciplinesByStudent() {
+        DisciplineDTO discipline = new DisciplineDTO();
+        discipline.setId(11L);
+        discipline.setName("Test1");
+        when(userConnector.findMyGroupId()).thenReturn(List.of(1L,2L));
+        when(disciplineConnector.findByGroupReferencesGroupId(anyLong())).thenReturn(List.of(discipline));
+        List<Discipline> disciplineList = disciplineService.findAllMyDiscipline();
+        assertEquals(2, disciplineList.size());
     }
 
     public Teacher createReference(Long id) {
@@ -137,5 +152,17 @@ public class DisciplineServiceTest extends StpUnitTest {
         when(groupReferenceConnector.findByDisciplineId(anyLong())).thenReturn(groupReferenceDTOS);
         List<Group> resultList = disciplineService.getGroups(5L);
         assertEquals(2, resultList.size());
+    }
+
+    @Test
+    public void testGetIcon() {
+        Long disciplineId = 1L;
+        byte[] iconBytes = {0x01, 0x02, 0x03};
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(disciplineId);
+        disciplineDTO.setIcon(iconBytes);
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(disciplineDTO);
+        byte[] result = disciplineService.getIcon(disciplineId);
+        assertEquals(iconBytes, result);
     }
 }

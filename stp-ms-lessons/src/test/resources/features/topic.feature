@@ -43,3 +43,11 @@ Feature: Topic
     And this discipline doesn't have "First" topic
     When retrieve information about topic by topicID
     Then operation should be finished with 404 "Topic with id "99" not found" error
+
+  Scenario: get topic's icon
+    Given "SQL" discipline exists
+    And this discipline has "Join" topic
+    And this topic has icon with bytes "1, 2, 3"
+    When receive this topic's icon
+    Then operation is successful
+    And topic's icon should be received

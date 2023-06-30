@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
@@ -23,8 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,6 +70,22 @@ public class UserServiceTest extends StpUnitTest {
         assertEquals("Luidji", result.getFirstName());
         assertEquals("Monk", result.getLastName());
         assertEquals("test@email.com", result.getEmail());
+    }
+
+    @Test
+    public void shouldRetrieveMyDiscipline() {
+        StudentDTO dto = new StudentDTO();
+        dto.setId(1L);
+        dto.setEmail("test@email.com");
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        dto.setGroups(List.of(groupDTO));
+
+        when(userConnector.getByEmail(anyString())).thenReturn(dto);
+        List<Long> result = userService.findGroupsId();
+        assertEquals(1, result.size());
     }
 
     @Test
@@ -128,9 +145,69 @@ public class UserServiceTest extends StpUnitTest {
         assertThrows(UserNotFoundException.class, () -> userService.findByStudent());
     }
 
+    @Test
+    public void shouldReturnStudentWithTrueValidFlag() {
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setFirstName("John");
+        studentDTO.setLastName("Do");
+        studentDTO.setEmail("test@test.com");
+        studentDTO.setPrimaryGroup(groupDTO);
+        studentDTO.setGroups(List.of(groupDTO));
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        studentDTO.setPhoto(photoBytes);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        assertTrue(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnStudentWithFalseValidFlag() {
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setEmail("test@test.com");
+        when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        assertFalse(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnTeacherWithTrueValidFlag() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setFirstName("John");
+        teacherDTO.setLastName("Do");
+        teacherDTO.setEmail("test@test.com");
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        teacherDTO.setPhoto(photoBytes);
+        when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
+        assertTrue(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
+    @Test
+    public void shouldReturnTeacherWithFalseValidFlag() {
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setEmail("test@test.com");
+        when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
+        assertFalse(userService.getOrCreateUser("test@test.com").isValid());
+    }
+
     private GroupDTO createGroupDTO(String name) {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setName(name);
         return groupDTO;
+    }
+
+    @Test
+    public void testGetPhoto() {
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        StudentDTO dto = new StudentDTO();
+        String userEmail = "test@email.com";
+        dto.setId(1L);
+        dto.setEmail(userEmail);
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        dto.setPhoto(photoBytes);
+
+        when(userConnector.getByEmail(userEmail)).thenReturn(dto);
+        byte[] result = userService.getMyPhoto();
+        assertEquals(photoBytes, result);
     }
 }

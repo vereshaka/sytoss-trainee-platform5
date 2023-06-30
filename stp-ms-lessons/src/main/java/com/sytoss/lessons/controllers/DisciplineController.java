@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,6 +103,16 @@ public class DisciplineController {
         return disciplineService.findAllDisciplines();
     }
 
+
+    @Operation(description = "Method that retrieve list of my disciplines")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findAllMyDisciplines() {
+        return disciplineService.findAllMyDiscipline();
+    }
+
     @Operation(description = "Method that join group to discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -113,5 +125,17 @@ public class DisciplineController {
             @Parameter(description = "id of the group to join discipline")
             @PathVariable("groupId") Long groupId) {
         disciplineService.assignGroupToDiscipline(disciplineId, groupId);
+    }
+
+    @Operation(description = "Method that retrieve discipline's icon")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!")
+    })
+    @GetMapping(value = "/discipline/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getIcon(@Parameter(description = "id of the discipline to search icon")
+                                    @PathVariable("disciplineId")
+                                    Long disciplineId) {
+        return disciplineService.getIcon(disciplineId);
     }
 }

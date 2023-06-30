@@ -7,12 +7,14 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ public class DisciplineService extends AbstractService {
     private final DisciplineConvertor disciplineConvertor;
 
     private final GroupReferenceConnector groupReferenceConnector;
+
+    private final UserConnector userConnector;
 
     public Discipline getById(Long id) {
         try {
@@ -99,5 +103,28 @@ public class DisciplineService extends AbstractService {
             result.add(group);
         }
         return result;
+    }
+
+    public byte[] getIcon(Long id) {
+        try {
+            DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
+            return disciplineDTO.getIcon();
+        } catch (EntityNotFoundException e) {
+            throw new DisciplineNotFoundException(id);
+        }
+    }
+
+    public List<Discipline> findAllMyDiscipline() {
+        List<Discipline> disciplines = new ArrayList<>();
+        List<Long> groupsId = userConnector.findMyGroupId();
+        for(Long groupId : groupsId){
+            List < DisciplineDTO > disciplineDTOList = disciplineConnector.findByGroupReferencesGroupId(groupId);
+            for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+                Discipline discipline = new Discipline();
+                disciplineConvertor.fromDTO(disciplineDTO, discipline);
+                disciplines.add(discipline);
+            }
+        }
+        return disciplines;
     }
 }

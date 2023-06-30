@@ -16,6 +16,10 @@ public class DisciplineConvertor {
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);
+        destination.setShortDescription(source.getShortDescription());
+        destination.setFullDescription(source.getFullDescription());
+        destination.setDuration(source.getDuration());
+        destination.setIcon(source.getIcon());
     }
 
     public void toDTO(Discipline source, DisciplineDTO destination) {
@@ -23,6 +27,10 @@ public class DisciplineConvertor {
             destination.setId(source.getId());
             destination.setName(source.getName());
             destination.setTeacherId(source.getTeacher().getId());
+            destination.setShortDescription(source.getShortDescription());
+            destination.setFullDescription(source.getFullDescription());
+            destination.setDuration(source.getDuration());
+            destination.setIcon(source.getIcon());
         }
     }
 }

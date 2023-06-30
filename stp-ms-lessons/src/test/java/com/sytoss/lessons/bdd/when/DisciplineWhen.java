@@ -81,4 +81,24 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         ResponseEntity<Void> responseEntity = doPost(url, httpEntity, Void.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
+
+    @When("^receive this discipline's icon$")
+    public void getDisciplineIcon() {
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/icon";
+        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("student receive his disciplines")
+    public void studentReceiveHisDisciplines() {
+        String url = "/api/my/disciplines";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        when(getUserConnector().findMyGroupId()).thenReturn(TestExecutionContext.getTestContext().getGroupId());
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
 }
