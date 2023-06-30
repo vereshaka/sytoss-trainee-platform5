@@ -26,5 +26,7 @@ public class Task {
 
     private List<TaskCondition> taskConditions = new ArrayList<>();
 
+    private Long imageId;
+
     private double coef;
 }

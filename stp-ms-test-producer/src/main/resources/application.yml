@@ -8,5 +8,5 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9080/realms/stp/protocol/openid-connect/certs
-check-task-url: http://localhost:9010/api/
+          jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
+check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api/}

@@ -1,7 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.model.CheckTaskParameters;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.Score;

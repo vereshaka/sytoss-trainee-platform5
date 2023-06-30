@@ -5,7 +5,6 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +53,25 @@ public class UserController {
     @GetMapping("/my/groups")
     public List<Group> findGroupByStudent() {
         return userService.findByStudent();
+    }
+
+    @Operation(description = "Receive user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "User not found!")
+    })
+    @GetMapping(value = "/{userId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getUserPhoto(@PathVariable("userId") Long userId) {
+        return userService.getUserPhoto(userId);
+    }
+
+    @Operation(description = "Method that retrieve user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Photo not found!")
+    })
+    @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getMyPhoto() {
+        return userService.getMyPhoto();
     }
 }
