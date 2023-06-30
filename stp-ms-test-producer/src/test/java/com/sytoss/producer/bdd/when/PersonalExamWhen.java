@@ -112,8 +112,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     private HttpEntity startTest(String studentId) throws JOSEException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(generateJWT(List.of("123")));
-        headers.set("studentId", studentId);
+        headers.setBearerAuth(generateJWT(List.of("123"), studentId));
         HttpEntity<Task> requestEntity = new HttpEntity<>(null, headers);
         return requestEntity;
     }

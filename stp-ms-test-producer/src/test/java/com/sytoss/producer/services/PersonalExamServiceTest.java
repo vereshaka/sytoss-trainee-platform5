@@ -6,17 +6,19 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -124,7 +126,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
-        input.setAnswers(Arrays.asList(answer));
+        input.setAnswers(List.of(answer));
         input.setAmountOfTasks(1);
         input.setTime(10);
         input.setStudentId(1L);
@@ -135,7 +137,10 @@ public class PersonalExamServiceTest extends StpUnitTest {
             result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        Question result = personalExamService.start("5", 1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Question result = personalExamService.start("5");
         assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
@@ -150,9 +155,12 @@ public class PersonalExamServiceTest extends StpUnitTest {
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
         input.setStudentId(1L);
-        input.setAnswers(Arrays.asList(answer));
+        input.setAnswers(List.of(answer));
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         when(personalExamConnector.getById("5")).thenReturn(input);
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5", 1L));
+        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
     }
 
     @Test

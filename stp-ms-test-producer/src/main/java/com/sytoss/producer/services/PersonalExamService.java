@@ -1,5 +1,6 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonalExamService {
+public class PersonalExamService extends AbstractStpService {
 
     private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
 
@@ -74,7 +75,8 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public Question start(String personalExamId, Long studentId) {
+    public Question start(String personalExamId) {
+        Long studentId = Long.valueOf(getMyId());
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudentId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
