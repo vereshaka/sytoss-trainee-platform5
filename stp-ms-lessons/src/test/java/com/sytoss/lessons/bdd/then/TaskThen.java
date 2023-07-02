@@ -33,8 +33,8 @@ public class TaskThen extends CucumberIntegrationTest {
         assertEquals(question, taskDTO.getQuestion());
     }
 
-    @Then("tasks should be received")
-    public void tasksShouldBeReceived(DataTable table) {
+    @Then("^tasks of topic with id (.*) should be received$")
+    public void tasksShouldBeReceived(String topicKey, DataTable table) {
         List<Map<String, String>> rows = table.asMaps();
         List<Task> taskList = (List<Task>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(rows.size(), taskList.size());
@@ -45,6 +45,11 @@ public class TaskThen extends CucumberIntegrationTest {
                                     item.getTopics().get(0).getDiscipline().getName().equals(columns.get("discipline")))).toList();
             if (foundTasks.size() == 0) {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " not found");
+            }
+            TopicDTO topic = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getIdMapping().get(topicKey));
+            List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsId(topic.getId());
+            for (TaskDTO taskDTO : taskDTOS) {
+                getTaskConnector().delete(taskDTO);
             }
             taskList.remove(foundTasks.get(0));
         }
