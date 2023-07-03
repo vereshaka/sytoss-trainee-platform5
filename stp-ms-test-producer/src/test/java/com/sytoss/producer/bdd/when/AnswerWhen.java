@@ -26,7 +26,6 @@ public class AnswerWhen extends CucumberIntegrationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123"), String.valueOf(IntegrationTest.getTestContext().getStudentId())));
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("studentId", String.valueOf(IntegrationTest.getTestContext().getStudentId()));
         String url = "/api/personalExam/" + personalExamId + "/task/answer";
         HttpEntity<String> request = new HttpEntity<>(answer, headers);
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);

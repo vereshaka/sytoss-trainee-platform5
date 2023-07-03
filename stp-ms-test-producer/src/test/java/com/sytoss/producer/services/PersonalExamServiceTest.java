@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnectorImpl;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -64,7 +65,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         topics.add(2L);
         examConfiguration.setTopics(topics);
         examConfiguration.setQuantityOfTask(2);
-        examConfiguration.setStudentId(1L);
+        Student student = new Student();
+        student.setUid("notLongId");
+        examConfiguration.setStudentId(student);
         when(imageConnector.convertImage(anyString())).thenReturn(1L);
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
@@ -129,7 +132,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         input.setAnswers(List.of(answer));
         input.setAmountOfTasks(1);
         input.setTime(10);
-        input.setStudentId(1L);
+        Student student = new Student();
+        student.setUid("1");
+        input.setStudent(student);
         when(personalExamConnector.getById("5")).thenReturn(input);
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -154,7 +159,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);
         answer.setTask(task);
-        input.setStudentId(1L);
+        Student student = new Student();
+        student.setUid("1");
+        input.setStudent(student);
         input.setAnswers(List.of(answer));
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);

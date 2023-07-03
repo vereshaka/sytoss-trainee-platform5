@@ -29,9 +29,9 @@ public class AnswerService extends AbstractStpService {
     private final CheckTaskConnector checkTaskConnector;
 
     public Answer answer(String personalExamId, String taskAnswer) {
-        Long studentId = Long.valueOf(getMyId());
+        String studentId = getMyId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
-        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+        if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
         }
         Answer answer = personalExam.getCurrentAnswer();

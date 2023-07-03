@@ -8,10 +8,10 @@ import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +20,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +44,7 @@ public class AnswerServiceTest extends StpUnitTest {
     @Test
     public void testAnswer() {
 
-        Long studentId = 1L;
+        String studentId = "1L";
         String examId = "4";
         String taskAnswer = "taskAnswer";
 
@@ -81,7 +80,9 @@ public class AnswerServiceTest extends StpUnitTest {
         input.setAnswers(Arrays.asList(currentAnswer, nextAnswer));
         input.setAmountOfTasks(1);
         input.setTime(10);
-        input.setStudentId(studentId);
+        Student student = new Student();
+        student.setUid(studentId);
+        input.setStudent(student);
         Score score = new Score();
         score.setValue(0);
         when(checkTaskConnector.checkAnswer(any())).thenReturn(score);
@@ -93,7 +94,7 @@ public class AnswerServiceTest extends StpUnitTest {
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
 
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1L").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
