@@ -1,6 +1,7 @@
 package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -14,6 +15,7 @@ import org.springframework.http.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +37,13 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         examConfiguration.setQuantityOfTask(quantityOfTask);
         examConfiguration.setTopics(getTopicId(topicName));
         examConfiguration.setDisciplineId(getDisciplineId(disciplineName));
+
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        discipline.setName("SQL");
+        when(getMetadataConnector().getDiscipline(anyLong())).thenReturn(discipline);
+        when(getMetadataConnector().getTasksForTopic(1L)).thenReturn(List.of(createTask("Inner Join"), createTask("Left Join")));
+        when(getMetadataConnector().getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT"), createTask("SELECT")));
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, headers);
         String url = getBaseUrl() + URI + "personalExam/create";
         ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, requestEntity, String.class);
@@ -73,6 +82,12 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         } else {
             return 3L;
         }
+    }
+
+    private Task createTask(String question) {
+        Task task = new Task();
+        task.setQuestion(question);
+        return task;
     }
 
     @When("^student with (.*) id start personal exam \"(.*)\"$")

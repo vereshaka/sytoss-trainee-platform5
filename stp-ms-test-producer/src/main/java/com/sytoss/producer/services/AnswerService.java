@@ -9,8 +9,7 @@ import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.connectors.CheckTaskConnector;
-import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.producer.connectors.MetadataConnectorImpl;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -22,7 +21,7 @@ import java.util.Objects;
 @Service
 public class AnswerService {
 
-    private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
+    private final MetadataConnector metadataConnector;
 
     private final PersonalExamConnector personalExamConnector;
 
