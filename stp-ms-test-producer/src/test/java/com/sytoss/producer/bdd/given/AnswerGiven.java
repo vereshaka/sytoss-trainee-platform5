@@ -10,12 +10,14 @@ import java.util.List;
 
 public class AnswerGiven extends CucumberIntegrationTest {
 
-    @Given("personal exam with id {word} and student {word} exist")
-    public void personalExamWithIdExistsAndAnswersExist(String examId, String studentId, List<Answer> answers) {
+    @Given("^personal exam with id (.*) and student (.*) and (.*) max grade and sum of coef (.*) exist$")
+    public void personalExamWithIdExistsAndAnswersExist(String examId, String studentId, String max_grade, String sumOfCoef, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId(examId);
         personalExam.setStudentId(Long.parseLong(studentId));
         personalExam.setAnswers(answers);
+        personalExam.setMaxGrade(Double.parseDouble(max_grade));
+        personalExam.setSumOfCoef(Double.parseDouble(sumOfCoef));
         getPersonalExamConnector().save(personalExam);
         IntegrationTest.getTestContext().setStudentId(personalExam.getStudentId());
     }

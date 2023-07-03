@@ -8,9 +8,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class TopicGiven extends AbstractGiven {
 
@@ -40,22 +38,41 @@ public class TopicGiven extends AbstractGiven {
 
     @Given("topics exist")
     public void thisExamHasAnswers(List<TopicDTO> topics) {
-
+        Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
+        Map<Long, List<Long>> finalTopics = new HashMap<>();
         for (TopicDTO topic : topics) {
-            Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
             if (disciplineDTO == null) {
-                disciplineDTO = topic.getDiscipline();
+                disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setName(topic.getDiscipline().getName());
                 disciplineDTO.setTeacherId(teacherId);
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
             TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId());
-            topic.setDiscipline(disciplineDTO);
             if (topicResult == null) {
-                topicResult = getTopicConnector().save(topic);
+                topicResult = new TopicDTO();
+                topicResult.setName(topic.getName());
+                topicResult.setDiscipline(disciplineDTO);
+                topicResult = getTopicConnector().save(topicResult);
             }
-            TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
+            List<Long> topicIds = finalTopics.get(disciplineDTO.getId());
+            if (topicIds == null) {
+                topicIds = new ArrayList<>();
+                finalTopics.put(disciplineDTO.getId(), topicIds);
+            }
+            topicIds.add(topicResult.getId());
+        }
+        for (Map.Entry<Long, List<Long>> entry : finalTopics.entrySet()) {
+            List<TopicDTO> topicDTOS = getTopicConnector().findByDisciplineId(entry.getKey());
+            Iterator<TopicDTO> iTopic = topicDTOS.iterator();
+            while (iTopic.hasNext()) {
+                TopicDTO t = iTopic.next();
+                if (!entry.getValue().contains(t.getId())) {
+                    getTopicConnector().deleteById(t.getId());
+                    iTopic.remove();
+                }
+            }
         }
     }
 

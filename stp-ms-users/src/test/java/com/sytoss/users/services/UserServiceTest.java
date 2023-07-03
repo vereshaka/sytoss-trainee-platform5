@@ -1,5 +1,6 @@
 package com.sytoss.users.services;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,6 +70,22 @@ public class UserServiceTest extends StpUnitTest {
         assertEquals("Luidji", result.getFirstName());
         assertEquals("Monk", result.getLastName());
         assertEquals("test@email.com", result.getEmail());
+    }
+
+    @Test
+    public void shouldRetrieveMyDiscipline() {
+        StudentDTO dto = new StudentDTO();
+        dto.setId(1L);
+        dto.setEmail("test@email.com");
+        dto.setFirstName("Luidji");
+        dto.setLastName("Monk");
+        GroupDTO groupDTO = new GroupDTO();
+        groupDTO.setId(1L);
+        dto.setGroups(List.of(groupDTO));
+
+        when(userConnector.getByEmail(anyString())).thenReturn(dto);
+        List<Long> result = userService.findGroupsId();
+        assertEquals(1, result.size());
     }
 
     @Test

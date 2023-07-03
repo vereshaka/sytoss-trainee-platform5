@@ -20,7 +20,9 @@ public class AnswerWhen extends CucumberIntegrationTest {
 
     @When("student calls answer with value {string} on personal exam with id {word}")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
-        when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(new Score());
+        Score score = new Score();
+        score.setValue(1);
+        when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(score);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         headers.setContentType(MediaType.APPLICATION_JSON);

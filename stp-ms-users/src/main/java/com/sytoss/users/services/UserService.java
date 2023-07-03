@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
+import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -145,5 +146,14 @@ public class UserService extends AbstractStpService {
             throw new UserPhotoNotFoundException("The user does not have a photo!");
         }
         return getMeAsDto().getPhoto();
+    }
+
+    public List<Long> findGroupsId() {
+        List<GroupDTO> groups = ((StudentDTO) getMeAsDto()).getGroups();
+        List<Long> groupsId = new ArrayList<>();
+        for (GroupDTO group : groups) {
+            groupsId.add(group.getId());
+        }
+        return groupsId;
     }
 }

@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
@@ -73,5 +74,14 @@ public class UserController {
     @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getMyPhoto() {
         return userService.getMyPhoto();
+    }
+
+    @Operation(description = "find my groups Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/groupsId")
+    public List<Long> findDisciplineByStudent() {
+        return userService.findGroupsId();
     }
 }
