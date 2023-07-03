@@ -33,7 +33,7 @@ public class UserGiven extends CucumberIntegrationTest {
     @Given("^student with \"(.*)\" firstName and \"(.*)\" lastName and \"(.*)\" email exists$")
     public void studentExists(String firstName, String lastName, String email) {
         String id = "thisIsNotLongId";
-        UserDTO studentDTO = getUserConnector().getByEncryptedId(id);
+        UserDTO studentDTO = getUserConnector().getByUid(id);
         if (studentDTO != null && !(studentDTO instanceof StudentDTO)) {
             getUserConnector().delete(studentDTO);
             studentDTO = null;
@@ -44,7 +44,7 @@ public class UserGiven extends CucumberIntegrationTest {
             studentDTO.setLastName(lastName);
             studentDTO.setEmail(email);
             studentDTO.setModerated(false);
-            studentDTO.setEncryptedId("thisIsNotLongId");
+            studentDTO.setUid("thisIsNotLongId");
             studentDTO = getUserConnector().save(studentDTO);
         }
         TestExecutionContext.getTestContext().setUser(studentDTO);
@@ -74,7 +74,7 @@ public class UserGiven extends CucumberIntegrationTest {
         for (int i = 0; i < numberStrings.length; i++) {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
-        UserDTO studentDTO = getUserConnector().getByEncryptedId(TestExecutionContext.getTestContext().getUser().getEncryptedId());
+        UserDTO studentDTO = getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
         studentDTO.setPhoto(icon);
         getUserConnector().save(studentDTO);
     }

@@ -32,6 +32,6 @@ public abstract class UserDTO {
     @Column(name = "IS_MODERATED")
     private boolean isModerated;
 
-    @Column(name = "ENCRYPTED_ID")
-    private String encryptedId;
+    @Column(name = "UID")
+    private String uid;
 }

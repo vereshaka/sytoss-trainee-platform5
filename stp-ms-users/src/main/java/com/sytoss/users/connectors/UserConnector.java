@@ -11,5 +11,5 @@ public interface UserConnector extends JpaRepository<UserDTO, Long> {
 
     UserDTO getByEmail(String email);
 
-    UserDTO getByEncryptedId(String id);
+    UserDTO getByUid(String id);
 }
