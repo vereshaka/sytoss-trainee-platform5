@@ -24,7 +24,7 @@ public class DisciplineGiven extends AbstractGiven {
             discipline.setTeacherId(teacherId);
             discipline = getDisciplineConnector().save(discipline);
         }
-        TestExecutionContext.getTestContext().setDisciplineId(discipline.getId());
+
         TestExecutionContext.getTestContext().registerId(disciplineId, discipline.getId());
 
         List<String> topics = new ArrayList<>();
@@ -35,12 +35,13 @@ public class DisciplineGiven extends AbstractGiven {
             String topicName = topicsData.row(i).get(1).trim();
             topics.add(topicName);
             TopicDTO result = existTopics.stream().filter(item -> item.getName().equalsIgnoreCase(topicName)).findFirst().orElse(null);
-            if (result == null) {
-                result = new TopicDTO();
-                result.setName(topicName);
-                result.setDiscipline(discipline);
-                result = getTopicConnector().save(result);
+            if (result != null) {
+                getTopicConnector().delete(result);
             }
+            result = new TopicDTO();
+            result.setName(topicName);
+            result.setDiscipline(discipline);
+            result = getTopicConnector().save(result);
             TestExecutionContext.getTestContext().registerId(topicKey, result.getId());
         }
         deleteTopics(existTopics.stream().filter(item -> !topics.contains(item.getName().toLowerCase())).toList());
