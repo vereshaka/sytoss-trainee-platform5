@@ -2,6 +2,7 @@ package com.sytoss.producer.bdd.given;
 
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
 import io.cucumber.java.en.Given;
@@ -14,11 +15,13 @@ public class AnswerGiven extends CucumberIntegrationTest {
     public void personalExamWithIdExistsAndAnswersExist(String examId, String studentId, String max_grade, String sumOfCoef, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId(examId);
-        personalExam.setStudentId(Long.parseLong(studentId));
+        Student student = new Student();
+        student.setUid(studentId);
+        personalExam.setStudent(student);
         personalExam.setAnswers(answers);
         personalExam.setMaxGrade(Double.parseDouble(max_grade));
         personalExam.setSumOfCoef(Double.parseDouble(sumOfCoef));
         getPersonalExamConnector().save(personalExam);
-        IntegrationTest.getTestContext().setStudentId(personalExam.getStudentId());
+        IntegrationTest.getTestContext().setStudentId(personalExam.getStudent().getUid());
     }
 }
