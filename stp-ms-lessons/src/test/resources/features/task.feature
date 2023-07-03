@@ -28,7 +28,6 @@ Feature: Task
     When system create task with question "What are the different subsets of SQL?"
     Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
 
-  @Bug
   Scenario: Retrieve information about tasks by topic id
     Given this teacher has "SQL" discipline with id *1 and following topics:
       | topicId | topicName |
@@ -47,15 +46,9 @@ Feature: Task
     And topic with id *5 contains the following tasks:
       | taskName      |
       | What is Join? |
-   # Given tasks exist
-   #   | discipline | topic  | task                |
-   #   | SQL        | Join   | What is Join?       |
-   #   | SQL        | Join   | What is Inner Join? |
-   #   | SQL        | INSERT | What is Join?       |
-   #   | Mongo      | Join   | What is Join?       |
     When retrieve information about tasks of topic with id *2
     Then operation is successful
-    And tasks should be received
+    And tasks of topic with id *2 should be received
       | discipline | topic | task                |
       | SQL        | Join  | What is Join?       |
       | SQL        | Join  | What is Inner Join? |
