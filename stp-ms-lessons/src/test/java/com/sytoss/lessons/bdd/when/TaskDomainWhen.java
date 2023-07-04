@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.users.Teacher;
@@ -22,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class TaskDomainWhen extends CucumberIntegrationTest {
 
     @When("^system create \"(.*)\" task domain$")
-    public void requestSentCreateTaskDomain(String name)  {
+    public void requestSentCreateTaskDomain(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId()+"/task-domain";
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/task-domain";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doPost(url, httpEntity, TaskDomain.class);
@@ -33,10 +32,10 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^system create \"(.*)\" task domain when it exist$")
-    public void requestSentCreateTaskDomainWhenItExist(String name)  {
+    public void requestSentCreateTaskDomainWhenItExist(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId();
+        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/task-domain";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
@@ -44,7 +43,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^system retrieve information about \"(.*)\" task domain$")
-    public void systemTryToFindTaskDomainById(String taskDomainName)  {
+    public void systemTryToFindTaskDomainById(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
@@ -61,8 +60,8 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     }
 
     @When("^receive all task domains by \"(.*)\" discipline$")
-    public void requestSentFindGroupsByDiscipline(String disciplineName)  {
-        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName,TestExecutionContext.getTestContext().getTeacherId());
+    public void requestSentFindGroupsByDiscipline(String disciplineName) {
+        DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         String url = "/api/discipline/" + discipline.getId() + "/task-domains";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);

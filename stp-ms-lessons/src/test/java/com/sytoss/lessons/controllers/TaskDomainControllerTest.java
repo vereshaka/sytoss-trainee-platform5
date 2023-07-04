@@ -20,16 +20,16 @@ import static org.mockito.Mockito.when;
 public class TaskDomainControllerTest extends LessonsControllerTest {
 
     @Test
-    public void shouldSaveTaskDomain() throws JOSEException {
+    public void shouldSaveTaskDomain() {
         when(taskDomainService.create(anyLong(), any())).thenReturn(new TaskDomain());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
-        ResponseEntity<TaskDomain> response = doPost("/api/discipline/123", httpEntity, TaskDomain.class);
+        ResponseEntity<TaskDomain> response = doPost("/api/discipline/123/task-domain", httpEntity, TaskDomain.class);
         assertEquals(200, response.getStatusCode().value());
     }
 
     @Test
-    public void shouldUpdateTaskDomain() throws JOSEException {
+    public void shouldUpdateTaskDomain() {
         when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
@@ -47,16 +47,16 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    void shouldReturnExceptionWhenSaveExistingDiscipline() throws JOSEException {
+    void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
-        ResponseEntity<String> result = doPost("/api/discipline/123", requestEntity, String.class);
+        ResponseEntity<String> result = doPost("/api/discipline/123/task-domain", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldReturnTaskDomainById() throws JOSEException {
+    public void shouldReturnTaskDomainById() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomain> responseEntity = doGet("/api/task-domain/1", httpEntity, TaskDomain.class);
@@ -64,7 +64,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldReturnTaskNotFoundException() throws JOSEException {
+    public void shouldReturnTaskNotFoundException() {
         when(taskDomainService.getById(1L)).thenThrow(new TaskDomainNotFoundException(1L));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
