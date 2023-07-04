@@ -36,7 +36,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.getGroups(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -56,7 +56,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
+        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -66,7 +66,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }
@@ -95,7 +95,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/task-domains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -125,6 +125,16 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> result = doGet("/api/discipline/4/icon", httpEntity, byte[].class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnListOfTopics() {
+        when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }

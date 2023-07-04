@@ -33,7 +33,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         when(taskDomainService.update(anyLong(), any())).thenReturn(new TaskDomain());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
-        ResponseEntity<TaskDomain> response = doPut("/api/taskDomain/123", httpEntity, TaskDomain.class);
+        ResponseEntity<TaskDomain> response = doPut("/api/task-domain/123", httpEntity, TaskDomain.class);
         assertEquals(200, response.getStatusCode().value());
     }
 
@@ -42,7 +42,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         when(taskDomainService.update(anyLong(), any())).thenThrow(new TaskDomainIsUsed("new"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
-        ResponseEntity<String> response = doPut("/api/taskDomain/123", requestEntity, String.class);
+        ResponseEntity<String> response = doPut("/api/task-domain/123", requestEntity, String.class);
         assertEquals(409, response.getStatusCode().value());
     }
 
@@ -59,7 +59,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     public void shouldReturnTaskDomainById() throws JOSEException {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<TaskDomain> responseEntity = doGet("/api/taskDomain/1", httpEntity, TaskDomain.class);
+        ResponseEntity<TaskDomain> responseEntity = doGet("/api/task-domain/1", httpEntity, TaskDomain.class);
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
     }
 
@@ -68,7 +68,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         when(taskDomainService.getById(1L)).thenThrow(new TaskDomainNotFoundException(1L));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> responseEntity = doGet("/api/taskDomain/1", httpEntity, String.class);
+        ResponseEntity<String> responseEntity = doGet("/api/task-domain/1", httpEntity, String.class);
         Assertions.assertEquals(404, responseEntity.getStatusCode().value());
     }
 }

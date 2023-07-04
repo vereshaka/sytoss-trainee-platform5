@@ -35,7 +35,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), headers);
-        ResponseEntity<PersonalExam> result = doPost("/api/personalExam/create", requestEntity, PersonalExam.class);
+        ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
@@ -45,7 +45,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<Boolean> result = doGet("/api/taskDomain/123/isUsedNow", requestEntity, boolean.class);
+        ResponseEntity<Boolean> result = doGet("/api/task-domain/123/is-used-now", requestEntity, boolean.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
@@ -54,7 +54,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<PersonalExam> result = doGet("/api/personalExam/123/summary", requestEntity, PersonalExam.class);
+        ResponseEntity<PersonalExam> result = doGet("/api/personal-exam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
@@ -82,7 +82,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);
 
-        ResponseEntity<Answer> result = doPost("/api/personalExam/12dsa/task/answer", requestEntity, Answer.class);
+        ResponseEntity<Answer> result = doPost("/api/personal-exam/12dsa/task/answer", requestEntity, Answer.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }

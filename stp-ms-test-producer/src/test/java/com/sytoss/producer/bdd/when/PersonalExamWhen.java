@@ -38,7 +38,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         examConfiguration.setTopics(getTopicId(topicName));
         examConfiguration.setDisciplineId(getDisciplineId(disciplineName));
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, headers);
-        String url = getBaseUrl() + URI + "personalExam/create";
+        String url = getBaseUrl() + URI + "personal-exam/create";
         ResponseEntity<PersonalExam> responseEntity = getRestTemplate().postForEntity(url, requestEntity, PersonalExam.class);
         IntegrationTest.getTestContext().setPersonalExamResponse(responseEntity);
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
@@ -46,7 +46,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("the exam with id {word} is done")
     public void theExamIsDoneOnTask(String examId) throws JOSEException {
-        String url = URI + "personalExam/" + examId + "/summary";
+        String url = URI + "personal-exam/" + examId + "/summary";
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
@@ -101,7 +101,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("^system check task domain with id: \"(.*)\" is used$")
     public void systemCheckTaskDomain(String taskDomainId) throws JOSEException {
-        String url = "/api/taskDomain/" + Long.parseLong(taskDomainId) + "/isUsedNow";
+        String url = "/api/task-domain/" + Long.parseLong(taskDomainId) + "/is-used-now";
         log.info("Send request to " + url);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));

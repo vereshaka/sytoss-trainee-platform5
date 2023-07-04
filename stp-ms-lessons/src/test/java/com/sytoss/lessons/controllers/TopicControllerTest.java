@@ -19,16 +19,6 @@ import static org.mockito.Mockito.when;
 public class TopicControllerTest extends LessonsControllerTest {
 
     @Test
-    public void shouldReturnListOfTopics() {
-        when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
-        });
-        assertEquals(200, result.getStatusCode().value());
-    }
-
-    @Test
     public void shouldAssignTaskToTopic() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);

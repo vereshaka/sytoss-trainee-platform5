@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +74,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Task domain already exist")
     })
-    @PostMapping("/discipline/{disciplineId}")
+    @PostMapping("/discipline/{disciplineId}/task-domain")
     public TaskDomain create(
             @Parameter(description = "id of the discipline to be searched by")
             @PathVariable("disciplineId") Long disciplineId,
@@ -87,7 +86,7 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/discipline/{disciplineId}/taskDomains")
+    @GetMapping("/discipline/{disciplineId}/task-domains")
     public List<TaskDomain> findTasksDomainByDiscipline(
             @Parameter(description = "id of the discipline to be searched by")
             @PathVariable("disciplineId") Long disciplineId) {
@@ -137,5 +136,15 @@ public class DisciplineController {
                                     @PathVariable("disciplineId")
                                     Long disciplineId) {
         return disciplineService.getIcon(disciplineId);
+    }
+
+    @Operation(description = "Method that retrieve information about topic")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suceess|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/topics")
+    public List<Topic> findByDisciplineId(
+            @PathVariable(value = "disciplineId") Long discipleId) {
+        return topicService.findByDiscipline(discipleId);
     }
 }

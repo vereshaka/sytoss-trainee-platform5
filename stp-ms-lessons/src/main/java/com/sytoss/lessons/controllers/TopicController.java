@@ -25,16 +25,6 @@ public class TopicController {
 
     private final TaskService taskService;
 
-    @Operation(description = "Method that retrieve information about topic")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Suceess|OK"),
-    })
-    @GetMapping("/discipline/{disciplineId}/topics")
-    public List<Topic> findByDisciplineId(
-            @PathVariable(value = "disciplineId") Long discipleId) {
-        return topicService.findByDiscipline(discipleId);
-    }
-
     @Operation(description = "Method that return topic by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
