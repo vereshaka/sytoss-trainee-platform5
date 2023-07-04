@@ -42,7 +42,9 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         String[] tasks = TestContext.getTaskMapping().get(topicName).split(", ");
         List<Task> taskList = new ArrayList<>();
         for (String task : tasks) {
-            taskList.add(createTask(task));
+            Task newTask = new Task();
+            newTask.setQuestion(task);
+            taskList.add(newTask);
         }
 
         Discipline discipline = new Discipline();
@@ -88,12 +90,6 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         } else {
             return 3L;
         }
-    }
-
-    private Task createTask(String question) {
-        Task task = new Task();
-        task.setQuestion(question);
-        return task;
     }
 
     @When("^student with (.*) id start personal exam \"(.*)\"$")
