@@ -47,9 +47,8 @@ public class PersonalExamController {
     @GetMapping("/test/{personalExamId}/start")
     public Question start(
             @PathVariable("personalExamId")
-            String personalExamId,
-            @RequestHeader(value = "studentId") String studentId) {
-        return personalExamService.start(personalExamId, Long.valueOf(studentId));
+            String personalExamId) {
+        return personalExamService.start(personalExamId);
     }
 
     @Operation(description = "Method that return personal exam with summary grade")
@@ -79,8 +78,7 @@ public class PersonalExamController {
     public Answer answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestHeader(value = "studentId") Long studentId,
             @RequestBody String taskAnswer) {
-        return answerService.answer(personalExamId, studentId, taskAnswer);
+        return answerService.answer(personalExamId, taskAnswer);
     }
 }

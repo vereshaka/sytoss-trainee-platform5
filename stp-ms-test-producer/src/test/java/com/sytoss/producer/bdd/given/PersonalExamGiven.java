@@ -3,6 +3,7 @@ package com.sytoss.producer.bdd.given;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -20,13 +21,15 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
         //TODO dmitriyK: need to rewrite when metadata microservice would be exist
     }
 
-    @Given("personal exam exists with id {word} and exam name {string} and studentID {long} and date {word}")
-    public void thisExamHasAnswers(String examId, String examName, Long studentId, String date, List<Answer> answers) {
+    @Given("^personal exam exists with id (.*) and exam name (.*) and studentID (.*) and date (.*)")
+    public void thisExamHasAnswers(String examId, String examName, String studentId, String date, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
 
         personalExam.setId(examId);
         personalExam.setName(examName);
-        personalExam.setStudentId(studentId);
+        Student student = new Student();
+        student.setUid(studentId);
+        personalExam.setStudent(student);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
@@ -36,20 +39,21 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
         }
 
         personalExam.setAnswers(answers);
-
         getPersonalExamConnector().save(personalExam);
     }
 
     @Given("^personal \"(.*)\" exam for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
     public void personalExamExist(String examName, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
-        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, Long.parseLong(studentId));
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         if (personalExam != null) {
             personalExam.getAnswers().clear();
             getPersonalExamConnector().save(personalExam);
         } else {
             personalExam = new PersonalExam();
             personalExam.setName(examName);
-            personalExam.setStudentId(Long.parseLong(studentId));
+            Student student = new Student();
+            student.setUid(studentId);
+            personalExam.setStudent(student);
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.setStatus(PersonalExamStatus.valueOf(answerStatus));
