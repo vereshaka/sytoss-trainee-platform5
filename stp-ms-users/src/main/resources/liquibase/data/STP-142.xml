@@ -14,7 +14,6 @@
             <column name="EMAIL" type="VARCHAR2(100 BYTE)"/>
             <column name="USER_TYPE" type="VARCHAR2(1)"/>
             <column name="GROUP_ID" type="BIGINT"/>
-            <column name="UID" type="VARCHAR2(100 BYTE)"/>
         </createTable>
 
         <rollback>
