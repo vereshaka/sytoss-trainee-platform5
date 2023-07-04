@@ -20,10 +20,11 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
+        String url = "/api/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"123","123","123","123"));
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
@@ -31,7 +32,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates existing \"(.*)\" discipline$")
     public void existingDisciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
+        String url = "/api/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
