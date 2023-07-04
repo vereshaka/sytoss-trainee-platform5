@@ -37,7 +37,7 @@ public class PersonalExamService extends AbstractStpService {
         for(Answer answer : answers){
            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
-        personalExam.setStudent(examConfiguration.getStudentId());
+        personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
