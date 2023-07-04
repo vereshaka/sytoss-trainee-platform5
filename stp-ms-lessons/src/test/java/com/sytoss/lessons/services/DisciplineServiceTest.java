@@ -59,7 +59,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         }).when(disciplineConnector).saveAndFlush(any(DisciplineDTO.class));
         Discipline input = new Discipline();
         input.setName("SQL");
-        Discipline result = disciplineService.create(1L, input);
+        Discipline result = disciplineService.create(input);
         assertEquals(1L, result.getTeacher().getId());
         assertEquals("SQL", result.getName());
     }
@@ -69,7 +69,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         DisciplineDTO discipline = new DisciplineDTO();
         discipline.setId(11L);
         discipline.setName("Test1");
-        when(userConnector.findMyGroupId()).thenReturn(List.of(1L,2L));
+        when(userConnector.findMyGroupId()).thenReturn(List.of(1L, 2L));
         when(disciplineConnector.findByGroupReferencesGroupId(anyLong())).thenReturn(List.of(discipline));
         List<Discipline> disciplineList = disciplineService.findAllMyDiscipline();
         assertEquals(2, disciplineList.size());

@@ -14,9 +14,6 @@ import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,11 +43,11 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public Discipline create(Long teacherId, Discipline discipline) {
-        DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), teacherId);
+    public Discipline create(Discipline discipline) {
+        DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), getCurrentUser().getId());
         if (oldDisciplineDTO == null) {
             Teacher teacher = new Teacher();
-            teacher.setId(teacherId);
+            teacher.setId(getCurrentUser().getId());
             discipline.setTeacher(teacher);
             DisciplineDTO disciplineDTO = new DisciplineDTO();
             disciplineConvertor.toDTO(discipline, disciplineDTO);
@@ -117,8 +114,8 @@ public class DisciplineService extends AbstractService {
     public List<Discipline> findAllMyDiscipline() {
         List<Discipline> disciplines = new ArrayList<>();
         List<Long> groupsId = userConnector.findMyGroupId();
-        for(Long groupId : groupsId){
-            List < DisciplineDTO > disciplineDTOList = disciplineConnector.findByGroupReferencesGroupId(groupId);
+        for (Long groupId : groupsId) {
+            List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByGroupReferencesGroupId(groupId);
             for (DisciplineDTO disciplineDTO : disciplineDTOList) {
                 Discipline discipline = new Discipline();
                 disciplineConvertor.fromDTO(disciplineDTO, discipline);
