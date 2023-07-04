@@ -44,7 +44,7 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
 
     @Given("^personal \"(.*)\" exam for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
     public void personalExamExist(String examName, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
-        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudent_Uid(examName, studentId);
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         if (personalExam != null) {
             personalExam.getAnswers().clear();
             getPersonalExamConnector().save(personalExam);

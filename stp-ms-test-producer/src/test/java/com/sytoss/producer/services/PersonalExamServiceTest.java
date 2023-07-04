@@ -67,7 +67,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         examConfiguration.setQuantityOfTask(2);
         Student student = new Student();
         student.setUid("notLongId");
-        examConfiguration.setStudentId(student);
+        examConfiguration.setStudent(student);
         when(imageConnector.convertImage(anyString())).thenReturn(1L);
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());

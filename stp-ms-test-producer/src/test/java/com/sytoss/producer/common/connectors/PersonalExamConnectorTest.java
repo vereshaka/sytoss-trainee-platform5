@@ -5,5 +5,5 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 
 public interface PersonalExamConnectorTest extends PersonalExamConnector {
 
-    PersonalExam getByNameAndStudent_Uid(String examName, String studentId);
+    PersonalExam getByNameAndStudentUid(String examName, String studentId);
 }

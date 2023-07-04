@@ -32,7 +32,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         ExamConfiguration examConfiguration = new ExamConfiguration();
         Student student = new Student();
         student.setUid(studentId);
-        examConfiguration.setStudentId(student);
+        examConfiguration.setStudent(student);
         examConfiguration.setExamName(examName);
         examConfiguration.setQuantityOfTask(quantityOfTask);
         examConfiguration.setTopics(getTopicId(topicName));
@@ -79,7 +79,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("^student with (.*) id start personal exam \"(.*)\"$")
     public void startPersonalExam(String studentId, String personalExamName) throws JOSEException {
-        PersonalExam input = getPersonalExamConnector().getByNameAndStudent_Uid(personalExamName, studentId);
+        PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, studentId);
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
         HttpEntity<Task> requestEntity = startTest(studentId);
@@ -90,7 +90,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("^student with (.*) id start second time personal exam \"(.*)\"$")
     public void startSecondTimePersonalExam(String studentId, String personalExamName) throws JOSEException {
-        PersonalExam input = getPersonalExamConnector().getByNameAndStudent_Uid(personalExamName, studentId);
+        PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, studentId);
         String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
         log.info("Send request to " + url);
         HttpEntity<Task> requestEntity = startTest(studentId);
