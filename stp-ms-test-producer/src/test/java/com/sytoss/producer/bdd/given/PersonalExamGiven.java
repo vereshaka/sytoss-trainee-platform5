@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
+import com.sytoss.producer.bdd.common.TestContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
@@ -17,7 +18,17 @@ public class PersonalExamGiven extends CucumberIntegrationTest {
     @Given("tasks exist")
     public void thisCustomerHasProjects(DataTable table) {
         List<Map<String, String>> rows = table.asMaps();
-        //TODO dmitriyK: need to rewrite when metadata microservice would be exist
+
+        for (Map<String, String> columns : rows) {
+            if (!(TestContext.getTaskMapping().containsKey(columns.get("topic")))) {
+                TestContext.getTaskMapping().put(columns.get("topic"), columns.get("task"));
+            }
+            else {
+                String tasks = TestContext.getTaskMapping().get(columns.get("topic"));
+                tasks = tasks + ", " + columns.get("task");
+                TestContext.getTaskMapping().replace(columns.get("topic"), tasks);
+            }
+        }
     }
 
     @Given("personal exam exists with id {word} and exam name {string} and studentID {long} and date {word}")

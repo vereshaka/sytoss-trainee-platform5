@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 public class TestContext {
@@ -16,4 +19,8 @@ public class TestContext {
     private ResponseEntity<Question> firstTaskResponse;
 
     private Long studentId;
+
+    @Getter
+    @Setter
+    private static Map<String, String> taskMapping = new HashMap<>();
 }

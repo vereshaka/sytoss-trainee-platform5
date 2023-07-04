@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.producer.bdd.common.TestContext;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -38,12 +39,17 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         examConfiguration.setTopics(getTopicId(topicName));
         examConfiguration.setDisciplineId(getDisciplineId(disciplineName));
 
+        String[] tasks = TestContext.getTaskMapping().get(topicName).split(", ");
+        List<Task> taskList = new ArrayList<>();
+        for (String task : tasks) {
+            taskList.add(createTask(task));
+        }
+
         Discipline discipline = new Discipline();
-        discipline.setId(1L);
-        discipline.setName("SQL");
+        discipline.setId(getDisciplineId(disciplineName));
+        discipline.setName(disciplineName);
         when(getMetadataConnector().getDiscipline(anyLong())).thenReturn(discipline);
-        when(getMetadataConnector().getTasksForTopic(1L)).thenReturn(List.of(createTask("Inner Join"), createTask("Left Join")));
-        when(getMetadataConnector().getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT"), createTask("SELECT")));
+        when(getMetadataConnector().getTasksForTopic(anyLong())).thenReturn(taskList);
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, headers);
         String url = getBaseUrl() + URI + "personalExam/create";
         ResponseEntity<String> responseEntity = getRestTemplate().postForEntity(url, requestEntity, String.class);
