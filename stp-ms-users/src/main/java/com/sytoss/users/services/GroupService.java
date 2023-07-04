@@ -59,7 +59,7 @@ public class GroupService {
         throw new GroupExistException(group.getName());
     }
 
-    public void assignStudentToGroup(Long groupId, Long studentId) {
+    public void assignStudentToGroup(Long groupId, String studentId) {
         AbstractUser user = userService.getById(studentId);
         if (!(user instanceof Student)) {
             throw new UserTypeNotIdentifiedException("User is not student");

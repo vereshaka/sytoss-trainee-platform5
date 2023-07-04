@@ -41,7 +41,7 @@ public class GroupController {
             @Parameter(description = "Id of group what will be has student")
             @PathVariable("groupId") Long groupId,
             @Parameter(description = "Id of student what will be assignee to group")
-            @PathVariable("studentId") Long studentId) {
+            @PathVariable("studentId") String studentId) {
         groupService.assignStudentToGroup(groupId, studentId);
     }
 }
