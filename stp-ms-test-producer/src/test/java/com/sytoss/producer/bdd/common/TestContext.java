@@ -1,5 +1,6 @@
 package com.sytoss.producer.bdd.common;
 
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,9 @@ public class TestContext {
 
     private ResponseEntity<Question> firstTaskResponse;
 
-    private Long studentId;
+    private ResponseEntity<PersonalExam> personalExamResponse;
+
+    private String studentId;
 
     @Getter
     @Setter

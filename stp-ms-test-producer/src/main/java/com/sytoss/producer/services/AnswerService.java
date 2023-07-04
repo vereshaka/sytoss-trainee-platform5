@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -19,7 +20,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
-public class AnswerService {
+public class AnswerService extends AbstractStpService {
 
     private final MetadataConnector metadataConnector;
 
@@ -27,9 +28,10 @@ public class AnswerService {
 
     private final CheckTaskConnector checkTaskConnector;
 
-    public Answer answer(String personalExamId, Long studentId, String taskAnswer) {
+    public Answer answer(String personalExamId, String taskAnswer) {
+        String studentId = getMyId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
-        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+        if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
         }
         Answer answer = personalExam.getCurrentAnswer();
