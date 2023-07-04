@@ -60,10 +60,10 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
     @Test
     public void shouldStartTest() throws JOSEException {
-        when(personalExamService.start(anyString(), anyLong())).thenReturn(new Question());
+        when(personalExamService.start(anyString())).thenReturn(new Question());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
-        headers.set("studentId", "1");
+
+        headers.setBearerAuth(generateJWT(List.of("123"), "1"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<Question> result = doGet("/api/test/123/start", requestEntity, Question.class);
         assertEquals(200, result.getStatusCode().value());
@@ -72,15 +72,13 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     @Test
     public void testAnswer() throws JOSEException {
         String examId = "123";
-        Long studentID = 77L;
         String taskAnswer = "taskAnswer";
         Answer expectedAnswer = new Answer();
 
-        when(answerService.answer(examId, studentID, taskAnswer)).thenReturn(expectedAnswer);
+        when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
-        headers.set("studentId", String.valueOf(studentID));
+        headers.setBearerAuth(generateJWT(List.of("123"), "1"));
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);
 
