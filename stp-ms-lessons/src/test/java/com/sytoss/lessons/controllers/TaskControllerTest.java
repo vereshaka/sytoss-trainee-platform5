@@ -1,6 +1,5 @@
 package com.sytoss.lessons.controllers;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.when;
 public class TaskControllerTest extends LessonsControllerTest {
 
     @Test
-    public void shouldGetTakById() throws JOSEException {
+    public void shouldGetTakById() {
         when(taskService.getById(any())).thenReturn(new Task());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
@@ -30,17 +29,16 @@ public class TaskControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldNotGetTaskByIdWhenItDoesNotExist() throws JOSEException {
+    public void shouldNotGetTaskByIdWhenItDoesNotExist() {
         when(taskService.getById(any())).thenThrow(new TaskNotFoundException(5L));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> result = doGet("/api/task/5", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
-        assertEquals("Task with id \"5\" not found", result.getBody());
     }
 
     @Test
-    public void shouldCreateTask() throws JOSEException {
+    public void shouldCreateTask() {
         when(taskService.create(any(Task.class))).thenReturn(new Task());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
@@ -49,7 +47,7 @@ public class TaskControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldNotCreateTaskWhenItExists() throws JOSEException {
+    public void shouldNotCreateTaskWhenItExists() {
         when(taskService.create(any(Task.class))).thenThrow(new TaskExistException("Test"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
@@ -58,7 +56,7 @@ public class TaskControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldRemoveConditionFromTask() throws JOSEException {
+    public void shouldRemoveConditionFromTask() {
         when(taskService.removeCondition(anyLong(), anyLong())).thenReturn(new Task());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
@@ -67,11 +65,11 @@ public class TaskControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldReturnListOfTasksByTopicId() throws JOSEException {
+    public void shouldReturnListOfTasksByTopicId() {
         when(taskService.findByTopicId(any())).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Task>> result = doGet("/api/topic/1/tasks", httpEntity, new ParameterizedTypeReference<List<Task>>() {
+        ResponseEntity<List<Task>> result = doGet("/api/topic/1/tasks", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

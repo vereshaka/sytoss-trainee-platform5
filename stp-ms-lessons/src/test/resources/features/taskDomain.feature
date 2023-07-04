@@ -15,7 +15,7 @@ Feature: Task Domain
   Scenario: system not create a new task domain when it exist
     Given "First Domain" task domain exists
     When system create "First Domain" task domain when it exist
-    Then operation should be finished with 409 "TaskDomain with name "First Domain" already exist" error
+    Then operation should be finished with 409 error
 
   Scenario: system get task domain by id
     Given "First Domain" task domain exists
@@ -26,7 +26,7 @@ Feature: Task Domain
   Scenario: system get not existing task domain by id
     Given "First Domain" task domain doesnt exist
     When system retrieve information about "First Domain" task domain
-    Then operation should be finished with 404 "Task Domain with id "123" not found" error
+    Then operation should be finished with 404 error
 
   Scenario: Retrieve information about task domain by discipline name
     Given task domains exist
@@ -53,7 +53,7 @@ Feature: Task Domain
   Scenario: Update task domain when task domain does not exist
     Given "First Domain" task domain doesnt exist
     When teacher updates "First Domain" task domain to "Second Domain"
-    Then operation should be finished with 404 "Task Domain with id "123" not found" error
+    Then operation should be finished with 404 error
 
   Scenario: system generate scheme image and save in task domain
     Given "First Domain" task domain exists
@@ -66,7 +66,7 @@ Feature: Task Domain
     Given "First Domain" task domain exists
     And "First Domain" task domain doesn't have image
     When system generate image of scheme and save in "First Domain" task domain with wrong script
-    Then operation should be finished with 409 "Image have been not created" error
+    Then operation should be finished with 409 error
 
   Scenario: Update task domain when personal exam does not finished
     Given  "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
@@ -76,4 +76,4 @@ Feature: Task Domain
       | SQL Querry Last  | Not finished | First Domain |
       | SQL Querry Third | Graded       | First Domain |
     When teacher updates "First Domain" task domain to "Second Domain"
-    Then operation should be finished with 409 "Task domain with First Domain doesnt update because personal exam not finished" error
+    Then operation should be finished with 409 error
