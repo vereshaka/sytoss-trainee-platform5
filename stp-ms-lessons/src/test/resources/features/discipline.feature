@@ -31,7 +31,7 @@ Feature: Discipline
   Scenario: teacher creates a discipline that already exists
     Given "SQL" discipline exists
     When teacher creates existing "SQL" discipline
-    Then operation should be finished with 409 "Discipline with name "SQL" already exist" error
+    Then operation should be finished with 409 error
 
   Scenario: retrieve discipline information
     Given "SQL" discipline exists

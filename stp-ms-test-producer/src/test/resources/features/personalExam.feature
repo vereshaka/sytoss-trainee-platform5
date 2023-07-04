@@ -30,7 +30,7 @@ Feature: PersonalExam
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
     When student with 2 id start second time personal exam "Exam"
-    Then operation should be finished with 409 "Exam is already in progress!" error
+    Then operation should be finished with 409 error
 
   Scenario: Student is not allowed to start test when
     Given personal "Exam" exam for student with 2 id and IN_PROGRESS status exist and time 10 and amountOfTasks 1

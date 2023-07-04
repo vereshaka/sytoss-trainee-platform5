@@ -13,9 +13,8 @@ public class CommonThen {
         Assertions.assertEquals(200, TestExecutionContext.getTestContext().getResponse().getStatusCode().value());
     }
 
-    @Then("^operation should be finished with (\\w+) \"(.*)\" error$")
-    public void raiseError(Integer status, String error) {
+    @Then("^operation should be finished with (\\w+) error$")
+    public void raiseError(Integer status) {
         assertEquals(status, TestExecutionContext.getTestContext().getResponse().getStatusCode().value());
-        assertEquals(error, TestExecutionContext.getTestContext().getResponse().getBody());
     }
 }

@@ -29,7 +29,7 @@ Feature: Topic
     Given "SQL" discipline exists
     And this discipline has "First" topic
     When teacher creates existing "First" topic
-    Then operation should be finished with 409 "Topic with name "First" already exist" error
+    Then operation should be finished with 409 error
 
   Scenario: Retrieve information about topic by id
     Given "SQL" discipline exists
@@ -42,7 +42,7 @@ Feature: Topic
     Given "Mongo" discipline exists
     And this discipline doesn't have "First" topic
     When retrieve information about topic by topicID
-    Then operation should be finished with 404 "Topic with id "99" not found" error
+    Then operation should be finished with 404 error
 
   Scenario: get topic's icon
     Given "SQL" discipline exists

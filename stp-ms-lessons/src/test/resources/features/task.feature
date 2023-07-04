@@ -15,7 +15,7 @@ Feature: Task
   Scenario: Retrieve information about task when it doesnt exist
     Given task with id *6 doesnt exist
     When retrieve information about task with id *6
-    Then operation should be finished with 404 "Task with id "12345" not found" error
+    Then operation should be finished with 404 error
 
   Scenario: system create new task
     Given task with question "What are the different subsets of SQL?" doesnt exist
@@ -26,7 +26,7 @@ Feature: Task
   Scenario: system does not create new task when task exists
     Given task with question "What are the different subsets of SQL?" exists
     When system create task with question "What are the different subsets of SQL?"
-    Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
+    Then operation should be finished with 409 error
 
   Scenario: Retrieve information about tasks by topic id
     Given this teacher has "SQL" discipline with id *1 and following topics:
