@@ -53,20 +53,20 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldSaveDiscipline() {
-        when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
+        when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
+        ResponseEntity<Discipline> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
-        when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
+        when(disciplineService.create(any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }

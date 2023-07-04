@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.GroupService;
@@ -23,19 +24,6 @@ public class TeacherController {
     private final DisciplineService disciplineService;
 
     private final GroupService groupService;
-
-    @Operation(description = "Method that register a new discipline")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "409", description = "Discipline exists!"),
-    })
-    @PostMapping("/{teacherId}/discipline")
-    public Discipline create(
-            @Parameter(description = "id of teacher to be searched")
-            @PathVariable("teacherId") Long teacherId,
-            @RequestBody Discipline discipline) {
-        return disciplineService.create(teacherId, discipline);
-    }
 
     @Operation(description = "Method that retrieve disciplines by teacher")
     @ApiResponses(value = {
