@@ -1,20 +1,14 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
-import static org.bson.assertions.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -37,16 +31,9 @@ public class DisciplineThen extends CucumberIntegrationTest {
     public void disciplinesShouldBeReceived(List<DisciplineDTO> disciplines) {
         List<Discipline> disciplineList = (List<Discipline>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertEquals(disciplines.size(), disciplineList.size());
-        for (DisciplineDTO disciplineDTO: disciplines) {
-            List<Discipline> foundTDisciplines = disciplineList.stream().filter(item ->
-                    item.getName().equals(disciplineDTO.getName()) &&
-                            item.getTeacher().getId().equals(disciplineDTO.getTeacherId())).toList();
-            if (foundTDisciplines.size() == 0) {
-                fail("Discipline with name " + disciplineDTO.getName() + " and teacherId " + disciplineDTO.getTeacherId() + " not found");
-            }
-            disciplineList.remove(foundTDisciplines.get(0));
+        for (int i = 0; i < disciplineList.size(); i++) {
+            assertEquals(disciplines.get(i).getName(), disciplineList.get(i).getName());
         }
-        assertEquals(0, disciplineList.size());
     }
 
     @Then("^discipline's icon should be received$")
@@ -61,9 +48,9 @@ public class DisciplineThen extends CucumberIntegrationTest {
         List<Discipline> disciplineList = (List<Discipline>) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(disciplineList.size());
         int count = 0;
-        for(DisciplineDTO discipline : disciplines){
-            for( Discipline answer: disciplineList){
-                if(discipline.getName().equals(answer.getName())){
+        for (DisciplineDTO discipline : disciplines) {
+            for (Discipline answer : disciplineList) {
+                if (discipline.getName().equals(answer.getName())) {
                     count++;
                 }
             }

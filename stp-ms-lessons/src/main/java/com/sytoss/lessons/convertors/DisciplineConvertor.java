@@ -20,6 +20,7 @@ public class DisciplineConvertor {
         destination.setFullDescription(source.getFullDescription());
         destination.setDuration(source.getDuration());
         destination.setIcon(source.getIcon());
+        destination.setCreationDate(source.getCreationDate());
     }
 
     public void toDTO(Discipline source, DisciplineDTO destination) {
@@ -31,6 +32,7 @@ public class DisciplineConvertor {
             destination.setFullDescription(source.getFullDescription());
             destination.setDuration(source.getDuration());
             destination.setIcon(source.getIcon());
+            destination.setCreationDate(source.getCreationDate());
         }
     }
 }

@@ -1,16 +1,15 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class DisciplineGiven extends AbstractGiven {
 
@@ -61,6 +60,7 @@ public class DisciplineGiven extends AbstractGiven {
             }
         }
         for (DisciplineDTO discipline : disciplines) {
+            discipline.setCreationDate(Timestamp.from(Instant.now()));
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
             if (disciplineResult == null) {
                 getDisciplineConnector().save(discipline);
@@ -70,7 +70,7 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline,TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(nameDiscipline);
@@ -95,7 +95,7 @@ public class DisciplineGiven extends AbstractGiven {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-            disciplineDTO =  getDisciplineConnector().save(disciplineDTO);
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }

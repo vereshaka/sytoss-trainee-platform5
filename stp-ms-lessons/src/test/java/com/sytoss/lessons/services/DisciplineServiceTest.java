@@ -2,7 +2,6 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
@@ -20,10 +19,8 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +122,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         disciplineDTO.setName("SQL");
         disciplineDTO.setTeacherId(1L);
         input.add(disciplineDTO);
-        when(disciplineConnector.findByTeacherId(1L)).thenReturn(input);
+        when(disciplineConnector.findByTeacherIdOrderByCreationDateDesc(1L)).thenReturn(input);
         List<Discipline> result = disciplineService.findDisciplines();
         assertEquals(1, result.size());
     }
