@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-
 @Transactional
 public class UserWhen extends CucumberIntegrationTest {
 
@@ -78,7 +75,7 @@ public class UserWhen extends CucumberIntegrationTest {
 
     @When("retrieve photo of this user")
     public void retrievePhotoOfThisUser() {
-        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getId() + "/photo";
+        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getUid() + "/photo";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

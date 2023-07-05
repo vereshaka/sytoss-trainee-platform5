@@ -53,20 +53,20 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldSaveDiscipline() {
-        when(disciplineService.create(anyLong(), any(Discipline.class))).thenReturn(new Discipline());
+        when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Discipline> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
-        when(disciplineService.create(anyLong(), any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
+        when(disciplineService.create(any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/teacher/7/discipline", requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<String> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<String>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }
@@ -87,6 +87,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> result = doGet("/api/discipline/123", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
+        //assertEquals("Discipline with id \"123\" not found", result.getBody());
     }
 
     @Test

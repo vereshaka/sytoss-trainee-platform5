@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -33,6 +34,17 @@ public class DisciplineController {
     private final DisciplineService disciplineService;
 
     private final TaskDomainService taskDomainService;
+
+    @Operation(description = "Method that register a new discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Discipline exists!"),
+    })
+    @PostMapping("/discipline")
+    public Discipline create(
+            @RequestBody Discipline discipline) {
+        return disciplineService.create(discipline);
+    }
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {

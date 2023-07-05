@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Student;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -28,7 +29,7 @@ public class PersonalExam {
     private Date date;
 
     @JsonView(PersonalExam.Public.class)
-    private Long studentId;
+    private Student student;
 
     @JsonView(PersonalExam.Public.class)
     private List<Answer> answers = new ArrayList<>();

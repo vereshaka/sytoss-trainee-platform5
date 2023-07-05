@@ -29,7 +29,7 @@ GET     /api/taskDomain/{taskDomainId} <br>
 PUT     /api/taskDomain/{taskDomainId} <br>
 PUT     /api/taskDomain/{taskDomainId}/puml <br>
 
-POST    /api/teacher/{teacherId}/discipline <br>
+POST    /api/discipline <br>
 GET     /api/my/disciplines <br>
 GET     /api/my/groups <br>             
 

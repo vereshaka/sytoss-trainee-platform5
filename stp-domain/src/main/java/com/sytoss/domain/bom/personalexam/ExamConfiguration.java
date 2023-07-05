@@ -1,5 +1,6 @@
 package com.sytoss.domain.bom.personalexam;
 
+import com.sytoss.domain.bom.users.Student;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,5 @@ public class ExamConfiguration {
 
     private int quantityOfTask;
 
-    private Long studentId;
+    private Student student;
 }

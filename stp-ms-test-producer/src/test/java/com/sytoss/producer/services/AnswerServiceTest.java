@@ -3,7 +3,13 @@ package com.sytoss.producer.services;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.users.Student;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -11,12 +17,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class AnswerServiceTest extends StpUnitTest {
@@ -27,6 +37,9 @@ public class AnswerServiceTest extends StpUnitTest {
     @Mock
     private CheckTaskConnector checkTaskConnector;
 
+    @Mock
+    private MetadataConnector metadataConnector;
+
     @InjectMocks
     private AnswerService answerService;
 
@@ -36,7 +49,7 @@ public class AnswerServiceTest extends StpUnitTest {
     @Test
     public void testAnswer() {
 
-        Long studentId = 77L;
+        String studentId = "1L";
         String examId = "4";
         String taskAnswer = "taskAnswer";
 
@@ -58,6 +71,9 @@ public class AnswerServiceTest extends StpUnitTest {
         currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
         currentAnswer.setTask(task);
 
+        when(metadataConnector.getTaskById(anyLong())).thenReturn(task);
+        when(metadataConnector.getTaskDomain(anyLong())).thenReturn(taskDomain);
+
         // second task and the answer what we return at last
         Task nextTask = new Task();
         nextTask.setId(2L);
@@ -72,7 +88,9 @@ public class AnswerServiceTest extends StpUnitTest {
         input.setAnswers(Arrays.asList(currentAnswer, nextAnswer));
         input.setAmountOfTasks(1);
         input.setTime(10);
-        input.setStudentId(studentId);
+        Student student = new Student();
+        student.setUid(studentId);
+        input.setStudent(student);
         Score score = new Score();
         score.setValue(0);
         when(checkTaskConnector.checkAnswer(any())).thenReturn(score);
@@ -83,11 +101,16 @@ public class AnswerServiceTest extends StpUnitTest {
             result.setId(examId);
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        personalExamService.start("4", studentId);
-        Answer result = answerService.answer(examId, studentId, taskAnswer);
+
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1L").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        personalExamService.start("4");
+        Answer result = answerService.answer(examId, taskAnswer);
 
         assertEquals(9, result.getId());
-        assertEquals(null, result.getValue());
+        assertNull(result.getValue());
         assertEquals("IN_PROGRESS", String.valueOf(result.getStatus()));
     }
 }
