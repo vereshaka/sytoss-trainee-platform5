@@ -7,7 +7,8 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.producer.connectors.MetadataConnectorImpl;
+import com.sytoss.producer.connectors.MetadataConnector;
+import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
@@ -23,15 +24,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PersonalExamServiceTest extends StpUnitTest {
 
     @Mock
-    private MetadataConnectorImpl metadataConnector;
+    private MetadataConnector metadataConnector;
 
     @Mock
     private PersonalExamConnector personalExamConnector;
@@ -57,9 +57,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Discipline discipline = new Discipline();
         discipline.setId(1L);
         discipline.setName("SQL");
-//        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
-//                when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
-//        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
+        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
+        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
+        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
         List<Long> topics = new ArrayList<>();
         topics.add(1L);
         topics.add(2L);

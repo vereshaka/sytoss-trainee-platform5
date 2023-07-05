@@ -1,6 +1,7 @@
 package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -8,6 +9,7 @@ import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.producer.bdd.common.TestContext;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -15,6 +17,7 @@ import org.springframework.http.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +40,20 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         examConfiguration.setQuantityOfTask(quantityOfTask);
         examConfiguration.setTopics(getTopicId(topicName));
         examConfiguration.setDisciplineId(getDisciplineId(disciplineName));
+
+        String[] tasks = TestContext.getTaskMapping().get(topicName).split(", ");
+        List<Task> taskList = new ArrayList<>();
+        for (String task : tasks) {
+            Task newTask = new Task();
+            newTask.setQuestion(task);
+            taskList.add(newTask);
+        }
+
+        Discipline discipline = new Discipline();
+        discipline.setId(getDisciplineId(disciplineName));
+        discipline.setName(disciplineName);
+        when(getMetadataConnector().getDiscipline(anyLong())).thenReturn(discipline);
+        when(getMetadataConnector().getTasksForTopic(anyLong())).thenReturn(taskList);
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, headers);
         String url = getBaseUrl() + URI + "personalExam/create";
         ResponseEntity<PersonalExam> responseEntity = getRestTemplate().postForEntity(url, requestEntity, PersonalExam.class);

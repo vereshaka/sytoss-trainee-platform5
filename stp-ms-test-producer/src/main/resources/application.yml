@@ -10,3 +10,4 @@ spring:
         jwt:
           jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
 check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api/}
+lessons-url: ${LESSONS_URI:http://localhost:9101/api/}

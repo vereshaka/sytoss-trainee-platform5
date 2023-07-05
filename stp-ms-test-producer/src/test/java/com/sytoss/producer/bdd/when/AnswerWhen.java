@@ -2,6 +2,8 @@ package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.bdd.CucumberIntegrationTest;
 import com.sytoss.producer.bdd.common.IntegrationTest;
@@ -14,12 +16,23 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class AnswerWhen extends CucumberIntegrationTest {
 
     @When("student calls answer with value {string} on personal exam with id {word}")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
+
+        Task task = new Task();
+        task.setId(13L);
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setScript(".uml");
+        task.setTaskDomain(taskDomain);
+
+        when(getMetadataConnector().getTaskById(anyLong())).thenReturn(task);
+        when(getMetadataConnector().getTaskDomain(anyLong())).thenReturn(taskDomain);
+
         Score score = new Score();
         score.setValue(1);
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(score);

@@ -7,7 +7,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.producer.connectors.MetadataConnectorImpl;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PersonalExamService extends AbstractStpService {
 
-    private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
+    private final MetadataConnector metadataConnector;
 
     private final PersonalExamConnector personalExamConnector;
 

@@ -9,6 +9,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class AnswerServiceTest extends StpUnitTest {
@@ -34,6 +36,9 @@ public class AnswerServiceTest extends StpUnitTest {
 
     @Mock
     private CheckTaskConnector checkTaskConnector;
+
+    @Mock
+    private MetadataConnector metadataConnector;
 
     @InjectMocks
     private AnswerService answerService;
@@ -65,6 +70,9 @@ public class AnswerServiceTest extends StpUnitTest {
         currentAnswer.setId(8L);
         currentAnswer.setStatus(AnswerStatus.NOT_STARTED);
         currentAnswer.setTask(task);
+
+        when(metadataConnector.getTaskById(anyLong())).thenReturn(task);
+        when(metadataConnector.getTaskDomain(anyLong())).thenReturn(taskDomain);
 
         // second task and the answer what we return at last
         Task nextTask = new Task();
