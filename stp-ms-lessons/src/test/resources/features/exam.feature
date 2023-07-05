@@ -11,7 +11,7 @@ Feature: Exam
       | SQL        | Join          |
       | Mongo      | Set of Tables |
     And "SQL" discipline has group with id 8
-    When a teacher create "Exam" exam from 22.05.2022 to 24.05.2022 with 5 tasks for "JAVA-1" group in SQL discipline with 20 minutes duration
+    When a teacher create "Exam" exam from 22.05.2022 to 24.05.2022 with 5 tasks for "JAVA-1" group in "SQL" discipline with 20 minutes duration
       | discipline | topic         |
       | SQL        | Set of Tables |
       | SQL        | Join          |

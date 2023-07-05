@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 public class AnswerWhen extends CucumberIntegrationTest {
 
-    @When("student calls answer with value {string} on personal exam with id {word}")
+    @When("^student calls answer with value \"(.*)\" on personal exam with id (.*)$")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
 
         Task task = new Task();

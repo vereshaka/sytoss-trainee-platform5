@@ -33,7 +33,7 @@ public class ExamWhen extends CucumberIntegrationTest {
         return topic;
     }
 
-    @When("a teacher create \"{word}\" exam from {word} to {word} with {int} tasks for \"{word}\" group in {word} discipline with {int} minutes duration")
+    @When("^a teacher create \"(.*)\" exam from (.*) to (.*) with (.*) tasks for \"(.*)\" group in \"(.*)\" discipline with (.*) minutes duration")
     public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
         String url = "/api/exam/save";
 
