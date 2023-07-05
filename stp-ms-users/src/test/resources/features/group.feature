@@ -18,4 +18,4 @@ Feature: Group
   Scenario: Create group when group exist
     Given "AT-21-2" group exists
     When "AT-21-2" group is created
-    Then operation should be finished with 409 error
+    Then operation should be finished with 409 "Group with name "AT-21-2" already exist" error
