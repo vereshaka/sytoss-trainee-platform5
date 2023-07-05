@@ -88,26 +88,6 @@ public class DisciplineGiven extends AbstractGiven {
         }
     }
 
-    @Given("disciplines exist in specific order")
-    public void disciplinesExistInSpecificOrder(DataTable dataTable) {
-        List<Map<String, String>> rows = dataTable.asMaps();
-        for (Map<String, String> columns : rows) {
-            Long teacherId = Long.valueOf(columns.get("teacherId"));
-            String disciplineName = columns.get("discipline");
-            String date = columns.get("creationDate");
-            Date creationDate = toDate(date);
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
-            if (disciplineDTO == null) {
-                disciplineDTO = new DisciplineDTO();
-            }
-            disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacherId(teacherId);
-            disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
-            getDisciplineConnector().save(disciplineDTO);
-        }
-    }
-
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, TestExecutionContext.getTestContext().getTeacherId());
