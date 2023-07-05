@@ -25,9 +25,9 @@ POST    /api/task/ <br>
 PUT     /api/task/{taskId}/condition/{conditionId} <br>
 PUT     /api/task/{taskId}/condition <br>
 
-GET     /api/taskDomain/{taskDomainId} <br>
-PUT     /api/taskDomain/{taskDomainId} <br>
-PUT     /api/taskDomain/{taskDomainId}/puml <br>
+GET     /api/task-domain/{taskDomainId} <br>
+PUT     /api/task-domain/{taskDomainId} <br>
+PUT     /api/task-domain/{taskDomainId}/puml <br>
 
 POST    /api/discipline <br>
 GET     /api/my/disciplines <br>
@@ -40,11 +40,11 @@ GET     /api/topic/{topicId}/tasks <br>
 GET     /api/topic/{topicId}/icon <br>
 
 # ms-test-producer
-POST    /api/personalExam/create <br>
+POST    /api/personal-exam/create <br>
 GET     /api/test/{personalExamId}/start <br>
-GET     /api/personalExam/{id}/summary <br>
-GET     /api/taskDomain/{taskDomainId}/isUsedNow <br>
-POST    /api/personalExam/{personalExamId}/task/answer <br>
+GET     /api/personal-exam/{id}/summary <br>
+GET     /api/task-domain/{taskDomainId}/is-used-now <br>
+POST    /api/personal-exam/{personalExamId}/task/answer <br>
 
 # ms-users
 GET     /api/user/me <br>

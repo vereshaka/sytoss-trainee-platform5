@@ -11,11 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @PreAuthorize("isAuthenticated()")
 @RestController
-@RequestMapping("/api/taskDomain")
+@RequestMapping("/api/task-domain")
 @RequiredArgsConstructor
 public class TaskDomainController {
 

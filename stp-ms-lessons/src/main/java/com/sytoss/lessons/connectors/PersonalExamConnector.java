@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(url = "${users-url}", name = "personalExamConnector")
 public interface PersonalExamConnector {
 
-    @GetMapping("taskDomain/{taskDomainId}/isUsedNow")
+    @GetMapping("task-domain/{taskDomainId}/is-used-now")
     boolean taskDomainIsUsed(@PathVariable Long taskDomainId);
 }
 

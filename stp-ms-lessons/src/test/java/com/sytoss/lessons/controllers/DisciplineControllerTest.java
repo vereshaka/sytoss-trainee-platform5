@@ -96,7 +96,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/taskDomains", requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/task-domains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -126,6 +126,16 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> result = doGet("/api/discipline/4/icon", httpEntity, byte[].class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnListOfTopics() {
+        when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }

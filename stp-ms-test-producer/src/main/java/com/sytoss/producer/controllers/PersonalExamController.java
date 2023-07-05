@@ -34,7 +34,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/personalExam/create")
+    @PostMapping("/personal-exam/create")
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }
@@ -56,7 +56,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @JsonView(PersonalExam.Public.class)
-    @GetMapping("/personalExam/{id}/summary")
+    @GetMapping("/personal-exam/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
     }
@@ -65,7 +65,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/taskDomain/{taskDomainId}/isUsedNow")
+    @GetMapping("/task-domain/{taskDomainId}/is-used-now")
     public boolean taskDomainIsUsed(@PathVariable(value = "taskDomainId") Long taskDomainId) {
        return personalExamService.taskDomainIsUsed(taskDomainId);
     }
@@ -74,7 +74,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/personalExam/{personalExamId}/task/answer")
+    @PostMapping("/personal-exam/{personalExamId}/task/answer")
     public Answer answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
