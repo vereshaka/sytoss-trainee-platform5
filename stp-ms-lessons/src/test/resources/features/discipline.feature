@@ -50,9 +50,9 @@ Feature: Discipline
     Then operation is successful
     And disciplines should be received
       | teacherId | discipline |
-      | 1         | SQL        |
-      | 1         | Mongo      |
       | 1         | H2         |
+      | 1         | Mongo      |
+      | 1         | SQL        |
 
   Scenario: search disciplines
     Given disciplines exist
