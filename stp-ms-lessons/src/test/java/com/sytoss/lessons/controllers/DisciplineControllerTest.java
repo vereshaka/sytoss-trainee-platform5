@@ -56,7 +56,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<Discipline>() {
+        ResponseEntity<Discipline> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -66,7 +66,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.create(any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }
@@ -88,6 +88,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         ResponseEntity<String> result = doGet("/api/discipline/123", httpEntity, String.class);
         assertEquals(404, result.getStatusCode().value());
         //assertEquals("Discipline with id \"123\" not found", result.getBody());
+        // TODO: 05.07.2023 LarinI: Find a way to check an error message
     }
 
     @Test
