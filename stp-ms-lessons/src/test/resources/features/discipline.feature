@@ -55,7 +55,7 @@ Feature: Discipline
       | 1         | SQL        |
 
   Scenario: get disciplines in order
-    Given disciplines exist in specific order
+    Given disciplines exist
       | teacherId | discipline | creationDate |
       | 1         | SQL        | 2021-10-31   |
       | 1         | Mongo      | 2022-10-31   |

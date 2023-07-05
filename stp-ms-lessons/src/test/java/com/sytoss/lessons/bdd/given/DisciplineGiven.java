@@ -22,6 +22,7 @@ public class DisciplineGiven extends AbstractGiven {
             discipline = new DisciplineDTO();
             discipline.setName(disciplineName);
             discipline.setTeacherId(teacherId);
+            discipline.setCreationDate(Timestamp.from(Instant.now()));
             discipline = getDisciplineConnector().save(discipline);
         }
 
@@ -48,10 +49,29 @@ public class DisciplineGiven extends AbstractGiven {
     }
 
     @Given("disciplines exist")
-    public void disciplinesExist(List<DisciplineDTO> disciplines) {
+    public void disciplinesExist(DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps();
+        List<DisciplineDTO> disciplineDTOS = new ArrayList<>();
+        for (Map<String, String> columns : rows) {
+            String teacherId = columns.get("teacherId");
+            String disciplineName = columns.get("discipline");
+            String date = columns.get("creationDate");
+            teacherId = teacherId != null ? teacherId : "1";
+            Date creationDate = date != null ? toDate(date) : Timestamp.from(Instant.now());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, Long.valueOf(teacherId));
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+            }
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(Long.valueOf(teacherId));
+            disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
+            disciplineDTOS.add(disciplineDTO);
+        }
+
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
-            for (DisciplineDTO disciplineDtoFromTable : disciplines) {
+            for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
                 if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
                     getDisciplineConnector().deleteById(disciplineDTO.getId());
                 }
@@ -60,8 +80,7 @@ public class DisciplineGiven extends AbstractGiven {
                 }
             }
         }
-        for (DisciplineDTO discipline : disciplines) {
-            discipline.setCreationDate(Timestamp.from(Instant.now()));
+        for (DisciplineDTO discipline : disciplineDTOS) {
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
             if (disciplineResult == null) {
                 getDisciplineConnector().save(discipline);
@@ -81,6 +100,7 @@ public class DisciplineGiven extends AbstractGiven {
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
             }
+            disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(teacherId);
             disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
@@ -115,6 +135,7 @@ public class DisciplineGiven extends AbstractGiven {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
             disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());

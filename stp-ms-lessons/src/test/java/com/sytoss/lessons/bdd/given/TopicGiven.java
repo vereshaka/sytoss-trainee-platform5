@@ -8,6 +8,8 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 public class TopicGiven extends AbstractGiven {
@@ -46,6 +48,7 @@ public class TopicGiven extends AbstractGiven {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setName(topic.getDiscipline().getName());
                 disciplineDTO.setTeacherId(teacherId);
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
