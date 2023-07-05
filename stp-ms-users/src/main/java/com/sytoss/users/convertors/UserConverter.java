@@ -38,12 +38,14 @@ public class UserConverter {
         destination.setEmail(source.getEmail());
         destination.setModerated(source.isModerated());
         destination.setPhoto(source.getPhoto());
+        destination.setUid(source.getUid());
     }
 
     public void fromDTO(Jwt source, AbstractUser destination) {
         destination.setEmail(source.getClaim("email"));
         destination.setFirstName(source.getClaim("given_name"));
         destination.setLastName(source.getClaim("family_name"));
+        destination.setUid(destination.getUid());
     }
 
     public void toDTO(AbstractUser source, UserDTO destination) {
@@ -53,5 +55,6 @@ public class UserConverter {
         destination.setEmail(source.getEmail());
         destination.setModerated(source.isModerated());
         destination.setPhoto(source.getPhoto());
+        destination.setUid(source.getUid());
     }
 }

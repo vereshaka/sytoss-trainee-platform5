@@ -55,4 +55,11 @@ public class UserThen extends CucumberIntegrationTest {
         assertNotNull(userPhoto);
         assertArrayEquals(photo, userPhoto);
     }
+
+    @Then("^student's photo should be received$")
+    public void userPhotoShouldBeReceived() {
+        UserDTO studentDTO = getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
+        byte[] photo = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        assertEquals(studentDTO.getPhoto().length, photo.length);
+    }
 }

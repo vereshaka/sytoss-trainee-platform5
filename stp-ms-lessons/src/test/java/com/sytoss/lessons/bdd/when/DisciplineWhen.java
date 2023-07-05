@@ -5,12 +5,14 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 
@@ -20,22 +22,30 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
+        String url = "/api/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+        Teacher teacher = new Teacher();
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        when(getUserConnector().getMyProfile()).thenReturn(teacher);
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher creates existing \"(.*)\" discipline$")
     public void existingDisciplineCreating(String disciplineName) {
-        String url = "/api/teacher/" + TestExecutionContext.getTestContext().getTeacherId() + "/discipline";
+        String url = "/api/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+        Teacher teacher = new Teacher();
+        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
+        when(getUserConnector().getMyProfile()).thenReturn(teacher);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -88,6 +98,17 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("student receive his disciplines")
+    public void studentReceiveHisDisciplines() {
+        String url = "/api/my/disciplines";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        when(getUserConnector().findMyGroupId()).thenReturn(TestExecutionContext.getTestContext().getGroupId());
+        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

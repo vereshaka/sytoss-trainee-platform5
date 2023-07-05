@@ -1,12 +1,13 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.producer.connectors.MetadataConnectorImpl;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonalExamService {
+public class PersonalExamService extends AbstractStpService {
 
-    private final MetadataConnectorImpl metadataConnector = new MetadataConnectorImpl();
+    private final MetadataConnector metadataConnector;
 
     private final PersonalExamConnector personalExamConnector;
 
@@ -36,7 +37,7 @@ public class PersonalExamService {
         for(Answer answer : answers){
            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
-        personalExam.setStudentId(examConfiguration.getStudentId());
+        personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
@@ -74,9 +75,10 @@ public class PersonalExamService {
         return personalExam;
     }
 
-    public Question start(String personalExamId, Long studentId) {
+    public Question start(String personalExamId) {
+        String studentId = getMyId();
         PersonalExam personalExam = getById(personalExamId);
-        if (!Objects.equals(personalExam.getStudentId(), studentId)) {
+        if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
         }
         if (personalExam.getAnswers().isEmpty()) {

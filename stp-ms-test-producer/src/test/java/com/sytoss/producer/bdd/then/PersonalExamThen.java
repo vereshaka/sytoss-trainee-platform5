@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PersonalExamThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
-    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, Long studentId, List<Answer> answers) throws JsonProcessingException {
-        PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+    public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
+        PersonalExam personalExamAnswer = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
-        assertEquals(studentId, personalExamAnswer.getStudentId());
+        assertEquals(studentId, personalExamAnswer.getStudent().getUid());
         int quantityOfTasks = 0;
         for (Answer answer : answers) {
             for (Answer answerFromResponse : personalExamAnswer.getAnswers())
@@ -39,16 +39,16 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @Then("summary grade should be {float}")
     public void summaryGrade(Float summaryGrade) throws JsonProcessingException {
-        PersonalExam personalExam = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+        PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
-    @Then("response should return personal exam with exam name {string} and studentID {long} and date {word}")
-    public void responseShouldReturnPersonalExam(String examName, Long studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
-        PersonalExam personalExam = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+    @Then("^response should return personal exam with exam name (.*) and studentID (.*) and date (.*)")
+    public void responseShouldReturnPersonalExam(String examName, String studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
+        PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
 
         assertEquals(examName, personalExam.getName());
-        assertEquals(studentId, personalExam.getStudentId());
+        assertEquals(studentId, personalExam.getStudent().getUid());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         assertEquals(dateFormat.parse(date), personalExam.getDate());
@@ -61,8 +61,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
                 Answer answerResult = i.next();
                 if (answer.getValue().equals(answerResult.getValue()) &&
                         answer.getStatus().equals(answerResult.getStatus()) &&
-                        answer.getScore().getValue() == answerResult.getScore().getValue() &&
-                        answer.getScore().getComment().equals(answerResult.getScore().getComment())) {
+                        answer.getGrade().getValue() == answerResult.getGrade().getValue() &&
+                        answer.getGrade().getComment().equals(answerResult.getGrade().getComment())) {
                     i.remove();
                 }
             }
@@ -71,8 +71,8 @@ public class PersonalExamThen extends CucumberIntegrationTest {
     }
 
     @Then("^status of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
-    public void personalExamShouldHaveStatus(String examName, Long studentId, String personalExamStatus) {
-        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentId(examName, studentId);
+    public void personalExamShouldHaveStatus(String examName, String studentId, String personalExamStatus) {
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
     }
 
@@ -90,7 +90,7 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @Then("tasks from exam should have id image")
     public void tasksFromExamShouldHaveIdImage() throws JsonProcessingException {
-        PersonalExam personalExamAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), PersonalExam.class);
+        PersonalExam personalExamAnswer = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
         int quantityOfImages = 0;
         List<Task> tasks = personalExamAnswer.getAnswers().stream().map(Answer::getTask).toList();
         for (Task task : tasks) {

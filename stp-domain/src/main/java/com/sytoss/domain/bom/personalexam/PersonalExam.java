@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.users.Student;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -28,7 +29,7 @@ public class PersonalExam {
     private Date date;
 
     @JsonView(PersonalExam.Public.class)
-    private Long studentId;
+    private Student student;
 
     @JsonView(PersonalExam.Public.class)
     private List<Answer> answers = new ArrayList<>();
@@ -41,6 +42,10 @@ public class PersonalExam {
 
     @JsonView(PersonalExam.Public.class)
     private float summaryGrade;
+
+    private double maxGrade;
+
+    private double sumOfCoef;
 
     public void start() {
         if (status.equals(PersonalExamStatus.NOT_STARTED)) {
@@ -57,7 +62,7 @@ public class PersonalExam {
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
-                summaryGrade += answer.getScore().getValue();
+                summaryGrade += answer.getGrade().getValue();
             }
         });
     }
@@ -81,5 +86,7 @@ public class PersonalExam {
         return null;
     }
 
-    public static class Public {}
+    public static class Public {
+
+    }
 }

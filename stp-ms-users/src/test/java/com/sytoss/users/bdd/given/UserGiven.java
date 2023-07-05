@@ -32,7 +32,8 @@ public class UserGiven extends CucumberIntegrationTest {
 
     @Given("^student with \"(.*)\" firstName and \"(.*)\" lastName and \"(.*)\" email exists$")
     public void studentExists(String firstName, String lastName, String email) {
-        UserDTO studentDTO = getUserConnector().getByEmail(email);
+        String id = "thisIsNotLongId";
+        UserDTO studentDTO = getUserConnector().getByUid(id);
         if (studentDTO != null && !(studentDTO instanceof StudentDTO)) {
             getUserConnector().delete(studentDTO);
             studentDTO = null;
@@ -43,6 +44,7 @@ public class UserGiven extends CucumberIntegrationTest {
             studentDTO.setLastName(lastName);
             studentDTO.setEmail(email);
             studentDTO.setModerated(false);
+            studentDTO.setUid("thisIsNotLongId");
             studentDTO = getUserConnector().save(studentDTO);
         }
         TestExecutionContext.getTestContext().setUser(studentDTO);
@@ -63,5 +65,17 @@ public class UserGiven extends CucumberIntegrationTest {
         byte[] photoBytes = {0x01, 0x02, 0x03};
         userDTO.setPhoto(photoBytes);
         getUserConnector().save(userDTO);
+    }
+
+    @Given("^this student has photo with bytes \"([^\\\"]*)\"$")
+    public void userHasPhoto(String photoBytes) {
+        String[] numberStrings = photoBytes.split(", ");
+        byte[] icon = new byte[numberStrings.length];
+        for (int i = 0; i < numberStrings.length; i++) {
+            icon[i] = Byte.parseByte(numberStrings[i]);
+        }
+        UserDTO studentDTO = getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
+        studentDTO.setPhoto(icon);
+        getUserConnector().save(studentDTO);
     }
 }

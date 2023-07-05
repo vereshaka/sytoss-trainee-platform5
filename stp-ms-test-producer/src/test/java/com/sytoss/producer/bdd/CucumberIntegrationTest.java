@@ -5,6 +5,7 @@ import com.sytoss.producer.AbstractApplicationTest;
 import com.sytoss.producer.common.connectors.PersonalExamConnectorTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.ImageConnector;
+import com.sytoss.producer.connectors.MetadataConnector;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,6 +53,10 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @Autowired
     @MockBean
     private ImageConnector imageConnector;
+
+    @MockBean
+    @Autowired
+    private MetadataConnector metadataConnector;
 
     protected String getBaseUrl() {
         return "http://127.0.0.1:" + applicationPort;

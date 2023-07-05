@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -33,6 +34,17 @@ public class DisciplineController {
     private final DisciplineService disciplineService;
 
     private final TaskDomainService taskDomainService;
+
+    @Operation(description = "Method that register a new discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Discipline exists!"),
+    })
+    @PostMapping("/discipline")
+    public Discipline create(
+            @RequestBody Discipline discipline) {
+        return disciplineService.create(discipline);
+    }
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
@@ -101,6 +113,16 @@ public class DisciplineController {
     @GetMapping("/disciplines")
     public List<Discipline> findAllDisciplines() {
         return disciplineService.findAllDisciplines();
+    }
+
+
+    @Operation(description = "Method that retrieve list of my disciplines")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findAllMyDisciplines() {
+        return disciplineService.findAllMyDiscipline();
     }
 
     @Operation(description = "Method that join group to discipline")

@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
@@ -61,7 +62,26 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found!")
     })
     @GetMapping(value = "/{userId}/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] getUserPhoto(@PathVariable("userId") Long userId) {
+    public byte[] getUserPhoto(@PathVariable("userId") String userId) {
         return userService.getUserPhoto(userId);
+    }
+
+    @Operation(description = "Method that retrieve user's photo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Photo not found!")
+    })
+    @GetMapping(value = "/me/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getMyPhoto() {
+        return userService.getMyPhoto();
+    }
+
+    @Operation(description = "find my groups Id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/my/groupsId")
+    public List<Long> findDisciplineByStudent() {
+        return userService.findGroupsId();
     }
 }

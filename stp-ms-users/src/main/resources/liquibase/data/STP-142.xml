@@ -1,46 +1,46 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-142.xml">
 
     <changeSet author="KornienkoD" id="teacher_1">
         <createTable tableName="APP_USER">
             <column name="ID" type="BIGINT">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            <column name="FIRST_NAME" type="VARCHAR2(100 BYTE)" />
-            <column name="LAST_NAME" type="VARCHAR2(100 BYTE)" />
-            <column name="EMAIL" type="VARCHAR2(100 BYTE)" />
-            <column name="USER_TYPE" type="VARCHAR2(1)" />
-            <column name="GROUP_ID" type="BIGINT" />
+            <column name="FIRST_NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="LAST_NAME" type="VARCHAR2(100 BYTE)"/>
+            <column name="EMAIL" type="VARCHAR2(100 BYTE)"/>
+            <column name="USER_TYPE" type="VARCHAR2(1)"/>
+            <column name="GROUP_ID" type="BIGINT"/>
         </createTable>
 
         <rollback>
-            <dropTable tableName="APP_USER" />
+            <dropTable tableName="APP_USER"/>
         </rollback>
     </changeSet>
 
     <changeSet author="KornienkoD" id="teacher_2">
-        <addPrimaryKey tableName="APP_USER" columnNames="ID" constraintName="PK_APP_USER" />
+        <addPrimaryKey tableName="APP_USER" columnNames="ID" constraintName="PK_APP_USER"/>
         <rollback>
-            <dropPrimaryKey tableName="APP_USER" constraintName="PK_APP_USER" />
+            <dropPrimaryKey tableName="APP_USER" constraintName="PK_APP_USER"/>
         </rollback>
     </changeSet>
 
     <changeSet author="KornienkoD" id="teacher_3">
-        <createSequence sequenceName="APP_USER_SEQ" />
+        <createSequence sequenceName="APP_USER_SEQ"/>
         <rollback>
-            <dropSequence sequenceName="APP_USER_SEQ" />
+            <dropSequence sequenceName="APP_USER_SEQ"/>
         </rollback>
     </changeSet>
 
     <changeSet author="VereshchakaV" id="teacher_4">
         <addForeignKeyConstraint baseTableName="APP_USER" baseColumnNames="GROUP_ID"
                                  constraintName="FK_APP_USER2GROUPS" referencedTableName="GROUPS"
-                                 referencedColumnNames="ID" />
+                                 referencedColumnNames="ID"/>
         <rollback>
-            <dropForeignKeyConstraint baseTableName="APP_USER" constraintName="FK_APP_USER2GROUPS" />
+            <dropForeignKeyConstraint baseTableName="APP_USER" constraintName="FK_APP_USER2GROUPS"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

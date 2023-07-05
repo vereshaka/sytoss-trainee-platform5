@@ -7,15 +7,13 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +30,8 @@ public class DisciplineService extends AbstractService {
 
     private final GroupReferenceConnector groupReferenceConnector;
 
+    private final UserConnector userConnector;
+
     public Discipline getById(Long id) {
         try {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
@@ -43,11 +43,11 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public Discipline create(Long teacherId, Discipline discipline) {
-        DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), teacherId);
+    public Discipline create(Discipline discipline) {
+        DisciplineDTO oldDisciplineDTO = disciplineConnector.getByNameAndTeacherId(discipline.getName(), getCurrentUser().getId());
         if (oldDisciplineDTO == null) {
             Teacher teacher = new Teacher();
-            teacher.setId(teacherId);
+            teacher.setId(getCurrentUser().getId());
             discipline.setTeacher(teacher);
             DisciplineDTO disciplineDTO = new DisciplineDTO();
             disciplineConvertor.toDTO(discipline, disciplineDTO);
@@ -109,5 +109,19 @@ public class DisciplineService extends AbstractService {
         } catch (EntityNotFoundException e) {
             throw new DisciplineNotFoundException(id);
         }
+    }
+
+    public List<Discipline> findAllMyDiscipline() {
+        List<Discipline> disciplines = new ArrayList<>();
+        List<Long> groupsId = userConnector.findMyGroupId();
+        for (Long groupId : groupsId) {
+            List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByGroupReferencesGroupId(groupId);
+            for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+                Discipline discipline = new Discipline();
+                disciplineConvertor.fromDTO(disciplineDTO, discipline);
+                disciplines.add(discipline);
+            }
+        }
+        return disciplines;
     }
 }

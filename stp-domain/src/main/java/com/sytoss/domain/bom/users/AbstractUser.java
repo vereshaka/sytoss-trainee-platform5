@@ -1,6 +1,7 @@
 package com.sytoss.domain.bom.users;
 
-import com.fasterxml.jackson.annotation.JsonKey;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
@@ -21,6 +22,9 @@ public abstract class AbstractUser {
     private byte[] photo;
 
     private boolean isModerated;
+
+    @JsonView(PersonalExam.Public.class)
+    private String uid;
 
     public boolean isValid() {
         return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && ObjectUtils.isNotEmpty(photo);
