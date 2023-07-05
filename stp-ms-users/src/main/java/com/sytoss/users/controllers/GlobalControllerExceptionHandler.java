@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.exceptions.ApplicationError;
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.GroupNotFoundException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
@@ -8,29 +9,28 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler({GroupExistException.class})
-    public ResponseEntity<?> handleValidationException(GroupExistException groupExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(groupExistException.getMessage());
+    public ResponseEntity<?> handleValidationException(GroupExistException groupExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(groupExistException));
     }
 
     @ExceptionHandler({GroupNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(GroupNotFoundException groupNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(groupNotFoundException.getMessage());
+    public ResponseEntity<?> handleValidationException(GroupNotFoundException groupNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(groupNotFoundException));
     }
 
     @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(UserNotFoundException userNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(userNotFoundException.getMessage());
+    public ResponseEntity<?> handleValidationException(UserNotFoundException userNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(userNotFoundException));
     }
 
     @ExceptionHandler({UserPhotoNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(UserPhotoNotFoundException userPhotoNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(userPhotoNotFoundException.getMessage());
+    public ResponseEntity<?> handleValidationException(UserPhotoNotFoundException userPhotoNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(userPhotoNotFoundException));
     }
 }

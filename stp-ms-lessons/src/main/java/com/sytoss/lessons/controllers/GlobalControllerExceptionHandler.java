@@ -1,94 +1,94 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.ApplicationError;
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler({TopicExistException.class})
-    public ResponseEntity<?> handleValidationException(TopicExistException topicExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(topicExistException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TopicExistException topicExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(topicExistException));
     }
 
     @ExceptionHandler({DisciplineNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(DisciplineNotFoundException disciplineNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(disciplineNotFoundException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(DisciplineNotFoundException disciplineNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(disciplineNotFoundException));
     }
 
     @ExceptionHandler({DisciplineExistException.class})
-    public ResponseEntity<?> handleValidationException(DisciplineExistException disciplineExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(disciplineExistException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(DisciplineExistException disciplineExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(disciplineExistException));
     }
 
     @ExceptionHandler({TeacherNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TeacherNotFoundException teacherNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(teacherNotFoundException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TeacherNotFoundException teacherNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(teacherNotFoundException));
     }
 
     @ExceptionHandler({TaskNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TaskNotFoundException taskNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(taskNotFoundException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskNotFoundException taskNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(taskNotFoundException));
     }
 
     @ExceptionHandler({TopicNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TopicNotFoundException topicNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(topicNotFoundException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TopicNotFoundException topicNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(topicNotFoundException));
     }
 
     @ExceptionHandler({TaskDomainAlreadyExist.class})
-    public ResponseEntity<?> handleValidationException(TaskDomainAlreadyExist taskDomainAlreadyExist, WebRequest request) {
-        return ResponseEntity.status(409).body(taskDomainAlreadyExist.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskDomainAlreadyExist taskDomainAlreadyExist) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskDomainAlreadyExist));
     }
 
     @ExceptionHandler({GroupExistException.class})
-    public ResponseEntity<?> handleValidationException(GroupExistException groupExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(groupExistException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(GroupExistException groupExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(groupExistException));
     }
 
     @ExceptionHandler({TaskDomainNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TaskDomainNotFoundException taskDomainNotFoundException, WebRequest request) {
-        return ResponseEntity.status(404).body(taskDomainNotFoundException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskDomainNotFoundException taskDomainNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(taskDomainNotFoundException));
     }
 
     @ExceptionHandler({TaskExistException.class})
-    public ResponseEntity<?> handleValidationException(TaskExistException taskExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(taskExistException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskExistException taskExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskExistException));
     }
 
     @ExceptionHandler({TaskConditionNotFoundException.class})
-    public ResponseEntity<?> handleValidationException(TaskConditionNotFoundException taskConditionNotFound, WebRequest request) {
-        return ResponseEntity.status(404).body(taskConditionNotFound.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskConditionNotFoundException taskConditionNotFound) {
+        return ResponseEntity.status(404).body(new ApplicationError(taskConditionNotFound));
     }
 
     @ExceptionHandler({TaskDontHasConditionException.class})
-    public ResponseEntity<?> handleValidationException(TaskDontHasConditionException taskDontHaveConditionException, WebRequest request) {
-        return ResponseEntity.status(404).body(taskDontHaveConditionException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskDontHasConditionException taskDontHaveConditionException) {
+        return ResponseEntity.status(404).body(new ApplicationError(taskDontHaveConditionException));
     }
 
     @ExceptionHandler({TaskDomainCouldNotCreateImageException.class})
-    public ResponseEntity<?> handleValidationException(TaskDomainCouldNotCreateImageException taskDomainCouldNotCreateImageException, WebRequest request) {
-        return ResponseEntity.status(409).body(taskDomainCouldNotCreateImageException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskDomainCouldNotCreateImageException taskDomainCouldNotCreateImageException) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskDomainCouldNotCreateImageException));
     }
 
     @ExceptionHandler({TaskConditionAlreadyExistException.class})
-    public ResponseEntity<?> handleValidationException(TaskConditionAlreadyExistException taskConditionAlreadyExistException, WebRequest request) {
-        return ResponseEntity.status(409).body(taskConditionAlreadyExistException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskConditionAlreadyExistException taskConditionAlreadyExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskConditionAlreadyExistException));
     }
 
     @ExceptionHandler({TaskDomainIsUsed.class})
-    public ResponseEntity<?> handleValidationException(TaskDomainIsUsed taskDomainIsUsed, WebRequest request) {
-        return ResponseEntity.status(409).body(taskDomainIsUsed.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(TaskDomainIsUsed taskDomainIsUsed) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskDomainIsUsed));
     }
 
     @ExceptionHandler({EtalonIsNotValidException.class})
-    public ResponseEntity<?> handleValidationException(EtalonIsNotValidException etalonIsNotValidException, WebRequest request) {
-        return ResponseEntity.status(409).body(etalonIsNotValidException.getMessage());
+    public ResponseEntity<ApplicationError> handleValidationException(EtalonIsNotValidException etalonIsNotValidException) {
+        return ResponseEntity.status(409).body(new ApplicationError(etalonIsNotValidException));
     }
 }
