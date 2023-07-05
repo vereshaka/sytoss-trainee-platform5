@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,7 @@ public class DisciplineService extends AbstractService {
             Teacher teacher = new Teacher();
             teacher.setId(getCurrentUser().getId());
             discipline.setTeacher(teacher);
+            discipline.setCreationDate(Timestamp.from(Instant.now()));
             DisciplineDTO disciplineDTO = new DisciplineDTO();
             disciplineConvertor.toDTO(discipline, disciplineDTO);
             disciplineDTO = disciplineConnector.saveAndFlush(disciplineDTO);
@@ -60,7 +63,7 @@ public class DisciplineService extends AbstractService {
     }
 
     public List<Discipline> findDisciplines() {
-        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherId(getCurrentUser().getId());
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
         List<Discipline> result = new ArrayList<>();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             Discipline discipline = new Discipline();

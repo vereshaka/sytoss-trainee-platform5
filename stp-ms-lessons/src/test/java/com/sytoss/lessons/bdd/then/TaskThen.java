@@ -78,7 +78,7 @@ public class TaskThen extends CucumberIntegrationTest {
         Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(task.getTopics());
         assertEquals(question, task.getQuestion());
-        assertEquals(topicDTO.getName(), task.getTopics().get(0).getName());
+        assertEquals(topicDTO.getName(), task.getTopics().get(1).getName());
     }
 
     @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")

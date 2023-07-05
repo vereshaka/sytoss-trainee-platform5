@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
@@ -34,6 +35,9 @@ public class DisciplineDTO {
 
     @Column(name = "ICON")
     private byte[] icon;
+
+    @Column(name = "CREATION_DATE")
+    private Timestamp creationDate;
 
     @OneToMany
     @JoinTable(name = "group2discipline",

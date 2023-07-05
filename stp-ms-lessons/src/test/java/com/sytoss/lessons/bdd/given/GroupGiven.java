@@ -6,6 +6,8 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Given;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +52,7 @@ public class GroupGiven extends CucumberIntegrationTest {
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setName(disciplineName);
         disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+        disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
         disciplineDTO = getDisciplineConnector().save(disciplineDTO);
 
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();

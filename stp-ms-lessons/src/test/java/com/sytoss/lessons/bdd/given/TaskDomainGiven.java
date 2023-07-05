@@ -6,6 +6,8 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.Given;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 public class TaskDomainGiven extends CucumberIntegrationTest {
@@ -39,6 +41,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             if (disciplineDTO == null) {
                 disciplineDTO = taskDomainDTO.getDiscipline();
                 disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             TaskDomainDTO result = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainDTO.getName(), disciplineDTO.getId());

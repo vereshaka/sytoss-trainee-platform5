@@ -1,16 +1,16 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.*;
 
 public class DisciplineGiven extends AbstractGiven {
 
@@ -22,6 +22,7 @@ public class DisciplineGiven extends AbstractGiven {
             discipline = new DisciplineDTO();
             discipline.setName(disciplineName);
             discipline.setTeacherId(teacherId);
+            discipline.setCreationDate(Timestamp.from(Instant.now()));
             discipline = getDisciplineConnector().save(discipline);
         }
 
@@ -48,10 +49,29 @@ public class DisciplineGiven extends AbstractGiven {
     }
 
     @Given("disciplines exist")
-    public void disciplinesExist(List<DisciplineDTO> disciplines) {
+    public void disciplinesExist(DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps();
+        List<DisciplineDTO> disciplineDTOS = new ArrayList<>();
+        for (Map<String, String> columns : rows) {
+            String teacherId = columns.get("teacherId");
+            String disciplineName = columns.get("discipline");
+            String date = columns.get("creationDate");
+            teacherId = teacherId != null ? teacherId : "1";
+            Date creationDate = date != null ? toDate(date) : Timestamp.from(Instant.now());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, Long.valueOf(teacherId));
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+            }
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(Long.valueOf(teacherId));
+            disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
+            disciplineDTOS.add(disciplineDTO);
+        }
+
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
-            for (DisciplineDTO disciplineDtoFromTable : disciplines) {
+            for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
                 if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
                     getDisciplineConnector().deleteById(disciplineDTO.getId());
                 }
@@ -60,7 +80,7 @@ public class DisciplineGiven extends AbstractGiven {
                 }
             }
         }
-        for (DisciplineDTO discipline : disciplines) {
+        for (DisciplineDTO discipline : disciplineDTOS) {
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
             if (disciplineResult == null) {
                 getDisciplineConnector().save(discipline);
@@ -70,7 +90,7 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline,TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, TestExecutionContext.getTestContext().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(nameDiscipline);
@@ -95,7 +115,8 @@ public class DisciplineGiven extends AbstractGiven {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
-            disciplineDTO =  getDisciplineConnector().save(disciplineDTO);
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
     }
@@ -114,5 +135,21 @@ public class DisciplineGiven extends AbstractGiven {
         DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
         disciplineDTO.setIcon(icon);
         getDisciplineConnector().save(disciplineDTO);
+    }
+
+    protected Date toDate(String value) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+            return format.parse(value);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String format(Date value) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return format.format(value);
     }
 }

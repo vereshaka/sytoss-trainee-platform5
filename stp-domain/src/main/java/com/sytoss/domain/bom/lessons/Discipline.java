@@ -3,6 +3,8 @@ package com.sytoss.domain.bom.lessons;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.*;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,4 +25,6 @@ public class Discipline {
     private Double duration;
 
     private byte[] icon;
+
+    private Timestamp creationDate;
 }
