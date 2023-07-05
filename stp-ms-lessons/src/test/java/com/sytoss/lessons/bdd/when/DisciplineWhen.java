@@ -10,9 +10,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 
@@ -83,7 +80,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("link this discipline to group with id {long}")
+    @When("^link this discipline to group with id (.*)")
     public void linkDisciplineToGroup(Long groupId) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/group/" + groupId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();

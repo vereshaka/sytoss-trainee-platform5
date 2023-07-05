@@ -37,13 +37,13 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         assertEquals(quantityOfTasks, personalExamAnswer.getAnswers().size());
     }
 
-    @Then("summary grade should be {float}")
+    @Then("^summary grade should be (.*)$")
     public void summaryGrade(Float summaryGrade) throws JsonProcessingException {
         PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
-    @Then("^response should return personal exam with exam name (.*) and studentID (.*) and date (.*)")
+    @Then("^response should return personal exam with exam name (.*) and studentID (.*) and date (.*)$")
     public void responseShouldReturnPersonalExam(String examName, String studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
         PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
 
@@ -76,7 +76,7 @@ public class PersonalExamThen extends CucumberIntegrationTest {
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
     }
 
-    @Then("should return personal exam with time {int} and amountOfTasks {long}")
+    @Then("^should return personal exam with time (.*) and amountOfTasks (.*)$")
     public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks) {
         Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
         assertEquals(time, firstTask.getExam().getTime());

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class GivenStepTest extends CucumberIntegrationTest {
 
-    @Given("Request contains database script as in {string}")
+    @Given("^Request contains database script as in \"(.*)\"$")
     public void givenDatabaseScript(String script) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("scripts/" + script).getFile());
@@ -22,7 +22,7 @@ public class GivenStepTest extends CucumberIntegrationTest {
         TestContext.getInstance().getCheckTaskParameters().setScript(String.join("\n", data));
     }
 
-    @Given("etalon SQL is {string}")
+    @Given("^etalon SQL is \"(.*)\"$")
     public void givenEtalonScript(String answer) {
         TestContext.getInstance().getCheckTaskParameters().setEtalon(answer);
     }
@@ -35,7 +35,7 @@ public class GivenStepTest extends CucumberIntegrationTest {
         TestContext.getInstance().getCheckTaskParameters().getConditions().add(taskCondition);
     }
 
-    @Given("check SQL is {string}")
+    @Given("^check SQL is \"(.*)\"$")
     public void givenAnswerScript(String answer) {
         TestContext.getInstance().getCheckTaskParameters().setAnswer(answer);
     }

@@ -40,7 +40,7 @@ public class TopicWhen extends CucumberIntegrationTest {
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         } else {
             String url = "/api/topic/" + topicId;
-            ResponseEntity<Topic> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<Topic>() {
+            ResponseEntity<Topic> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
             });
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
@@ -57,7 +57,7 @@ public class TopicWhen extends CucumberIntegrationTest {
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
-    @When("teacher creates existing {string} topic")
+    @When("^teacher creates existing \"(.*)\" topic$")
     public void existingTopicCreating(String topicName) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
         Topic topic = new Topic();

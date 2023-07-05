@@ -61,7 +61,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
         IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
     }
 
-    @When("the exam with id {word} is done")
+    @When("^the exam with id (.*) is done$")
     public void theExamIsDoneOnTask(String examId) throws JOSEException {
         String url = URI + "personal-exam/" + examId + "/summary";
         HttpHeaders headers = new HttpHeaders();

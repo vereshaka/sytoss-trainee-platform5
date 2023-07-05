@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class ExamThen extends CucumberIntegrationTest {
 
-    @Then("\"{word}\" exam should be from {word} to {word} with {int} tasks for this group with {int} minutes duration")
+    @Then("^\"(.*)\" exam should be from (.*) to (.*) with (.*) tasks for this group with (.*) minutes duration$")
     public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, Integer duration) throws ParseException {
         ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
 
@@ -30,7 +30,7 @@ public class ExamThen extends CucumberIntegrationTest {
         Assertions.assertEquals(duration, examDTO.getDuration());
     }
 
-    @Then("\"{word}\" exam for this group should have topics")
+    @Then("^\"(.*)\" exam for this group should have topics$")
     public void examShouldHaveTopic(String examName, List<TopicDTO> topicDTOList) {
         ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
 

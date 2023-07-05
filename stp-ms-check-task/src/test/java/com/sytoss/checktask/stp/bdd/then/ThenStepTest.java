@@ -19,12 +19,12 @@ public class ThenStepTest extends CucumberIntegrationTest {
         TestContext.getInstance().setScore(score);
     }
 
-    @Then("Grade value is {double}")
+    @Then("^Grade value is (.*)$")
     public void gradeValueIs(double value) throws JsonProcessingException {
         assertEquals(value, TestContext.getInstance().getScore().getValue());
     }
 
-    @Then("Grade message is {string}")
+    @Then("^Grade message is \"(.*)\"$")
     public void gradeMessageIs(String message) {
         assertEquals(message, TestContext.getInstance().getScore().getComment());
     }
