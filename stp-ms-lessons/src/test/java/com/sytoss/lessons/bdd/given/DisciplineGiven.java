@@ -7,9 +7,10 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DisciplineGiven extends AbstractGiven {
 
@@ -68,6 +69,25 @@ public class DisciplineGiven extends AbstractGiven {
         }
     }
 
+    @Given("disciplines exist in specific order")
+    public void disciplinesExistInSpecificOrder(DataTable dataTable) {
+        List<Map<String, String>> rows = dataTable.asMaps();
+        for (Map<String, String> columns : rows) {
+            Long teacherId = Long.valueOf(columns.get("teacherId"));
+            String disciplineName = columns.get("discipline");
+            String date = columns.get("creationDate");
+            Date creationDate = toDate(date);
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+            }
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(teacherId);
+            disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
+            getDisciplineConnector().save(disciplineDTO);
+        }
+    }
+
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, TestExecutionContext.getTestContext().getTeacherId());
@@ -114,5 +134,21 @@ public class DisciplineGiven extends AbstractGiven {
         DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
         disciplineDTO.setIcon(icon);
         getDisciplineConnector().save(disciplineDTO);
+    }
+
+    protected Date toDate(String value) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        try {
+            return format.parse(value);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String format(Date value) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        return format.format(value);
     }
 }

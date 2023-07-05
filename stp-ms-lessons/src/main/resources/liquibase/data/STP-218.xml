@@ -2,11 +2,12 @@
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-                   logicalFilePath="data/STP-194.xml">
+                   logicalFilePath="data/STP-218.xml">
 
     <changeSet author="LarinI" id="discipline_date">
         <addColumn tableName="DISCIPLINE">
             <column name="CREATION_DATE" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP">
+                <constraints nullable="false" />
             </column>
         </addColumn>
     </changeSet>

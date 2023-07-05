@@ -6,6 +6,8 @@ import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,7 @@ public class TeacherGiven extends CucumberIntegrationTest {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setName(disciplineName);
                 disciplineDTO.setTeacherId(teacherId);
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
 

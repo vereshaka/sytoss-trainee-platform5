@@ -54,6 +54,21 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
+  Scenario: get disciplines in order
+    Given disciplines exist in specific order
+      | teacherId | discipline | creationDate |
+      | 1         | SQL        | 2021-10-31   |
+      | 1         | Mongo      | 2022-10-31   |
+      | 2         | SQL        | 2020-10-31   |
+      | 1         | H2         | 2020-10-31   |
+    When teacher with id 1 retrieve his disciplines
+    Then operation is successful
+    And disciplines should be received
+      | teacherId | discipline |
+      | 1         | Mongo      |
+      | 1         | SQL        |
+      | 1         | H2         |
+
   Scenario: search disciplines
     Given disciplines exist
       | discipline |
