@@ -17,7 +17,7 @@ public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^this student should have \"(.*)\" group$")
     public void studentShouldHasGroup(String groupName) {
-        StudentDTO studentDTO = (StudentDTO) getUserConnector().findById(TestExecutionContext.getTestContext().getUser().getId()).orElseThrow();
+        StudentDTO studentDTO = (StudentDTO) getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
         List<GroupDTO> filter = studentDTO.getGroups().stream().filter(item -> item.getName().equals(groupName)).toList();
         assertEquals(1, filter.size());
     }

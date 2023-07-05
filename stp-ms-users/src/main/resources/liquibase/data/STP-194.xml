@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-194.xml">
+
+    <changeSet author="LarinI" id="user">
+        <addColumn tableName="APP_USER">
+            <column name="UID" type="VARCHAR2(100 BYTE)">
+                <constraints unique="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

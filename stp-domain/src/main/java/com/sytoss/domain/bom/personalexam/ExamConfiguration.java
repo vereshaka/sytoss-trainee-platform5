@@ -12,7 +12,6 @@ public class ExamConfiguration {
 
     private Long disciplineId;
 
-
     private List<Long> topics;
 
     private String examName;

@@ -22,12 +22,12 @@ public class GroupWhen extends CucumberIntegrationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         if (groupDTO == null) {
             groupId = 99L;
-            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getId();
+            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getUid();
             ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         } else {
             groupId = groupDTO.getId();
-            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getId();
+            String url = "/api/group/" + groupId + "/student/" + TestExecutionContext.getTestContext().getUser().getUid();
             ResponseEntity<Student> responseEntity = doPost(url, httpEntity, Student.class);
             TestExecutionContext.getTestContext().setResponse(responseEntity);
         }
