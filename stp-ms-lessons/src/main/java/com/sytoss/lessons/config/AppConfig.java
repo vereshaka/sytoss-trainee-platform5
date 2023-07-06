@@ -1,6 +1,7 @@
 package com.sytoss.lessons.config;
 
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.UserConnector;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class AppConfig {
             public Map<String, Object> convert(Map<String, Object> claims) {
                 Map<String, Object> convertedClaims = this.delegate.convert(claims);
                 try {
-                    AbstractUser user = userConnector.getMyProfile();
+                    Teacher user = userConnector.getMyProfile();
                     convertedClaims.put("user", user);
                 } catch (Exception e) {
                     log.error("Could not retrieve user details", e);

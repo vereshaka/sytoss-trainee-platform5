@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserConnector {
 
     @GetMapping("user/me")
-    AbstractUser getMyProfile();
+    Teacher getMyProfile();
 
     @GetMapping("my/groupsId")
     List<Long> findMyGroupId();
