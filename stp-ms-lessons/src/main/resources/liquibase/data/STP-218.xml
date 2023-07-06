@@ -6,9 +6,16 @@
 
     <changeSet author="LarinI" id="discipline_date">
         <addColumn tableName="DISCIPLINE">
-            <column name="CREATION_DATE" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP">
-                <constraints nullable="false" />
-            </column>
+            <column name="CREATION_DATE" type="TIMESTAMP"/>
         </addColumn>
+    </changeSet>
+    <changeSet author="LarinI" id="STP-218#2_v3">
+        <update tableName="DISCIPLINE">
+            <column name="CREATION_DATE" valueDate="2023-07-06T00:00:00"/>
+            <where>CREATION_DATE is null</where>
+        </update>
+    </changeSet>
+    <changeSet author="LarinI" id="STP-218#3">
+        <addNotNullConstraint columnName="CREATION_DATE" tableName="DISCIPLINE"/>
     </changeSet>
 </databaseChangeLog>
