@@ -23,6 +23,7 @@ public class GroupGiven extends CucumberIntegrationTest {
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 getDisciplineConnector().save(disciplineDTO);
             }
             GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
