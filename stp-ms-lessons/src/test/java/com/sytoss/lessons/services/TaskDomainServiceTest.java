@@ -73,9 +73,11 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName("TaskDomain first");
         taskDomain.setScript("script");
+        taskDomain.setDescription("Anything");
         TaskDomain result = taskDomainService.create(1L, taskDomain);
         assertEquals(taskDomain.getName(), result.getName());
         assertEquals(taskDomain.getScript(), result.getScript());
+        assertEquals(taskDomain.getDescription(), result.getDescription());
     }
 
     @Test
@@ -94,6 +96,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
         taskDomainDTO.setScript("Script Domain");
+        taskDomainDTO.setDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomainDTO.setDiscipline(disciplineDTO);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
@@ -101,6 +104,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("First Domain", result.getName());
         Assertions.assertEquals("Script Domain", result.getScript());
+        Assertions.assertEquals("Task Domain Description", result.getDescription());
     }
 
     @Test
@@ -115,6 +119,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
         taskDomain.setScript("Script Domain");
+        taskDomain.setDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomain.setDiscipline(disciplineDTO);
         when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(false);
@@ -124,6 +129,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
             TaskDomainDTO result = (TaskDomainDTO) args[0];
             result.setName("new");
             result.setScript("new");
+            result.setDescription("new");
             return result;
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         when(taskService.findByDomainId(anyLong())).thenReturn(new ArrayList<>());
@@ -133,6 +139,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
         assertEquals("new", result.getName());
         assertEquals("new", result.getScript());
+        assertEquals("new", result.getDescription());
     }
 
     @Test
