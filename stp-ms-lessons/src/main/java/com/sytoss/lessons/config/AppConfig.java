@@ -36,13 +36,10 @@ public class AppConfig {
             public Map<String, Object> convert(Map<String, Object> claims) {
                 Map<String, Object> convertedClaims = this.delegate.convert(claims);
                 try {
-                    Teacher user = (Teacher) userConnector.getMyProfile();
-                    convertedClaims.put("user", user);
+                    convertedClaims.put("user", userConnector.getMyProfile());
                 } catch (Exception e) {
                     log.error("Could not retrieve user details", e);
                 }
-
-
                 return convertedClaims;
             }
         });
