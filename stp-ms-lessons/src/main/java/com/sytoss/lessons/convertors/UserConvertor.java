@@ -13,21 +13,21 @@ import java.util.LinkedHashMap;
 @Component
 public class UserConvertor {
 
-    public void toTeacherOrStudent(LinkedHashMap<String, Object> source, Teacher teacher, Student student) {
-        if (source.containsKey("primaryGroup")) {
-            student.setId(Long.valueOf((Integer) source.get("id")));
-            student.setFirstName((String) source.get("firstName"));
-            student.setLastName((String) source.get("lastName"));
-            student.setEmail((String) source.get("email"));
-            Group group = new Group();
-            toGroup((LinkedHashMap<String, Object>) source.get("primaryGroup"), group);
-            source.get("primaryGroup");
-        } else {
-            teacher.setId(Long.valueOf((Integer) source.get("id")));
-            teacher.setFirstName((String) source.get("firstName"));
-            teacher.setLastName((String) source.get("lastName"));
-            teacher.setEmail((String) source.get("email"));
-        }
+    public void toTeacher(LinkedHashMap<String, Object> source, Teacher teacher) {
+        teacher.setId(Long.valueOf((Integer) source.get("id")));
+        teacher.setFirstName((String) source.get("firstName"));
+        teacher.setLastName((String) source.get("lastName"));
+        teacher.setEmail((String) source.get("email"));
+    }
+
+    public void toStudent(LinkedHashMap<String, Object> source, Student student) {
+        student.setId(Long.valueOf((Integer) source.get("id")));
+        student.setFirstName((String) source.get("firstName"));
+        student.setLastName((String) source.get("lastName"));
+        student.setEmail((String) source.get("email"));
+        Group group = new Group();
+        toGroup((LinkedHashMap<String, Object>) source.get("primaryGroup"), group);
+        source.get("primaryGroup");
     }
 
     public void toGroup(LinkedHashMap<String, Object> source, Group destination) {

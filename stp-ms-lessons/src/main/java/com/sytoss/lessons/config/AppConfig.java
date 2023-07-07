@@ -1,6 +1,5 @@
 package com.sytoss.lessons.config;
 
-import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.UserConnector;
@@ -25,6 +24,7 @@ public class AppConfig {
 
     @Autowired
     private UserConnector userConnector;
+
     @Autowired
     private UserConvertor userConvertor;
 
@@ -41,13 +41,14 @@ public class AppConfig {
             public Map<String, Object> convert(Map<String, Object> claims) {
                 Map<String, Object> convertedClaims = this.delegate.convert(claims);
                 try {
-                    Object user = userConnector.getMyProfile();
-                    Teacher teacher = new Teacher();
-                    Student student = new Student();
-                    userConvertor.toTeacherOrStudent((LinkedHashMap<String, Object>) user, teacher,student);
-                    if(!student.isValid()){
+                    LinkedHashMap<String, Object> user = (LinkedHashMap<String, Object>) userConnector.getMyProfile();
+                    if (!user.containsKey("primaryGroup")) {
+                        Teacher teacher = new Teacher();
+                        userConvertor.toTeacher(user, teacher);
                         convertedClaims.put("user", teacher);
-                    }else {
+                    } else {
+                        Student student = new Student();
+                        userConvertor.toStudent(user, student);
                         convertedClaims.put("user", student);
                     }
                 } catch (Exception e) {
