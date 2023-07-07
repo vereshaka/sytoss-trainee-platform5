@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -25,9 +26,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
-        Teacher teacher = new Teacher();
-        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
-        when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -40,9 +41,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
-        Teacher teacher = new Teacher();
-        teacher.setId(TestExecutionContext.getTestContext().getTeacherId());
-        when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
@@ -62,9 +63,9 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         String url = "/api/teacher/my/disciplines";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        Teacher teacher = new Teacher();
-        teacher.setId(teacherId);
-        when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", teacherId.intValue());
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
