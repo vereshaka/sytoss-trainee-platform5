@@ -27,7 +27,6 @@ public class UserConvertor {
         student.setEmail((String) source.get("email"));
         Group group = new Group();
         toGroup((LinkedHashMap<String, Object>) source.get("primaryGroup"), group);
-        source.get("primaryGroup");
     }
 
     public void toGroup(LinkedHashMap<String, Object> source, Group destination) {
