@@ -27,4 +27,7 @@ public class TaskDomainDTO {
 
     @Column(name = "IMAGE")
     private byte[] image;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
 }
