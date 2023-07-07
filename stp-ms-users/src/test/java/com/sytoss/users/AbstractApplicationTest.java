@@ -25,9 +25,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -37,7 +35,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -46,34 +43,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Getter
 public abstract class AbstractApplicationTest extends StpUnitTest {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private AbstractApplicationContext applicationContext;
-
     @Getter
     private static RSAKey jwk;
 
     @Getter
     private static HttpServer httpServer;
 
-    @Test
-    public void shouldLoadApplicationContext() {
-        assertNotNull(applicationContext);
-    }
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-    protected long getPort() {
-        return ((AnnotationConfigServletWebServerApplicationContext) applicationContext).getWebServer().getPort();
-    }
-
-    protected URI getEndpoint(String uriPath) {
-        try {
-            return new URI("http://localhost:" + getPort() + uriPath);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Autowired
+    private AbstractApplicationContext applicationContext;
 
     public static void stopServer() {
         httpServer.stop(0);
@@ -97,6 +77,23 @@ public abstract class AbstractApplicationTest extends StpUnitTest {
             exchange.close();
         });
         httpServer.start();
+    }
+
+    @Test
+    public void shouldLoadApplicationContext() {
+        assertNotNull(applicationContext);
+    }
+
+    protected long getPort() {
+        return ((AnnotationConfigServletWebServerApplicationContext) applicationContext).getWebServer().getPort();
+    }
+
+    protected URI getEndpoint(String uriPath) {
+        try {
+            return new URI("http://localhost:" + getPort() + uriPath);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String generateJWT(List<String> roles, String firstName, String lastName, String email, String userType) {

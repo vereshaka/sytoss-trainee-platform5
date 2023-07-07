@@ -29,5 +29,4 @@ public abstract class AbstractUser {
     public boolean isValid() {
         return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && ObjectUtils.isNotEmpty(photo);
     }
-
 }
