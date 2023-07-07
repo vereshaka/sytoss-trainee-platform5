@@ -1,11 +1,12 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.checktask.model.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.personalexam.CheckEtalonParametrs;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ScoreService {
             helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult queryResultAnswer;
             try {
-                queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getAnswer());
+                queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
                 return new Score(0, e.getMessage());
             }
@@ -44,7 +45,7 @@ public class ScoreService {
             if (score.getValue() > 0) {
                 for (TaskCondition condition : data.getConditions()) {
                     if (condition.getType().equals(ConditionType.CONTAINS)) {
-                        if (!data.getAnswer().contains(condition.getValue())) {
+                        if (!data.getRequest().contains(condition.getValue())) {
                             score.setValue(score.getValue() - 0.3);
                             break;
                         }
@@ -91,14 +92,14 @@ public class ScoreService {
         return true;
     }
 
-    public IsCheckEtalon checkEtalon(CheckEtalonParametrs data) {
+    public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
             helperServiceProviderObject.generateDatabase(data.getScript());
             IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
 
             try {
-                helperServiceProviderObject.getExecuteQueryResult(data.getEtalon());
+                helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
                 isCheckEtalon.setChecked(false);
                 isCheckEtalon.setException(e.getMessage());
@@ -106,6 +107,23 @@ public class ScoreService {
             }
             isCheckEtalon.setChecked(true);
             return isCheckEtalon;
+        } finally {
+            helperServiceProviderObject.dropDatabase();
+        }
+    }
+
+    public QueryResult checkRequest(CheckRequestParameters data) {
+        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
+        try {
+            helperServiceProviderObject.generateDatabase(data.getScript());
+            QueryResult result;
+
+            try {
+                result = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+            } catch (SQLException e) {
+                throw new RequestIsNotValidException("Request is not valid", e);
+            }
+            return result;
         } finally {
             helperServiceProviderObject.dropDatabase();
         }

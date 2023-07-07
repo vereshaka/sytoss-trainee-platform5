@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.Score;
@@ -31,7 +31,7 @@ class ScoreServiceTest extends StpUnitTest {
         when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer("select * from Authors");
+        checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select * from Authors");
         checkTaskParameters.setScript(readFromFile("script1.json"));
 
@@ -46,7 +46,7 @@ class ScoreServiceTest extends StpUnitTest {
         when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer("select id,name from Authors");
+        checkTaskParameters.setRequest("select id,name from Authors");
         checkTaskParameters.setEtalon("select name,id from Authors");
         checkTaskParameters.setScript(readFromFile("script1.json"));
 
@@ -61,7 +61,7 @@ class ScoreServiceTest extends StpUnitTest {
         when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer("select * from Books");
+        checkTaskParameters.setRequest("select * from Books");
         checkTaskParameters.setEtalon("select * from Authors");
         checkTaskParameters.setScript(readFromFile("script1.json"));
 
@@ -77,7 +77,7 @@ class ScoreServiceTest extends StpUnitTest {
         when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer("select * from Authors");
+        checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select * from Authors ORDER BY Name");
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setValue("ORDER BY");

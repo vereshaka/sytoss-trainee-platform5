@@ -1,4 +1,4 @@
-package com.sytoss.checktask.model;
+package com.sytoss.domain.bom.personalexam;
 
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import lombok.Getter;
@@ -9,13 +9,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CheckTaskParameters {
-
-    private String answer;
+public class CheckTaskParameters extends CheckRequestParameters{
 
     private String etalon;
-
-    private String script;
 
     private List<TaskCondition> conditions = new ArrayList<>();
 }

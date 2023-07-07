@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.bdd;
 
-import com.sytoss.checktask.model.CheckTaskParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.Getter;
 import lombok.Setter;
