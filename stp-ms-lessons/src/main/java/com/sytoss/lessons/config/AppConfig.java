@@ -36,7 +36,7 @@ public class AppConfig {
             public Map<String, Object> convert(Map<String, Object> claims) {
                 Map<String, Object> convertedClaims = this.delegate.convert(claims);
                 try {
-                    Teacher user = userConnector.getMyProfile();
+                    Teacher user = (Teacher) userConnector.getMyProfile();
                     convertedClaims.put("user", user);
                 } catch (Exception e) {
                     log.error("Could not retrieve user details", e);
