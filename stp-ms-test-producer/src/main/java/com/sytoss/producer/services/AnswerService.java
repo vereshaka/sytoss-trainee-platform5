@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.checktask.model.CheckTaskParameters;
 import com.sytoss.common.AbstractStpService;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -46,7 +46,7 @@ public class AnswerService extends AbstractStpService {
         Task task = metadataConnector.getTaskById(answer.getTask().getId());
         TaskDomain taskDomain = metadataConnector.getTaskDomain(answer.getTask().getTaskDomain().getId());
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setAnswer(answer.getValue());
+        checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setScript(taskDomain.getScript());
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);

@@ -16,18 +16,18 @@ import java.util.List;
 @FeignClient(name = "metadataClient", url = "${lessons-url}")
 public interface MetadataConnector {
 
-    @GetMapping("/api/discipline/{disciplineId}")
+    @GetMapping("/discipline/{disciplineId}")
     Discipline getDiscipline(@PathVariable("disciplineId") Long id);
 
-    @GetMapping("/api/topic/{topicId}")
+    @GetMapping("/topic/{topicId}")
     Topic getTopic(@PathVariable("topicId") Long id);
 
-    @GetMapping("/api/topic/{topicId}/tasks")
+    @GetMapping("/topic/{topicId}/tasks")
     List<Task> getTasksForTopic(@PathVariable("topicId") Long id);
 
-    @GetMapping("/api/taskDomain/{taskDomainId}")
+    @GetMapping("/taskDomain/{taskDomainId}")
     TaskDomain getTaskDomain(@PathVariable("taskDomainId") Long id);
 
-    @GetMapping("/api/task/{taskId}")
+    @GetMapping("/task/{taskId}")
     Task getTaskById(@PathVariable("taskId") Long id);
 }

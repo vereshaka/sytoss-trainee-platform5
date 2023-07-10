@@ -14,4 +14,6 @@ public class TaskDomain {
     private String script;
 
     private Discipline discipline;
+
+    private String description;
 }

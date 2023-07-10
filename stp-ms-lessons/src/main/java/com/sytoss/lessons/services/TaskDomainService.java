@@ -8,7 +8,7 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.CheckEtalonParametrs;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
@@ -74,8 +74,8 @@ public class TaskDomainService {
         }
         List<Task> tasks = taskService.findByDomainId(oldTaskDomain.getId());
         for (Task task : tasks) {
-            CheckEtalonParametrs input = new CheckEtalonParametrs();
-            input.setEtalon(task.getEtalonAnswer());
+            CheckRequestParameters input = new CheckRequestParameters();
+            input.setRequest(task.getEtalonAnswer());
             input.setScript(taskDomain.getScript());
             IsCheckEtalon isCheckEtalon = checkTaskConnector.checkEtalon(input);
             if (!isCheckEtalon.isChecked()) {

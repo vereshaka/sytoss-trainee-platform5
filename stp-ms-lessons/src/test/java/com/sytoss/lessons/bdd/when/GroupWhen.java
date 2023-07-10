@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -35,9 +36,9 @@ public class GroupWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"),"123","123","123","123"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        Teacher teacher = new Teacher();
-        teacher.setId(TestExecutionContext.getTestContext().getIdMapping().get(teacherKey));
-        when(getUserConnector().getMyProfile()).thenReturn(teacher);
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", TestExecutionContext.getTestContext().getIdMapping().get(teacherKey).intValue());
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
         ResponseEntity<List<GroupReferenceDTO>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         TestExecutionContext.getTestContext().setResponse(responseEntity);

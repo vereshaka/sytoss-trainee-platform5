@@ -37,6 +37,6 @@ public class GivenStepTest extends CucumberIntegrationTest {
 
     @Given("^check SQL is \"(.*)\"$")
     public void givenAnswerScript(String answer) {
-        TestContext.getInstance().getCheckTaskParameters().setAnswer(answer);
+        TestContext.getInstance().getCheckTaskParameters().setRequest(answer);
     }
 }

@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
+import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.exceptions.ApplicationError;
@@ -22,5 +23,11 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<?> handleValidationException(WrongEtalonException wrongEtalonException) {
         log.error("Global Exception Handler", wrongEtalonException);
         return ResponseEntity.status(406).body(new ApplicationError(wrongEtalonException));
+    }
+
+    @ExceptionHandler({RequestIsNotValidException.class})
+    public ResponseEntity<?> handleValidationException(RequestIsNotValidException requestIsNotValidException) {
+        log.error("Global Exception Handler", requestIsNotValidException);
+        return ResponseEntity.status(406).body(requestIsNotValidException.getMessage());
     }
 }
