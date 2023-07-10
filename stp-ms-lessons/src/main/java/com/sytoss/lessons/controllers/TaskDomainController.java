@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.services.TaskDomainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -52,5 +53,15 @@ public class TaskDomainController {
                                     @PathVariable(value = "taskDomainId") Long taskDomainId,
                                     @RequestBody String puml) {
         taskDomainService.generatePngFromPuml(taskDomainId, puml);
+    }
+
+    @Operation(description = "Method get count of tasks by task domain", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{taskDomainId}/tasks-count")
+    public TaskDomainModel generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
+                                    @PathVariable(value = "taskDomainId") Long taskDomainId) {
+        return taskDomainService.getCountOfTasks(taskDomainId);
     }
 }

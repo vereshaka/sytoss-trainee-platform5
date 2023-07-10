@@ -77,3 +77,10 @@ Feature: Task Domain
       | SQL Querry Third | Graded       | First Domain |
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation should be finished with 409 "Task domain with First Domain doesnt update because personal exam not finished" error
+
+  Scenario: Get count of tasks of task domain
+    Given "First Domain" task domain exists
+    And task with question "What are the different subsets of SQL?" exists for this task domain
+    When system retrieve information about "First Domain" task domain tasks count
+    Then operation is successful
+    And task domain have 1 tasks

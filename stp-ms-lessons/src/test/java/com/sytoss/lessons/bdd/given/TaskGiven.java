@@ -5,6 +5,7 @@ import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
 
@@ -95,15 +96,24 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     @Given("^task with id (.*) doesnt exist")
     public void taskWithIdDoesntExist(String taskId) {
-        if(TestExecutionContext.getTestContext().getIdMapping().get(taskId) != null){
+        if (TestExecutionContext.getTestContext().getIdMapping().get(taskId) != null) {
             TaskDTO taskDto = getTaskConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
-        }else{
+        } else {
             TaskDTO taskDto = getTaskConnector().getById(12345L);
-            if(taskDto != null) {
+            if (taskDto != null) {
                 getTaskConnector().delete(taskDto);
             }
             TestExecutionContext.getTestContext().registerId(taskId, 12345L);
         }
+    }
+
+    @And("^task with question \"(.*)\" exists for this task domain")
+    public void taskWithQuestionExistsForThisTaskDomain(String question) {
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setQuestion(question);
+        TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
+        taskDTO.setTaskDomain(taskDomain);
+        getTaskConnector().save(taskDTO);
     }
 }

@@ -12,6 +12,7 @@ import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
@@ -229,5 +230,14 @@ public class TaskDomainServiceTest extends StpUnitTest {
         when(taskDomainConnector.findByDisciplineId(any())).thenReturn(input);
         List<TaskDomain> result = taskDomainService.findByDiscipline(11L);
         assertEquals(input.size(), result.size());
+    }
+
+    @Test
+    void getCountOfTasks() {
+        Task task = new Task();
+        task.setId(1L);
+        when(taskService.findByDomainId((any()))).thenReturn(List.of(task));
+        TaskDomainModel taskDomainModel = taskDomainService.getCountOfTasks(1L);
+        assertEquals(1,taskDomainModel.getCountOfTasks());
     }
 }
