@@ -50,13 +50,8 @@ public class TaskDomainController {
     })
     @PutMapping("/puml/{dataParameter}")
     public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
-                                      @PathVariable(name = "dataParameter") String parameter,
+                                      @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
                                       @RequestBody String puml) {
-        return switch (parameter) {
-            case "db" -> taskDomainService.generatePngFromPuml(puml, ConvertToPumlParameters.DB);
-            case "data" -> taskDomainService.generatePngFromPuml(puml, ConvertToPumlParameters.DATA);
-            case "all" -> taskDomainService.generatePngFromPuml(puml, ConvertToPumlParameters.ALL);
-            default -> null;
-        };
+        return taskDomainService.generatePngFromPuml(puml,parameter);
     }
 }

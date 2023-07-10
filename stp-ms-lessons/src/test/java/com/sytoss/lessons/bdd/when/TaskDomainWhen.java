@@ -115,7 +115,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^system generate image of scheme and save in \"(.*)\" task domain$")
     public void requestSentCreateImageForTaskDomain(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/task-domain/puml/all";
+        String url = "/api/task-domain/puml/ALL";
         String pumlScript;
         try {
             pumlScript = readFromFile("puml/script.puml");
