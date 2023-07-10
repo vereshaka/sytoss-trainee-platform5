@@ -133,7 +133,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^system retrieve information about \"(.*)\" task domain tasks count")
     public void systemRetrieveInformationAboutTaskDomainTasksCount(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/task-domain/" + taskDomainDTO.getId() + "/tasks-count";
+        String url = "/api/task-domain/" + taskDomainDTO.getId() + "/overview";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomainModel> responseEntity = doGet(url, httpEntity, TaskDomainModel.class);

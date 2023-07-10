@@ -78,7 +78,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         when(taskDomainService.getCountOfTasks((any()))).thenReturn(taskDomainModel);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<TaskDomainModel> responseEntity = doGet("/api/task-domain/1/tasks-count", httpEntity, TaskDomainModel.class);
+        ResponseEntity<TaskDomainModel> responseEntity = doGet("/api/task-domain/1/overview", httpEntity, TaskDomainModel.class);
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
         Assertions.assertEquals(1, responseEntity.getBody().getCountOfTasks());
     }

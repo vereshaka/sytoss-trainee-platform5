@@ -59,7 +59,7 @@ public class TaskDomainController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/{taskDomainId}/tasks-count")
+    @GetMapping("/{taskDomainId}/overview")
     public TaskDomainModel generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                     @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getCountOfTasks(taskDomainId);
