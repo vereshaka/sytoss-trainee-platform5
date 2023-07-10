@@ -14,7 +14,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -111,18 +116,24 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
     @When("^system generate image of scheme and save in \"(.*)\" task domain$")
     public void requestSentCreateImageForTaskDomain(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/task-domain/" + taskDomainDTO.getId() + "/puml";
-        String puml = "@startuml\n" + "Bob -> Alice : hello\n" + "@enduml\n";
+        String url = "/api/task-domain/puml/ALL";
+        String pumlScript;
+        try {
+            pumlScript = readFromFile("puml/script.puml");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
-        ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+        HttpEntity<String> httpEntity = new HttpEntity<>(pumlScript, httpHeaders);
+        ResponseEntity<byte[]> responseEntity = doPut(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^system generate image of scheme and save in \"(.*)\" task domain with wrong script$")
     public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/task-domain/" + taskDomainDTO.getId() + "/puml";
+        String url = "/api/task-domain/puml/all";
         String puml = "error";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
@@ -138,5 +149,12 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomainModel> responseEntity = doGet(url, httpEntity, TaskDomainModel.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    private String readFromFile(String path) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
+        List<String> data = Files.readAllLines(Path.of(file.getPath()));
+        return String.join("\n", data);
     }
 }

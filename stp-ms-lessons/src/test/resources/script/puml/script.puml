@@ -1,4 +1,4 @@
-@startuml
+
 entity Discipline {
 id: long <<PK>>
 name: string
@@ -21,11 +21,6 @@ entity TopicToTask {
 task_id: long <<PK>>
 topic_id: long <<PK>>
 }
-
-Discipline ||--o{ Topic
-Discipline ||--o| Task
-Topic |o--o{ TopicToTask
-Task |o--o{ TopicToTask
 
 object "Data:Discipline" as dDiscipline {
    |= id |= name |
@@ -55,12 +50,4 @@ object "Data:TopicToTask" as dTopicToTask {
    | 3        | 2         |
    | 4        | 1         |
 }
-Discipline ||--o{ Topic
-Discipline ||--o| Task
-Topic |o--o{ TopicToTask
-Task |o--o{ TopicToTask
-dDiscipline ||--o{ dTopic
-dDiscipline ||--o| dTask
-dTopic |o--o{ dTopicToTask
-dTask |o--o{ dTopicToTask
-@enduml
+

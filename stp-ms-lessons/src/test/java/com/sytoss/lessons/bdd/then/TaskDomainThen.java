@@ -60,8 +60,7 @@ public class TaskDomainThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" should have image$")
     public void taskDomainShouldHaveImage(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        assertNotNull(taskDomainDTO.getImage());
+        assertNotNull(TestExecutionContext.getTestContext().getResponse().getBody());
     }
 
     @And("^task domain have (.*) tasks")

@@ -14,16 +14,25 @@ import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.convertors.PumlConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.plantuml.SourceStringReader;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +49,8 @@ public class TaskDomainService {
     private final CheckTaskConnector checkTaskConnector;
 
     private final TaskService taskService;
+
+    private final PumlConvertor pumlConvertor;
 
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         Discipline discipline = disciplineService.getById(disciplineId);
@@ -105,20 +116,34 @@ public class TaskDomainService {
         return result;
     }
 
-    public void generatePngFromPuml(Long taskDomainId, String puml) {
+    public byte[] generatePngFromPuml(String puml, ConvertToPumlParameters convertToPumlParameters) {
+        String newPuml=puml;
+        if(convertToPumlParameters.equals(ConvertToPumlParameters.DB)){
+            List<String> entities = pumlConvertor.getEntities(puml);
+            newPuml = String.join(StringUtils.LF+StringUtils.LF,entities);
+        }else if(convertToPumlParameters.equals(ConvertToPumlParameters.DATA)){
+            List<String> objects = pumlConvertor.getObjects(puml);
+            newPuml = String.join(StringUtils.LF+StringUtils.LF,objects);
+        }
+
+        String pumlConvertedScript = pumlConvertor.addLinks(newPuml,puml,convertToPumlParameters);
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         try {
-            SourceStringReader reader = new SourceStringReader(puml);
+            SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
 
+            File imageFile = File.createTempFile("img", ".png");
+            ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, "png", imageFile);
+
             if (!result.isEmpty()) {
-                TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainId);
-                taskDomainDTO.setImage(png.toByteArray());
-                taskDomainConnector.save(taskDomainDTO);
+                return png.toByteArray();
             }
         } catch (Exception e) {
             throw new TaskDomainCouldNotCreateImageException();
         }
+        return null;
     }
 
     public TaskDomainModel getCountOfTasks(Long taskDomainId) {
