@@ -95,6 +95,7 @@ public class DisciplineGiven extends AbstractGiven {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(nameDiscipline);
             disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
             disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
         TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());

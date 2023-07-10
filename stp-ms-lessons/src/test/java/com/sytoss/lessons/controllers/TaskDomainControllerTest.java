@@ -5,12 +5,22 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,5 +80,22 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doGet("/api/task-domain/1", httpEntity, String.class);
         Assertions.assertEquals(404, responseEntity.getStatusCode().value());
+    }
+
+    @Test
+    public void ShouldReturnTaskDomainImage() throws IOException {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        String pumlScript = readFromFile("puml/script.puml");
+        HttpEntity<String> httpEntity = new HttpEntity<>(pumlScript, httpHeaders);
+        ResponseEntity<byte[]> responseEntity = doPut("/api/task-domain/puml/" + ConvertToPumlParameters.DB, httpEntity, new ParameterizedTypeReference<>() {
+        });
+        Assertions.assertEquals(200, responseEntity.getStatusCode().value());
+    }
+
+    private String readFromFile(String path) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
+        List<String> data = Files.readAllLines(Path.of(file.getPath()));
+        return String.join("\n", data);
     }
 }

@@ -1,5 +1,6 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
+    private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)(\\([A-z]+\\))))>>");
     private String indent = StringUtils.leftPad(StringUtils.SPACE, 2);
 
     public String convertToLiquibase(String script) {
@@ -33,7 +35,7 @@ public class PumlConvertor {
         return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder;
     }
 
-    private List<String> getEntities(String script) {
+    public List<String> getEntities(String script) {
         Pattern pattern = Pattern.compile("entity.+\\{(?>\\n?.+)+\\n}");
         List<String> entities = new ArrayList<>();
         Matcher matcher = pattern.matcher(script);
@@ -97,11 +99,10 @@ public class PumlConvertor {
                 if (value.contains("PK")) {
                     primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(StringUtils.SPACE, 10));
                 } else if (value.contains("FK")) {
-                    Pattern pattern = Pattern.compile("<<\\S+\\s([A-z]+(\\([A-z]+\\)))>>");
-                    Matcher matcher = pattern.matcher(value);
+                    Matcher matcher = foreignKeyPattern.matcher(value);
                     if (matcher.find()) {
-                        String entityName2 = matcher.group(1);
-                        String entityName2FieldName = matcher.group(2);
+                        String entityName2 = matcher.group(2);
+                        String entityName2FieldName = matcher.group(4);
                         entityName2 = entityName2.replaceAll("\\(.+?\\)", "");
                         entityName2FieldName = entityName2FieldName.replaceAll("[()]", "");
                         if (foreignKeyConstraintsStringBuilder == null) {
@@ -155,7 +156,7 @@ public class PumlConvertor {
         return addForeignKey;
     }
 
-    private List<String> getObjects(String script) {
+    public List<String> getObjects(String script) {
         Pattern pattern = Pattern.compile("object.+\\{(?>\\n?.+)+\\n}");
         List<String> objects = new ArrayList<>();
         Matcher matcher = pattern.matcher(script);
@@ -181,7 +182,7 @@ public class PumlConvertor {
         List<Map<String, String>> valuesInTable = new ArrayList<>();
 
         for (int i = 1; i < rows.size(); i++) {
-            if(rows.get(i).contains("|=")){
+            if (rows.get(i).contains("|=")) {
                 continue;
             }
             List<String> values = getRowValues(rows.get(i));
@@ -225,5 +226,57 @@ public class PumlConvertor {
         }
 
         return object.toString();
+    }
+
+    public String addLinks(String script, String mainScript, ConvertToPumlParameters convertToPumlParameters){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("@startuml").append(StringUtils.LF).append(StringUtils.LF)
+                     .append(script).append(StringUtils.LF).append(StringUtils.LF)
+                     .append(initLinks(mainScript,convertToPumlParameters)).append(StringUtils.LF)
+                     .append("@enduml");
+        return stringBuilder.toString();
+    }
+
+    private String initLinks(String script, ConvertToPumlParameters convertToPumlParameters) {
+        StringBuilder entityStringBuilder = new StringBuilder();
+        StringBuilder dataStringBuilder = new StringBuilder();
+        List<String> entities = getEntities(script);
+        Matcher matcher;
+        for (String entity : entities) {
+            matcher = foreignKeyPattern.matcher(entity);
+            if (matcher.find()) {
+                String entityLink = convertToLink(entity, ConvertToPumlParameters.DB);
+                String dataLink = convertToLink(entity, ConvertToPumlParameters.DATA);
+                if (entityLink != null) {
+                    entityStringBuilder.append(entityLink).append("\n");
+                }
+                if (dataLink != null) {
+                    dataStringBuilder.append(dataLink).append("\n");
+                }
+            }
+        }
+
+        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
+            return entityStringBuilder.toString();
+        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
+            return dataStringBuilder.toString();
+        } else {
+            return entityStringBuilder.append("\n").append(dataStringBuilder).toString();
+        }
+    }
+
+
+    private String convertToLink(String entity, ConvertToPumlParameters convertToPumlParameters) {
+        Matcher matcher = foreignKeyPattern.matcher(entity);
+        if (matcher.find()) {
+            String name = getName(entity, 1);
+            String match = matcher.group(3);
+            if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
+                name = "d" + name;
+                match = "d" + match;
+            }
+            return name + " --o " + match + " : " + matcher.group(1);
+        }
+        return null;
     }
 }

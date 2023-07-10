@@ -1,5 +1,7 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.lessons.enums.ConvertToPumlParameters;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -43,6 +45,17 @@ class PumlConvertorTest {
         System.out.println(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
+
+    @Test
+    void addLinksTest() throws IOException {
+        PumlConvertor pumlConvertor = new PumlConvertor();
+        String pumlScript = readFromFile("puml/script.puml");
+        List<String> entities = pumlConvertor.getEntities(pumlScript);
+        String pumlConvertedScript = pumlConvertor.addLinks(String.join(StringUtils.LF + StringUtils.LF, entities), pumlScript, ConvertToPumlParameters.DB);
+        String pumlExampleScript = readFromFile("puml/scriptWithLinks.puml");
+        assertEquals(pumlExampleScript, pumlConvertedScript);
+    }
+
 
     private String readFromFile(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
