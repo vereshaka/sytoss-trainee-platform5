@@ -12,6 +12,7 @@ import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
@@ -247,6 +248,15 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
 
+    }
+
+    @Test
+    void getCountOfTasks() {
+        Task task = new Task();
+        task.setId(1L);
+        when(taskService.findByDomainId((any()))).thenReturn(List.of(task));
+        TaskDomainModel taskDomainModel = taskDomainService.getCountOfTasks(1L);
+        assertEquals(1,taskDomainModel.getCountOfTasks());
     }
 
     private String readFromFile(String path) throws IOException {

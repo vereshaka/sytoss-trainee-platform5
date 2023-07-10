@@ -1,10 +1,10 @@
 package com.sytoss.lessons.controllers;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -97,5 +95,17 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
         List<String> data = Files.readAllLines(Path.of(file.getPath()));
         return String.join("\n", data);
+    }
+
+    @Test
+    public void shouldReturnCountOfTasks() {
+        TaskDomainModel taskDomainModel = new TaskDomainModel();
+        taskDomainModel.setCountOfTasks(1);
+        when(taskDomainService.getCountOfTasks((any()))).thenReturn(taskDomainModel);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<TaskDomainModel> responseEntity = doGet("/api/task-domain/1/overview", httpEntity, TaskDomainModel.class);
+        Assertions.assertEquals(200, responseEntity.getStatusCode().value());
+        Assertions.assertEquals(1, responseEntity.getBody().getCountOfTasks());
     }
 }

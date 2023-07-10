@@ -10,6 +10,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
@@ -143,5 +144,12 @@ public class TaskDomainService {
             throw new TaskDomainCouldNotCreateImageException();
         }
         return null;
+    }
+
+    public TaskDomainModel getCountOfTasks(Long taskDomainId) {
+        List<Task> tasks = taskService.findByDomainId(taskDomainId);
+        TaskDomainModel taskDomainModel = new TaskDomainModel();
+        taskDomainModel.setCountOfTasks(tasks.size());
+        return taskDomainModel;
     }
 }

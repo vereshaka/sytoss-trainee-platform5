@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.When;
@@ -137,6 +138,16 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
         ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^system retrieve information about \"(.*)\" task domain tasks count")
+    public void systemRetrieveInformationAboutTaskDomainTasksCount(String taskDomainName) {
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String url = "/api/task-domain/" + taskDomainDTO.getId() + "/overview";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<TaskDomainModel> responseEntity = doGet(url, httpEntity, TaskDomainModel.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
