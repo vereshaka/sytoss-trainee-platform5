@@ -16,9 +16,11 @@ import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.PumlConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,11 +30,15 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -59,6 +65,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
 
     @Spy
     private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
+
+    @Spy
+    private PumlConvertor pumlConvertor;
 
     @Test
     public void shouldCreateTaskDomain() {
@@ -222,5 +231,21 @@ public class TaskDomainServiceTest extends StpUnitTest {
         when(taskDomainConnector.findByDisciplineId(any())).thenReturn(input);
         List<TaskDomain> result = taskDomainService.findByDiscipline(11L);
         assertEquals(input.size(), result.size());
+    }
+
+    @Test
+    void generatePngFromPuml() throws IOException {
+        String pumlScript = readFromFile("puml/script.puml");
+        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
+        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
+        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
+
+    }
+
+    private String readFromFile(String path) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
+        List<String> data = Files.readAllLines(Path.of(file.getPath()));
+        return String.join("\n", data);
     }
 }
