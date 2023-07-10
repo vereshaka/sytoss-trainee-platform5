@@ -8,11 +8,10 @@ import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.enums.ConvertToPumlParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.File;
 import java.io.IOException;
