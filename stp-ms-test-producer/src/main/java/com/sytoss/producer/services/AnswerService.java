@@ -48,7 +48,7 @@ public class AnswerService extends AbstractStpService {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
-        checkTaskParameters.setScript(taskDomain.getScript());
+        checkTaskParameters.setScript(taskDomain.getDatabaseScript());
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
         double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();

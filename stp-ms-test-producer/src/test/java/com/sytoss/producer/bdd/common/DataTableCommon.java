@@ -6,7 +6,6 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.Grade;
-import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.DataTableType;
 
 import java.util.List;
@@ -72,7 +71,7 @@ public class DataTableCommon {
         }
 
         if (params.containsKey("script")) {
-            taskDomain.setScript(params.get("script"));
+            taskDomain.setDatabaseScript(params.get("script"));
             task.setTaskDomain(taskDomain);
             answer.setTask(task);
         }

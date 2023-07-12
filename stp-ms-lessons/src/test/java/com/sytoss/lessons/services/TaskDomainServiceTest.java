@@ -82,11 +82,11 @@ public class TaskDomainServiceTest extends StpUnitTest {
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName("TaskDomain first");
-        taskDomain.setScript("script");
+        taskDomain.setDatabaseScript("script");
         taskDomain.setDescription("Anything");
         TaskDomain result = taskDomainService.create(1L, taskDomain);
         assertEquals(taskDomain.getName(), result.getName());
-        assertEquals(taskDomain.getScript(), result.getScript());
+        assertEquals(taskDomain.getDatabaseScript(), result.getDatabaseScript());
         assertEquals(taskDomain.getDescription(), result.getDescription());
     }
 
@@ -94,7 +94,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
     public void shouldNotCreateTaskDomainWhenItExist() {
         TaskDomain newTaskDomain = new TaskDomain();
         newTaskDomain.setName("TaskDomain first");
-        newTaskDomain.setScript("script");
+        newTaskDomain.setDatabaseScript("script");
         when(disciplineService.getById(1L)).thenReturn(createReference(1L));
         when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(new TaskDomainDTO());
         assertThrows(TaskDomainAlreadyExist.class, () -> taskDomainService.create(1L, newTaskDomain));
@@ -105,7 +105,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
-        taskDomainDTO.setScript("Script Domain");
+        taskDomainDTO.setDatabaseScript("Script Domain");
         taskDomainDTO.setDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomainDTO.setDiscipline(disciplineDTO);
@@ -113,7 +113,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain result = taskDomainService.getById(1L);
         Assertions.assertEquals(1L, result.getId());
         Assertions.assertEquals("First Domain", result.getName());
-        Assertions.assertEquals("Script Domain", result.getScript());
+        Assertions.assertEquals("Script Domain", result.getDatabaseScript());
         Assertions.assertEquals("Task Domain Description", result.getDescription());
     }
 
@@ -128,7 +128,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomain = new TaskDomainDTO();
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
-        taskDomain.setScript("Script Domain");
+        taskDomain.setDatabaseScript("Script Domain");
         taskDomain.setDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomain.setDiscipline(disciplineDTO);
@@ -138,17 +138,17 @@ public class TaskDomainServiceTest extends StpUnitTest {
             final Object[] args = invocation.getArguments();
             TaskDomainDTO result = (TaskDomainDTO) args[0];
             result.setName("new");
-            result.setScript("new");
+            result.setDatabaseScript("new");
             result.setDescription("new");
             return result;
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         when(taskService.findByDomainId(anyLong())).thenReturn(new ArrayList<>());
         TaskDomain updateTaskDomain = new TaskDomain();
         taskDomain.setName("new");
-        taskDomain.setScript("new");
+        taskDomain.setDatabaseScript("new");
         TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
         assertEquals("new", result.getName());
-        assertEquals("new", result.getScript());
+        assertEquals("new", result.getDatabaseScript());
         assertEquals("new", result.getDescription());
     }
 
@@ -157,7 +157,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
-        taskDomainDTO.setScript("Script Domain");
+        taskDomainDTO.setDatabaseScript("Script Domain");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setName("new");
         taskDomainDTO.setDiscipline(disciplineDTO);
@@ -166,7 +166,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
-        taskDomain.setScript("Script Domain");
+        taskDomain.setDatabaseScript("Script Domain");
         Discipline discipline = new Discipline();
         discipline.setName("new");
         discipline.setTeacher(new Teacher());
@@ -190,7 +190,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
-        taskDomain.setScript("Script Domain");
+        taskDomain.setDatabaseScript("Script Domain");
         Discipline discipline = new Discipline();
         discipline.setName("new");
         discipline.setTeacher(new Teacher());
@@ -200,7 +200,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         taskDomainDTO.setName("First Domain");
-        taskDomainDTO.setScript("Script Domain");
+        taskDomainDTO.setDatabaseScript("Script Domain");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         taskDomainDTO.setDiscipline(disciplineDTO);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
