@@ -118,11 +118,7 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
         String url = "/api/task-domain/puml/ALL";
         String pumlScript;
-        try {
-            pumlScript = readFromFile("puml/script.puml");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        pumlScript = readFromFile("puml/script.puml");
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(pumlScript, httpHeaders);
         ResponseEntity<byte[]> responseEntity = doPut(url, httpEntity, new ParameterizedTypeReference<>() {
@@ -149,12 +145,5 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomainModel> responseEntity = doGet(url, httpEntity, TaskDomainModel.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
-    }
-
-    private String readFromFile(String path) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
-        List<String> data = Files.readAllLines(Path.of(file.getPath()));
-        return String.join("\n", data);
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-244.xml">
+    <changeSet author="LarinI" id="STP-244#1">
+        <modifyDataType  columnName="SCRIPT"
+                         newDataType="VARCHAR"
+                         tableName="TASK_DOMAIN"/>
+    </changeSet>
+</databaseChangeLog>
