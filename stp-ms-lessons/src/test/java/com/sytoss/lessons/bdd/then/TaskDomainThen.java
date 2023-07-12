@@ -50,12 +50,13 @@ public class TaskDomainThen extends CucumberIntegrationTest {
         assertEquals(quantityOftaskDomains, results.size());
     }
 
-    @Then("^\"(.*)\" task domain with \"(.*)\" script should be$")
-    public void taskDomainWithScriptShouldBe(String taskDomainName, String script) {
+    @Then("^\"(.*)\" task domain with a script from \"(.*)\" should be$")
+    public void taskDomainWithScriptShouldBe(String taskDomainName, String path) {
         TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
         assertNotNull(taskDomain);
         assertEquals(taskDomainName, taskDomain.getName());
-        assertEquals(script, taskDomain.getScript());
+        String scriptFromFile = readFromFile("liquibase/"+path);
+        assertEquals(scriptFromFile, taskDomain.getScript());
     }
 
     @Then("^\"(.*)\" should have image$")

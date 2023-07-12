@@ -45,10 +45,10 @@ Feature: Task Domain
       | SQL        | Set of Tables |
 
   Scenario: Update task domain
-    Given "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
+    Given "First Domain" task domain with a script from "script.yml" exists for this discipline
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation is successful
-    And "Second Domain" task domain with "Fisrt Domain Script" script should be
+    And "Second Domain" task domain with a script from "script.yml" should be
 
   Scenario: Update task domain when task domain does not exist
     Given "First Domain" task domain doesnt exist
@@ -63,7 +63,7 @@ Feature: Task Domain
     And  "First Domain" should have image
 
   Scenario: Update task domain when personal exam does not finished
-    Given  "First Domain" task domain with "Fisrt Domain Script" script exists for this discipline
+    Given  "First Domain" task domain with a script from "script.yml" exists for this discipline
     And personal exam exists
       | examName         | status       | task domain  |
       | SQL Querry       | Graded       | First Domain |

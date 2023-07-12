@@ -15,6 +15,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+
 @CucumberContextConfiguration
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @Getter
@@ -68,5 +75,17 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
 
     protected String getToken() {
         return TestExecutionContext.getTestContext().getToken();
+    }
+
+    protected String readFromFile(String path) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
+        List<String> data = null;
+        try {
+            data = Files.readAllLines(Path.of(file.getPath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return String.join("\n", data);
     }
 }

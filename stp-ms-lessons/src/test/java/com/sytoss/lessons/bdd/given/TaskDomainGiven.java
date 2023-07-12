@@ -52,14 +52,15 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         }
     }
 
-    @Given("^\"(.*)\" task domain with \"(.*)\" script exists for this discipline$")
-    public void taskDomainForDiscipline(String taskDomainName, String script) {
+    @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")
+    public void taskDomainForDiscipline(String taskDomainName, String path) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        String scriptFromFile = readFromFile("liquibase/"+path);
         if(taskDomainDTO == null){
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
-            taskDomainDTO.setScript(script);
+            taskDomainDTO.setScript(scriptFromFile);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
