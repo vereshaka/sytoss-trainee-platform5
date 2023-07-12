@@ -50,7 +50,7 @@ public class TaskDomainController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @PutMapping("/puml/{dataParameter}")
-    public byte[] getCountOfTasks(@Parameter(description = "id of the task domain to be searched by")
+    public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                       @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
                                   @RequestBody String puml) {
         return taskDomainService.generatePngFromPuml(puml,parameter);
