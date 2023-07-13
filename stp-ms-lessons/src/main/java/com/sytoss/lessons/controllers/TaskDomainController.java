@@ -52,7 +52,7 @@ public class TaskDomainController {
     @PutMapping("/puml/{dataParameter}")
     public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                       @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
-                                      @RequestBody String puml) {
+                                  @RequestBody String puml) {
         return taskDomainService.generatePngFromPuml(puml,parameter);
     }
 
@@ -61,7 +61,7 @@ public class TaskDomainController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/{taskDomainId}/overview")
-    public TaskDomainModel generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
+    public TaskDomainModel getCountOfTasks(@Parameter(description = "id of the task domain to be searched by")
                                     @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getCountOfTasks(taskDomainId);
     }

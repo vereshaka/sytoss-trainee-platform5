@@ -64,7 +64,7 @@ public class AnswerServiceTest extends StpUnitTest {
         task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(10L);
-        taskDomain.setScript(".uml");
+        taskDomain.setDatabaseScript(".uml");
         task.setTaskDomain(taskDomain);
         Answer currentAnswer = new Answer();
         currentAnswer.setId(8L);
@@ -79,7 +79,7 @@ public class AnswerServiceTest extends StpUnitTest {
         nextTask.setId(2L);
         TaskDomain nextTaskDomain = new TaskDomain();
         nextTaskDomain.setId(11L);
-        nextTaskDomain.setScript(".uml");
+        nextTaskDomain.setDatabaseScript(".uml");
         nextTask.setTaskDomain(nextTaskDomain);
         Answer nextAnswer = new Answer();
         nextAnswer.setId(9L);

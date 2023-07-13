@@ -19,7 +19,8 @@ public class TaskDomainConvertor {
             destination.setId(source.getId());
         }
         destination.setName(source.getName());
-        destination.setScript(source.getScript());
+        destination.setDatabaseScript(source.getDatabaseScript());
+        destination.setDataScript(source.getDataScript());
         Discipline discipline = new Discipline();
         disciplineConvertor.fromDTO(source.getDiscipline(), discipline);
         destination.setDiscipline(discipline);
@@ -29,7 +30,8 @@ public class TaskDomainConvertor {
     public void toDTO(TaskDomain source, TaskDomainDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setScript(source.getScript());
+        destination.setDatabaseScript(source.getDatabaseScript());
+        destination.setDataScript(source.getDataScript());
         DisciplineDTO discipline = new DisciplineDTO();
         disciplineConvertor.toDTO(source.getDiscipline(), discipline);
         destination.setDiscipline(discipline);

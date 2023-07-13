@@ -265,7 +265,6 @@ public class PumlConvertor {
         }
     }
 
-
     private String convertToLink(String entity, ConvertToPumlParameters convertToPumlParameters) {
         Matcher matcher = foreignKeyPattern.matcher(entity);
         if (matcher.find()) {

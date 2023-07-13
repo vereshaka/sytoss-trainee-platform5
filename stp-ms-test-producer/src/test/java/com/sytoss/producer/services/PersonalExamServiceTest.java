@@ -10,7 +10,6 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -124,7 +123,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Task task = new Task();
         task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setScript(".uml");
+        taskDomain.setDatabaseScript(".uml");
         task.setTaskDomain(taskDomain);
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.NOT_STARTED);

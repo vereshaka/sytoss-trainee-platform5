@@ -6,7 +6,6 @@ import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -56,7 +55,8 @@ public class TaskDomainThen extends CucumberIntegrationTest {
         assertNotNull(taskDomain);
         assertEquals(taskDomainName, taskDomain.getName());
         String scriptFromFile = readFromFile("liquibase/"+path);
-        assertEquals(scriptFromFile, taskDomain.getScript());
+        assertEquals(scriptFromFile, taskDomain.getDatabaseScript());
+        assertEquals(scriptFromFile, taskDomain.getDataScript());
     }
 
     @Then("^\"(.*)\" should have image$")

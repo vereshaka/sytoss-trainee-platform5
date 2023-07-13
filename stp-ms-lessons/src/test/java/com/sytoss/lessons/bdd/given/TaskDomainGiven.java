@@ -19,7 +19,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
-            taskDomainDTO.setScript("Test script");
+            taskDomainDTO.setDatabaseScript("Test script");
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
@@ -60,7 +60,8 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
-            taskDomainDTO.setScript(scriptFromFile);
+            taskDomainDTO.setDatabaseScript(scriptFromFile);
+            taskDomainDTO.setDataScript(scriptFromFile);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
         TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());

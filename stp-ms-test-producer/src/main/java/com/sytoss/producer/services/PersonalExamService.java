@@ -95,7 +95,7 @@ public class PersonalExamService extends AbstractStpService {
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestion(personalExam.getAnswers().get(0).getTask().getQuestion());
-        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getScript());
+        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(1);
         firstTask.setTask(taskModel);
         return firstTask;

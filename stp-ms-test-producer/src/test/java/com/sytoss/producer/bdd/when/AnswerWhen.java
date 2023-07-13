@@ -27,7 +27,7 @@ public class AnswerWhen extends CucumberIntegrationTest {
         Task task = new Task();
         task.setId(13L);
         TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setScript(".uml");
+        taskDomain.setDatabaseScript(".uml");
         task.setTaskDomain(taskDomain);
 
         when(getMetadataConnector().getTaskById(anyLong())).thenReturn(task);

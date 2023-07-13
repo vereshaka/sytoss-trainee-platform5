@@ -14,12 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -83,7 +78,8 @@ public class TaskDomainWhen extends CucumberIntegrationTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(newTaskDomainName);
         if (taskDomainDTO != null) {
-            taskDomain.setScript(taskDomainDTO.getScript());
+            taskDomain.setDatabaseScript(taskDomainDTO.getDatabaseScript());
+            taskDomain.setDataScript(taskDomainDTO.getDataScript());
         }
         Discipline discipline = new Discipline();
         discipline.setId(disciplineDTO.getId());

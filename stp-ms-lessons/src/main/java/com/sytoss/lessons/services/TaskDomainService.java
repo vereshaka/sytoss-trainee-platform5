@@ -31,8 +31,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +75,7 @@ public class TaskDomainService {
         for (Task task : tasks) {
             CheckRequestParameters input = new CheckRequestParameters();
             input.setRequest(task.getEtalonAnswer());
-            input.setScript(taskDomain.getScript());
+            input.setScript(taskDomain.getDatabaseScript()+StringUtils.LF+taskDomain.getDataScript());
             IsCheckEtalon isCheckEtalon = checkTaskConnector.checkEtalon(input);
             if (!isCheckEtalon.isChecked()) {
                 throw new EtalonIsNotValidException("etalon isn't correct for task with question \"" + task.getQuestion()
@@ -85,7 +83,8 @@ public class TaskDomainService {
             }
         }
         oldTaskDomain.setName(taskDomain.getName());
-        oldTaskDomain.setScript(taskDomain.getScript());
+        oldTaskDomain.setDatabaseScript(taskDomain.getDatabaseScript());
+        oldTaskDomain.setDataScript(taskDomain.getDataScript());
         oldTaskDomain.setDiscipline(taskDomain.getDiscipline());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(oldTaskDomain, taskDomainDTO);
