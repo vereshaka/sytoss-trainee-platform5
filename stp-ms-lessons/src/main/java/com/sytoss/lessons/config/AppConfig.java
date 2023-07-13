@@ -1,5 +1,6 @@
 package com.sytoss.lessons.config;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.UserConnector;
@@ -33,7 +34,7 @@ public class AppConfig {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
                 properties.getJwt().getJwkSetUri()).build();
 
-        jwtDecoder.setClaimSetConverter(new Converter<Map<String, Object>, Map<String, Object>>() {
+        jwtDecoder.setClaimSetConverter(new Converter<>() {
 
             private final MappedJwtClaimSetConverter delegate =
                     MappedJwtClaimSetConverter.withDefaults(Collections.emptyMap());
@@ -58,5 +59,10 @@ public class AppConfig {
             }
         });
         return jwtDecoder;
+    }
+
+    @Bean
+    public PumlConvertor pumlConvertor(){
+        return new PumlConvertor();
     }
 }

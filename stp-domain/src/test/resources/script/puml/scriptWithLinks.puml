@@ -1,0 +1,29 @@
+@startuml
+
+entity Discipline {
+id: long <<PK>>
+name: string
+}
+
+entity Topic {
+id: long <<PK>>
+name: string
+discipline_id: long <<FK Discipline(id)>>
+}
+
+entity Task {
+id: long <<PK>>
+question: string
+answer: string
+discipline_id: long <<FK Discipline(id)>>
+}
+
+entity TopicToTask {
+task_id: long <<PK>>
+topic_id: long <<PK>>
+}
+
+Topic --o Discipline : FK Discipline(id)
+Task --o Discipline : FK Discipline(id)
+
+@enduml
