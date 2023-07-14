@@ -20,7 +20,8 @@ public class TaskDomainConvertorTest extends StpUnitTest {
         taskDomain.setName("First Domain");
         taskDomain.setDatabaseScript("Script Domain");
         taskDomain.setDataScript("Script Domain");
-        taskDomain.setDescription("Task Domain Description");
+        taskDomain.setShortDescription("Task Domain Description");
+        taskDomain.setFullDescription("Task Domain Description");
         Teacher teacher = new Teacher();
         teacher.setId(62L);
         Discipline discipline = new Discipline();
@@ -33,7 +34,8 @@ public class TaskDomainConvertorTest extends StpUnitTest {
         Assertions.assertEquals(taskDomain.getName(), taskDomainDTO.getName());
         Assertions.assertEquals(taskDomain.getDatabaseScript(), taskDomainDTO.getDatabaseScript());
         Assertions.assertEquals(taskDomain.getDataScript(), taskDomainDTO.getDataScript());
-        Assertions.assertEquals(taskDomain.getDescription(), taskDomainDTO.getDescription());
+        Assertions.assertEquals(taskDomain.getShortDescription(), taskDomainDTO.getShortDescription());
+        Assertions.assertEquals(taskDomain.getFullDescription(), taskDomainDTO.getFullDescription());
     }
 
     @Test
@@ -43,7 +45,8 @@ public class TaskDomainConvertorTest extends StpUnitTest {
         taskDomainDTO.setName("First Domain");
         taskDomainDTO.setDatabaseScript("Script Domain");
         taskDomainDTO.setDataScript("Script Domain");
-        taskDomainDTO.setDescription("Task Domain Description");
+        taskDomainDTO.setShortDescription("Task Domain Description");
+        taskDomainDTO.setFullDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(93L);
         disciplineDTO.setTeacherId(1L);
@@ -53,7 +56,8 @@ public class TaskDomainConvertorTest extends StpUnitTest {
         Assertions.assertEquals(taskDomainDTO.getId(), taskDomain.getId());
         Assertions.assertEquals(taskDomainDTO.getName(), taskDomain.getName());
         Assertions.assertEquals(taskDomainDTO.getDatabaseScript(), taskDomain.getDatabaseScript());
-        Assertions.assertEquals(taskDomain.getDataScript(), taskDomainDTO.getDataScript());
-        Assertions.assertEquals(taskDomainDTO.getDescription(), taskDomain.getDescription());
+        Assertions.assertEquals(taskDomainDTO.getDataScript(), taskDomain.getDataScript());
+        Assertions.assertEquals(taskDomainDTO.getShortDescription(), taskDomain.getShortDescription());
+        Assertions.assertEquals(taskDomainDTO.getFullDescription(), taskDomain.getFullDescription());
     }
 }
