@@ -51,7 +51,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/my/groups")
+    @GetMapping("/me/groups")
     public List<Group> findGroupByStudent() {
         return userService.findByStudent();
     }
@@ -80,7 +80,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/my/groupsId")
+    @GetMapping("/me/groupsId")
     public List<Long> findDisciplineByStudent() {
         return userService.findGroupsId();
     }

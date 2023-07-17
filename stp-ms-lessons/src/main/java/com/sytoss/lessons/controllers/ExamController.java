@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/exam")
 @RequiredArgsConstructor
 public class ExamController {
 
@@ -24,7 +24,7 @@ public class ExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/exam/save")
+    @PostMapping("/save")
     public Exam saveRequest(@RequestBody Exam exam) {
         return examService.save(exam);
     }

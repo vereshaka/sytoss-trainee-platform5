@@ -24,7 +24,7 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/discipline")
 @Tag(name = "DisciplineController")
 public class DisciplineController {
 
@@ -39,7 +39,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping("/discipline")
+    @PostMapping("/")
     public Discipline create(
             @RequestBody Discipline discipline) {
         return disciplineService.create(discipline);
@@ -50,7 +50,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Topic exist!"),
     })
-    @PostMapping("/discipline/{disciplineId}/topic")
+    @PostMapping("/{disciplineId}/topic")
     public Topic create(
             @Parameter(description = "id of discipline to be searched")
             @PathVariable("disciplineId") Long disciplineId,
@@ -62,7 +62,7 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/discipline/{disciplineId}/groups")
+    @GetMapping("/{disciplineId}/groups")
     public List<Group> findByDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                         @PathVariable("disciplineId")
                                         Long disciplineId) {
@@ -74,7 +74,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Discipline not found!")
     })
-    @GetMapping("/discipline/{disciplineId}")
+    @GetMapping("/{disciplineId}")
     public Discipline getDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                     @PathVariable("disciplineId")
                                     Long disciplineId) {
@@ -86,7 +86,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Task domain already exist")
     })
-    @PostMapping("/discipline/{disciplineId}/task-domain")
+    @PostMapping("/{disciplineId}/task-domain")
     public TaskDomain create(
             @Parameter(description = "id of the discipline to be searched by")
             @PathVariable("disciplineId") Long disciplineId,
@@ -98,30 +98,11 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/discipline/{disciplineId}/task-domains")
+    @GetMapping("/{disciplineId}/task-domains")
     public List<TaskDomain> findTasksDomainByDiscipline(
             @Parameter(description = "id of the discipline to be searched by")
             @PathVariable("disciplineId") Long disciplineId) {
         return taskDomainService.findByDiscipline(disciplineId);
-    }
-
-    @Operation(description = "Method that retrieve list of disciplines")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @GetMapping("/disciplines")
-    public List<Discipline> findAllDisciplines() {
-        return disciplineService.findAllDisciplines();
-    }
-
-
-    @Operation(description = "Method that retrieve list of my disciplines")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @GetMapping("/my/disciplines")
-    public List<Discipline> findAllMyDisciplines() {
-        return disciplineService.findAllMyDiscipline();
     }
 
     @Operation(description = "Method that join group to discipline")
@@ -129,7 +110,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Group Not Found!")
     })
-    @PostMapping("/discipline/{disciplineId}/group/{groupId}")
+    @PostMapping("/{disciplineId}/group/{groupId}")
     public void assignGroup(
             @Parameter(description = "id of the discipline to join")
             @PathVariable("disciplineId") Long disciplineId,
@@ -143,7 +124,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Discipline not found!")
     })
-    @GetMapping(value = "/discipline/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the discipline to search icon")
                                     @PathVariable("disciplineId")
                                     Long disciplineId) {
@@ -154,7 +135,7 @@ public class DisciplineController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
     })
-    @GetMapping("/discipline/{disciplineId}/topics")
+    @GetMapping("/{disciplineId}/topics")
     public List<Topic> findByDisciplineId(
             @PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);

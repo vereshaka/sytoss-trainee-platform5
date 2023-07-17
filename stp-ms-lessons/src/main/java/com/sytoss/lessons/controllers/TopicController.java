@@ -18,7 +18,7 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/topic")
 public class TopicController {
 
     private final TopicService topicService;
@@ -30,7 +30,7 @@ public class TopicController {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
             @ApiResponse(responseCode = "404", description = "Discipline not found!"),
     })
-    @GetMapping("/topic/{topicId}")
+    @GetMapping("/{topicId}")
     public Topic getById(
             @Parameter(description = "id of topic to be searched")
             @PathVariable(value = "topicId")
@@ -44,7 +44,7 @@ public class TopicController {
             @ApiResponse(responseCode = "404", description = "Task not found!"),
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
-    @PostMapping("/task/{taskId}/topic/{topicId}")
+    @PostMapping("/{topicId}/task/{taskId}")
     public Task assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
                                   @PathVariable("taskId")
                                   Long taskId, @Parameter(description = "id of the task to be searched by")
@@ -59,7 +59,7 @@ public class TopicController {
                     @ApiResponse(responseCode = "200", description = "Success|OK"),
                     @ApiResponse(responseCode = "404", description = "Topic not found")
             })
-    @GetMapping("/topic/{topicId}/tasks")
+    @GetMapping("/{topicId}/tasks")
     public List<Task> findByTopicId(
             @PathVariable(value = "topicId") Long topicId) {
         return taskService.findByTopicId(topicId);
@@ -70,7 +70,7 @@ public class TopicController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
-    @GetMapping(value = "/topic/{topicId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{topicId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the topic to search icon")
                                         @PathVariable("topicId")
                                         Long topicId) {
