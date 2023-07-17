@@ -1,6 +1,10 @@
 server:
   port: ${APP_PORT:9102}
 spring:
+  servlet:
+    multipart:
+      max-request-size: 3MB
+      max-file-size: 3MB
   datasource:
     driverClassName: org.postgresql.Driver
     url: ${DB_URI:jdbc:postgresql://localhost:6432/users}
