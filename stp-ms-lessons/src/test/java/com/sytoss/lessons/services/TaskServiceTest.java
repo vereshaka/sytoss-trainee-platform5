@@ -1,7 +1,10 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.*;
@@ -18,6 +21,7 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,14 +32,13 @@ import static org.mockito.Mockito.when;
 public class TaskServiceTest extends StpUnitTest {
 
     @Mock
+    protected CheckTaskConnector checkTaskConnector;
+    @Mock
     private TaskConnector taskConnector;
-
     @InjectMocks
     private TaskService taskService;
-
     @Mock
     private TopicService topicService;
-
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
 
@@ -150,5 +153,15 @@ public class TaskServiceTest extends StpUnitTest {
         Task result = taskService.assignTaskToTopic(1L, 1L);
         assertEquals(1, result.getTopics().size());
         assertEquals(topic.getName(), result.getTopics().get(0).getName());
+    }
+
+    @Test
+    public void shouldReturnQueryResult() {
+        HashMap hashMap = new HashMap();
+        hashMap.put("1", "1");
+        QueryResult queryResult = new QueryResult(List.of(hashMap));
+        when(checkTaskConnector.checkRequest(any())).thenReturn(queryResult);
+        QueryResult result = taskService.getQueryResult(new CheckRequestParameters());
+        assertEquals("1", queryResult.getResultMapList().get(0).get("1"));
     }
 }

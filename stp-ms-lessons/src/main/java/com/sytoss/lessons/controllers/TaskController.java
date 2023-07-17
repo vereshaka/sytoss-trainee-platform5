@@ -1,8 +1,10 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.lessons.services.AbstractService;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class TaskController {
 
     private final TaskService taskService;
-
 
     @Operation(description = "Method that retrieve task")
     @ApiResponses(value = {
@@ -72,5 +73,15 @@ public class TaskController {
                              Long taskId,
                              @RequestBody TaskCondition taskCondition) {
         return taskService.addCondition(taskId, taskCondition);
+    }
+
+    @Operation(description = "Retrieve data with SQL request")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    @PostMapping("/check-request-result")
+    public QueryResult getQueryResult(@RequestBody CheckRequestParameters checkRequestParameters) {
+        return taskService.getQueryResult(checkRequestParameters);
     }
 }

@@ -20,7 +20,6 @@
         <module>stp-domain</module>
         <module>stp-common</module>
         <module>stp-ms-image-provider</module>
-        <module>stp-ms-check-task-shared</module>
         <module>stp-ms-check-task</module>
         <module>stp-ms-test-producer</module>
         <module>stp-ms-users</module>

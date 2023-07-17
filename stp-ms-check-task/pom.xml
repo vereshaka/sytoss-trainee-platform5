@@ -12,9 +12,10 @@
         <!-- Modules -->
         <dependency>
             <groupId>com.sytoss.stp</groupId>
-            <artifactId>stp-ms-check-task-shared</artifactId>
+            <artifactId>stp-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.sytoss.stp</groupId>
             <artifactId>stp-common</artifactId>

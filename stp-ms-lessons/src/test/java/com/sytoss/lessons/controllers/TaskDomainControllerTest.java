@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;

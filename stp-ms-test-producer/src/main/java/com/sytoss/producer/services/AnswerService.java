@@ -1,18 +1,16 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.common.AbstractStpService;
-import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.Grade;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.Score;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +25,8 @@ public class AnswerService extends AbstractStpService {
     private final PersonalExamConnector personalExamConnector;
 
     private final CheckTaskConnector checkTaskConnector;
+
+    private final PumlConvertor pumlConvertor;
 
     public Answer answer(String personalExamId, String taskAnswer) {
         String studentId = getMyId();
@@ -48,7 +48,9 @@ public class AnswerService extends AbstractStpService {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
-        checkTaskParameters.setScript(taskDomain.getDatabaseScript());
+        String script = taskDomain.getDatabaseScript() + StringUtils.LF + taskDomain.getDataScript();
+        String liquibase = pumlConvertor.convertToLiquibase(script);
+        checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
         double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();

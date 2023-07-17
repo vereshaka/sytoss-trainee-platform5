@@ -1,4 +1,4 @@
-package com.sytoss.checktask.model;
+package com.sytoss.domain.bom.lessons;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +13,11 @@ public class QueryResult {
 
     private final List<HashMap<String, Object>> resultMapList;
 
-    public HashMap<String, Object> getRow(int index) {
-        return resultMapList.get(index);
-    }
-
     public QueryResult() {
         resultMapList = new ArrayList<>();
+    }
+
+    public HashMap<String, Object> getRow(int index) {
+        return resultMapList.get(index);
     }
 }

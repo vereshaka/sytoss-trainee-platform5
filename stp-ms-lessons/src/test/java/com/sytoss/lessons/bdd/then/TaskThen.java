@@ -1,16 +1,18 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,5 +89,20 @@ public class TaskThen extends CucumberIntegrationTest {
         assertEquals(conditionValue, taskDTO.getConditions().get(0).getValue());
         assertEquals(type, taskDTO.getConditions().get(0).getType());
         assertEquals(question, taskDTO.getQuestion());
+    }
+
+    @Then("^query result should be$")
+    public void shouldReturnQueryIsValid(DataTable table) throws IOException {
+        QueryResult response = (QueryResult) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<String> header = table.row(0);
+        for (int i = 1; i < table.height(); i++) {
+            HashMap<String, Object> resultRow = response.getRow(i - 1);
+            for (int j = 0; j < header.size(); j++) {
+
+                String columnName = header.get(j).toUpperCase();
+                String columnValue = table.row(i).get(j);
+                assertEquals(columnValue, resultRow.get(columnName).toString());
+            }
+        }
     }
 }

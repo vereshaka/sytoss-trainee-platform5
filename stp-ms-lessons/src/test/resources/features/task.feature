@@ -80,3 +80,13 @@ Feature: Task
     When system add "Select" condition with CONTAINS type to task with question "What are the different subsets of SQL?"
     Then operation is successful
     And "Select" condition with CONTAINS type should be in task with question "What are the different subsets of SQL?"
+
+  Scenario: Check current correct student's answer
+    Given Request contains database script as in "liquibase/script.yml"
+    And request is "select * from Discipline"
+    When request sent to check this request
+    Then operation is successful
+    And query result should be
+      | id | name  |
+      | 1  | SQL   |
+      | 2  | Mongo |

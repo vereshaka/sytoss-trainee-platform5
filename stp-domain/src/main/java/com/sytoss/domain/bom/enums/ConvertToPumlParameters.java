@@ -1,4 +1,4 @@
-package com.sytoss.lessons.enums;
+package com.sytoss.domain.bom.enums;
 
 public enum ConvertToPumlParameters {
     DB, DATA, ALL

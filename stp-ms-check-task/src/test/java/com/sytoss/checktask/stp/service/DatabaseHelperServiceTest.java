@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.model.QueryResult;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.stp.test.StpUnitTest;
 import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;

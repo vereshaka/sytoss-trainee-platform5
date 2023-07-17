@@ -17,5 +17,7 @@ public class TaskDomain {
 
     private Discipline discipline;
 
-    private String description;
+    private String shortDescription;
+
+    private String fullDescription;
 }
