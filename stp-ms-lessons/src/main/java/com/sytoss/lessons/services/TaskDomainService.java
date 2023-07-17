@@ -104,6 +104,10 @@ public class TaskDomainService {
         }
     }
 
+    public TaskDomainDTO getDTOById(Long taskDomainId) {
+        return taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+    }
+
     public List<TaskDomain> findByDiscipline(Long disciplineId) {
         List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         List<TaskDomain> result = new ArrayList<>();

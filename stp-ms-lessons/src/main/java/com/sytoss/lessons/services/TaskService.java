@@ -31,6 +31,8 @@ public class TaskService {
 
     private final TopicService topicService;
 
+    private final TaskDomainService taskDomainService;
+
     public Task getById(Long id) {
         try {
             TaskDTO taskDTO = taskConnector.getReferenceById(id);
@@ -43,15 +45,13 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getDiscipline().getId());
-        if (taskDTO == null) {
-            taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task, taskDTO);
-            taskDTO = taskConnector.save(taskDTO);
-            taskConvertor.fromDTO(taskDTO, task);
-            return task;
-        }
-        throw new TaskExistException(task.getQuestion());
+        TaskDTO taskDTO = new TaskDTO();
+        taskConvertor.toDTO(task, taskDTO);
+        taskDTO.setTaskDomain(taskDomainService.getDTOById(task.getTaskDomain().getId()));
+        taskDTO = taskConnector.save(taskDTO);
+        taskConvertor.fromDTO(taskDTO, task);
+        return task;
+
     }
 
     public Task removeCondition(Long taskId, Long conditionId) {
