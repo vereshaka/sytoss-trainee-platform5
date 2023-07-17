@@ -2,7 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.lessons.services.TaskDomainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

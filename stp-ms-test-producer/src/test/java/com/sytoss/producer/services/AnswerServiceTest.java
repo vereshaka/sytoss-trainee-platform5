@@ -1,18 +1,15 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.personalexam.Answer;
-import com.sytoss.domain.bom.personalexam.AnswerStatus;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
-import com.sytoss.producer.connectors.MetadataConnector;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
+import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -45,6 +42,9 @@ public class AnswerServiceTest extends StpUnitTest {
 
     @InjectMocks
     private PersonalExamService personalExamService;
+
+    @Mock
+    private PumlConvertor pumlConvertor;
 
     @Test
     public void testAnswer() {
