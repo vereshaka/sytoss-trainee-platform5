@@ -9,6 +9,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -115,5 +119,18 @@ public class TaskGiven extends CucumberIntegrationTest {
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
         taskDTO.setTaskDomain(taskDomain);
         getTaskConnector().save(taskDTO);
+    }
+
+    @Given("^Request contains database script as in \"(.*)\"$")
+    public void givenDatabaseScript(String script) throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("script/" + script).getFile());
+        List<String> data = Files.readAllLines(Path.of(file.getPath()));
+        TestExecutionContext.getTestContext().getCheckRequestParameters().setScript(String.join("\n", data));
+    }
+
+    @Given("^request is \"(.*)\"$")
+    public void givenAnswerScript(String request) {
+        TestExecutionContext.getTestContext().getCheckRequestParameters().setRequest(request);
     }
 }

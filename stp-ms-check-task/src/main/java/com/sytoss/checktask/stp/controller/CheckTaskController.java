@@ -1,7 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
-import com.sytoss.checktask.model.QueryResult;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.service.ScoreService;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;

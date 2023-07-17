@@ -1,6 +1,7 @@
-package com.sytoss.lessons.convertors;
+package com.sytoss.domain.bom;
 
-import com.sytoss.lessons.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 

@@ -1,5 +1,7 @@
 package com.sytoss.lessons.bdd.common;
 
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,6 +42,8 @@ public class TestExecutionContext {
     private List<Long> groupId;
 
     private List<PersonalExam> personalExams = new ArrayList<>();
+
+    private CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
 
     @Setter(AccessLevel.NONE)
     private Map<String, Long> idMapping = new HashMap<>();

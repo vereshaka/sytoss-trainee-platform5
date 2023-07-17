@@ -31,6 +31,9 @@ public class TaskDomainDTO {
     @Column(name = "IMAGE")
     private byte[] image;
 
-    @Column(name = "DESCRIPTION")
-    private String description;
+    @Column(name = "SHORT_DESCRIPTION")
+    private String shortDescription;
+
+    @Column(name = "FULL_DESCRIPTION")
+    private String fullDescription;
 }

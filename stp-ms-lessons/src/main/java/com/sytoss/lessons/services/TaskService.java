@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
@@ -7,11 +8,11 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,8 @@ public class TaskService {
 
     private final TopicService topicService;
 
+    private final CheckTaskConnector checkTaskConnector;
+
     public Task getById(Long id) {
         try {
             TaskDTO taskDTO = taskConnector.getReferenceById(id);
@@ -43,7 +46,7 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTopicsDisciplineId(task.getQuestion(), task.getTopics().get(0).getDiscipline().getId());
+        TaskDTO taskDTO = taskConnector.getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
         if (taskDTO == null) {
             taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
@@ -118,5 +121,9 @@ public class TaskService {
             result.add(task);
         }
         return result;
+    }
+
+    public QueryResult getQueryResult(CheckRequestParameters checkRequestParameters) {
+        return checkTaskConnector.checkRequest(checkRequestParameters);
     }
 }

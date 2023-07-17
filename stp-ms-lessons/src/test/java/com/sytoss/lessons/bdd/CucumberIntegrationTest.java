@@ -63,6 +63,10 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @MockBean
     private PersonalExamConnector personalExamConnector;
 
+    @Autowired
+    @MockBean
+    private CheckTaskConnector checkTaskConnector;
+
     @LocalServerPort
     private int applicationPort;
 

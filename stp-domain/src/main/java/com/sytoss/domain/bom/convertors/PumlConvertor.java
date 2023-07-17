@@ -1,10 +1,11 @@
-package com.sytoss.lessons.convertors;
+package com.sytoss.domain.bom.convertors;
 
-import com.sytoss.lessons.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
 
 import java.util.*;
 import java.util.regex.Matcher;
