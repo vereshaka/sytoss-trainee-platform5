@@ -1,6 +1,8 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
@@ -14,7 +16,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 public class TaskWhen extends CucumberIntegrationTest {
 
@@ -84,8 +92,8 @@ public class TaskWhen extends CucumberIntegrationTest {
     }
 
     @When("^retrieve information about tasks by \"(.*)\" topic in \"(.*)\" discipline$")
-    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName)  {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName,TestExecutionContext.getTestContext().getTeacherId());
+    public void retrieveInformationAboutTasksByTopicInDiscipline(String topicName, String disciplineName) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
@@ -117,6 +125,32 @@ public class TaskWhen extends CucumberIntegrationTest {
         HttpEntity<TaskCondition> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
         String url = "/api/task/" + taskDTO.getId() + "/condition";
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
+        TestExecutionContext.getTestContext().setResponse(responseEntity);
+    }
+
+    @When("^request sent to check this request$")
+    public void requestSentCheckRequest() {
+        String url = "/api/task/check-request-result";
+
+        List<HashMap<String, Object>> list = new ArrayList<>();
+        HashMap<String, Object> hashMap = new HashMap();
+        hashMap.put("ID", 1);
+        hashMap.put("NAME", "SQL");
+        list.add(hashMap);
+        hashMap = new HashMap();
+        hashMap.put("ID", 2);
+        hashMap.put("NAME", "Mongo");
+        list.add(hashMap);
+        QueryResult queryResult = new QueryResult(list);
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", 1);
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
+        HttpHeaders headers = getDefaultHttpHeaders();
+        when(getCheckTaskConnector().checkRequest(any())).thenReturn(queryResult);
+
+        HttpEntity<CheckRequestParameters> requestEntity = new HttpEntity<>(TestExecutionContext.getTestContext().getCheckRequestParameters(),headers);
+        ResponseEntity<QueryResult> responseEntity = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
+
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 }

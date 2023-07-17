@@ -1,8 +1,10 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,6 +74,20 @@ public class TaskControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> result = doGet("/api/topic/1/tasks", httpEntity, new ParameterizedTypeReference<>() {
         });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnQueryResult() {
+        when(taskService.getQueryResult(any())).thenReturn(new QueryResult());
+        HttpHeaders headers = getDefaultHttpHeaders();
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", 1);
+        when(userConnector.getMyProfile()).thenReturn(teacherMap);
+        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+        checkRequestParameters.setRequest("anything");
+        HttpEntity<CheckRequestParameters> requestEntity = new HttpEntity<>(new CheckRequestParameters(),headers);
+        ResponseEntity<QueryResult> result = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

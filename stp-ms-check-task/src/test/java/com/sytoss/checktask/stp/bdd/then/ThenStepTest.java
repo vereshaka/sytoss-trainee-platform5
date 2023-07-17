@@ -2,7 +2,7 @@ package com.sytoss.checktask.stp.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.sytoss.checktask.model.QueryResult;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.bdd.CucumberIntegrationTest;
 import com.sytoss.checktask.stp.bdd.other.TestContext;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
@@ -25,7 +25,7 @@ public class ThenStepTest extends CucumberIntegrationTest {
     }
 
     @Then("^Grade value is (.*)$")
-    public void gradeValueIs(double value) throws JsonProcessingException {
+    public void gradeValueIs(double value) {
         assertEquals(value, TestContext.getInstance().getScore().getValue());
     }
 
