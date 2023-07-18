@@ -1,15 +1,14 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
@@ -18,6 +17,7 @@ import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,6 +39,8 @@ public class TaskService {
 
     private final TaskDomainConnector taskDomainConnector;
 
+    private final PumlConvertor pumlConvertor;
+
     public Task getById(Long id) {
         try {
             TaskDTO taskDTO = taskConnector.getReferenceById(id);
@@ -51,15 +53,15 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = new TaskDTO();
-        taskConvertor.toDTO(task, taskDTO);
-        Long taskDomainId = task.getTaskDomain().getId();
-        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
-        taskDTO.setTaskDomain(taskDomainDTO);
-        taskDTO = taskConnector.save(taskDTO);
-        taskConvertor.fromDTO(taskDTO, task);
-        return task;
-
+        TaskDTO taskDTO = taskConnector.getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
+        if (taskDTO == null) {
+            taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        }
+        throw new TaskExistException(task.getQuestion());
     }
 
     public Task removeCondition(Long taskId, Long conditionId) {
@@ -128,7 +130,17 @@ public class TaskService {
         return result;
     }
 
-    public QueryResult getQueryResult(CheckRequestParameters checkRequestParameters) {
-        return checkTaskConnector.checkRequest(checkRequestParameters);
+    public QueryResult getQueryResult(TaskDomainRequestParameters taskDomainRequestParameters) {
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
+        if (taskDomainDTO != null) {
+            String script = taskDomainDTO.getDatabaseScript() + StringUtils.LF + taskDomainDTO.getDataScript();
+            String liquibaseScript = pumlConvertor.convertToLiquibase(script);
+            CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+            checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setScript(liquibaseScript);
+            return checkTaskConnector.checkRequest(checkRequestParameters);
+        }
+        throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
+
     }
 }
