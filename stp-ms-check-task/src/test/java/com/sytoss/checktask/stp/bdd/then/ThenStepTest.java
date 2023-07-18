@@ -1,10 +1,7 @@
 package com.sytoss.checktask.stp.bdd.then;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.datatable.DataTable;
@@ -18,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ThenStepTest extends CheckTaskIntegrationTest {
 
     @Then("request should be processed successfully")
-    public void requestShouldBeProcessedSuccessfully() throws JsonProcessingException {
+    public void requestShouldBeProcessedSuccessfully() {
         assertEquals(200, getTestExecutionContext().getResponse().getStatusCode().value());
     }
 

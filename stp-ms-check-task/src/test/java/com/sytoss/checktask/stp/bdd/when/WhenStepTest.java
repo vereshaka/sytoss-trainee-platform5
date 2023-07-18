@@ -3,7 +3,6 @@ package com.sytoss.checktask.stp.bdd.when;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.checktask.stp.bdd.other.TestContext;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
@@ -17,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 public class WhenStepTest extends CheckTaskIntegrationTest {
 
     @When("request coming to process")
-    public void studentsAnswerIsCheckingWith() throws JsonProcessingException {
+    public void studentsAnswerIsCheckingWith() {
         String url = "/api/task/check";
 
         HttpHeaders headers = new HttpHeaders();

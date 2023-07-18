@@ -1,8 +1,8 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.ObjectProvider;
-
-import java.io.IOException;
 
 import static com.sytoss.stp.test.FileUtils.readFromFile;
 import static org.mockito.Mockito.mock;
@@ -57,7 +55,7 @@ class ScoreServiceTest extends StpUnitTest {
     }
 
     @Test
-    void checkAndGradeWrongAnswer() throws IOException {
+    void checkAndGradeWrongAnswer() {
         when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
