@@ -19,19 +19,19 @@ public class ThenStepTest extends CheckTaskIntegrationTest {
 
     @Then("request should be processed successfully")
     public void requestShouldBeProcessedSuccessfully() throws JsonProcessingException {
-        assertEquals(200, TestContext.getInstance().getResponseEntity().getStatusCode().value());
-        Score score = (Score) getTestExecutionContext().getResponse().getBody();
-        TestContext.getInstance().setScore(score);
+        assertEquals(200, getTestExecutionContext().getResponse().getStatusCode().value());
     }
 
     @Then("^Grade value is (.*)$")
     public void gradeValueIs(double value) {
-        assertEquals(value, TestContext.getInstance().getScore().getValue());
+        Score score = (Score) getTestExecutionContext().getResponse().getBody();
+        assertEquals(value, score.getValue());
     }
 
     @Then("^Grade message is \"(.*)\"$")
     public void gradeMessageIs(String message) {
-        assertEquals(message, TestContext.getInstance().getScore().getComment());
+        Score score = (Score) getTestExecutionContext().getResponse().getBody();
+        assertEquals(message, score.getComment());
     }
 
     @Then("^should return that etalon is valid$")
@@ -63,6 +63,6 @@ public class ThenStepTest extends CheckTaskIntegrationTest {
 
     @Then("^operation should be finished with \"(.*)\" error$")
     public void operationShouldBeFinishedWithError(int statusCode) {
-        assertEquals(statusCode, TestContext.getInstance().getResponseEntity().getStatusCode().value());
+        assertEquals(statusCode, getTestExecutionContext().getResponse().getStatusCode().value());
     }
 }

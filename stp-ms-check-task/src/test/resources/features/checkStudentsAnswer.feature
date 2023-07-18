@@ -45,7 +45,7 @@ Feature: check answer
   Scenario: Check current сorrect student's answer
     Given Request contains database script as in "script1.yml"
     And check SQL is "select * from Authors"
-    When request sent to check "request"
+    When request sent to check
     Then request should be processed successfully
     And query result should be
       | id | name        |
@@ -54,6 +54,6 @@ Feature: check answer
 
   Scenario: Check current incorrect student's answer
     Given Request contains database script as in "script1.yml"
-    And check SQL is "select Authors"
-    When request sent to check "request"
+    And check SQL is "select * fr Authors"
+    When request sent to check incorrect script
     Then operation should be finished with "406" error

@@ -4,6 +4,7 @@ import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
 import com.sytoss.checktask.stp.bdd.other.TestContext;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.Given;
 
 import java.io.File;
@@ -16,10 +17,8 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("^Request contains database script as in \"(.*)\"$")
     public void givenDatabaseScript(String script) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("scripts/" + script).getFile());
-        List<String> data = Files.readAllLines(Path.of(file.getPath()));
-       getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(String.join("\n", data));
+        String data = FileUtils.readFromFile(script);
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(data);
     }
 
     @Given("^etalon SQL is \"(.*)\"$")
