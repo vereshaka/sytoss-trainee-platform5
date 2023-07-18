@@ -20,8 +20,11 @@ public class ImageGiven extends ImageProviderIntegrationTest {
 
     @Given("^question image \"(.*)\" with id (.*) doesnt exist")
     public void questionImageWithIdDoesntExist(String question,String id) {
+        if(getTestExecutionContext().getIdMapping().isEmpty() && !getImageConnector().findAll().isEmpty()){
+            getTestExecutionContext().getIdMapping().put(id,1L);
+        }
         if(getTestExecutionContext().getIdMapping().get(id) != null){
-            ImageDTO imageDTO = getImageConnector().getReferenceById((Long) getTestExecutionContext().getIdMapping().get(id));
+            ImageDTO imageDTO = getImageConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(id));
             getImageConnector().delete(imageDTO);
         }
     }

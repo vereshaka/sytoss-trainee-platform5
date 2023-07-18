@@ -11,10 +11,10 @@ public class ImageWhen extends ImageProviderIntegrationTest {
 
     @When("^retrieve image by id (.*)")
     public void retrieveImageById(String id) {
-        Long idValue = (Long) getTestExecutionContext().getIdMapping().get(id);
+        Long idValue = getTestExecutionContext().getIdMapping().get(id);
         String url = "/api/image/question/" + idValue;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<byte[]> httpEntity = new HttpEntity<>(null, httpHeaders);
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
