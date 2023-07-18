@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
@@ -11,8 +12,10 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +37,7 @@ public class TaskService {
 
     private final CheckTaskConnector checkTaskConnector;
 
-    private final TaskDomainService taskDomainService;
+    private final TaskDomainConnector taskDomainConnector;
 
     public Task getById(Long id) {
         try {
@@ -50,7 +53,9 @@ public class TaskService {
     public Task create(Task task) {
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
-        taskDTO.setTaskDomain(taskDomainService.getDTOById(task.getTaskDomain().getId()));
+        Long taskDomainId = task.getTaskDomain().getId();
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+        taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO = taskConnector.save(taskDTO);
         taskConvertor.fromDTO(taskDTO, task);
         return task;
