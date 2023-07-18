@@ -27,7 +27,7 @@ public class GroupControllerTest extends AbstractControllerTest {
         when(groupService.create(any(Group.class))).thenReturn(new Group());
         HttpHeaders headers = getDefaultHttpHeaders("teacher");
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
-        ResponseEntity<Group> responseEntity = doPost("/api/group/", requestEntity, Group.class);
+        ResponseEntity<Group> responseEntity = doPost("/api/group", requestEntity, Group.class);
         assertEquals(200, responseEntity.getStatusCode().value());
     }
 
@@ -36,7 +36,7 @@ public class GroupControllerTest extends AbstractControllerTest {
         when(groupService.create(any(Group.class))).thenThrow(new GroupExistException("Test"));
         HttpHeaders headers = getDefaultHttpHeaders("teacher");
         HttpEntity<Group> requestEntity = new HttpEntity<>(new Group(), headers);
-        ResponseEntity<String> result = doPost("/api/group/", requestEntity, String.class);
+        ResponseEntity<String> result = doPost("/api/group", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
 

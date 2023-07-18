@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
@@ -58,7 +57,7 @@ public class TaskWhen extends CucumberIntegrationTest {
 
     @When("^system create task with question \"(.*)\"$")
     public void requestSendCreateTask(String question) {
-        String url = "/api/task/";
+        String url = "/api/task";
         Task task = new Task();
         task.setQuestion(question);
         TaskDomain taskDomain = new TaskDomain();

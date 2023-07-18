@@ -15,6 +15,9 @@ public class LessonsControllerTest extends StpApplicationTest {
     protected DisciplineController disciplineController;
 
     @InjectMocks
+    protected DisciplinesController disciplinesController;
+
+    @InjectMocks
     protected ExamController examController;
 
     @InjectMocks

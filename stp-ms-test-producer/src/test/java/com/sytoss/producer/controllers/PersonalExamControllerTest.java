@@ -45,7 +45,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<Boolean> result = doGet("/api/task-domain/123/is-used-now", requestEntity, boolean.class);
+        ResponseEntity<Boolean> result = doGet("/api/personal-exam/is-used-now/task-domain/123", requestEntity, boolean.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
@@ -65,7 +65,7 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
 
         headers.setBearerAuth(generateJWT(List.of("123"), "1"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<Question> result = doGet("/api/test/123/start", requestEntity, Question.class);
+        ResponseEntity<Question> result = doGet("/api/personal-exam/123/start", requestEntity, Question.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

@@ -1,8 +1,8 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
@@ -49,7 +49,7 @@ public class TaskControllerTest extends LessonsControllerTest {
         when(taskService.create(any(Task.class))).thenReturn(new Task());
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
-        ResponseEntity<Task> result = doPost("/api/task/", requestEntity, Task.class);
+        ResponseEntity<Task> result = doPost("/api/task", requestEntity, Task.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
@@ -58,7 +58,7 @@ public class TaskControllerTest extends LessonsControllerTest {
         when(taskService.create(any(Task.class))).thenThrow(new TaskExistException("Test"));
         HttpHeaders headers = getDefaultHttpHeaders();
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
-        ResponseEntity<String> result = doPost("/api/task/", requestEntity, String.class);
+        ResponseEntity<String> result = doPost("/api/task", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
 

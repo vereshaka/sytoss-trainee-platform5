@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -9,7 +8,10 @@ import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,16 +22,19 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
-        String url = "/api/discipline";
-        Discipline discipline = new Discipline();
-        discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
-        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", disciplineName);
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+
+        ResponseEntity<Discipline> responseEntity = doPost("/api/discipline", httpEntity, Discipline.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
@@ -40,6 +45,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
         discipline.setName(disciplineName);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
+
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
@@ -60,7 +66,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher with id (.*) retrieve his disciplines$")
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
-        String url = "/api/teacher/my/disciplines";
+        String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
@@ -101,7 +107,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("student receive his disciplines")
     public void studentReceiveHisDisciplines() {
-        String url = "/api/my/disciplines";
+        String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         when(getUserConnector().findMyGroupId()).thenReturn(TestExecutionContext.getTestContext().getGroupId());

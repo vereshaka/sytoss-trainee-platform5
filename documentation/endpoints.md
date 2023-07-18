@@ -13,14 +13,13 @@ POST    /api/image/convert <br>
 GET     /api/image/question/{question_image_id} <br>
 
 # ms-test-producer
-regexp ~\/api\/((personal-exam|test)\/.*)$
+regexp ~\/api\/((personal-exam)\/.*)$
 
 POST    /api/personal-exam/create <br>
 GET     /api/personal-exam/{id}/summary <br>
 POST    /api/personal-exam/{personalExamId}/task/answer <br>
-GET     /api/test/{personalExamId}/start <br>
-POST    /api/test/{personalExamId}/answer <br>
-GET     /api/test/is-used-now/task-domain/{taskDomainId}/ <br>
+GET     /api/personal-exam/{personalExamId}/start <br>
+GET     /api/personal-exam/is-used-now/task-domain/{taskDomainId} <br>
 
 # ms-users
 regexp ~\/api\/((user|group)(\/(.*)))$
@@ -56,12 +55,14 @@ GET     /api/discipline/{disciplineId}/topics <br>
 GET     /api/topic/{topicId} <br>
 GET     /api/topic/{topicId}/tasks <br>
 GET     /api/topic/{topicId}/icon <br>
+GET     /api/topic/{topicId}/task/{taskId} <br>
 
 GET     /api/task/{taskId} <br>
 POST    /api/task <br>
 PUT     /api/task/{taskId}/condition/{conditionId} <br>
 PUT     /api/task/{taskId}/condition <br>
 POST    /api/task/{taskId}/topic/{topicId} <br>
+POST    /api/task/check-request-result <br>
 
 GET     /api/task-domain/{taskDomainId} <br>
 PUT     /api/task-domain/{taskDomainId} <br>

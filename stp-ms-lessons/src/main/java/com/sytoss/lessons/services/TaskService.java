@@ -3,6 +3,8 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
@@ -53,15 +55,15 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
-        if (taskDTO == null) {
-            taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task, taskDTO);
-            taskDTO = taskConnector.save(taskDTO);
-            taskConvertor.fromDTO(taskDTO, task);
-            return task;
-        }
-        throw new TaskExistException(task.getQuestion());
+        TaskDTO taskDTO = new TaskDTO();
+        taskConvertor.toDTO(task, taskDTO);
+        Long taskDomainId = task.getTaskDomain().getId();
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+        taskDTO.setTaskDomain(taskDomainDTO);
+        taskDTO = taskConnector.save(taskDTO);
+        taskConvertor.fromDTO(taskDTO, task);
+        return task;
+
     }
 
     public Task removeCondition(Long taskId, Long conditionId) {

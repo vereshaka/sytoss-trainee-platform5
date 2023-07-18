@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/image")
 public class ImageController {
 
     private final ImageService imageService;
@@ -19,7 +19,7 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
-    @PostMapping("/convert/image")
+    @PostMapping("/convert")
     public Long convertImage(@RequestBody String question) {
         return imageService.generatePngFromQuestion(question);
     }
@@ -29,7 +29,7 @@ public class ImageController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Image not found")
     })
-    @GetMapping("/question-image/{question_image_id}")
+    @GetMapping("/question/{question_image_id}")
     public byte[] getImage(@PathVariable("question_image_id") Long id) {
         return imageService.getById(id);
     }

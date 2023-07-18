@@ -10,11 +10,13 @@ import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +28,7 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,29 +73,45 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldCreateTask() {
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setDiscipline(new DisciplineDTO());
+        taskDomainDTO.setId(1L);
+
+        when(taskDomainConnector.findById(anyLong())).thenReturn(Optional.of(taskDomainDTO));
+
         Mockito.doAnswer((Answer<TaskDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
             TaskDTO result = (TaskDTO) args[0];
             result.setId(1L);
+            result.setTaskDomain(taskDomainDTO);
             return result;
         }).when(taskConnector).save(any(TaskDTO.class));
-        Task input = new Task();
-        input.setQuestion("question");
+
+
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
-        input.setTaskDomain(taskDomain);
-        Topic topic = new Topic();
-        topic.setId(1L);
-        Discipline discipline = new Discipline();
+
         Teacher teacher = new Teacher();
         teacher.setId(1L);
+
+        Discipline discipline = new Discipline();
         discipline.setTeacher(teacher);
+
+        Topic topic = new Topic();
+        topic.setId(1L);
         topic.setDiscipline(discipline);
-        input.setTopics(List.of(topic));
+
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setId(1L);
+
+        Task input = new Task();
+        input.setQuestion("question");
+        input.setTaskDomain(taskDomain);
+        input.setTopics(List.of(topic));
         input.setTaskConditions(List.of(taskCondition));
+
         Task result = taskService.create(input);
+
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getQuestion(), result.getQuestion());
     }

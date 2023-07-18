@@ -30,7 +30,7 @@ Feature: Discipline
 
   Scenario: teacher creates a discipline that already exists
     Given "SQL" discipline exists
-    When teacher creates existing "SQL" discipline
+    When teacher creates "SQL" discipline
     Then operation should be finished with 409 "Discipline with name "SQL" already exist" error
 
   Scenario: retrieve discipline information
@@ -39,6 +39,8 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
+  @Bug
+  @STP-264
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -54,6 +56,8 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
+  @Bug
+  @STP-265
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |

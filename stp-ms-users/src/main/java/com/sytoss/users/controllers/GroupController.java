@@ -2,7 +2,6 @@ package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.services.GroupService;
-import com.sytoss.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +24,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Discipline not found!"),
             @ApiResponse(responseCode = "409", description = "Group already exists!")
     })
-    @PostMapping("/")
+    @PostMapping("")
     public Group createGroup(
             @RequestBody Group group) {
         return groupService.create(group);
