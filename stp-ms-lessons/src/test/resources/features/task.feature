@@ -54,6 +54,7 @@ Feature: Task
       | SQL        | Join  | What is Inner Join? |
 
   @Bug
+  @STP-266
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
     And topic "Join" exists

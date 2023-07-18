@@ -40,6 +40,7 @@ Feature: Discipline
     And "SQL" discipline should be received
 
   @Bug
+  @STP-264
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -56,6 +57,7 @@ Feature: Discipline
       | 1         | SQL        |
 
   @Bug
+  @STP-265
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |
