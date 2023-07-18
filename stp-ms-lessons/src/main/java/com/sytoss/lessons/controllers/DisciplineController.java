@@ -38,10 +38,19 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Discipline create(
-            @RequestBody Discipline discipline) {
-        return disciplineService.create(discipline);
+            @RequestParam String name,
+            @RequestParam(required = false) String shortDescription,
+            @RequestParam(required = false) String fullDescription,
+            @RequestParam(required = false) byte[] icon
+    ) {
+        Discipline request = new Discipline();
+        request.setName(name);
+        request.setShortDescription(shortDescription);
+        request.setFullDescription(fullDescription);
+        request.setIcon(icon);
+        return disciplineService.create(request);
     }
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
@@ -125,8 +134,8 @@ public class DisciplineController {
     })
     @GetMapping(value = "/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the discipline to search icon")
-                                    @PathVariable("disciplineId")
-                                    Long disciplineId) {
+                                        @PathVariable("disciplineId")
+                                        Long disciplineId) {
         return disciplineService.getIcon(disciplineId);
     }
 

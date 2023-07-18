@@ -10,7 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +48,14 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     public void shouldSaveDiscipline() {
         when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<Discipline> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<>() {
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "discipline1");
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Discipline> result = doPost("/api/discipline", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -54,9 +63,15 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(disciplineService.create(any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
+
         HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Discipline> requestEntity = new HttpEntity<>(new Discipline(), headers);
-        ResponseEntity<String> result = doPost("/api/discipline", requestEntity, new ParameterizedTypeReference<>() {
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "discipline1");
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> result = doPost("/api/discipline", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(409, result.getStatusCode().value());
     }

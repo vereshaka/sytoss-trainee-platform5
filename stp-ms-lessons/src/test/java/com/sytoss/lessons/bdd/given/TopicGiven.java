@@ -7,11 +7,13 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import jakarta.transaction.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
+@Transactional
 public class TopicGiven extends AbstractGiven {
 
     @Given("^topic with id (.*) contains the following tasks:")
