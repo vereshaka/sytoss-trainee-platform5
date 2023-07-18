@@ -3,7 +3,6 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -39,7 +38,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "")
     public Discipline create(
             @RequestBody Discipline discipline) {
         return disciplineService.create(discipline);

@@ -35,7 +35,7 @@ public class GroupWhen extends CucumberIntegrationTest {
 
     @When("^\"(.*)\" group is created$")
     public void requestSentCreateGroupThatExist(String groupName) {
-        String url = "/api/group/";
+        String url = "/api/group";
         Group group = new Group();
         group.setName(groupName);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();

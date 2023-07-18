@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -60,7 +59,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("^teacher with id (.*) retrieve his disciplines$")
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
-        String url = "/api/teacher/my/disciplines";
+        String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
@@ -101,7 +100,7 @@ public class DisciplineWhen extends CucumberIntegrationTest {
 
     @When("student receive his disciplines")
     public void studentReceiveHisDisciplines() {
-        String url = "/api/my/disciplines";
+        String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         when(getUserConnector().findMyGroupId()).thenReturn(TestExecutionContext.getTestContext().getGroupId());

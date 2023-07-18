@@ -97,7 +97,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     @When("^student with (.*) id start personal exam \"(.*)\"$")
     public void startPersonalExam(String studentId, String personalExamName) throws JOSEException {
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, studentId);
-        String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
+        String url = getBaseUrl() + "/api/personal-exam/" + input.getId() + "/start";
         log.info("Send request to " + url);
         HttpEntity<Task> requestEntity = startTest(studentId);
         ResponseEntity<Question> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, Question.class);
@@ -108,7 +108,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
     @When("^student with (.*) id start second time personal exam \"(.*)\"$")
     public void startSecondTimePersonalExam(String studentId, String personalExamName) throws JOSEException {
         PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, studentId);
-        String url = getBaseUrl() + "/api/test/" + input.getId() + "/start";
+        String url = getBaseUrl() + "/api/personal-exam/" + input.getId() + "/start";
         log.info("Send request to " + url);
         HttpEntity<Task> requestEntity = startTest(studentId);
         ResponseEntity<String> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, String.class);
@@ -118,7 +118,7 @@ public class PersonalExamWhen extends CucumberIntegrationTest {
 
     @When("^system check task domain with id: \"(.*)\" is used$")
     public void systemCheckTaskDomain(String taskDomainId) throws JOSEException {
-        String url = "/api/task-domain/" + Long.parseLong(taskDomainId) + "/is-used-now";
+        String url = "/api/personal-exam/is-used-now/task-domain/" + Long.parseLong(taskDomainId);
         log.info("Send request to " + url);
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(generateJWT(List.of("123")));

@@ -71,7 +71,7 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^assign topic \"(.*)\" to this task$")
     public void linkTopicToThisTask(String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/task/" + TestExecutionContext.getTestContext().getTaskId() + "/topic/" + topicDTO.getId();
+        String url = "/api/topic/" + topicDTO.getId() + "task/" + TestExecutionContext.getTestContext().getTaskId();
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);

@@ -1,6 +1,5 @@
 package com.sytoss.users.controllers;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.services.UserService;
@@ -46,7 +45,7 @@ public class UserControllerTest extends AbstractControllerTest {
         when(userService.findGroupsId()).thenReturn(new ArrayList<>());
         HttpHeaders headers = getDefaultHttpHeaders("teacher");
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
-        ResponseEntity<List<Long>> result = doGet("/api/user/my/groupsId", requestEntity, new ParameterizedTypeReference<List<Long>>() {
+        ResponseEntity<List<Long>> result = doGet("/api/user/me/groupsId", requestEntity, new ParameterizedTypeReference<List<Long>>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -80,7 +79,7 @@ public class UserControllerTest extends AbstractControllerTest {
         when(userService.findByStudent()).thenReturn(List.of(new Group()));
         HttpHeaders httpHeaders = getDefaultHttpHeaders("student");
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Group>> responseEntity = doGet("/api/user/my/groups", httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> responseEntity = doGet("/api/user/me/groups", httpEntity, new ParameterizedTypeReference<List<Group>>() {
         });
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
@@ -90,7 +89,7 @@ public class UserControllerTest extends AbstractControllerTest {
         when(userService.findByStudent()).thenThrow(new UserNotFoundException("User not found"));
         HttpHeaders httpHeaders = getDefaultHttpHeaders("student");
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> responseEntity = doGet("/api/user/my/groups", httpEntity, new ParameterizedTypeReference<String>() {
+        ResponseEntity<String> responseEntity = doGet("/api/user/me/groups", httpEntity, new ParameterizedTypeReference<String>() {
         });
         assertEquals(HttpStatus.valueOf(404), responseEntity.getStatusCode());
     }

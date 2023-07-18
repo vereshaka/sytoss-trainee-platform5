@@ -62,7 +62,6 @@ public class DisciplineGiven extends AbstractGiven {
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
             }
-            disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
             disciplineDTO.setTeacherId(Long.valueOf(teacherId));
             disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));

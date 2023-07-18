@@ -42,16 +42,6 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void shouldFindDisciplinesByStudent() {
-        when(disciplineService.findAllMyDiscipline()).thenReturn(new ArrayList<>());
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Discipline>> result = doGet("/api/my/disciplines", httpEntity, new ParameterizedTypeReference<>() {
-        });
-        assertEquals(200, result.getStatusCode().value());
-    }
-
-    @Test
     public void shouldSaveDiscipline() {
         when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
         HttpHeaders headers = getDefaultHttpHeaders();
@@ -101,15 +91,6 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         assertEquals(200, result.getStatusCode().value());
     }
 
-    @Test
-    public void shouldFindDisciplines() {
-        when(disciplineService.findAllDisciplines()).thenReturn(new ArrayList<>());
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Discipline>> result = doGet("/api/disciplines", httpEntity, new ParameterizedTypeReference<>() {
-        });
-        assertEquals(200, result.getStatusCode().value());
-    }
 
     @Test
     public void shouldLinkGroupToDiscipline() {

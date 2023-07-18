@@ -64,7 +64,7 @@ public class UserWhen extends CucumberIntegrationTest {
 
     @When("student receive his groups")
     public void receiveAllGroupsOfStudent() {
-        String url = "/api/user/my/groups";
+        String url = "/api/user/me/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 

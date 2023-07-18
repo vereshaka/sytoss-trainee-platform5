@@ -38,7 +38,7 @@ class ImageControllerTest extends StpApplicationTest {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> responseEntity = doPost("/api/convert/image", requestEntity, String.class);
+        ResponseEntity<String> responseEntity = doPost("/api/image/convert", requestEntity, String.class);
 
         Assertions.assertEquals(400, responseEntity.getStatusCode().value());
     }
@@ -51,7 +51,7 @@ class ImageControllerTest extends StpApplicationTest {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> responseEntity = doPost("/api/convert/image", requestEntity, String.class);
+        ResponseEntity<String> responseEntity = doPost("/api/image/convert", requestEntity, String.class);
 
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
     }
@@ -62,7 +62,7 @@ class ImageControllerTest extends StpApplicationTest {
         when(imageService.getById(any())).thenReturn(photoBytes);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<byte[]> result = doGet("/api/question-image/5", httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<byte[]> result = doGet("/api/image/question/5", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -72,7 +72,7 @@ class ImageControllerTest extends StpApplicationTest {
         when(imageService.getById(any())).thenThrow(new ImageNotFoundException("123", new EntityNotFoundException()));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<byte[]> result = doGet("/api/question-image/5", httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<byte[]> result = doGet("/api/image/question/5", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(404, result.getStatusCode().value());
     }
