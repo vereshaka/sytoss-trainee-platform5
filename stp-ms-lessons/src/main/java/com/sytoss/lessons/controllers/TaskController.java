@@ -81,7 +81,8 @@ public class TaskController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/check-request-result")
-    public QueryResult getQueryResult(@RequestBody CheckRequestParameters checkRequestParameters) {
-        return taskService.getQueryResult(checkRequestParameters);
+    public QueryResult getQueryResult(@RequestParam(name = "request") String request,
+                                      @RequestParam(name = "taskDomainId") Long taskDomainId) {
+        return taskService.getQueryResult(request,taskDomainId);
     }
 }

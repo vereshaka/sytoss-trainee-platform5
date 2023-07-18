@@ -1,10 +1,12 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.*;
@@ -39,8 +41,12 @@ public class TaskServiceTest extends StpUnitTest {
     private TaskService taskService;
     @Mock
     private TopicService topicService;
+    @Mock
+    private TaskDomainConnector taskDomainConnector;
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
+    @Spy
+    private PumlConvertor pumlConvertor;
 
     @Test
     public void getTaskById() {
@@ -159,9 +165,14 @@ public class TaskServiceTest extends StpUnitTest {
     public void shouldReturnQueryResult() {
         HashMap hashMap = new HashMap();
         hashMap.put("1", "1");
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        taskDomainDTO.setDataScript("Script");
+        taskDomainDTO.setDatabaseScript("Script");
         QueryResult queryResult = new QueryResult(List.of(hashMap));
         when(checkTaskConnector.checkRequest(any())).thenReturn(queryResult);
-        QueryResult result = taskService.getQueryResult(new CheckRequestParameters());
-        assertEquals("1", queryResult.getResultMapList().get(0).get("1"));
+        when(taskDomainConnector.getReferenceById(any())).thenReturn(taskDomainDTO);
+        QueryResult result = taskService.getQueryResult("", 1L);
+        assertEquals("1", result.getResultMapList().get(0).get("1"));
     }
 }
