@@ -39,7 +39,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Discipline create(
             @RequestBody Discipline discipline) {
         return disciplineService.create(discipline);
