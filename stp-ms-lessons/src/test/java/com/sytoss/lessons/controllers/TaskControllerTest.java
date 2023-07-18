@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -82,17 +83,12 @@ public class TaskControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldReturnQueryResult() {
-        when(taskService.getQueryResult(any(), any())).thenReturn(new QueryResult());
+        when(taskService.getQueryResult(any())).thenReturn(new QueryResult());
         HttpHeaders headers = getDefaultHttpHeaders();
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", 1);
         when(userConnector.getMyProfile()).thenReturn(teacherMap);
-        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-        checkRequestParameters.setRequest("anything");
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("request", "request");
-        body.add("taskDomainId", 1L);
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(new TaskDomainRequestParameters(),headers);
         ResponseEntity<QueryResult> result = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
         assertEquals(200, result.getStatusCode().value());
     }

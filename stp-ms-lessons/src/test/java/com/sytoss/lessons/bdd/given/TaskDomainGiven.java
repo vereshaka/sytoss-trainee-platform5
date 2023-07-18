@@ -24,6 +24,7 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
+            taskDomainDTO.setDatabaseScript("Test script");
             String databaseScript = readFromFile("puml/database.puml");
             taskDomainDTO.setDatabaseScript(databaseScript);
             String dataScript = readFromFile("puml/data.puml");

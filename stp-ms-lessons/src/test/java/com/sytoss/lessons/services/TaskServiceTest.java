@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.stp.test.StpUnitTest;
@@ -172,7 +173,10 @@ public class TaskServiceTest extends StpUnitTest {
         QueryResult queryResult = new QueryResult(List.of(hashMap));
         when(checkTaskConnector.checkRequest(any())).thenReturn(queryResult);
         when(taskDomainConnector.getReferenceById(any())).thenReturn(taskDomainDTO);
-        QueryResult result = taskService.getQueryResult("", 1L);
+        TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
+        taskDomainRequestParameters.setRequest("");
+        taskDomainRequestParameters.setTaskDomainId(1L);
+        QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
         assertEquals("1", result.getResultMapList().get(0).get("1"));
     }
 }

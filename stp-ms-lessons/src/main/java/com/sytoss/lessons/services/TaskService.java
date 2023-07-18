@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
@@ -129,16 +130,17 @@ public class TaskService {
         return result;
     }
 
-    public QueryResult getQueryResult(String request, Long taskDomainId) {
-        TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainId);
-        if(taskDomainDTO!=null){
-            String script = taskDomainDTO.getDatabaseScript()+ StringUtils.LF + taskDomainDTO.getDataScript();
+    public QueryResult getQueryResult(TaskDomainRequestParameters taskDomainRequestParameters) {
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
+        if (taskDomainDTO != null) {
+            String script = taskDomainDTO.getDatabaseScript() + StringUtils.LF + taskDomainDTO.getDataScript();
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-            checkRequestParameters.setRequest(request);
+            checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
             checkRequestParameters.setScript(liquibaseScript);
             return checkTaskConnector.checkRequest(checkRequestParameters);
         }
-       throw new TaskDomainNotFoundException(taskDomainId);
+        throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
+
     }
 }

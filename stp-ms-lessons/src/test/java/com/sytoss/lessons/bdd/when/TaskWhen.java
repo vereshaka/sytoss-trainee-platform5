@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.CucumberIntegrationTest;
 import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
@@ -150,10 +151,10 @@ public class TaskWhen extends CucumberIntegrationTest {
         HttpHeaders headers = getDefaultHttpHeaders();
         when(getCheckTaskConnector().checkRequest(any())).thenReturn(queryResult);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("request", request);
-        body.add("taskDomainId", TestExecutionContext.getTestContext().getTaskDomainId());
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
+        taskDomainRequestParameters.setTaskDomainId(TestExecutionContext.getTestContext().getTaskDomainId());
+        taskDomainRequestParameters.setRequest(request);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, headers);
         ResponseEntity<QueryResult> responseEntity = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
 
         TestExecutionContext.getTestContext().setResponse(responseEntity);
