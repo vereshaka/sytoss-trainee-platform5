@@ -9,15 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Getter
 @CucumberContextConfiguration
-public class CucumberIntegrationTest extends StpIntegrationTest {
+public class ImageProviderIntegrationTest extends StpIntegrationTest {
 
     @Autowired
     private ImageConnector imageConnector;
-
-    @Override
-    protected TestExecutionContext<?> getTestExecutionContext() {
-        return super.getTestExecutionContext();
-    }
 
     @Override
     protected Object createDetails() {
