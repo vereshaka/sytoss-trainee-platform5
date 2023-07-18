@@ -36,10 +36,10 @@ public class PumlConvertor {
         return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder;
     }
 
-    public List<String> getEntities(String script) {
+    public List<String> getEntities(String entityScript) {
         Pattern pattern = Pattern.compile("entity.+\\{(?>\\n?.+)+\\n}");
         List<String> entities = new ArrayList<>();
-        Matcher matcher = pattern.matcher(script);
+        Matcher matcher = pattern.matcher(entityScript);
         while (matcher.find()) {
             for (int j = 0; j <= matcher.groupCount(); j++) {
                 entities.add(matcher.group(j));
