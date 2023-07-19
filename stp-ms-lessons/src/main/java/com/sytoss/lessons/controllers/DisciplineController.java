@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -64,12 +65,26 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Topic exist!"),
     })
-    @PostMapping("/{disciplineId}/topic")
+    @PostMapping(value = "/{disciplineId}/topic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Topic create(
             @Parameter(description = "id of discipline to be searched")
             @PathVariable("disciplineId") Long disciplineId,
-            @RequestBody Topic topic) {
-        return topicService.create(disciplineId, topic);
+            @RequestParam String name,
+            @RequestParam(required = false) String shortDescription,
+            @RequestParam(required = false) String fullDescription,
+            @RequestParam(required = false) Double duration,
+            @RequestParam(required = false) MultipartFile icon) throws IOException {
+        Topic request = new Topic();
+        request.setName(name);
+        request.setShortDescription(shortDescription);
+        request.setFullDescription(fullDescription);
+        request.setDuration(duration);
+        try {
+            request.setIcon(icon.getBytes());
+        } catch (IOException e) {
+            throw new LoadImageException("Could not read bytes of icon for discipline " + disciplineId, e);
+        }
+        return topicService.create(disciplineId, request);
     }
 
     @Operation(description = "Method that retrieve groups by discipline")
