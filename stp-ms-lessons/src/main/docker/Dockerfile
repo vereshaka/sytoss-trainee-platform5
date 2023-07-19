@@ -9,7 +9,7 @@ RUN apt-get update && \
         libexpat1-dev \
         libgd-dev \
         zlib1g-dev \
-        libfreetype6
+        libfreetype6 \
         fontconfig \
         && \
     mkdir -p $GRAPHVIZ_BUILD_DIR && \
