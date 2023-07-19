@@ -79,10 +79,12 @@ public class DisciplineController {
         request.setShortDescription(shortDescription);
         request.setFullDescription(fullDescription);
         request.setDuration(duration);
-        try {
-            request.setIcon(icon.getBytes());
-        } catch (IOException e) {
-            throw new LoadImageException("Could not read bytes of icon for discipline " + disciplineId, e);
+        if (icon != null) {
+            try {
+                request.setIcon(icon.getBytes());
+            } catch (IOException e) {
+                throw new LoadImageException("Could not read bytes of icon for discipline " + disciplineId, e);
+            }
         }
         return topicService.create(disciplineId, request);
     }
