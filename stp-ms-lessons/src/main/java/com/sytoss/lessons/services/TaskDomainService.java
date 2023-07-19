@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -12,13 +13,16 @@ import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.lang3.StringUtils;
@@ -50,13 +54,15 @@ public class TaskDomainService {
 
     private final PumlConvertor pumlConvertor;
 
+    private final DisciplineConnector disciplineConnector;
+
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
-        Discipline discipline = disciplineService.getById(disciplineId);
+        DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElseThrow(() -> new DisciplineNotFoundException(disciplineId));
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
         if (oldTaskDomainDTO == null) {
-            taskDomain.setDiscipline(discipline);
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
+            taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
             return taskDomain;
