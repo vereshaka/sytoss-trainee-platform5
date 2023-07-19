@@ -14,7 +14,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 
 public abstract class CommonKeycloakConfig {
@@ -27,7 +30,7 @@ public abstract class CommonKeycloakConfig {
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/*")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs.yaml")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/actuator")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(resourceServerConfigurer -> resourceServerConfigurer

@@ -13,7 +13,7 @@ public class ImageWhen extends CucumberIntegrationTest {
     @When("^retrieve image by id (.*)")
     public void retrieveImageById(String id) {
         Long idValue = TestExecutionContext.getTestContext().getIdMapping().get(id);
-        String url = "/api/question-image/" + idValue;
+        String url = "/api/image/question/" + idValue;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<byte[]> httpEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
