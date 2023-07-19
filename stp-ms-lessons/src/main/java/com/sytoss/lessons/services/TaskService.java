@@ -1,14 +1,15 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
@@ -53,6 +54,7 @@ public class TaskService {
             throw new TaskNotFoundException(id);
         }
     }
+
 
     public Task create(Task task) {
         TaskDTO taskDTO = taskConnector.getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());

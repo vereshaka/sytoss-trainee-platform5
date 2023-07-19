@@ -8,10 +8,9 @@ import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.mockito.Mockito.when;
 
 public class TeacherGiven extends CucumberIntegrationTest {
 
@@ -19,6 +18,9 @@ public class TeacherGiven extends CucumberIntegrationTest {
     public void teacherExists(String firstName, String lastName, String email) {
         TestExecutionContext.getTestContext().setTeacherId(0L);
         TestExecutionContext.getTestContext().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
+        when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
     }
 
     @Given("^teachers have groups")

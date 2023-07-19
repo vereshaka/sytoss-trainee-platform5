@@ -24,7 +24,7 @@ public class TaskDTO {
     @Column(name = "ETALON_ANSWER")
     private String etalonAnswer;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;
 
