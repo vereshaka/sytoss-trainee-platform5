@@ -52,8 +52,8 @@ public class TaskDomainController {
     @PutMapping("/puml/{dataParameter}")
     public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                       @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
-                                  @RequestBody String puml) {
-        return taskDomainService.generatePngFromPuml(puml,parameter);
+                                      @RequestBody String puml) {
+        return taskDomainService.generatePngFromPuml(puml, parameter);
     }
 
     @Operation(description = "Method get count of tasks by task domain", security = @SecurityRequirement(name = "bearerAuth"))
@@ -62,7 +62,7 @@ public class TaskDomainController {
     })
     @GetMapping("/{taskDomainId}/overview")
     public TaskDomainModel getCountOfTasks(@Parameter(description = "id of the task domain to be searched by")
-                                    @PathVariable(value = "taskDomainId") Long taskDomainId) {
+                                           @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getCountOfTasks(taskDomainId);
     }
 }
