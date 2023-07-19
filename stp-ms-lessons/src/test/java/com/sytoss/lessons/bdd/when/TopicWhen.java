@@ -8,10 +8,17 @@ import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 public class TopicWhen extends CucumberIntegrationTest {
@@ -49,22 +56,44 @@ public class TopicWhen extends CucumberIntegrationTest {
     @When("^teacher create \"(.*)\" topic$")
     public void topicCreating(String topicName) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
-        Topic topic = new Topic();
-        topic.setName(topicName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Topic> httpEntity = new HttpEntity<>(topic, httpHeaders);
-        ResponseEntity<Topic> responseEntity = doPost(url, httpEntity, Topic.class);
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        File photoFile;
+        try {
+            photoFile = File.createTempFile("photo", ".jpg");
+            Files.write(photoFile.toPath(), photoBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpHeaders headers = getDefaultHttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "anything");
+        body.add("icon", new FileSystemResource(photoFile));
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<Topic> responseEntity = doPost(url, requestEntity, Topic.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 
     @When("^teacher creates existing \"(.*)\" topic$")
     public void existingTopicCreating(String topicName) {
         String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
-        Topic topic = new Topic();
-        topic.setName(topicName);
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Topic> httpEntity = new HttpEntity<>(topic, httpHeaders);
-        ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        File photoFile;
+        try {
+            photoFile = File.createTempFile("photo", ".jpg");
+            Files.write(photoFile.toPath(), photoBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpHeaders headers = getDefaultHttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "anything");
+        body.add("icon", new FileSystemResource(photoFile));
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> responseEntity = doPost(url, requestEntity, String.class);
         TestExecutionContext.getTestContext().setResponse(responseEntity);
     }
 

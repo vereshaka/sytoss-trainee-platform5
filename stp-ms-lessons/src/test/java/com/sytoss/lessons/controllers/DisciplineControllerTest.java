@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -15,7 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,9 +32,27 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldSaveTopic() {
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", 1);
+        when(userConnector.getMyProfile()).thenReturn(teacherMap);
         when(topicService.create(anyLong(), any(Topic.class))).thenReturn(new Topic());
+
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        File photoFile;
+        try {
+            photoFile = File.createTempFile("photo", ".jpg");
+            Files.write(photoFile.toPath(), photoBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Topic> requestEntity = new HttpEntity<>(new Topic(), headers);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "anything");
+        body.add("icon", new FileSystemResource(photoFile));
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
         ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());
     }

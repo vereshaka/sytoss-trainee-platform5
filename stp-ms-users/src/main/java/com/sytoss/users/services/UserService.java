@@ -13,7 +13,7 @@ import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
-import com.sytoss.users.services.exceptions.LoadImageException;
+import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
 import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -71,7 +71,7 @@ public class UserService extends AbstractStpService {
     }
 
     private AbstractUser instantiateUser(UserDTO userDto) {
-        AbstractUser result = null;
+        AbstractUser result;
         if (userDto instanceof TeacherDTO) {
             Teacher teacher = new Teacher();
             userConverter.fromDTO(userDto, teacher);
