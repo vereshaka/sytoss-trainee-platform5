@@ -14,6 +14,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
@@ -38,6 +39,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,9 +72,14 @@ public class TaskDomainServiceTest extends StpUnitTest {
     @Spy
     private PumlConvertor pumlConvertor;
 
+    @Mock
+    private DisciplineConnector disciplineConnector;
+
     @Test
     public void shouldCreateTaskDomain() {
-        when(disciplineService.getById(1L)).thenReturn(createReference(1L));
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        when(disciplineConnector.findById(any())).thenReturn(Optional.of(disciplineDTO));
         when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(null);
         Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -97,7 +104,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain newTaskDomain = new TaskDomain();
         newTaskDomain.setName("TaskDomain first");
         newTaskDomain.setDatabaseScript("script");
-        when(disciplineService.getById(1L)).thenReturn(createReference(1L));
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        when(disciplineConnector.findById(any())).thenReturn(Optional.of(disciplineDTO));
         when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(new TaskDomainDTO());
         assertThrows(TaskDomainAlreadyExist.class, () -> taskDomainService.create(1L, newTaskDomain));
     }

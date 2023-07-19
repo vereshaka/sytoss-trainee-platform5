@@ -3,6 +3,8 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;

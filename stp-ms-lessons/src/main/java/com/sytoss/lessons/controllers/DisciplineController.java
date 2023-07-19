@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -43,13 +45,17 @@ public class DisciplineController {
             @RequestParam String name,
             @RequestParam(required = false) String shortDescription,
             @RequestParam(required = false) String fullDescription,
-            @RequestParam(required = false) byte[] icon
-    ) {
+            @RequestParam(required = false) MultipartFile icon
+    ) throws IOException {
         Discipline request = new Discipline();
         request.setName(name);
         request.setShortDescription(shortDescription);
         request.setFullDescription(fullDescription);
-        request.setIcon(icon);
+        if (icon != null) {
+            request.setIcon(icon.getBytes());
+        } else {
+            request.setIcon(null);
+        }
         return disciplineService.create(request);
     }
 

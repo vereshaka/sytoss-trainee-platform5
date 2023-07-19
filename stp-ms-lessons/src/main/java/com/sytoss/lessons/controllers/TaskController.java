@@ -3,8 +3,6 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
-
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,7 +38,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Task already exist!")
     })
-    @PostMapping("/")
+    @PostMapping("")
     public Task create(@RequestBody Task task) {
         return taskService.create(task);
     }
