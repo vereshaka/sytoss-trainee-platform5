@@ -3,7 +3,6 @@ package com.sytoss.stp.test.cucumber;
 import com.sytoss.stp.test.StpApplicationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 
-
 @CucumberContextConfiguration
 public abstract class StpIntegrationTest<T> extends StpApplicationTest {
 
@@ -12,7 +11,7 @@ public abstract class StpIntegrationTest<T> extends StpApplicationTest {
     }
 
     protected TestExecutionContext<T> getTestExecutionContext() {
-        TestExecutionContext<T> testContext = TestExecutionContext.<T>getTestContext();
+        TestExecutionContext<T> testContext = TestExecutionContext.getTestContext();
         if (testContext.getDetails() == null) {
             testContext.setDetails(createDetails());
         }

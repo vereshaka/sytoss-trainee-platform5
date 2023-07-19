@@ -8,12 +8,12 @@ import java.util.List;
 
 public class AbstractGiven extends LessonsIntegrationTest {
 
-    protected void deleteTopics(List<TopicDTO> topics){
+    protected void deleteTopics(List<TopicDTO> topics) {
         //TODO: yevgenyv: if topics contains references this operation should be failed
         getTopicConnector().deleteAll(topics);
     }
 
-    protected void deleteTasks(List<TaskDTO> tasks){
+    protected void deleteTasks(List<TaskDTO> tasks) {
         //TODO: yevgenyv: if tasks contains references this operation should be failed
         getTaskConnector().deleteAll(tasks);
     }

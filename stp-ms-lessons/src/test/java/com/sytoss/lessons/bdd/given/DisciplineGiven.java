@@ -5,6 +5,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +16,7 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^this teacher has \"(.*)\" discipline with id (.*) and following topics:")
     public void teacherHasDiscipline(String disciplineName, String disciplineId, DataTable topicsData) {
+        init();
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
         if (discipline == null) {
