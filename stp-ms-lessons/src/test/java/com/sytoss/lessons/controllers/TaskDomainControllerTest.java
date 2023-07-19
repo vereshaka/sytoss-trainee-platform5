@@ -1,11 +1,11 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.stp.test.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,12 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +44,8 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     @Test
     public void shouldNotUpdateTaskDomainWhenPersonalExamNotFinished() {
         when(taskDomainService.update(anyLong(), any())).thenThrow(new TaskDomainIsUsed("new"));
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
         ResponseEntity<String> response = doPut("/api/task-domain/123", requestEntity, String.class);
         assertEquals(409, response.getStatusCode().value());
     }
@@ -58,8 +53,8 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     @Test
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(taskDomainService.create(anyLong(), any(TaskDomain.class))).thenThrow(new TaskDomainAlreadyExist("SQL"));
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
         ResponseEntity<String> result = doPost("/api/discipline/123/task-domain", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
@@ -82,7 +77,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     }
 
     @Test
-    public void ShouldReturnTaskDomainImage() throws IOException {
+    public void ShouldReturnTaskDomainImage() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         String pumlScript = FileUtils.readFromFile("puml/script.puml");
         HttpEntity<String> httpEntity = new HttpEntity<>(pumlScript, httpHeaders);

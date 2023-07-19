@@ -22,8 +22,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         for (Map<String, String> columns : rows) {
             if (!(getTestExecutionContext().getDetails().getTaskMapping().containsKey(columns.get("topic")))) {
                 getTestExecutionContext().getDetails().getTaskMapping().put(columns.get("topic"), columns.get("task"));
-            }
-            else {
+            } else {
                 String tasks = getTestExecutionContext().getDetails().getTaskMapping().get(columns.get("topic"));
                 tasks = tasks + ", " + columns.get("task");
                 getTestExecutionContext().getDetails().getTaskMapping().replace(columns.get("topic"), tasks);

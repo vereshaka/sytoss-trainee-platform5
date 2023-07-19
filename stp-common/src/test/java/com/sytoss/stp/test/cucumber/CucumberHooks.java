@@ -8,12 +8,12 @@ import io.cucumber.java.BeforeAll;
 public class CucumberHooks extends StpApplicationTest {
 
     @BeforeAll
-    public static void initServer(){
+    public static void initServer() {
         init();
     }
 
     @After
     public void testFinish() {
-       TestExecutionContext.drop();
+        TestExecutionContext.drop();
     }
 }

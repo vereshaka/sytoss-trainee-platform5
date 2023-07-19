@@ -33,9 +33,9 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     @Test
     public void shouldCreateExam() {
         when(personalExamService.create(any())).thenReturn(new PersonalExam());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
-        HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), httpHeaders);
         ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
@@ -43,18 +43,18 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     @Test
     public void shouldReturnBooleanConditionIfTaskDomainIsUsed() {
         when(personalExamService.taskDomainIsUsed(anyLong())).thenReturn(true);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
-        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Boolean> result = doGet("/api/personal-exam/is-used-now/task-domain/123", requestEntity, boolean.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
     public void shouldSummaryExam() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> result = doGet("/api/personal-exam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
@@ -62,10 +62,10 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     @Test
     public void shouldStartTest() throws JOSEException {
         when(personalExamService.start(anyString())).thenReturn(new Question());
-        HttpHeaders headers = new HttpHeaders();
+        HttpHeaders httpHeaders = new HttpHeaders();
 
-        headers.setBearerAuth(generateJWT(List.of("123"), "1"));
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<Question> result = doGet("/api/personal-exam/123/start", requestEntity, Question.class);
         assertEquals(200, result.getStatusCode().value());
     }
@@ -78,10 +78,10 @@ public class PersonalExamControllerTest extends StpApplicationTest {
 
         when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"), "1"));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, httpHeaders);
 
         ResponseEntity<Answer> result = doPost("/api/personal-exam/12dsa/task/answer", requestEntity, Answer.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());

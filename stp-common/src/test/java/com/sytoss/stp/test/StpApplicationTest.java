@@ -45,15 +45,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 public abstract class StpApplicationTest extends StpUnitTest {
 
+    private static HttpServer httpServer;
+    private static final RSAKey JWK = createJWK();
     @Autowired
     private TestRestTemplate restTemplate;
-
     @Autowired
     private AbstractApplicationContext applicationContext;
-
-    private static HttpServer httpServer;
-
-    private static RSAKey JWK = createJWK();
 
     private static RSAKey createJWK() {
         try {
@@ -61,11 +58,6 @@ public abstract class StpApplicationTest extends StpUnitTest {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    public void shouldLoadApplicationContext() {
-        assertNotNull(applicationContext);
     }
 
     @BeforeAll
@@ -94,6 +86,11 @@ public abstract class StpApplicationTest extends StpUnitTest {
     public static void tearDown() {
         httpServer.stop(0);
         log.info("HTTP Server shutdown...");
+    }
+
+    @Test
+    public void shouldLoadApplicationContext() {
+        assertNotNull(applicationContext);
     }
 
     protected long getPort() {

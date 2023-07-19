@@ -3,8 +3,8 @@ package com.sytoss.producer.bdd.then;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
-import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class AnswerThen extends TestProducerIntegrationTest {
 
     @Then("^PersonalExam with \"(.*)\" question should be received$")
-    public void questionShouldBe(String question)  {
+    public void questionShouldBe(String question) {
         Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
         assertEquals(question, firstTask.getTask().getQuestion());
     }

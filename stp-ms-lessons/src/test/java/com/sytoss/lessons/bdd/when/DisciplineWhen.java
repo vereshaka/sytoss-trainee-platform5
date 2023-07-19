@@ -63,8 +63,8 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void requestSentFindGroupsByDiscipline(String disciplineName) {
         DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
         String url = "/api/discipline/" + discipline.getId();
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Discipline> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<Discipline> responseEntity = doGet(url, requestEntity, Discipline.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -105,7 +105,7 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void getDisciplineIcon() {
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/icon";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"","","",""));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         getTestExecutionContext().setResponse(responseEntity);

@@ -62,12 +62,12 @@ public class TopicWhen extends LessonsIntegrationTest {
             throw new RuntimeException(e);
         }
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "anything");
         body.add("icon", new FileSystemResource(photoFile));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<Topic> responseEntity = doPost(url, requestEntity, Topic.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -84,12 +84,12 @@ public class TopicWhen extends LessonsIntegrationTest {
             throw new RuntimeException(e);
         }
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "anything");
         body.add("icon", new FileSystemResource(photoFile));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, requestEntity, String.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -107,8 +107,8 @@ public class TopicWhen extends LessonsIntegrationTest {
     @When("^receive this topic's icon$")
     public void getTopicIcon() {
         String url = "/api/topic/" + getTestExecutionContext().getDetails().getTopicId() + "/icon";
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         getTestExecutionContext().setResponse(responseEntity);
     }

@@ -35,11 +35,11 @@ public class AnswerWhen extends TestProducerIntegrationTest {
         Score score = new Score();
         score.setValue(1);
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(score);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"), String.valueOf(getTestExecutionContext().getDetails().getStudentId())));
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), String.valueOf(getTestExecutionContext().getDetails().getStudentId())));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         String url = "/api/personal-exam/" + personalExamId + "/task/answer";
-        HttpEntity<String> request = new HttpEntity<>(answer, headers);
+        HttpEntity<String> request = new HttpEntity<>(answer, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
         getTestExecutionContext().getDetails().setResponse(responseEntity);

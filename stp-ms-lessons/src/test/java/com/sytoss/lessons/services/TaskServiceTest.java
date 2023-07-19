@@ -2,12 +2,9 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.*;
-import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.*;
@@ -27,7 +24,6 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -175,7 +171,7 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnQueryResult() {
-        HashMap hashMap = new HashMap();
+        HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("1", "1");
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);

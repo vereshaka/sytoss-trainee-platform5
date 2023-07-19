@@ -32,7 +32,7 @@ public class GroupWhen extends LessonsIntegrationTest {
     public void receiveAllGroupsByTeacherWithId(String teacherKey) {
         String url = "/api/teacher/my/groups";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"123","123","123","123"));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "123", "123", "123", "123"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getIdMapping().get(teacherKey).intValue());

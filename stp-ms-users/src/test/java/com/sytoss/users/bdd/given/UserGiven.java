@@ -1,7 +1,6 @@
 package com.sytoss.users.bdd.given;
 
-import com.sytoss.users.bdd.CucumberIntegrationTest;
-import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.UserDTO;
@@ -13,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Transactional
-public class UserGiven extends CucumberIntegrationTest {
+public class UserGiven extends UsersIntegrationTest {
 
     @DataTableType
     public GroupDTO mapGroupDTO(Map<String, String> row) {
@@ -47,12 +46,12 @@ public class UserGiven extends CucumberIntegrationTest {
             studentDTO.setUid("thisIsNotLongId");
             studentDTO = getUserConnector().save(studentDTO);
         }
-        TestExecutionContext.getTestContext().setUser(studentDTO);
+        getTestExecutionContext().getDetails().setUser(studentDTO);
     }
 
     @Given("this student assign to group")
     public void thisStudentAssignToGroup(List<GroupDTO> groupDTOList) {
-        StudentDTO studentDTO = (StudentDTO) getUserConnector().getByEmail(TestExecutionContext.getTestContext().getUser().getEmail());
+        StudentDTO studentDTO = (StudentDTO) getUserConnector().getByEmail(getTestExecutionContext().getDetails().getUser().getEmail());
         groupDTOList.forEach(getGroupConnector()::save);
 
         studentDTO.setGroups(groupDTOList);
@@ -61,7 +60,7 @@ public class UserGiven extends CucumberIntegrationTest {
 
     @Given("this user has profile photo")
     public void thisUserHasProfilePhoto() {
-        UserDTO userDTO = TestExecutionContext.getTestContext().getUser();
+        UserDTO userDTO = getTestExecutionContext().getDetails().getUser();
         byte[] photoBytes = {0x01, 0x02, 0x03};
         userDTO.setPhoto(photoBytes);
         getUserConnector().save(userDTO);
@@ -74,7 +73,7 @@ public class UserGiven extends CucumberIntegrationTest {
         for (int i = 0; i < numberStrings.length; i++) {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
-        UserDTO studentDTO = getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
+        UserDTO studentDTO = getUserConnector().getByUid(getTestExecutionContext().getDetails().getUser().getUid());
         studentDTO.setPhoto(icon);
         getUserConnector().save(studentDTO);
     }

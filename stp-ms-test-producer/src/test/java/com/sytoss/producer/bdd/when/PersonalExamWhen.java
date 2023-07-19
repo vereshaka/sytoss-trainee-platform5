@@ -26,9 +26,9 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
 
     @When("^system create \"(.*)\" personal exam by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id$")
     public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, String studentId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         when(getImageConnector().convertImage(anyString())).thenReturn(1L);
         ExamConfiguration examConfiguration = new ExamConfiguration();
         Student student = new Student();
@@ -52,7 +52,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         discipline.setName(disciplineName);
         when(getMetadataConnector().getDiscipline(anyLong())).thenReturn(discipline);
         when(getMetadataConnector().getTasksForTopic(anyLong())).thenReturn(taskList);
-        HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, headers);
+        HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, httpHeaders);
         String url = getBaseUrl() + URI + "personal-exam/create";
         ResponseEntity<PersonalExam> responseEntity = getRestTemplate().postForEntity(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
@@ -62,9 +62,9 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
     @When("^the exam with id (.*) is done$")
     public void theExamIsDoneOnTask(String examId) {
         String url = URI + "personal-exam/" + examId + "/summary";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
@@ -115,21 +115,21 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
     }
 
     @When("^system check task domain with id: \"(.*)\" is used$")
-    public void systemCheckTaskDomain(String taskDomainId) throws JOSEException {
+    public void systemCheckTaskDomain(String taskDomainId) {
         String url = "/api/personal-exam/is-used-now/task-domain/" + Long.parseLong(taskDomainId);
         log.info("Send request to " + url);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         getTestExecutionContext().getDetails().setResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 
     private HttpEntity<Task> startTest(String studentId) throws JOSEException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(generateJWT(List.of("123"), studentId));
-        return new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentId));
+        return new HttpEntity<>(null, httpHeaders);
     }
 }

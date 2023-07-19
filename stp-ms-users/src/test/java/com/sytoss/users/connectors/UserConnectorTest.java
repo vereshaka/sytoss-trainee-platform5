@@ -1,6 +1,6 @@
 package com.sytoss.users.connectors;
 
-import com.sytoss.users.AbstractApplicationTest;
+import com.sytoss.stp.test.StpApplicationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import com.sytoss.users.dto.TeacherDTO;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class UserConnectorTest extends AbstractApplicationTest {
+public class UserConnectorTest extends StpApplicationTest {
 
     @Autowired
     private UserConnector userConnector;

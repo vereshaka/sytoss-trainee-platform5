@@ -46,12 +46,12 @@ public class DisciplineControllerTest extends LessonsControllerTest {
             throw new RuntimeException(e);
         }
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "anything");
         body.add("icon", new FileSystemResource(photoFile));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
 
         ResponseEntity<Topic> result = doPost("/api/discipline/1/topic", requestEntity, Topic.class);
         assertEquals(200, result.getStatusCode().value());
@@ -60,8 +60,8 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     @Test
     public void shouldFindGroupsByDiscipline() {
         when(disciplineService.getGroups(any())).thenReturn(new ArrayList<>());
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
@@ -70,13 +70,13 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     @Test
     public void shouldSaveDiscipline() {
         when(disciplineService.create(any(Discipline.class))).thenReturn(new Discipline());
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "discipline1");
 
-        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
 
         ResponseEntity<Discipline> result = doPost("/api/discipline", httpEntity, new ParameterizedTypeReference<>() {
         });
@@ -87,13 +87,13 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     void shouldReturnExceptionWhenSaveExistingDiscipline() {
         when(disciplineService.create(any(Discipline.class))).thenThrow(new DisciplineExistException("SQL"));
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "discipline1");
 
-        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> result = doPost("/api/discipline", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(409, result.getStatusCode().value());
@@ -122,9 +122,9 @@ public class DisciplineControllerTest extends LessonsControllerTest {
     @Test
     public void shouldFindTasksDomainByDiscipline() {
         when(taskDomainService.findByDiscipline(any())).thenReturn(new ArrayList<>());
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/task-domains", requestEntity, new ParameterizedTypeReference<List<TaskDomain>>() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<List<TaskDomain>> result = doGet("/api/discipline/1/task-domains", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -153,7 +153,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<List<Topic>>() {
+        ResponseEntity<List<Topic>> result = doGet("/api/discipline/1/topics", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }

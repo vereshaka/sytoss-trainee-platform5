@@ -2,8 +2,7 @@ package com.sytoss.users.bdd.then;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.bdd.CucumberIntegrationTest;
-import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.UserDTO;
 import io.cucumber.java.en.Then;
@@ -15,18 +14,18 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserThen extends CucumberIntegrationTest {
+public class UserThen extends UsersIntegrationTest {
 
     @Then("^teacher with \"(\\w+)\" firstname and \"(\\w+)\" lastname should exist$")
     public void teacherShouldBeSave(String firstName, String lastname) {
-        Teacher teacher = (Teacher) TestExecutionContext.getTestContext().getResponse().getBody();
+        Teacher teacher = (Teacher) getTestExecutionContext().getResponse().getBody();
         assertEquals(firstName, teacher.getFirstName());
         assertEquals(lastname, teacher.getLastName());
     }
 
     @Then("^this user has photo")
     public void userHasPhoto() {
-        UserDTO userDto = getUserConnector().getByEmail(TestExecutionContext.getTestContext().getUser().getEmail());
+        UserDTO userDto = getUserConnector().getByEmail(getTestExecutionContext().getDetails().getUser().getEmail());
         assertNotNull(userDto.getPhoto());
     }
 
@@ -38,7 +37,7 @@ public class UserThen extends CucumberIntegrationTest {
             getGroupConvertor().fromDTO(groupDTO, group);
             groupList.add(group);
         });
-        List<Group> responseGroupList = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<Group> responseGroupList = (List<Group>) getTestExecutionContext().getResponse().getBody();
         Assertions.assertEquals(groupList.size(), responseGroupList.size());
         Assertions.assertTrue(groupList.stream()
                 .allMatch(expectedGroup -> Objects.requireNonNull(responseGroupList).stream()
@@ -50,16 +49,16 @@ public class UserThen extends CucumberIntegrationTest {
 
     @Then("should return photo")
     public void shouldReturnPhoto() {
-        byte[] photo = TestExecutionContext.getTestContext().getUser().getPhoto();
-        byte[] userPhoto = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        byte[] photo = getTestExecutionContext().getDetails().getUser().getPhoto();
+        byte[] userPhoto = (byte[]) getTestExecutionContext().getResponse().getBody();
         assertNotNull(userPhoto);
         assertArrayEquals(photo, userPhoto);
     }
 
     @Then("^student's photo should be received$")
     public void userPhotoShouldBeReceived() {
-        UserDTO studentDTO = getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
-        byte[] photo = (byte[]) TestExecutionContext.getTestContext().getResponse().getBody();
+        UserDTO studentDTO = getUserConnector().getByUid(getTestExecutionContext().getDetails().getUser().getUid());
+        byte[] photo = (byte[]) getTestExecutionContext().getResponse().getBody();
         assertEquals(studentDTO.getPhoto().length, photo.length);
     }
 }

@@ -4,8 +4,8 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.bdd.CucumberIntegrationTest;
-import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.bdd.UsersIntegrationTest;
+import com.sytoss.users.dto.UserDTO;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.When;
 import jakarta.transaction.Transactional;
@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Map;
 
 @Transactional
-public class UserWhen extends CucumberIntegrationTest {
+public class UserWhen extends UsersIntegrationTest {
 
     @When("^anonymous register in system as (teacher|student) with \"(.*)\" email and \"(\\w+)\" \"(\\w+)\" as name")
-    public void teacherCreating(String userType, String email, String firstname, String lastname) throws JOSEException {
+    public void teacherCreating(String userType, String email, String firstname, String lastname) {
         String url = "/api/user/me";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), firstname, lastname, email, userType));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Teacher> responseEntity = doGet(url, httpEntity, Teacher.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^this user upload the photo$")
@@ -48,18 +48,20 @@ public class UserWhen extends CucumberIntegrationTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.setBearerAuth(getToken());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
+
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("firstName", TestExecutionContext.getTestContext().getUser().getFirstName());
-        body.add("lastName", TestExecutionContext.getTestContext().getUser().getLastName());
+        body.add("firstName", getTestExecutionContext().getDetails().getUser().getFirstName());
+        body.add("lastName", getTestExecutionContext().getDetails().getUser().getLastName());
         body.add("photo", new FileSystemResource(photoFile));
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
 
         ResponseEntity<Void> responseEntity = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("student receive his groups")
@@ -67,29 +69,35 @@ public class UserWhen extends CucumberIntegrationTest {
         String url = "/api/user/me/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
 
-        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Group>>() {
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("retrieve photo of this user")
     public void retrievePhotoOfThisUser() {
-        String url = "/api/user/" + TestExecutionContext.getTestContext().getUser().getUid() + "/photo";
+        String url = "/api/user/" + getTestExecutionContext().getDetails().getUser().getUid() + "/photo";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^receive this student's photo")
     public void getUserPhoto() {
         String url = "/api/user/me/photo";
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @DataTableType

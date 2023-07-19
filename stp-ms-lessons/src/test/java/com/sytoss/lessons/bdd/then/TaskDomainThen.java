@@ -54,7 +54,7 @@ public class TaskDomainThen extends LessonsIntegrationTest {
         TaskDomain taskDomain = (TaskDomain) getTestExecutionContext().getResponse().getBody();
         assertNotNull(taskDomain);
         assertEquals(taskDomainName, taskDomain.getName());
-        String scriptFromFile = FileUtils.readFromFile("liquibase/"+path);
+        String scriptFromFile = FileUtils.readFromFile("liquibase/" + path);
         assertEquals(scriptFromFile, taskDomain.getDatabaseScript());
         assertEquals(scriptFromFile, taskDomain.getDataScript());
     }
@@ -67,6 +67,6 @@ public class TaskDomainThen extends LessonsIntegrationTest {
     @And("^task domain have (.*) tasks")
     public void taskDomainHaveTask(int countOfTasks) {
         TaskDomainModel taskDomainModel = (TaskDomainModel) getTestExecutionContext().getResponse().getBody();
-        assertEquals(countOfTasks,taskDomainModel.getCountOfTasks());
+        assertEquals(countOfTasks, taskDomainModel.getCountOfTasks());
     }
 }

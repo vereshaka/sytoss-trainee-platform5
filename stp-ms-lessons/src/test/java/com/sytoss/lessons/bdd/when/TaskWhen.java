@@ -84,7 +84,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         String url = "/api/topic/" + getTestExecutionContext().getIdMapping().get(topicKey) + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
+        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -96,7 +96,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         String url = "/api/topic/" + topicDTO.getId() + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<List<Task>>() {
+        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -143,13 +143,13 @@ public class TaskWhen extends LessonsIntegrationTest {
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", 1);
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         when(getCheckTaskConnector().checkRequest(any())).thenReturn(queryResult);
 
         TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
         taskDomainRequestParameters.setTaskDomainId(getTestExecutionContext().getDetails().getTaskDomainId());
         taskDomainRequestParameters.setRequest(request);
-        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, headers);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, httpHeaders);
         ResponseEntity<QueryResult> responseEntity = doPost(url, requestEntity, QueryResult.class);
 
         getTestExecutionContext().setResponse(responseEntity);

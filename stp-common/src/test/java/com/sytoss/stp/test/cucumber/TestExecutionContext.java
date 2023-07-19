@@ -13,6 +13,11 @@ import java.util.Map;
 public class TestExecutionContext<T> {
 
     private static final ThreadLocal<TestExecutionContext> testContext = new ThreadLocal<>();
+    private ResponseEntity response;
+    private String token;
+    private T details;
+    @Setter(AccessLevel.NONE)
+    private Map<String, Long> idMapping = new HashMap<>();
 
     public static <T> TestExecutionContext<T> getTestContext() {
         if (testContext.get() == null) {
@@ -24,15 +29,6 @@ public class TestExecutionContext<T> {
     public static void drop() {
         testContext.set(null);
     }
-
-    private ResponseEntity response;
-
-    private String token;
-
-    private T details;
-
-    @Setter(AccessLevel.NONE)
-    private Map<String, Long> idMapping = new HashMap<>();
 
     public void registerId(String key, Long id) {
         if (idMapping.containsKey(key)) {

@@ -34,14 +34,14 @@ public class TeacherGiven extends LessonsIntegrationTest {
         for (Map<String, String> columns : rows) {
             String index = columns.get("teacherId");
             Long teacherId = getTestExecutionContext().getIdMapping().get(index);
-            if(teacherId == null){
+            if (teacherId == null) {
                 teacherId = 10L;
-                if(!getTestExecutionContext().getIdMapping().isEmpty()){
+                if (!getTestExecutionContext().getIdMapping().isEmpty()) {
                     Long maxId = Collections.max(getTestExecutionContext().getIdMapping().entrySet(),
                             Map.Entry.comparingByValue()).getValue();
-                    teacherId = maxId+1;
+                    teacherId = maxId + 1;
                 }
-                getTestExecutionContext().getIdMapping().put(index,teacherId);
+                getTestExecutionContext().getIdMapping().put(index, teacherId);
             }
 
             String disciplineName = columns.get("discipline");

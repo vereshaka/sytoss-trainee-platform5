@@ -23,7 +23,7 @@ public class ExamWhen extends LessonsIntegrationTest {
 
     @DataTableType
     public Topic mapTopic(Map<String, String> entry) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"),getTestExecutionContext().getDetails().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"), getTestExecutionContext().getDetails().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(entry.get("topic"), disciplineDTO.getId());
 
         Topic topic = new Topic();
@@ -36,7 +36,7 @@ public class ExamWhen extends LessonsIntegrationTest {
     public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
         String url = "/api/exam/save";
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName,getTestExecutionContext().getDetails().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
         GroupReferenceDTO groupReferenceDTO = getGroupReferenceConnector().findByGroupId(getTestExecutionContext().getDetails().getGroupReferenceId());
 
         Group group = new Group();
@@ -53,8 +53,8 @@ public class ExamWhen extends LessonsIntegrationTest {
         exam.setDuration(duration);
         exam.setTopics(topics);
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
 
         ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);
         getTestExecutionContext().setResponse(responseEntity);

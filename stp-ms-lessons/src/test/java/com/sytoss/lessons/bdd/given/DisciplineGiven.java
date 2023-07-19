@@ -5,7 +5,6 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
-
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

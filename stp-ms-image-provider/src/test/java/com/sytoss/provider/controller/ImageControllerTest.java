@@ -32,11 +32,11 @@ class ImageControllerTest extends StpApplicationTest {
     void convertImageWithError() {
         when(imageService.generatePngFromQuestion(any())).thenThrow(new ConvertToImageException("", new RuntimeException()));
 
-        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpHeaders  httpHeaders = getDefaultHttpHeaders();
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("question", "anything");
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body,  httpHeaders);
 
         ResponseEntity<String> responseEntity = doPost("/api/image/convert", requestEntity, String.class);
 
@@ -45,11 +45,11 @@ class ImageControllerTest extends StpApplicationTest {
 
     @Test
     void convertImageWithoutError() {
-        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpHeaders  httpHeaders = getDefaultHttpHeaders();
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("question", "anything");
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body,  httpHeaders);
 
         ResponseEntity<String> responseEntity = doPost("/api/image/convert", requestEntity, String.class);
 

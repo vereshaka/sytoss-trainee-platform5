@@ -15,12 +15,12 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
 
     @Given("^personal exam exists$")
     public void personalExist(List<PersonalExam> personalExams) {
-        for(PersonalExam personalExam : personalExams){
+        for (PersonalExam personalExam : personalExams) {
             personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
-            for(Answer answer : personalExam.getAnswers()){
+            for (Answer answer : personalExam.getAnswers()) {
                 DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
                 TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(answer.getTask().getTaskDomain().getName(), disciplineDTO.getId());
-                if(taskDomainDTO == null){
+                if (taskDomainDTO == null) {
                     taskDomainDTO = new TaskDomainDTO();
                     taskDomainDTO.setName(answer.getTask().getTaskDomain().getName());
                     taskDomainDTO.setDiscipline(disciplineDTO);
