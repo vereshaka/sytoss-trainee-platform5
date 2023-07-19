@@ -27,6 +27,8 @@ public class TestExecutionContext<T> {
 
     private ResponseEntity response;
 
+    private String token;
+
     private T details;
 
     @Setter(AccessLevel.NONE)
@@ -38,6 +40,4 @@ public class TestExecutionContext<T> {
         }
         idMapping.put(key, id);
     }
-
-    private Long imageId;
 }

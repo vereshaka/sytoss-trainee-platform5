@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.when;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.stp.test.cucumber.TestExecutionContext;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -37,7 +36,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(getTestExecutionContext().getDetails().getToken());
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());

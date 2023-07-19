@@ -1,7 +1,8 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
@@ -17,7 +18,7 @@ public class TeacherGiven extends LessonsIntegrationTest {
     @Given("^teacher \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
     public void teacherExists(String firstName, String lastName, String email) {
         getTestExecutionContext().getDetails().setTeacherId(0L);
-        getTestExecutionContext().getDetails().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
+        getTestExecutionContext().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
     }
 
     @Given("^teachers have groups")

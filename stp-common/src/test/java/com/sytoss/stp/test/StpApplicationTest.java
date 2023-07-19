@@ -12,6 +12,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,6 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Getter
+@Slf4j
 public abstract class StpApplicationTest extends StpUnitTest {
 
     @Autowired
@@ -82,6 +84,7 @@ public abstract class StpApplicationTest extends StpUnitTest {
                 exchange.close();
             });
             httpServer.start();
+            log.info("HTTP Server started...");
         } catch (Exception e) {
             throw new RuntimeException("Could not initialize tests", e);
         }
@@ -90,6 +93,7 @@ public abstract class StpApplicationTest extends StpUnitTest {
     @AfterAll
     public static void tearDown() {
         httpServer.stop(0);
+        log.info("HTTP Server shutdown...");
     }
 
     protected long getPort() {
@@ -166,7 +170,7 @@ public abstract class StpApplicationTest extends StpUnitTest {
 
     protected HttpHeaders getDefaultHttpHeaders() {
         HttpHeaders result = new HttpHeaders();
-        if (StringUtils.isNoneEmpty()) {
+        if (StringUtils.isNoneEmpty(getToken())) {
             result.setBearerAuth(getToken());
         }
         return result;
