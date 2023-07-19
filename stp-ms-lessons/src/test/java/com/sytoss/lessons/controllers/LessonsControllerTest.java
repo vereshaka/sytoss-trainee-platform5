@@ -16,47 +16,32 @@ public class LessonsControllerTest extends StpApplicationTest {
 
     @InjectMocks
     protected DisciplineController disciplineController;
-
     @InjectMocks
     protected DisciplinesController disciplinesController;
-
     @InjectMocks
     protected ExamController examController;
-
     @InjectMocks
     protected TaskController taskController;
-
     @InjectMocks
     protected TaskDomainController taskDomainController;
-
     @InjectMocks
     protected TeacherController teacherController;
-
     @InjectMocks
     protected TopicController topicController;
-
     @MockBean
     protected TopicService topicService;
-
     @MockBean
     protected DisciplineService disciplineService;
-
     @MockBean
     protected TaskDomainService taskDomainService;
-
     @MockBean
     protected TaskService taskService;
-
     @MockBean
     protected ExamService examService;
-
     @MockBean
     protected UserConnector userConnector;
-
     @MockBean
     protected TopicConnector topicConnector;
-
-    final MultipartFile mockFile = mock(MultipartFile.class);
 
     @Override
     protected String getToken() {

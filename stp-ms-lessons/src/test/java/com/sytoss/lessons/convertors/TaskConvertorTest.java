@@ -2,8 +2,8 @@ package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 

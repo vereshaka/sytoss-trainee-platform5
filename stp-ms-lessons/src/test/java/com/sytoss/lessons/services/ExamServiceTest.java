@@ -5,12 +5,12 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 public class ExamServiceTest extends StpUnitTest {
 
     @InjectMocks
-    @Autowired
     private ExamService examService;
 
     @Mock

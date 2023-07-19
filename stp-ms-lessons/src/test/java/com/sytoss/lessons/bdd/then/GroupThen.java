@@ -1,8 +1,7 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Then;
@@ -12,11 +11,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class GroupThen extends CucumberIntegrationTest {
+public class GroupThen extends LessonsIntegrationTest {
 
     @Then("^groups should be received$")
     public void groupReferencesShouldBeReceived(List<GroupReferenceDTO> groups) {
-        List<GroupReferenceDTO> results = (List<GroupReferenceDTO>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<GroupReferenceDTO> results = (List<GroupReferenceDTO>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
@@ -33,7 +32,7 @@ public class GroupThen extends CucumberIntegrationTest {
 
     @Then("^groups of discipline with id (.*) should be received$")
     public void groupsShouldBeReceived(String disciplineId, List<Group> groups) {
-        List<Group> results = (List<Group>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<Group> results = (List<Group>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
@@ -47,8 +46,8 @@ public class GroupThen extends CucumberIntegrationTest {
         }
         assertEquals(quantityOfGroups, results.size());
 
-        if (TestExecutionContext.getTestContext().getIdMapping().get(disciplineId) != null) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(disciplineId));
+        if (getTestExecutionContext().getIdMapping().get(disciplineId) != null) {
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getById(getTestExecutionContext().getIdMapping().get(disciplineId));
             getDisciplineConnector().delete(disciplineDTO);
         }
     }

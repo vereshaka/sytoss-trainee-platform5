@@ -4,8 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TopicDTO;
@@ -20,11 +19,11 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-public class ExamWhen extends CucumberIntegrationTest {
+public class ExamWhen extends LessonsIntegrationTest {
 
     @DataTableType
     public Topic mapTopic(Map<String, String> entry) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"),TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"), getTestExecutionContext().getDetails().getTeacherId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(entry.get("topic"), disciplineDTO.getId());
 
         Topic topic = new Topic();
@@ -37,11 +36,11 @@ public class ExamWhen extends CucumberIntegrationTest {
     public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String groupName, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
         String url = "/api/exam/save";
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName,TestExecutionContext.getTestContext().getTeacherId());
-        GroupReferenceDTO groupReferenceDTO = getGroupReferenceConnector().findByGroupId(TestExecutionContext.getTestContext().getGroupReferenceId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        GroupReferenceDTO groupReferenceDTO = getGroupReferenceConnector().findByGroupId(getTestExecutionContext().getDetails().getGroupReferenceId());
 
         Group group = new Group();
-        group.setId(TestExecutionContext.getTestContext().getGroupReferenceId());
+        group.setId(getTestExecutionContext().getDetails().getGroupReferenceId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -54,10 +53,10 @@ public class ExamWhen extends CucumberIntegrationTest {
         exam.setDuration(duration);
         exam.setTopics(topics);
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
 
         ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 }

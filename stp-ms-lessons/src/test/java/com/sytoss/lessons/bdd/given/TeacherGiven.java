@@ -1,8 +1,8 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
@@ -12,14 +12,15 @@ import java.util.*;
 
 import static org.mockito.Mockito.when;
 
-public class TeacherGiven extends CucumberIntegrationTest {
+public class TeacherGiven extends LessonsIntegrationTest {
 
     @Given("^teacher \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
     public void teacherExists(String firstName, String lastName, String email) {
-        TestExecutionContext.getTestContext().setTeacherId(0L);
-        TestExecutionContext.getTestContext().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
+        Long teacherId = 0L;
+        getTestExecutionContext().getDetails().setTeacherId(teacherId);
+        getTestExecutionContext().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
-        teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
+        teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
     }
 
@@ -32,15 +33,15 @@ public class TeacherGiven extends CucumberIntegrationTest {
     private void getListOfGroupsFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
             String index = columns.get("teacherId");
-            Long teacherId = TestExecutionContext.getTestContext().getIdMapping().get(index);
-            if(teacherId == null){
+            Long teacherId = getTestExecutionContext().getIdMapping().get(index);
+            if (teacherId == null) {
                 teacherId = 10L;
-                if(!TestExecutionContext.getTestContext().getIdMapping().isEmpty()){
-                    Long maxId = Collections.max(TestExecutionContext.getTestContext().getIdMapping().entrySet(),
+                if (!getTestExecutionContext().getIdMapping().isEmpty()) {
+                    Long maxId = Collections.max(getTestExecutionContext().getIdMapping().entrySet(),
                             Map.Entry.comparingByValue()).getValue();
-                    teacherId = maxId+1;
+                    teacherId = maxId + 1;
                 }
-                TestExecutionContext.getTestContext().getIdMapping().put(index,teacherId);
+                getTestExecutionContext().getIdMapping().put(index, teacherId);
             }
 
             String disciplineName = columns.get("discipline");

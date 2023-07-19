@@ -2,12 +2,12 @@ package com.sytoss.stp.test.cucumber;
 
 import com.sytoss.stp.test.StpApplicationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
-import lombok.Getter;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.platform.suite.api.ConfigurationParameter;
 
+import static io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME;
 
 @CucumberContextConfiguration
+@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @Bug and not @Skip")
 public abstract class StpIntegrationTest<T> extends StpApplicationTest {
 
     protected String getBaseUrl() {
@@ -15,7 +15,7 @@ public abstract class StpIntegrationTest<T> extends StpApplicationTest {
     }
 
     protected TestExecutionContext<T> getTestExecutionContext() {
-        TestExecutionContext<T> testContext = TestExecutionContext.<T>getTestContext();
+        TestExecutionContext<T> testContext = TestExecutionContext.getTestContext();
         if (testContext.getDetails() == null) {
             testContext.setDetails(createDetails());
         }
@@ -23,4 +23,9 @@ public abstract class StpIntegrationTest<T> extends StpApplicationTest {
     }
 
     protected abstract T createDetails();
+
+    @Override
+    protected String getToken() {
+        return getTestExecutionContext().getToken();
+    }
 }

@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.then;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.Then;
@@ -13,11 +12,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public class ExamThen extends CucumberIntegrationTest {
+public class ExamThen extends LessonsIntegrationTest {
 
     @Then("^\"(.*)\" exam should be from (.*) to (.*) with (.*) tasks for this group with (.*) minutes duration$")
     public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, Integer duration) throws ParseException {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
+        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, getTestExecutionContext().getDetails().getGroupReferenceId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         Date relevantFrom = dateFormat.parse(relevantFromString);
@@ -32,7 +31,7 @@ public class ExamThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" exam for this group should have topics$")
     public void examShouldHaveTopic(String examName, List<TopicDTO> topicDTOList) {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, TestExecutionContext.getTestContext().getGroupReferenceId());
+        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, getTestExecutionContext().getDetails().getGroupReferenceId());
 
         Assertions.assertTrue(topicDTOList.stream()
                 .allMatch(expectedTopic -> examDTO.getTopics().stream()

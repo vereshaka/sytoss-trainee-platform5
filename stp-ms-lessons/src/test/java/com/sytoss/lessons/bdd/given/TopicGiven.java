@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -18,10 +17,10 @@ public class TopicGiven extends AbstractGiven {
 
     @Given("^topic with id (.*) contains the following tasks:")
     public void topicContainsTasks(String topicKey, DataTable tasksData) {
-        TopicDTO topic = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getIdMapping().get(topicKey));
+        TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
         List<TaskDTO> existsTasks = getTaskConnector().findByTopicsId(topic.getId());
 
-        TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
+        TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
 
         List<String> tasks = new ArrayList<>();
 
@@ -42,7 +41,7 @@ public class TopicGiven extends AbstractGiven {
 
     @Given("topics exist")
     public void thisExamHasAnswers(List<TopicDTO> topics) {
-        Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
+        Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         Map<Long, List<Long>> finalTopics = new HashMap<>();
         for (TopicDTO topic : topics) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
@@ -53,7 +52,7 @@ public class TopicGiven extends AbstractGiven {
                 disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
-            TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
+            getTestExecutionContext().getDetails().setDisciplineId(disciplineDTO.getId());
             TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId());
             if (topicResult == null) {
                 topicResult = new TopicDTO();
@@ -83,7 +82,7 @@ public class TopicGiven extends AbstractGiven {
 
     @Given("^this discipline doesn't have \"(.*)\" topic$")
     public void topicExist(String topicName) {
-        TopicDTO topic = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
+        TopicDTO topic = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
         if (topic != null) {
             getTopicConnector().delete(topic);
         }
@@ -92,7 +91,7 @@ public class TopicGiven extends AbstractGiven {
     @Given("^this discipline has \"(.*)\" topic$")
     public void disciplineHasTopic(String topicName) {
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
 
         TopicDTO topicResult = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         if (topicResult == null) {
@@ -101,12 +100,12 @@ public class TopicGiven extends AbstractGiven {
             topicResult.setDiscipline(disciplineDTO);
             topicResult = getTopicConnector().save(topicResult);
         }
-        TestExecutionContext.getTestContext().setTopicId(topicResult.getId());
+        getTestExecutionContext().getDetails().setTopicId(topicResult.getId());
     }
 
     @Given("^topic \"(.*)\" exists$")
     public void topicExists(String topicName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
         if (topicDTO == null) {
             topicDTO = new TopicDTO();
@@ -114,7 +113,7 @@ public class TopicGiven extends AbstractGiven {
             topicDTO.setDiscipline(disciplineDTO);
             topicDTO = getTopicConnector().save(topicDTO);
         }
-        TestExecutionContext.getTestContext().setTopicId(topicDTO.getId());
+        getTestExecutionContext().getDetails().setTopicId(topicDTO.getId());
     }
 
     @Given("^this topic has icon with bytes \"([^\\\"]*)\"$")
@@ -124,7 +123,7 @@ public class TopicGiven extends AbstractGiven {
         for (int i = 0; i < numberStrings.length; i++) {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
-        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(TestExecutionContext.getTestContext().getTopicId());
+        Optional<TopicDTO> optionalTopicDTO = getTopicConnector().findById(getTestExecutionContext().getDetails().getTopicId());
         TopicDTO topicDTO = optionalTopicDTO.orElse(null);
         topicDTO.setIcon(icon);
         getTopicConnector().save(topicDTO);

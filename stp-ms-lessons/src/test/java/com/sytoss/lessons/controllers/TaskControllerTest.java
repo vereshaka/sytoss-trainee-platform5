@@ -4,18 +4,14 @@ import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -47,8 +43,8 @@ public class TaskControllerTest extends LessonsControllerTest {
     @Test
     public void shouldCreateTask() {
         when(taskService.create(any(Task.class))).thenReturn(new Task());
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), httpHeaders);
         ResponseEntity<Task> result = doPost("/api/task", requestEntity, Task.class);
         assertEquals(200, result.getStatusCode().value());
     }
@@ -56,8 +52,8 @@ public class TaskControllerTest extends LessonsControllerTest {
     @Test
     public void shouldNotCreateTaskWhenItExists() {
         when(taskService.create(any(Task.class))).thenThrow(new TaskExistException("Test"));
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), headers);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), httpHeaders);
         ResponseEntity<String> result = doPost("/api/task", requestEntity, String.class);
         assertEquals(409, result.getStatusCode().value());
     }
@@ -84,11 +80,11 @@ public class TaskControllerTest extends LessonsControllerTest {
     @Test
     public void shouldReturnQueryResult() {
         when(taskService.getQueryResult(any())).thenReturn(new QueryResult());
-        HttpHeaders headers = getDefaultHttpHeaders();
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", 1);
         when(userConnector.getMyProfile()).thenReturn(teacherMap);
-        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(new TaskDomainRequestParameters(),headers);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(new TaskDomainRequestParameters(), httpHeaders);
         ResponseEntity<QueryResult> result = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
         assertEquals(200, result.getStatusCode().value());
     }

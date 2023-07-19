@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Given;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GroupGiven extends CucumberIntegrationTest {
+public class GroupGiven extends LessonsIntegrationTest {
 
     @Given("^groups exist$")
     public void groupsExist(List<GroupReferenceDTO> groups) {
@@ -22,7 +21,7 @@ public class GroupGiven extends CucumberIntegrationTest {
             DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
-                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
                 disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 getDisciplineConnector().save(disciplineDTO);
             }
@@ -32,7 +31,7 @@ public class GroupGiven extends CucumberIntegrationTest {
             }
             groupId.add(result.getGroupId());
         }
-        TestExecutionContext.getTestContext().setGroupId(groupId);
+        getTestExecutionContext().getDetails().setGroupId(groupId);
     }
 
     @Given("^teacher has \"(.*)\" discipline with id (.*) contains groups with id \"([^\\\"]*)\"$")
@@ -45,14 +44,14 @@ public class GroupGiven extends CucumberIntegrationTest {
             groupIds[i] = Long.parseLong(numberStrings[i]);
         }
 
-        if (TestExecutionContext.getTestContext().getIdMapping().get(disciplineId) != null) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(disciplineId));
+        if (getTestExecutionContext().getIdMapping().get(disciplineId) != null) {
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getById(getTestExecutionContext().getIdMapping().get(disciplineId));
             getDisciplineConnector().delete(disciplineDTO);
         }
 
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setName(disciplineName);
-        disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+        disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
         disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
         disciplineDTO = getDisciplineConnector().save(disciplineDTO);
 
@@ -64,6 +63,6 @@ public class GroupGiven extends CucumberIntegrationTest {
             getGroupReferenceConnector().save(groupReferenceDTO);
         }
 
-        TestExecutionContext.getTestContext().registerId(disciplineId, disciplineDTO.getId());
+        getTestExecutionContext().registerId(disciplineId, disciplineDTO.getId());
     }
 }

@@ -1,10 +1,10 @@
 package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.checktask.stp.service.ScoreService;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.RequestEntity;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select  Authors");
         checkTaskParameters.setScript(readFromFile("script1.json"));
-        RequestEntity httpEntity = new RequestEntity(checkTaskParameters, null, null);
+        HttpEntity<CheckTaskParameters> httpEntity = new HttpEntity<>(checkTaskParameters);
 
         ResponseEntity<String> responseEntity = doPost("/api/task/check", httpEntity, String.class);
 
@@ -56,8 +56,8 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         checkAnswerRequestBody.setRequest("select * from answer");
         checkAnswerRequestBody.setEtalon("select etalon");
         checkAnswerRequestBody.setScript("{: [{changeSet: {author {columns: [{column: {name: Answer, type: varchar}}], tableName: Answer}}, {createTable: {columns: [{column: {name: Etalon, type: varchar}}], tableName: Etalon}}], id: create_answer}}, {changeSet: {author: ivan-larin, changes: [{insert: {columns: [{column: {name: Answer, value: it_is_answer}}], tableName: Answer}}, {insert: {columns: [{column: {name: Etalon, value: it_is_etalon}}], tableName: Etalon}}], id: insert-answer}}]}");
-        RequestEntity httpEntity = new RequestEntity(checkAnswerRequestBody, null, null);
 
+        HttpEntity<CheckTaskParameters> httpEntity = new HttpEntity<>(checkAnswerRequestBody);
         ResponseEntity<Score> responseEntity = doPost("/api/task/check", httpEntity, Score.class);
 
         Assertions.assertEquals(400, responseEntity.getStatusCode().value());
@@ -71,7 +71,8 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from Authors");
         checkRequestBody.setScript(readFromFile("script1.json"));
-        RequestEntity httpEntity = new RequestEntity(checkRequestBody, null, null);
+
+        HttpEntity<CheckRequestParameters> httpEntity = new HttpEntity<>(checkRequestBody);
 
         ResponseEntity<Score> responseEntity = doPost("/api/task/check-request", httpEntity, Score.class);
 
@@ -85,7 +86,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from asdfasdfasdf");
         checkRequestBody.setScript(readFromFile("script1.json"));
-        RequestEntity httpEntity = new RequestEntity(checkRequestBody, null, null);
+        HttpEntity<CheckRequestParameters> httpEntity = new HttpEntity<>(checkRequestBody);
 
         ResponseEntity<Score> responseEntity = doPost("/api/task/check-request", httpEntity, Score.class);
 

@@ -3,10 +3,9 @@ package com.sytoss.producer.bdd.then;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
-import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -15,11 +14,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AnswerThen extends CucumberIntegrationTest {
+public class AnswerThen extends TestProducerIntegrationTest {
 
     @Then("^PersonalExam with \"(.*)\" question should be received$")
-    public void questionShouldBe(String question)  {
-        Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
+    public void questionShouldBe(String question) {
+        Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
         assertEquals(question, firstTask.getTask().getQuestion());
     }
 
@@ -49,7 +48,7 @@ public class AnswerThen extends CucumberIntegrationTest {
     @Then("response should return next task")
     public void responseShouldReturnNextTask(Answer answer) throws JsonProcessingException {
 
-        Answer nextAnswer = getMapper().readValue(IntegrationTest.getTestContext().getResponse().getBody(), Answer.class);
+        Answer nextAnswer = getMapper().readValue(getTestExecutionContext().getDetails().getResponse().getBody(), Answer.class);
 
         Assertions.assertEquals(answer.getId(), nextAnswer.getId());
         Assertions.assertEquals(answer.getTask().getQuestion(), nextAnswer.getTask().getQuestion());

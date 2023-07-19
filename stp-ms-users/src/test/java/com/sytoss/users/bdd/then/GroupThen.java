@@ -1,7 +1,6 @@
 package com.sytoss.users.bdd.then;
 
-import com.sytoss.users.bdd.CucumberIntegrationTest;
-import com.sytoss.users.bdd.common.TestExecutionContext;
+import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import io.cucumber.java.en.Then;
@@ -13,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
-public class GroupThen extends CucumberIntegrationTest {
+public class GroupThen extends UsersIntegrationTest {
 
     @Then("^this student should have \"(.*)\" group$")
     public void studentShouldHasGroup(String groupName) {
-        StudentDTO studentDTO = (StudentDTO) getUserConnector().getByUid(TestExecutionContext.getTestContext().getUser().getUid());
+        StudentDTO studentDTO = (StudentDTO) getUserConnector().getByUid(getTestExecutionContext().getDetails().getUser().getUid());
         List<GroupDTO> filter = studentDTO.getGroups().stream().filter(item -> item.getName().equals(groupName)).toList();
         assertEquals(1, filter.size());
     }

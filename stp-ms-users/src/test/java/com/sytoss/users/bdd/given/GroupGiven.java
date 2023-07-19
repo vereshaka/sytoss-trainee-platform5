@@ -1,10 +1,10 @@
 package com.sytoss.users.bdd.given;
 
-import com.sytoss.users.bdd.CucumberIntegrationTest;
+import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import io.cucumber.java.en.Given;
 
-public class GroupGiven extends CucumberIntegrationTest {
+public class GroupGiven extends UsersIntegrationTest {
 
     @Given("^\"(.*)\" group exists$")
     public void groupExist(String groupName) {

@@ -4,8 +4,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Student;
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bdd.common.TestContext;
+import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
@@ -14,20 +13,19 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
-public class PersonalExamGiven extends CucumberIntegrationTest {
+public class PersonalExamGiven extends TestProducerIntegrationTest {
 
     @Given("tasks exist")
     public void thisCustomerHasProjects(DataTable table) {
         List<Map<String, String>> rows = table.asMaps();
 
         for (Map<String, String> columns : rows) {
-            if (!(TestContext.getTaskMapping().containsKey(columns.get("topic")))) {
-                TestContext.getTaskMapping().put(columns.get("topic"), columns.get("task"));
-            }
-            else {
-                String tasks = TestContext.getTaskMapping().get(columns.get("topic"));
+            if (!(getTestExecutionContext().getDetails().getTaskMapping().containsKey(columns.get("topic")))) {
+                getTestExecutionContext().getDetails().getTaskMapping().put(columns.get("topic"), columns.get("task"));
+            } else {
+                String tasks = getTestExecutionContext().getDetails().getTaskMapping().get(columns.get("topic"));
                 tasks = tasks + ", " + columns.get("task");
-                TestContext.getTaskMapping().replace(columns.get("topic"), tasks);
+                getTestExecutionContext().getDetails().getTaskMapping().replace(columns.get("topic"), tasks);
             }
         }
     }

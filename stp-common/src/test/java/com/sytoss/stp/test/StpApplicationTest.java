@@ -12,6 +12,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.sun.net.httpserver.HttpServer;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -41,17 +42,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Getter
+@Slf4j
 public abstract class StpApplicationTest extends StpUnitTest {
 
+    private static HttpServer httpServer;
+    private static final RSAKey JWK = createJWK();
     @Autowired
     private TestRestTemplate restTemplate;
-
     @Autowired
     private AbstractApplicationContext applicationContext;
-
-    private static HttpServer httpServer;
-
-    private static RSAKey JWK = createJWK();
 
     private static RSAKey createJWK() {
         try {
@@ -59,11 +58,6 @@ public abstract class StpApplicationTest extends StpUnitTest {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Test
-    public void shouldLoadApplicationContext() {
-        assertNotNull(applicationContext);
     }
 
     @BeforeAll
@@ -82,6 +76,7 @@ public abstract class StpApplicationTest extends StpUnitTest {
                 exchange.close();
             });
             httpServer.start();
+            log.info("HTTP Server started...");
         } catch (Exception e) {
             throw new RuntimeException("Could not initialize tests", e);
         }
@@ -90,6 +85,12 @@ public abstract class StpApplicationTest extends StpUnitTest {
     @AfterAll
     public static void tearDown() {
         httpServer.stop(0);
+        log.info("HTTP Server shutdown...");
+    }
+
+    @Test
+    public void shouldLoadApplicationContext() {
+        assertNotNull(applicationContext);
     }
 
     protected long getPort() {
@@ -116,6 +117,31 @@ public abstract class StpApplicationTest extends StpUnitTest {
                 .claim("given_name", firstName)
                 .claim("family_name", lastName)
                 .claim("userType", userType)
+                .expirationTime(new Date(new Date().getTime() + 60 * 100000))
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(
+                new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
+                claimsSet);
+
+        try {
+            signedJWT.sign(new RSASSASigner(JWK));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+
+        return signedJWT.serialize();
+    }
+
+    protected String generateJWT(List<String> roles, String id) throws JOSEException {
+        LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
+        realmAccess.put("roles", new ArrayList<>(roles));
+
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject("test")
+                .issuer("test@test")
+                .claim("id", id)
+                .claim("realm_access", realmAccess)
                 .expirationTime(new Date(new Date().getTime() + 60 * 100000))
                 .build();
 
@@ -166,7 +192,7 @@ public abstract class StpApplicationTest extends StpUnitTest {
 
     protected HttpHeaders getDefaultHttpHeaders() {
         HttpHeaders result = new HttpHeaders();
-        if (StringUtils.isNoneEmpty()) {
+        if (StringUtils.isNoneEmpty(getToken())) {
             result.setBearerAuth(getToken());
         }
         return result;

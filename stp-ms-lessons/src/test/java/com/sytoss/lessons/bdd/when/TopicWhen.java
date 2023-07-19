@@ -3,8 +3,7 @@ package com.sytoss.lessons.bdd.when;
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,41 +20,39 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-public class TopicWhen extends CucumberIntegrationTest {
-
-    private final String URI = "/api/";
+public class TopicWhen extends LessonsIntegrationTest {
 
     @When("^system retrieve information about topics by discipline$")
-    public void requestSentCreatePersonalExam() throws JOSEException {
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topics";
+    public void requestSentCreatePersonalExam() {
+        String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topics";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Topic>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^retrieve information about topic by topicID$")
     public void getById() throws JOSEException {
-        Long topicId = TestExecutionContext.getTestContext().getTopicId();
+        Long topicId = getTestExecutionContext().getDetails().getTopicId();
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        if (TestExecutionContext.getTestContext().getTopicId() == null) {
+        if (getTestExecutionContext().getDetails().getTopicId() == null) {
             topicId = 99L;
             String url = "/api/topic/" + topicId;
             ResponseEntity<String> responseEntity = doGet(url, httpEntity, String.class);
-            TestExecutionContext.getTestContext().setResponse(responseEntity);
+            getTestExecutionContext().setResponse(responseEntity);
         } else {
             String url = "/api/topic/" + topicId;
             ResponseEntity<Topic> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
             });
-            TestExecutionContext.getTestContext().setResponse(responseEntity);
+            getTestExecutionContext().setResponse(responseEntity);
         }
     }
 
     @When("^teacher create \"(.*)\" topic$")
     public void topicCreating(String topicName) {
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topic";
         byte[] photoBytes = {0x01, 0x02, 0x03};
         File photoFile;
         try {
@@ -65,19 +62,19 @@ public class TopicWhen extends CucumberIntegrationTest {
             throw new RuntimeException(e);
         }
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "anything");
         body.add("icon", new FileSystemResource(photoFile));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<Topic> responseEntity = doPost(url, requestEntity, Topic.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^teacher creates existing \"(.*)\" topic$")
     public void existingTopicCreating(String topicName) {
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topic";
         byte[] photoBytes = {0x01, 0x02, 0x03};
         File photoFile;
         try {
@@ -87,32 +84,32 @@ public class TopicWhen extends CucumberIntegrationTest {
             throw new RuntimeException(e);
         }
 
-        HttpHeaders headers = getDefaultHttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("name", "anything");
         body.add("icon", new FileSystemResource(photoFile));
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, requestEntity, String.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^assign topic \"(.*)\" to this task$")
     public void linkTopicToThisTask(String topicName) {
-        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
-        String url = "/api/topic/" + topicDTO.getId() + "task/" + TestExecutionContext.getTestContext().getTaskId();
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
+        String url = "/api/topic/" + topicDTO.getId() + "task/" + getTestExecutionContext().getDetails().getTaskId();
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^receive this topic's icon$")
     public void getTopicIcon() {
-        String url = "/api/topic/" + TestExecutionContext.getTestContext().getTopicId() + "/icon";
-        HttpHeaders headers = getDefaultHttpHeaders();
-        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+        String url = "/api/topic/" + getTestExecutionContext().getDetails().getTopicId() + "/icon";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 }

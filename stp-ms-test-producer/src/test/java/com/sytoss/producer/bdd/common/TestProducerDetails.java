@@ -11,8 +11,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class TestContext {
-
+public class TestProducerDetails {
     private ResponseEntity<String> response;
 
     private int statusCode;
@@ -25,5 +24,5 @@ public class TestContext {
 
     @Getter
     @Setter
-    private static Map<String, String> taskMapping = new HashMap<>();
+    private Map<String, String> taskMapping = new HashMap<>();
 }

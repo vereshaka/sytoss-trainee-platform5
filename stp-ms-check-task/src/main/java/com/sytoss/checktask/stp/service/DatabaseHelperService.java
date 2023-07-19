@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import liquibase.Liquibase;
@@ -36,7 +37,7 @@ public class DatabaseHelperService {
 
     public void generateDatabase(String databaseScript) {
         url += generateDatabaseName();
-        try (Connection connection = DriverManager.getConnection(url, username, password)){
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Class.forName("org.h2.Driver");
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
@@ -46,7 +47,7 @@ public class DatabaseHelperService {
             databaseFile.deleteOnExit();
             log.info("database was generated");
         } catch (Exception e) {
-            throw new DatabaseCommunicationException("Database creating error",e);
+            throw new DatabaseCommunicationException("Database creating error", e);
         }
     }
 
@@ -74,7 +75,7 @@ public class DatabaseHelperService {
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
         File scriptFile = File.createTempFile("script", ".yml");
-        try( OutputStreamWriter myWriter = new FileWriter(scriptFile)) {
+        try (OutputStreamWriter myWriter = new FileWriter(scriptFile)) {
             myWriter.write(databaseScript);
             myWriter.flush();
         } catch (IOException e) {

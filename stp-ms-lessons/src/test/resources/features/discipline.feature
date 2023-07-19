@@ -39,8 +39,8 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
-  @Bug
   @STP-264
+  @Bug
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -56,8 +56,8 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
-  @Bug
   @STP-265
+  @Bug
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |

@@ -1,6 +1,5 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
@@ -16,7 +15,7 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^this teacher has \"(.*)\" discipline with id (.*) and following topics:")
     public void teacherHasDiscipline(String disciplineName, String disciplineId, DataTable topicsData) {
-        Long teacherId = TestExecutionContext.getTestContext().getTeacherId();
+        Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
         if (discipline == null) {
             discipline = new DisciplineDTO();
@@ -26,7 +25,7 @@ public class DisciplineGiven extends AbstractGiven {
             discipline = getDisciplineConnector().save(discipline);
         }
 
-        TestExecutionContext.getTestContext().registerId(disciplineId, discipline.getId());
+        getTestExecutionContext().registerId(disciplineId, discipline.getId());
 
         List<String> topics = new ArrayList<>();
         List<TopicDTO> existTopics = getTopicConnector().findByDisciplineId(discipline.getId());
@@ -43,7 +42,7 @@ public class DisciplineGiven extends AbstractGiven {
             result.setName(topicName);
             result.setDiscipline(discipline);
             result = getTopicConnector().save(result);
-            TestExecutionContext.getTestContext().registerId(topicKey, result.getId());
+            getTestExecutionContext().registerId(topicKey, result.getId());
         }
         deleteTopics(existTopics.stream().filter(item -> !topics.contains(item.getName().toLowerCase())).toList());
     }
@@ -89,20 +88,20 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists for this teacher$")
     public void disciplineExistsForTeacher(String nameDiscipline) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(nameDiscipline, getTestExecutionContext().getDetails().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(nameDiscipline);
-            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
             disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
-        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
+        getTestExecutionContext().getDetails().setDisciplineId(disciplineDTO.getId());
     }
 
     @Given("^discipline \"(.*)\" doesn't exist$")
     public void disciplineNotExist(String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
         if (disciplineDTO != null) {
             getDisciplineConnector().delete(disciplineDTO);
         }
@@ -110,15 +109,15 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^\"(.*)\" discipline exists$")
     public void disciplineExist(String disciplineName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, TestExecutionContext.getTestContext().getTeacherId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
         if (disciplineDTO == null) {
             disciplineDTO = new DisciplineDTO();
             disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
             disciplineDTO = getDisciplineConnector().save(disciplineDTO);
         }
-        TestExecutionContext.getTestContext().setDisciplineId(disciplineDTO.getId());
+        getTestExecutionContext().getDetails().setDisciplineId(disciplineDTO.getId());
     }
 
     @Given("^this discipline has icon with bytes \"([^\\\"]*)\"$")
@@ -132,7 +131,7 @@ public class DisciplineGiven extends AbstractGiven {
             icon[i] = Byte.parseByte(numberStrings[i]);
         }
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().findById(TestExecutionContext.getTestContext().getDisciplineId()).orElse(null);
+        DisciplineDTO disciplineDTO = getDisciplineConnector().findById(getTestExecutionContext().getDetails().getDisciplineId()).orElse(null);
         disciplineDTO.setIcon(icon);
         getDisciplineConnector().save(disciplineDTO);
     }

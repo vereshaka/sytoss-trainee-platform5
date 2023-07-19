@@ -1,8 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
@@ -18,15 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 @Transactional
-public class TaskGiven extends CucumberIntegrationTest {
+public class TaskGiven extends LessonsIntegrationTest {
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
 
         if (taskDTO == null) {
-            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
-            TopicDTO topicDTO = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId());
+            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
+            TopicDTO topicDTO = getTopicConnector().getReferenceById(getTestExecutionContext().getDetails().getTopicId());
             taskDTO = new TaskDTO();
             taskDTO.setQuestion(question);
             taskDTO.setTopics(List.of(topicDTO));
@@ -34,12 +33,12 @@ public class TaskGiven extends CucumberIntegrationTest {
             taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO = getTaskConnector().save(taskDTO);
         }
-        TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
+        getTestExecutionContext().getDetails().setTaskId(taskDTO.getId());
     }
 
     @Given("^task with question \"(.*)\" doesnt exist$")
     public void taskNotExist(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
         if (taskDTO != null) {
             getTaskConnector().delete(taskDTO);
         }
@@ -53,7 +52,7 @@ public class TaskGiven extends CucumberIntegrationTest {
 
     private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(columns.get("task"), disciplineDTO.getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
@@ -72,9 +71,9 @@ public class TaskGiven extends CucumberIntegrationTest {
                         taskDTO.getConditions().add(taskConditionDTO);
                     }
                 }
-                taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId()));
+                taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId()));
                 List<TopicDTO> topicDTOList = new ArrayList<>();
-                topicDTOList.add(getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getTopicId()));
+                topicDTOList.add(getTopicConnector().getReferenceById(getTestExecutionContext().getDetails().getTopicId()));
                 taskDTO.setTopics(topicDTOList);
                 taskDTO = getTaskConnector().save(taskDTO);
             } else {
@@ -94,21 +93,21 @@ public class TaskGiven extends CucumberIntegrationTest {
                     taskDTO = getTaskConnector().save(taskDTO);
                 }
             }
-            TestExecutionContext.getTestContext().setTaskId(taskDTO.getId());
+            getTestExecutionContext().getDetails().setTaskId(taskDTO.getId());
         }
     }
 
     @Given("^task with id (.*) doesnt exist")
     public void taskWithIdDoesntExist(String taskId) {
-        if (TestExecutionContext.getTestContext().getIdMapping().get(taskId) != null) {
-            TaskDTO taskDto = getTaskConnector().getById(TestExecutionContext.getTestContext().getIdMapping().get(taskId));
+        if (getTestExecutionContext().getIdMapping().get(taskId) != null) {
+            TaskDTO taskDto = getTaskConnector().getById(getTestExecutionContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
         } else {
             TaskDTO taskDto = getTaskConnector().getById(12345L);
             if (taskDto != null) {
                 getTaskConnector().delete(taskDto);
             }
-            TestExecutionContext.getTestContext().registerId(taskId, 12345L);
+            getTestExecutionContext().registerId(taskId, 12345L);
         }
     }
 
@@ -116,7 +115,7 @@ public class TaskGiven extends CucumberIntegrationTest {
     public void taskWithQuestionExistsForThisTaskDomain(String question) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setQuestion(question);
-        TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(TestExecutionContext.getTestContext().getTaskDomainId());
+        TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
         taskDTO.setTaskDomain(taskDomain);
         getTaskConnector().save(taskDTO);
     }
@@ -126,11 +125,11 @@ public class TaskGiven extends CucumberIntegrationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("script/" + script).getFile());
         List<String> data = Files.readAllLines(Path.of(file.getPath()));
-        TestExecutionContext.getTestContext().getCheckRequestParameters().setScript(String.join("\n", data));
+        getTestExecutionContext().getDetails().getCheckRequestParameters().setScript(String.join("\n", data));
     }
 
     @Given("^request is \"(.*)\"$")
     public void givenAnswerScript(String request) {
-        TestExecutionContext.getTestContext().getCheckRequestParameters().setRequest(request);
+        getTestExecutionContext().getDetails().getCheckRequestParameters().setRequest(request);
     }
 }

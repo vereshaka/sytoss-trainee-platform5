@@ -1,32 +1,23 @@
 package com.sytoss.lessons.bdd;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sytoss.lessons.AbstractApplicationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.common.LessonsDetails;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
-
-@CucumberContextConfiguration
-@ExtendWith({MockitoExtension.class, SpringExtension.class})
 @Getter
-@Deprecated
-public class CucumberIntegrationTest extends AbstractApplicationTest {
+@CucumberContextConfiguration
+@ExtendWith(SpringExtension.class)
+public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
 
     @Autowired
     protected ObjectMapper mapper;
@@ -73,23 +64,8 @@ public class CucumberIntegrationTest extends AbstractApplicationTest {
     @Autowired
     private GroupReferenceConnector groupReferenceConnector;
 
-    protected String getBaseUrl() {
-        return "http://127.0.0.1:" + applicationPort;
-    }
-
-    protected String getToken() {
-        return TestExecutionContext.getTestContext().getToken();
-    }
-
-    protected String readFromFile(String path) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
-        List<String> data = null;
-        try {
-            data = Files.readAllLines(Path.of(file.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return String.join("\n", data);
+    @Override
+    protected LessonsDetails createDetails() {
+        return new LessonsDetails();
     }
 }
