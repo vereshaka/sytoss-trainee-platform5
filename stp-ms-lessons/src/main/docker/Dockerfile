@@ -1,5 +1,9 @@
 FROM sytoss/openjdk:17.0.2-slim
 
+RUN apt-get update
+RUN apt-get install -y libfreetype6
+RUN apt-get install -y fontconfig
+
 ARG GRAPHVIZ_VERSION
 ARG GRAPHVIZ_BUILD_DIR=/tmp/graphiz-build
 RUN apt-get update && \
@@ -9,8 +13,6 @@ RUN apt-get update && \
         libexpat1-dev \
         libgd-dev \
         zlib1g-dev \
-        libfreetype6 \
-        fontconfig \
         && \
     mkdir -p $GRAPHVIZ_BUILD_DIR && \
     cd $GRAPHVIZ_BUILD_DIR && \
