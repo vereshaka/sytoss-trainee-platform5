@@ -1,7 +1,6 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
@@ -73,17 +72,10 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldCreateTask() {
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainDTO.setDiscipline(new DisciplineDTO());
-        taskDomainDTO.setId(1L);
-
-        when(taskDomainConnector.findById(anyLong())).thenReturn(Optional.of(taskDomainDTO));
-
         Mockito.doAnswer((Answer<TaskDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
             TaskDTO result = (TaskDTO) args[0];
             result.setId(1L);
-            result.setTaskDomain(taskDomainDTO);
             return result;
         }).when(taskConnector).save(any(TaskDTO.class));
 
