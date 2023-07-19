@@ -16,12 +16,12 @@ public class TeacherGiven extends LessonsIntegrationTest {
 
     @Given("^teacher \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
     public void teacherExists(String firstName, String lastName, String email) {
-        getTestExecutionContext().getDetails().setTeacherId(0L);
+        Long teacherId = 0L;
+        getTestExecutionContext().getDetails().setTeacherId(teacherId);
         getTestExecutionContext().setToken(generateJWT(new ArrayList<>(), firstName, lastName, email, "teacher"));
-       /* LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
-        teacherMap.put("id", TestExecutionContext.getTestContext().getTeacherId().intValue());
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-*/
     }
 
     @Given("^teachers have groups")

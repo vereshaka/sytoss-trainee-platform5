@@ -22,10 +22,8 @@ import java.util.List;
 
 public class TopicWhen extends LessonsIntegrationTest {
 
-    private final String URI = "/api/";
-
     @When("^system retrieve information about topics by discipline$")
-    public void requestSentCreatePersonalExam() throws JOSEException {
+    public void requestSentCreatePersonalExam() {
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topics";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
@@ -54,7 +52,7 @@ public class TopicWhen extends LessonsIntegrationTest {
 
     @When("^teacher create \"(.*)\" topic$")
     public void topicCreating(String topicName) {
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topic";
         byte[] photoBytes = {0x01, 0x02, 0x03};
         File photoFile;
         try {
@@ -71,12 +69,12 @@ public class TopicWhen extends LessonsIntegrationTest {
         body.add("icon", new FileSystemResource(photoFile));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<Topic> responseEntity = doPost(url, requestEntity, Topic.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^teacher creates existing \"(.*)\" topic$")
     public void existingTopicCreating(String topicName) {
-        String url = "/api/discipline/" + TestExecutionContext.getTestContext().getDisciplineId() + "/topic";
+        String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/topic";
         byte[] photoBytes = {0x01, 0x02, 0x03};
         File photoFile;
         try {
@@ -93,7 +91,7 @@ public class TopicWhen extends LessonsIntegrationTest {
         body.add("icon", new FileSystemResource(photoFile));
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
         ResponseEntity<String> responseEntity = doPost(url, requestEntity, String.class);
-        TestExecutionContext.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().setResponse(responseEntity);
     }
 
     @When("^assign topic \"(.*)\" to this task$")

@@ -136,6 +136,31 @@ public abstract class StpApplicationTest extends StpUnitTest {
         return signedJWT.serialize();
     }
 
+    protected String generateJWT(List<String> roles, String id) throws JOSEException {
+        LinkedTreeMap<String, ArrayList<String>> realmAccess = new LinkedTreeMap<>();
+        realmAccess.put("roles", new ArrayList<>(roles));
+
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject("test")
+                .issuer("test@test")
+                .claim("id", id)
+                .claim("realm_access", realmAccess)
+                .expirationTime(new Date(new Date().getTime() + 60 * 100000))
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(
+                new JWSHeader.Builder(JWSAlgorithm.RS256).type(new JOSEObjectType("jwt")).keyID("1234").build(),
+                claimsSet);
+
+        try {
+            signedJWT.sign(new RSASSASigner(JWK));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+
+        return signedJWT.serialize();
+    }
+
     protected <T> ResponseEntity<T> perform(String uri, HttpMethod method, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
         return restTemplate.exchange(getEndpoint(uri), method, requestEntity, responseType);
     }

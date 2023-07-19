@@ -22,10 +22,7 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     @When("^teacher creates \"(.*)\" discipline$")
     public void disciplineCreating(String disciplineName) {
         String url = "/api/discipline";
-        Discipline discipline = new Discipline();
-        discipline.setName(disciplineName);
-        HttpHeaders httpHeaders =getDefaultHttpHeaders();
-        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
+
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
@@ -45,17 +42,20 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     @When("^teacher creates existing \"(.*)\" discipline$")
     public void existingDisciplineCreating(String disciplineName) {
         String url = "/api/discipline";
-        Discipline discipline = new Discipline();
-        discipline.setName(disciplineName);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
 
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", disciplineName);
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+
+        ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 

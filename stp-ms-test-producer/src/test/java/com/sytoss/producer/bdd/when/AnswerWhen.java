@@ -5,8 +5,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-public class AnswerWhen extends CucumberIntegrationTest {
+public class AnswerWhen extends TestProducerIntegrationTest {
 
     @When("^student calls answer with value \"(.*)\" on personal exam with id (.*)$")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
@@ -37,12 +36,12 @@ public class AnswerWhen extends CucumberIntegrationTest {
         score.setValue(1);
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(score);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123"), String.valueOf(IntegrationTest.getTestContext().getStudentId())));
+        headers.setBearerAuth(generateJWT(List.of("123"), String.valueOf(getTestExecutionContext().getDetails().getStudentId())));
         headers.setContentType(MediaType.APPLICATION_JSON);
         String url = "/api/personal-exam/" + personalExamId + "/task/answer";
         HttpEntity<String> request = new HttpEntity<>(answer, headers);
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
-        IntegrationTest.getTestContext().setStatusCode(responseEntity.getStatusCode().value());
-        IntegrationTest.getTestContext().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+        getTestExecutionContext().getDetails().setResponse(responseEntity);
     }
 }

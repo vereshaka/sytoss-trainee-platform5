@@ -1,9 +1,9 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.*;
-import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
@@ -13,8 +13,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,11 +131,11 @@ public class TaskWhen extends LessonsIntegrationTest {
         String url = "/api/task/check-request-result";
 
         List<HashMap<String, Object>> list = new ArrayList<>();
-        HashMap<String, Object> hashMap = new HashMap();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("ID", 1);
         hashMap.put("NAME", "SQL");
         list.add(hashMap);
-        hashMap = new HashMap();
+        hashMap = new HashMap<>();
         hashMap.put("ID", 2);
         hashMap.put("NAME", "Mongo");
         list.add(hashMap);
@@ -149,10 +147,10 @@ public class TaskWhen extends LessonsIntegrationTest {
         when(getCheckTaskConnector().checkRequest(any())).thenReturn(queryResult);
 
         TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
-        taskDomainRequestParameters.setTaskDomainId(TestExecutionContext.getTestContext().getTaskDomainId());
+        taskDomainRequestParameters.setTaskDomainId(getTestExecutionContext().getDetails().getTaskDomainId());
         taskDomainRequestParameters.setRequest(request);
         HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, headers);
-        ResponseEntity<QueryResult> responseEntity = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
+        ResponseEntity<QueryResult> responseEntity = doPost(url, requestEntity, QueryResult.class);
 
         getTestExecutionContext().setResponse(responseEntity);
     }

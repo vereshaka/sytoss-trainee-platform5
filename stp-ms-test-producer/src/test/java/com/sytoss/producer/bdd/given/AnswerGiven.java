@@ -3,13 +3,12 @@ package com.sytoss.producer.bdd.given;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Given;
 
 import java.util.List;
 
-public class AnswerGiven extends CucumberIntegrationTest {
+public class AnswerGiven extends TestProducerIntegrationTest {
 
     @Given("^personal exam with id (.*) and student (.*) and (.*) max grade and sum of coef (.*) exist$")
     public void personalExamWithIdExistsAndAnswersExist(String examId, String studentId, String max_grade, String sumOfCoef, List<Answer> answers) {
@@ -22,6 +21,6 @@ public class AnswerGiven extends CucumberIntegrationTest {
         personalExam.setMaxGrade(Double.parseDouble(max_grade));
         personalExam.setSumOfCoef(Double.parseDouble(sumOfCoef));
         getPersonalExamConnector().save(personalExam);
-        IntegrationTest.getTestContext().setStudentId(personalExam.getStudent().getUid());
+        getTestExecutionContext().getDetails().setStudentId(personalExam.getStudent().getUid());
     }
 }

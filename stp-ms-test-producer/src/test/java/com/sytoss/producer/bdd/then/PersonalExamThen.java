@@ -6,8 +6,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.Question;
-import com.sytoss.producer.bdd.CucumberIntegrationTest;
-import com.sytoss.producer.bdd.common.IntegrationTest;
+import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
@@ -18,11 +17,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class PersonalExamThen extends CucumberIntegrationTest {
+public class PersonalExamThen extends TestProducerIntegrationTest {
 
     @Then("^\"(.*)\" exam by \"(.*)\" discipline and \"(.*)\" topic for student with (.*) id should have tasks$")
     public void thisCustomerHasProjects(String examName, String disciplineName, String topic, String studentId, List<Answer> answers) throws JsonProcessingException {
-        PersonalExam personalExamAnswer = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
+        PersonalExam personalExamAnswer = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
         assertEquals(disciplineName, personalExamAnswer.getDiscipline().getName());
         assertEquals(examName, personalExamAnswer.getName());
         assertEquals(PersonalExamStatus.NOT_STARTED, personalExamAnswer.getStatus());
@@ -39,13 +38,13 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @Then("^summary grade should be (.*)$")
     public void summaryGrade(Float summaryGrade) throws JsonProcessingException {
-        PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
+        PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
     @Then("^response should return personal exam with exam name (.*) and studentID (.*) and date (.*)$")
     public void responseShouldReturnPersonalExam(String examName, String studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
-        PersonalExam personalExam = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
+        PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
 
         assertEquals(examName, personalExam.getName());
         assertEquals(studentId, personalExam.getStudent().getUid());
@@ -78,19 +77,19 @@ public class PersonalExamThen extends CucumberIntegrationTest {
 
     @Then("^should return personal exam with time (.*) and amountOfTasks (.*)$")
     public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks) {
-        Question firstTask = IntegrationTest.getTestContext().getFirstTaskResponse().getBody();
+        Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
         assertEquals(time, firstTask.getExam().getTime());
         assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());
     }
 
     @Then("^should return \"(.*)\"$")
     public void shouldReturnIsTaskDomainUsed(String isUsed) {
-        assertEquals(Boolean.valueOf(isUsed), Boolean.valueOf(IntegrationTest.getTestContext().getResponse().getBody()));
+        assertEquals(Boolean.valueOf(isUsed), Boolean.valueOf(getTestExecutionContext().getDetails().getResponse().getBody()));
     }
 
     @Then("tasks from exam should have id image")
     public void tasksFromExamShouldHaveIdImage() throws JsonProcessingException {
-        PersonalExam personalExamAnswer = IntegrationTest.getTestContext().getPersonalExamResponse().getBody();
+        PersonalExam personalExamAnswer = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
         int quantityOfImages = 0;
         List<Task> tasks = personalExamAnswer.getAnswers().stream().map(Answer::getTask).toList();
         for (Task task : tasks) {

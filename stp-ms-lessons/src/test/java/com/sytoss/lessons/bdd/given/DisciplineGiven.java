@@ -16,7 +16,6 @@ public class DisciplineGiven extends AbstractGiven {
 
     @Given("^this teacher has \"(.*)\" discipline with id (.*) and following topics:")
     public void teacherHasDiscipline(String disciplineName, String disciplineId, DataTable topicsData) {
-        init();
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         DisciplineDTO discipline = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);
         if (discipline == null) {

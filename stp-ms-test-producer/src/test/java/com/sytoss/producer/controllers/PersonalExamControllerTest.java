@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
+import com.sytoss.stp.test.StpApplicationTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-public class PersonalExamControllerTest extends AbstractControllerTest {
+public class PersonalExamControllerTest extends StpApplicationTest {
 
     @InjectMocks
     private PersonalExamController personalExamController;
@@ -30,29 +31,29 @@ public class PersonalExamControllerTest extends AbstractControllerTest {
     private AnswerService answerService;
 
     @Test
-    public void shouldCreateExam() throws JOSEException {
+    public void shouldCreateExam() {
         when(personalExamService.create(any())).thenReturn(new PersonalExam());
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
+        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), headers);
         ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldReturnBooleanConditionIfTaskDomainIsUsed() throws JOSEException {
+    public void shouldReturnBooleanConditionIfTaskDomainIsUsed() {
         when(personalExamService.taskDomainIsUsed(anyLong())).thenReturn(true);
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
+        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
         ResponseEntity<Boolean> result = doGet("/api/personal-exam/is-used-now/task-domain/123", requestEntity, boolean.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
     @Test
-    public void shouldSummaryExam() throws JOSEException {
+    public void shouldSummaryExam() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(generateJWT(List.of("123")));
+        headers.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
         ResponseEntity<PersonalExam> result = doGet("/api/personal-exam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
