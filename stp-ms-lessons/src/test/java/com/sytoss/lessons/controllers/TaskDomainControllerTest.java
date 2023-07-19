@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundExce
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.stp.test.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -83,18 +84,11 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
     @Test
     public void ShouldReturnTaskDomainImage() throws IOException {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        String pumlScript = readFromFile("puml/script.puml");
+        String pumlScript = FileUtils.readFromFile("puml/script.puml");
         HttpEntity<String> httpEntity = new HttpEntity<>(pumlScript, httpHeaders);
         ResponseEntity<byte[]> responseEntity = doPut("/api/task-domain/puml/" + ConvertToPumlParameters.DB, httpEntity, new ParameterizedTypeReference<>() {
         });
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
-    }
-
-    private String readFromFile(String path) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
-        List<String> data = Files.readAllLines(Path.of(file.getPath()));
-        return String.join("\n", data);
     }
 
     @Test

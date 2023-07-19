@@ -1,10 +1,10 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
@@ -14,12 +14,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TaskDomainThen extends CucumberIntegrationTest {
+public class TaskDomainThen extends LessonsIntegrationTest {
 
     @Then("^\"(.*)\" task domain should be created$")
     public void groupsShouldBeReceived(String name) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, TestExecutionContext.getTestContext().getDisciplineId());
-        TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDomain taskDomain = (TaskDomain) getTestExecutionContext().getResponse().getBody();
         assertNotNull(taskDomainDTO);
         assertEquals(taskDomain.getId(), taskDomainDTO.getId());
         assertEquals(taskDomain.getName(), taskDomainDTO.getName());
@@ -27,14 +27,14 @@ public class TaskDomainThen extends CucumberIntegrationTest {
 
     @Then("^system should been get \"(.*)\" information$")
     public void systemShouldGetTaskDomain(String taskDomainName) {
-        TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
+        TaskDomain taskDomain = (TaskDomain) getTestExecutionContext().getResponse().getBody();
         Assertions.assertNotNull(taskDomain);
         Assertions.assertEquals(taskDomainName, taskDomain.getName());
     }
 
     @Then("^task domains should received$")
     public void groupsShouldBeReceived(List<TaskDomainDTO> taskDomains) {
-        List<TaskDomain> results = (List<TaskDomain>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<TaskDomain> results = (List<TaskDomain>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(taskDomains.size(), results.size());
 
@@ -51,22 +51,22 @@ public class TaskDomainThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" task domain with a script from \"(.*)\" should be$")
     public void taskDomainWithScriptShouldBe(String taskDomainName, String path) {
-        TaskDomain taskDomain = (TaskDomain) TestExecutionContext.getTestContext().getResponse().getBody();
+        TaskDomain taskDomain = (TaskDomain) getTestExecutionContext().getResponse().getBody();
         assertNotNull(taskDomain);
         assertEquals(taskDomainName, taskDomain.getName());
-        String scriptFromFile = readFromFile("liquibase/"+path);
+        String scriptFromFile = FileUtils.readFromFile("liquibase/"+path);
         assertEquals(scriptFromFile, taskDomain.getDatabaseScript());
         assertEquals(scriptFromFile, taskDomain.getDataScript());
     }
 
     @Then("^\"(.*)\" should have image$")
     public void taskDomainShouldHaveImage(String taskDomainName) {
-        assertNotNull(TestExecutionContext.getTestContext().getResponse().getBody());
+        assertNotNull(getTestExecutionContext().getResponse().getBody());
     }
 
     @And("^task domain have (.*) tasks")
     public void taskDomainHaveTask(int countOfTasks) {
-        TaskDomainModel taskDomainModel = (TaskDomainModel) TestExecutionContext.getTestContext().getResponse().getBody();
+        TaskDomainModel taskDomainModel = (TaskDomainModel) getTestExecutionContext().getResponse().getBody();
         assertEquals(countOfTasks,taskDomainModel.getCountOfTasks());
     }
 }

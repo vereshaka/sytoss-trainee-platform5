@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.convertors.*;
@@ -23,6 +24,7 @@ import org.mockito.stubbing.Answer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,12 +37,17 @@ public class TaskServiceTest extends StpUnitTest {
     protected CheckTaskConnector checkTaskConnector;
     @Mock
     private TaskConnector taskConnector;
+    @Mock
+    private TaskDomainConnector taskDomainConnector;
     @InjectMocks
     private TaskService taskService;
     @Mock
     private TopicService topicService;
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
+
+    @Spy
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
 
     @Test
     public void getTaskById() {
@@ -74,6 +81,9 @@ public class TaskServiceTest extends StpUnitTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
         input.setTaskDomain(taskDomain);
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainConvertor.toDTO(taskDomain,taskDomainDTO);
+        when(taskDomainConnector.findById(any())).thenReturn(Optional.of(taskDomainDTO));
         Topic topic = new Topic();
         topic.setId(1L);
         Discipline discipline = new Discipline();

@@ -4,8 +4,7 @@ import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
@@ -19,18 +18,18 @@ import java.util.Map;
 import static org.bson.assertions.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TaskThen extends CucumberIntegrationTest {
+public class TaskThen extends LessonsIntegrationTest {
 
     @Then("^should return task with \"(.*)\" question$")
     public void taskShouldBeReturned(String question) {
-        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        Task task = (Task) getTestExecutionContext().getResponse().getBody();
         assertNotNull(task);
         assertEquals(question, task.getQuestion());
     }
 
     @Then("^task with question \"(.*)\" should be created$")
     public void taskShouldBe(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
         assertNotNull(taskDTO);
         assertEquals(question, taskDTO.getQuestion());
     }
@@ -38,7 +37,7 @@ public class TaskThen extends CucumberIntegrationTest {
     @Then("^tasks of topic with id (.*) should be received$")
     public void tasksShouldBeReceived(String topicKey, DataTable table) {
         List<Map<String, String>> rows = table.asMaps();
-        List<Task> taskList = (List<Task>) TestExecutionContext.getTestContext().getResponse().getBody();
+        List<Task> taskList = (List<Task>) getTestExecutionContext().getResponse().getBody();
         assertEquals(rows.size(), taskList.size());
         for (Map<String, String> columns : rows) {
             List<Task> foundTasks = taskList.stream().filter(item ->
@@ -48,7 +47,7 @@ public class TaskThen extends CucumberIntegrationTest {
             if (foundTasks.size() == 0) {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " not found");
             }
-            TopicDTO topic = getTopicConnector().getReferenceById(TestExecutionContext.getTestContext().getIdMapping().get(topicKey));
+            TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
             List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsId(topic.getId());
             for (TaskDTO taskDTO : taskDTOS) {
                 getTaskConnector().delete(taskDTO);
@@ -61,7 +60,7 @@ public class TaskThen extends CucumberIntegrationTest {
     @Then("task should be received")
     public void taskShouldBeReceived(DataTable table) {
         List<Map<String, String>> rows = table.asMaps();
-        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        Task task = (Task) getTestExecutionContext().getResponse().getBody();
         int count = 0;
         for (TaskCondition taskCondition : task.getTaskConditions()) {
             for (Map<String, String> columns : rows) {
@@ -76,8 +75,8 @@ public class TaskThen extends CucumberIntegrationTest {
 
     @Then("^task with question \"(.*)\" should be assign to \"(.*)\" topic$")
     public void taskTopicShouldBe(String question, String topicName) {
-        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, TestExecutionContext.getTestContext().getDisciplineId());
-        Task task = (Task) TestExecutionContext.getTestContext().getResponse().getBody();
+        TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
+        Task task = (Task) getTestExecutionContext().getResponse().getBody();
         assertNotNull(task.getTopics());
         assertEquals(question, task.getQuestion());
         assertEquals(topicDTO.getName(), task.getTopics().get(1).getName());
@@ -85,7 +84,7 @@ public class TaskThen extends CucumberIntegrationTest {
 
     @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")
     public void taskShouldHaveConditionWithType(String conditionValue, ConditionType type, String question) {
-        TaskDTO taskDTO = getTaskConnector().findById(TestExecutionContext.getTestContext().getTaskId()).orElse(null);
+        TaskDTO taskDTO = getTaskConnector().findById(getTestExecutionContext().getDetails().getTaskId()).orElse(null);
         assertEquals(conditionValue, taskDTO.getConditions().get(0).getValue());
         assertEquals(type, taskDTO.getConditions().get(0).getType());
         assertEquals(question, taskDTO.getQuestion());
@@ -93,7 +92,7 @@ public class TaskThen extends CucumberIntegrationTest {
 
     @Then("^query result should be$")
     public void shouldReturnQueryIsValid(DataTable table) throws IOException {
-        QueryResult response = (QueryResult) TestExecutionContext.getTestContext().getResponse().getBody();
+        QueryResult response = (QueryResult) getTestExecutionContext().getResponse().getBody();
         List<String> header = table.row(0);
         for (int i = 1; i < table.height(); i++) {
             HashMap<String, Object> resultRow = response.getRow(i - 1);

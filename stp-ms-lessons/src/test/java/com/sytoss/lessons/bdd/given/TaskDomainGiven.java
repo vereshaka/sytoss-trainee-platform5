@@ -1,20 +1,20 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.lessons.bdd.CucumberIntegrationTest;
-import com.sytoss.lessons.bdd.common.TestExecutionContext;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
-public class TaskDomainGiven extends CucumberIntegrationTest {
+public class TaskDomainGiven extends LessonsIntegrationTest {
 
     @Given("^\"(.*)\" task domain exists$")
     public void taskDomainExist(String taskDomainName) {
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId());
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, disciplineDTO.getId());
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
@@ -23,12 +23,12 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
-        TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
+        getTestExecutionContext().getDetails().setTaskDomainId(taskDomainDTO.getId());
     }
 
     @Given("^\"(.*)\" task domain doesnt exist$")
     public void taskDomainNotExist(String name) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(name, getTestExecutionContext().getDetails().getDisciplineId());
         if (taskDomainDTO != null) {
             getTaskDomainConnector().delete(taskDomainDTO);
         }
@@ -37,10 +37,10 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
     @Given("^task domains exist$")
     public void taskdomainExist(List<TaskDomainDTO> taskDomains) {
         for (TaskDomainDTO taskDomainDTO : taskDomains) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), TestExecutionContext.getTestContext().getTeacherId());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), getTestExecutionContext().getDetails().getTeacherId());
             if (disciplineDTO == null) {
                 disciplineDTO = taskDomainDTO.getDiscipline();
-                disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+                disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
                 disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
                 disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
@@ -54,22 +54,22 @@ public class TaskDomainGiven extends CucumberIntegrationTest {
 
     @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")
     public void taskDomainForDiscipline(String taskDomainName, String path) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
-        String scriptFromFile = readFromFile("liquibase/"+path);
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
+        String scriptFromFile = FileUtils.readFromFile("liquibase/"+path);
         if(taskDomainDTO == null){
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
-            taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(TestExecutionContext.getTestContext().getDisciplineId()));
+            taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId()));
             taskDomainDTO.setDatabaseScript(scriptFromFile);
             taskDomainDTO.setDataScript(scriptFromFile);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
-        TestExecutionContext.getTestContext().setTaskDomainId(taskDomainDTO.getId());
+        getTestExecutionContext().getDetails().setTaskDomainId(taskDomainDTO.getId());
     }
 
     @Given("^\"(.*)\" task domain doesn't have image$")
     public void taskDomainShouldNotHaveImage(String taskDomainName) {
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, TestExecutionContext.getTestContext().getDisciplineId());
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
         if (taskDomainDTO.getImage() != null) {
             taskDomainDTO.setImage(null);
             getTaskDomainConnector().save(taskDomainDTO);

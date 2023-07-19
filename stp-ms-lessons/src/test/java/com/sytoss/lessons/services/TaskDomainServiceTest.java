@@ -22,6 +22,7 @@ import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -250,7 +251,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
 
     @Test
     void generatePngFromPuml() throws IOException {
-        String pumlScript = readFromFile("puml/script.puml");
+        String pumlScript = FileUtils.readFromFile("puml/script.puml");
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
@@ -264,12 +265,5 @@ public class TaskDomainServiceTest extends StpUnitTest {
         when(taskService.findByDomainId((any()))).thenReturn(List.of(task));
         TaskDomainModel taskDomainModel = taskDomainService.getCountOfTasks(1L);
         assertEquals(1,taskDomainModel.getCountOfTasks());
-    }
-
-    private String readFromFile(String path) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource("script/" + path)).getFile());
-        List<String> data = Files.readAllLines(Path.of(file.getPath()));
-        return String.join("\n", data);
     }
 }

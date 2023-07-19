@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -14,7 +15,7 @@ import io.cucumber.java.DataTableType;
 
 import java.util.Map;
 
-public class DataTableCommon {
+public class DataTableCommon extends LessonsIntegrationTest {
 
     @DataTableType
     public DisciplineDTO mapDiscipline(Map<String, String> entry) {
@@ -24,7 +25,7 @@ public class DataTableCommon {
         if (entry.containsKey("teacherId")) {
             disciplineDTO.setTeacherId(Long.parseLong(entry.get("teacherId")));
         } else {
-            disciplineDTO.setTeacherId(TestExecutionContext.getTestContext().getTeacherId());
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
         }
 
         return disciplineDTO;
