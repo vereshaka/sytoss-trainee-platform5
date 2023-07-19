@@ -13,6 +13,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,8 +128,8 @@ public class TaskWhen extends LessonsIntegrationTest {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("^request sent to check this request$")
-    public void requestSentCheckRequest() {
+    @When("^request is \"(.*)\" sent to check this request for this task domain$")
+    public void requestSentCheckRequest(String request) {
         String url = "/api/task/check-request-result";
 
         List<HashMap<String, Object>> list = new ArrayList<>();
@@ -146,7 +148,10 @@ public class TaskWhen extends LessonsIntegrationTest {
         HttpHeaders headers = getDefaultHttpHeaders();
         when(getCheckTaskConnector().checkRequest(any())).thenReturn(queryResult);
 
-        HttpEntity<CheckRequestParameters> requestEntity = new HttpEntity<>(getTestExecutionContext().getDetails().getCheckRequestParameters(),headers);
+        TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
+        taskDomainRequestParameters.setTaskDomainId(TestExecutionContext.getTestContext().getTaskDomainId());
+        taskDomainRequestParameters.setRequest(request);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, headers);
         ResponseEntity<QueryResult> responseEntity = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
 
         getTestExecutionContext().setResponse(responseEntity);

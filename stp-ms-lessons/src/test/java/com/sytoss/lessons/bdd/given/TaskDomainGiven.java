@@ -6,6 +6,10 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.Given;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -20,6 +24,10 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             taskDomainDTO = new TaskDomainDTO();
             taskDomainDTO.setName(taskDomainName);
             taskDomainDTO.setDatabaseScript("Test script");
+            String databaseScript = readFromFile("puml/database.puml");
+            taskDomainDTO.setDatabaseScript(databaseScript);
+            String dataScript = readFromFile("puml/data.puml");
+            taskDomainDTO.setDataScript(dataScript);
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
         }
@@ -35,7 +43,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
     }
 
     @Given("^task domains exist$")
-    public void taskdomainExist(List<TaskDomainDTO> taskDomains) {
+    public void taskDomainExist(List<TaskDomainDTO> taskDomains) {
         for (TaskDomainDTO taskDomainDTO : taskDomains) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), getTestExecutionContext().getDetails().getTeacherId());
             if (disciplineDTO == null) {
@@ -74,5 +82,16 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             taskDomainDTO.setImage(null);
             getTaskDomainConnector().save(taskDomainDTO);
         }
+    }
+
+    public String readFromFile(String script) {
+        File file = new File(getClass().getClassLoader().getResource("script/" + script).getFile());
+        try {
+            List<String> data = Files.readAllLines(Path.of(file.getPath()));
+            return String.join("\n", data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

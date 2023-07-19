@@ -7,7 +7,10 @@ import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +29,15 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getDetails().getTeacherId().intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", disciplineName);
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+
         ResponseEntity<Discipline> responseEntity = doPost(url, httpEntity, Discipline.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -35,6 +47,9 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         String url = "/api/discipline";
         Discipline discipline = new Discipline();
         discipline.setName(disciplineName);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(TestExecutionContext.getTestContext().getToken());
+
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Discipline> httpEntity = new HttpEntity<>(discipline, httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
@@ -58,7 +73,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
         String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", teacherId.intValue());
@@ -72,7 +86,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void requestSentFindAllDisciplines() {
         String url = "/api/disciplines";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
@@ -83,7 +96,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void linkDisciplineToGroup(Long groupId) {
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/group/" + groupId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"),"","","",""));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Void> responseEntity = doPost(url, httpEntity, Void.class);
         getTestExecutionContext().setResponse(responseEntity);
@@ -103,7 +115,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void studentReceiveHisDisciplines() {
         String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        //httpHeaders.setBearerAuth(generateJWT(getTestExecutionContext().getDetails().getToken());
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         when(getUserConnector().findMyGroupId()).thenReturn(getTestExecutionContext().getDetails().getGroupId());
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

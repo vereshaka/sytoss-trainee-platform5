@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -17,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -38,10 +41,23 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Discipline exists!"),
     })
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Discipline create(
-            @RequestBody Discipline discipline) {
-        return disciplineService.create(discipline);
+            @RequestParam String name,
+            @RequestParam(required = false) String shortDescription,
+            @RequestParam(required = false) String fullDescription,
+            @RequestParam(required = false) MultipartFile icon
+    ) throws IOException {
+        Discipline request = new Discipline();
+        request.setName(name);
+        request.setShortDescription(shortDescription);
+        request.setFullDescription(fullDescription);
+        if (icon != null) {
+            request.setIcon(icon.getBytes());
+        } else {
+            request.setIcon(null);
+        }
+        return disciplineService.create(request);
     }
 
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
@@ -49,12 +65,26 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "409", description = "Topic exist!"),
     })
-    @PostMapping("/{disciplineId}/topic")
+    @PostMapping(value = "/{disciplineId}/topic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Topic create(
             @Parameter(description = "id of discipline to be searched")
             @PathVariable("disciplineId") Long disciplineId,
-            @RequestBody Topic topic) {
-        return topicService.create(disciplineId, topic);
+            @RequestParam String name,
+            @RequestParam(required = false) String shortDescription,
+            @RequestParam(required = false) String fullDescription,
+            @RequestParam(required = false) Double duration,
+            @RequestParam(required = false) MultipartFile icon) throws IOException {
+        Topic request = new Topic();
+        request.setName(name);
+        request.setShortDescription(shortDescription);
+        request.setFullDescription(fullDescription);
+        request.setDuration(duration);
+        try {
+            request.setIcon(icon.getBytes());
+        } catch (IOException e) {
+            throw new LoadImageException("Could not read bytes of icon for discipline " + disciplineId, e);
+        }
+        return topicService.create(disciplineId, request);
     }
 
     @Operation(description = "Method that retrieve groups by discipline")
@@ -125,8 +155,8 @@ public class DisciplineController {
     })
     @GetMapping(value = "/{disciplineId}/icon", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getIcon(@Parameter(description = "id of the discipline to search icon")
-                                    @PathVariable("disciplineId")
-                                    Long disciplineId) {
+                                        @PathVariable("disciplineId")
+                                        Long disciplineId) {
         return disciplineService.getIcon(disciplineId);
     }
 

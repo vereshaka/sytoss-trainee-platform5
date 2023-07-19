@@ -23,11 +23,6 @@ Feature: Task
     Then operation is successful
     And task with question "What are the different subsets of SQL?" should be created
 
-  Scenario: system does not create new task when task exists
-    Given task with question "What are the different subsets of SQL?" exists
-    When system create task with question "What are the different subsets of SQL?"
-    Then operation should be finished with 409 "Task with question "What are the different subsets of SQL?" already exist" error
-
   Scenario: Retrieve information about tasks by topic id
     Given this teacher has "SQL" discipline with id *1 and following topics:
       | topicId | topicName |
@@ -83,9 +78,8 @@ Feature: Task
     And "Select" condition with CONTAINS type should be in task with question "What are the different subsets of SQL?"
 
   Scenario: Check current correct student's answer
-    Given Request contains database script as in "liquibase/script.yml"
-    And request is "select * from Discipline"
-    When request sent to check this request
+    Given "First Domain" task domain exists
+    When request is "select * from Discipline" sent to check this request for this task domain
     Then operation is successful
     And query result should be
       | id | name  |

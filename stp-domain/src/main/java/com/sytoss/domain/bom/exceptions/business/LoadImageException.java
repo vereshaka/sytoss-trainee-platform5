@@ -1,4 +1,4 @@
-package com.sytoss.users.services.exceptions;
+package com.sytoss.domain.bom.exceptions.business;
 
 import com.sytoss.domain.bom.exceptions.TechnicalException;
 

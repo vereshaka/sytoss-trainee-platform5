@@ -1,18 +1,21 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.stp.test.StpUnitTest;
 import com.sytoss.lessons.connectors.TaskConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,17 +40,16 @@ public class TaskServiceTest extends StpUnitTest {
     protected CheckTaskConnector checkTaskConnector;
     @Mock
     private TaskConnector taskConnector;
-    @Mock
-    private TaskDomainConnector taskDomainConnector;
     @InjectMocks
     private TaskService taskService;
     @Mock
     private TopicService topicService;
+    @Mock
+    private TaskDomainConnector taskDomainConnector;
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
-
     @Spy
-    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
+    private PumlConvertor pumlConvertor;
 
     @Test
     public void getTaskById() {
@@ -76,26 +78,32 @@ public class TaskServiceTest extends StpUnitTest {
             result.setId(1L);
             return result;
         }).when(taskConnector).save(any(TaskDTO.class));
-        Task input = new Task();
-        input.setQuestion("question");
+
+
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
-        input.setTaskDomain(taskDomain);
-        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-        taskDomainConvertor.toDTO(taskDomain,taskDomainDTO);
-        when(taskDomainConnector.findById(any())).thenReturn(Optional.of(taskDomainDTO));
-        Topic topic = new Topic();
-        topic.setId(1L);
-        Discipline discipline = new Discipline();
+
         Teacher teacher = new Teacher();
         teacher.setId(1L);
+
+        Discipline discipline = new Discipline();
         discipline.setTeacher(teacher);
+
+        Topic topic = new Topic();
+        topic.setId(1L);
         topic.setDiscipline(discipline);
-        input.setTopics(List.of(topic));
+
         TaskCondition taskCondition = new TaskCondition();
         taskCondition.setId(1L);
+
+        Task input = new Task();
+        input.setQuestion("question");
+        input.setTaskDomain(taskDomain);
+        input.setTopics(List.of(topic));
         input.setTaskConditions(List.of(taskCondition));
+
         Task result = taskService.create(input);
+
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getQuestion(), result.getQuestion());
     }
@@ -169,9 +177,17 @@ public class TaskServiceTest extends StpUnitTest {
     public void shouldReturnQueryResult() {
         HashMap hashMap = new HashMap();
         hashMap.put("1", "1");
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        taskDomainDTO.setDataScript("Script");
+        taskDomainDTO.setDatabaseScript("Script");
         QueryResult queryResult = new QueryResult(List.of(hashMap));
         when(checkTaskConnector.checkRequest(any())).thenReturn(queryResult);
-        QueryResult result = taskService.getQueryResult(new CheckRequestParameters());
-        assertEquals("1", queryResult.getResultMapList().get(0).get("1"));
+        when(taskDomainConnector.getReferenceById(any())).thenReturn(taskDomainDTO);
+        TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
+        taskDomainRequestParameters.setRequest("");
+        taskDomainRequestParameters.setTaskDomainId(1L);
+        QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
+        assertEquals("1", result.getResultMapList().get(0).get("1"));
     }
 }

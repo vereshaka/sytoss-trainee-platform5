@@ -16,9 +16,10 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class PumlConvertor {
     private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)(\\([A-z]+\\))))>>");
-    private String indent = StringUtils.leftPad(StringUtils.SPACE, 2);
+    private String indent;
 
     public String convertToLiquibase(String script) {
+        indent = StringUtils.leftPad(StringUtils.SPACE, 2);
         List<String> entities = getEntities(script);
         StringBuilder createTableStringBuilder = createChangeSet("create-tables");
         indent += StringUtils.leftPad(StringUtils.SPACE, 2);
@@ -117,7 +118,7 @@ public class PumlConvertor {
             String columnsIndent = innerIndent + "      ";
             entity.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
                     .append(columnsIndent).append("name: ").append(key).append(StringUtils.LF)
-                    .append(columnsIndent).append("type: ").append(value).append(StringUtils.LF);
+                    .append(columnsIndent).append("type: ").append(value.toLowerCase(Locale.ENGLISH).equals("string") ? "varchar" : value).append(StringUtils.LF);
             if (primaryKeyStringBuilder != null) {
                 entity.append(columnsIndent).append(primaryKeyStringBuilder).append(StringUtils.LF);
             }
@@ -221,9 +222,9 @@ public class PumlConvertor {
             for (Map.Entry<String, String> entry : map.entrySet()) {
                 object.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
                         .append(columnsIndent).append("name: ").append(entry.getKey()).append(StringUtils.LF)
-                        .append(columnsIndent).append("type: ").append(entry.getValue()).append(StringUtils.LF);
+                        .append(columnsIndent).append("value: ").append(entry.getValue()).append(StringUtils.LF);
             }
-            object.append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF);
+            object.append(innerIndent).append("tableName: ").append(name.substring(1)).append(StringUtils.LF);
         }
 
         return object.toString();

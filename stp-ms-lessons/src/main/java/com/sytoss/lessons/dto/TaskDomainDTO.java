@@ -24,7 +24,7 @@ public class TaskDomainDTO {
     @Column(name = "DATA_SCRIPT")
     private String dataScript;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
 

@@ -3,7 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,7 +80,7 @@ public class TaskController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/check-request-result")
-    public QueryResult getQueryResult(@RequestBody CheckRequestParameters checkRequestParameters) {
-        return taskService.getQueryResult(checkRequestParameters);
+    public QueryResult getQueryResult(@RequestBody TaskDomainRequestParameters taskDomainRequestParameters) {
+        return taskService.getQueryResult(taskDomainRequestParameters);
     }
 }
