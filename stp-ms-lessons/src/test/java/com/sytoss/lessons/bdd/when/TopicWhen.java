@@ -97,7 +97,7 @@ public class TopicWhen extends LessonsIntegrationTest {
     @When("^assign topic \"(.*)\" to this task$")
     public void linkTopicToThisTask(String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
-        String url = "/api/topic/" + topicDTO.getId() + "task/" + getTestExecutionContext().getDetails().getTaskId();
+        String url = "/api/topic/" + topicDTO.getId() + "/task/" + getTestExecutionContext().getDetails().getTaskId();
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);

@@ -48,14 +48,12 @@ Feature: Task
       | SQL        | Join  | What is Join?       |
       | SQL        | Join  | What is Inner Join? |
 
-  @Bug
-  @STP-266
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
-    And topic "Join" exists
-    When assign topic "Join" to this task
+    And topic "Inner Join" exists
+    When assign topic "Inner Join" to this task
     Then operation is successful
-    And task with question "What is Join?" should be assign to "Join" topic
+    And task with question "What is Join?" should be assign to "Inner Join" topic
 
   Scenario: Remove one of conditions from the task
     Given tasks exist
