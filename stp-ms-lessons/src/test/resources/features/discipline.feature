@@ -54,8 +54,6 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
-  @STP-265
-  @Bug
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |
