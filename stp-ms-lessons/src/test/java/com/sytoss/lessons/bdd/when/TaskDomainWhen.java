@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
@@ -140,6 +141,17 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomainModel> responseEntity = doGet(url, httpEntity, TaskDomainModel.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^system retrieve information about (.*) task domain tasks$")
+    public void systemRetrieveInformationAboutTaskDomainTasks(String taskDomainStringId) {
+        Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainStringId);
+        String url = "/api/task-domain/" + taskDomainId + "/tasks";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
 @RestController
@@ -64,5 +67,16 @@ public class TaskDomainController {
     public TaskDomainModel getCountOfTasks(@Parameter(description = "id of the task domain to be searched by")
                                            @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getCountOfTasks(taskDomainId);
+    }
+
+
+    @Operation(description = "Method get tasks by task domain", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{taskDomainId}/tasks")
+    public List<Task> getTasks(@Parameter(description = "id of the task domain to be searched by")
+                                           @PathVariable(value = "taskDomainId") Long taskDomainId) {
+        return taskDomainService.getTasks(taskDomainId);
     }
 }
