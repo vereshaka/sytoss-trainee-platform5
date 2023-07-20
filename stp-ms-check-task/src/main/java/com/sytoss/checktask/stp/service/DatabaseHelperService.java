@@ -1,8 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -32,17 +31,29 @@ public class DatabaseHelperService {
     private static final String password = "~";
 
     private final QueryResultConvertor queryResultConvertor;
-    private String url="";
+
+    private String url = "jdbc:h2:mem:";
+
+    private Connection connection;
+
+    private Connection getConnection() {
+        if (connection == null) {
+            try {
+                Class.forName("org.h2.Driver");
+                url += generateDatabaseName() + ";MODE=Oracle";
+                connection = DriverManager.getConnection(url, username, password);
+            } catch (Exception e) {
+                throw new RuntimeException("Could not create connection", e);
+            }
+        }
+        return connection;
+    }
 
     public void generateDatabase(String startUrl,String databaseScript) {
         url += startUrl + generateDatabaseName();
-        if(startUrl.contains("mem")){
-            url += ";MODE=Oracle";
-        }
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            Class.forName("org.h2.Driver");
+        try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();
@@ -54,12 +65,18 @@ public class DatabaseHelperService {
     }
 
     public void dropDatabase() {
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             Statement statement = connection.createStatement()) {
+        try (Statement statement = getConnection().createStatement()) {
             statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
             log.info("database was dropped");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             log.error("Error in database dropping", e);
+        } finally {
+            try {
+                getConnection().close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            connection = null;
         }
     }
 
@@ -87,8 +104,7 @@ public class DatabaseHelperService {
     }
 
     public QueryResult getExecuteQueryResult(String query) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             Statement statement = connection.createStatement();
+        try (Statement statement = getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             log.info("query result was got");
             return new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
