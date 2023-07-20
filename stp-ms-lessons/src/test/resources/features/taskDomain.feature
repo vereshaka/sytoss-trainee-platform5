@@ -95,3 +95,10 @@ Feature: Task Domain
       | task                | taskDomainId |
       | What is Join?       | *1           |
       | What is Inner Join? | *1           |
+
+  Scenario: system generate empty scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain with empty script
+    Then operation is successful
+    And  "First Domain" should have image
