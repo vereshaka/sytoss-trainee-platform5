@@ -89,7 +89,10 @@ public class TaskService {
         if (task.getTopics().isEmpty()) {
             task.setTopics(List.of(topic));
         } else {
-            task.getTopics().add(topic);
+            if(!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
+                task.getTopics().add(topic);
+            }
+
         }
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);

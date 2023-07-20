@@ -71,7 +71,7 @@ public class DisciplineWhen extends LessonsIntegrationTest {
 
     @When("^teacher with id (.*) retrieve his disciplines$")
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
-        String url = "/api/disciplines/my";
+        String url = "/api/teacher/my/disciplines";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
