@@ -57,15 +57,13 @@ public class TaskService {
 
 
     public Task create(Task task) {
-        TaskDTO taskDTO = taskConnector.getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
-        if (taskDTO == null) {
-            taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task, taskDTO);
-            taskDTO = taskConnector.save(taskDTO);
-            taskConvertor.fromDTO(taskDTO, task);
-            return task;
-        }
-        throw new TaskExistException(task.getQuestion());
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
+        TaskDTO taskDTO = new TaskDTO();
+        taskConvertor.toDTO(task, taskDTO);
+        taskDTO.setTaskDomain(taskDomainDTO);
+        taskDTO = taskConnector.save(taskDTO);
+        taskConvertor.fromDTO(taskDTO, task);
+        return task;
     }
 
     public Task removeCondition(Long taskId, Long conditionId) {
