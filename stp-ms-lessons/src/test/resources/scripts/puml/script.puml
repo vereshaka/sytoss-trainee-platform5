@@ -1,41 +1,41 @@
 
-entity Discipline {
+table Discipline {
 id: long <<PK>>
 name: string
 }
 
-entity Topic {
+table Topic {
 id: long <<PK>>
 name: string
 discipline_id: long <<FK Discipline(id)>>
 }
 
-entity Task {
+table Task {
 id: long <<PK>>
 question: string
 answer: string
 discipline_id: long <<FK Discipline(id)>>
 }
 
-entity TopicToTask {
+table TopicToTask {
 task_id: long <<PK>>
 topic_id: long <<PK>>
 }
 
-object "Data:Discipline" as dDiscipline {
+data "Data:Discipline" as dDiscipline {
    |= id |= name |
    | 1   | SQL   |
    | 2   | Mongo  |
 }
 
-object "Data:Topic" as dTopic {
+data "Data:Topic" as dTopic {
    |= id |= name    |= discipline_id |
    | 1   | Insert   |        1       |
    | 2   | Select   |        2       |
    | 3   | Join     |        1       |
 }
 
-object "Data:Task" as dTask {
+data "Data:Task" as dTask {
    |= id |= question                |= discipline_id |
    | 1   | What is Join?            |        1       |
    | 2   | What is Inner Join?      |        1       |
@@ -43,7 +43,7 @@ object "Data:Task" as dTask {
    | 4   | What is Select?          |        2       |
 }
 
-object "Data:TopicToTask" as dTopicToTask {
+data "Data:TopicToTask" as dTopicToTask {
    |= task_id |= topic_id |
    | 1        | 1         |
    | 2        | 3         |

@@ -123,7 +123,7 @@ public class TaskDomainService {
         if (puml == null) {
             return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
         }
-        String newPuml = puml;
+        String newPuml = puml.replaceAll("table","entity").replaceAll("object","data");
         if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
             List<String> entities = pumlConvertor.getEntities(puml);
             newPuml = String.join(StringUtils.LF + StringUtils.LF, entities);
