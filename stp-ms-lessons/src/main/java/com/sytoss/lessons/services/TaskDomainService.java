@@ -139,7 +139,7 @@ public class TaskDomainService {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
 
-            File imageFile = File.createTempFile("img", ".png",new File("D:\\sytoss-trainee-platform7\\stp-ms-lessons\\src\\test\\resources\\scripts"));
+            File imageFile = File.createTempFile("img", ".png");
             ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, "png", imageFile);
