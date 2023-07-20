@@ -39,8 +39,6 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
-  @STP-264
-  @Bug
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
