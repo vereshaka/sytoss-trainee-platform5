@@ -1,9 +1,15 @@
+#FROM tomcat:10-jdk11
 FROM sytoss/openjdk:17.0.2-slim
 
-RUN apt-get update
-RUN apt-get install -y libfreetype6
-RUN apt-get install -y fontconfig
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        fonts-noto-cjk \
+        libgd3 \
+        && \
+    rm -rf /var/lib/apt/lists/*
 
+# Build Graphviz from source because there are no binary distributions for recent versions
 ARG GRAPHVIZ_VERSION
 ARG GRAPHVIZ_BUILD_DIR=/tmp/graphiz-build
 RUN apt-get update && \
@@ -31,9 +37,10 @@ RUN apt-get update && \
         zlib1g-dev \
         && \
     apt-get autoremove -y && \
-    apt-get clean & \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf $GRAPHVIZ_BUILD_DIR
+
 
 RUN groupadd stpuser
 RUN useradd -r -g stpuser stpuser
