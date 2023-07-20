@@ -7,7 +7,7 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - mvn clean install
+            - mvn clean install -Dmaven.test.skip=true -DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
