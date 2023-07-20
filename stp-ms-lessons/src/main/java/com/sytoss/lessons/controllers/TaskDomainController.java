@@ -55,7 +55,7 @@ public class TaskDomainController {
     @PutMapping("/puml/{dataParameter}")
     public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                       @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
-                                      @RequestBody String puml) {
+                                      @RequestBody (required = false) String puml) {
         return taskDomainService.generatePngFromPuml(puml, parameter);
     }
 

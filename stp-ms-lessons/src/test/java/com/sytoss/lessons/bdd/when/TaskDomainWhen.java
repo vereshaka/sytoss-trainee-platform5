@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -123,13 +124,12 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("^system generate image of scheme and save in \"(.*)\" task domain with wrong script$")
+    @When("^system generate image of scheme and save in \"(.*)\" task domain with empty script$")
     public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
-        String url = "/api/task-domain/puml/all";
-        String puml = "error";
+        String url = "/api/task-domain/puml/"+ ConvertToPumlParameters.ALL;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<String> httpEntity = new HttpEntity<>(puml, httpHeaders);
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
