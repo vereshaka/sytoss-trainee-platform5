@@ -20,6 +20,7 @@ import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskService {
 
     private final TaskConnector taskConnector;
@@ -138,8 +140,10 @@ public class TaskService {
     public QueryResult getQueryResult(TaskDomainRequestParameters taskDomainRequestParameters) {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
         if (taskDomainDTO != null) {
-            String script = taskDomainDTO.getDatabaseScript() + StringUtils.LF + taskDomainDTO.getDataScript();
+            String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
+            log.info("Script: " + script);
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
+            log.info("Liquibase Script: " + liquibaseScript);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
             checkRequestParameters.setScript(liquibaseScript);

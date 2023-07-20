@@ -33,10 +33,10 @@ public class DatabaseHelperService {
 
     private final QueryResultConvertor queryResultConvertor;
 
-    private String url = "jdbc:h2:~/";
+    private String url = "jdbc:h2:mem:";
 
     public void generateDatabase(String databaseScript) {
-        url += generateDatabaseName();
+        url += generateDatabaseName() + ";MODE=Oracle";
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Class.forName("org.h2.Driver");
             File databaseFile = writeDatabaseScriptFile(databaseScript);
