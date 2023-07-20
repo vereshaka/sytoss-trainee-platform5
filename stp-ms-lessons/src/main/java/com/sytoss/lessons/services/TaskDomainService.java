@@ -132,7 +132,7 @@ public class TaskDomainService {
             String newDataName = "object \"Data:"+match+"\" as d"+match;
             puml = puml.replaceAll(matcher.group(0),newDataName);
         }
-        puml = puml.replaceAll("table", "entity");
+        puml = puml.replaceAll("table", "entity").replaceAll("data","object");
         String newPuml = puml;
         if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
             List<String> entities = pumlConvertor.getEntities(puml);
@@ -148,7 +148,7 @@ public class TaskDomainService {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
 
-            File imageFile = File.createTempFile("img", ".png",new File("D:\\sytoss-trainee-platform7\\stp-ms-lessons\\src\\test\\resources"));
+            File imageFile = File.createTempFile("img", ".png");
             ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, "png", imageFile);
