@@ -16,12 +16,14 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
+import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
@@ -288,9 +290,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
         task2.setId(2L);
         task2.setTaskDomain(taskDomain);
         task2.setTopics(List.of(topic));
-        List<Task> taskList = List.of(task1,task2);
+        List<Task> taskList = List.of(task1, task2);
         when(taskService.findByDomainId(any())).thenReturn(taskList);
         List<com.sytoss.domain.bom.lessons.Task> result = taskDomainService.getTasks(1L);
-        assertEquals(taskList.size(),result.size());
+        assertEquals(taskList.size(), result.size());
     }
 }

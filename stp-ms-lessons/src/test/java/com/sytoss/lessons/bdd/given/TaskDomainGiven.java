@@ -51,14 +51,14 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             TaskDomainDTO result = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainDTO.getName(), disciplineDTO.getId());
             taskDomainDTO.setDiscipline(disciplineDTO);
             if (result == null) {
-                String stringId="";
+                String stringId = "";
                 if (taskDomainDTO.getId() != null) {
                     stringId = "*" + taskDomainDTO.getId();
                     taskDomainDTO.setId(null);
                 }
                 TaskDomainDTO taskDomain = getTaskDomainConnector().save(taskDomainDTO);
-                if (!stringId.equals("")){
-                    getTestExecutionContext().getIdMapping().put(stringId,taskDomain.getId());
+                if (!stringId.equals("")) {
+                    getTestExecutionContext().getIdMapping().put(stringId, taskDomain.getId());
                 }
             }
         }

@@ -16,7 +16,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -111,7 +110,8 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         teacherMap.put("id", 1);
         when(userConnector.getMyProfile()).thenReturn(teacherMap);
         HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Task>> result = doGet("/api/task-domain/1/tasks", requestEntity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<List<Task>> result = doGet("/api/task-domain/1/tasks", requestEntity, new ParameterizedTypeReference<>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }
