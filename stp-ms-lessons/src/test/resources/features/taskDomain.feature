@@ -78,3 +78,20 @@ Feature: Task Domain
     When system retrieve information about "First Domain" task domain tasks count
     Then operation is successful
     And task domain have 1 tasks
+
+  Scenario: Get tasks of task domain
+    Given task domains exist
+      | discipline  | task domain | id |
+      | SQL         | Join        | *1 |
+      | POSTGRE_SQL | Join        | *2 |
+    And task domain tasks exist
+      | task                | taskDomainId |
+      | What is Join?       | *1           |
+      | What is Join?       | *2           |
+      | What is Inner Join? | *1           |
+    When system retrieve information about *1 task domain tasks
+    Then operation is successful
+    And task domain have tasks
+      | task                | taskDomainId |
+      | What is Join?       | *1           |
+      | What is Inner Join? | *1           |

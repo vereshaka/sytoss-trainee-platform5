@@ -9,20 +9,19 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
@@ -33,7 +32,6 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -185,7 +183,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         discipline.setTeacher(new Teacher());
         taskDomain.setDiscipline(discipline);
         com.sytoss.domain.bom.personalexam.Answer answer = new com.sytoss.domain.bom.personalexam.Answer();
-        Task task = new Task();
+        com.sytoss.domain.bom.lessons.Task task = new com.sytoss.domain.bom.lessons.Task();
         task.setTaskDomain(taskDomain);
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
@@ -208,7 +206,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         discipline.setName("new");
         discipline.setTeacher(new Teacher());
         taskDomain.setDiscipline(discipline);
-        Task task = new Task();
+        com.sytoss.domain.bom.lessons.Task task = new com.sytoss.domain.bom.lessons.Task();
         task.setTaskDomain(taskDomain);
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
@@ -265,10 +263,34 @@ public class TaskDomainServiceTest extends StpUnitTest {
 
     @Test
     void getCountOfTasks() {
-        Task task = new Task();
+        com.sytoss.domain.bom.lessons.Task task = new com.sytoss.domain.bom.lessons.Task();
         task.setId(1L);
         when(taskService.findByDomainId((any()))).thenReturn(List.of(task));
         TaskDomainModel taskDomainModel = taskDomainService.getCountOfTasks(1L);
         assertEquals(1, taskDomainModel.getCountOfTasks());
+    }
+
+    @Test
+    public void shouldReturnTasks() {
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        Topic topic = new Topic();
+        topic.setId(1L);
+        topic.setDiscipline(discipline);
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setId(1L);
+        taskDomain.setDiscipline(discipline);
+        Task task1 = new Task();
+        task1.setId(1L);
+        task1.setTaskDomain(taskDomain);
+        task1.setTopics(List.of(topic));
+        Task task2 = new Task();
+        task2.setId(2L);
+        task2.setTaskDomain(taskDomain);
+        task2.setTopics(List.of(topic));
+        List<Task> taskList = List.of(task1,task2);
+        when(taskService.findByDomainId(any())).thenReturn(taskList);
+        List<com.sytoss.domain.bom.lessons.Task> result = taskDomainService.getTasks(1L);
+        assertEquals(taskList.size(),result.size());
     }
 }

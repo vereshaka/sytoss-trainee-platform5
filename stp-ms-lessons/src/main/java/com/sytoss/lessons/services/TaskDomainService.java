@@ -157,4 +157,8 @@ public class TaskDomainService {
         taskDomainModel.setCountOfTasks(tasks.size());
         return taskDomainModel;
     }
+
+    public List<Task> getTasks(Long taskDomainId) {
+        return taskService.findByDomainId(taskDomainId);
+    }
 }

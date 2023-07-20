@@ -1,15 +1,23 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bom.TaskDomainModel;
+import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.FileUtils;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,9 +72,24 @@ public class TaskDomainThen extends LessonsIntegrationTest {
         assertNotNull(getTestExecutionContext().getResponse().getBody());
     }
 
-    @And("^task domain have (.*) tasks")
+    @Then("^task domain have (.*) tasks")
     public void taskDomainHaveTask(int countOfTasks) {
         TaskDomainModel taskDomainModel = (TaskDomainModel) getTestExecutionContext().getResponse().getBody();
         assertEquals(countOfTasks, taskDomainModel.getCountOfTasks());
+    }
+
+    @Then("^task domain have tasks$")
+    public void taskDomainHaveTasks(List<TaskDTO> input) {
+        List<Task> tasks = (List<Task>) getTestExecutionContext().getResponse().getBody();
+        int quantityOfTasks = 0;
+        assertEquals(input.size(), tasks.size());
+        for (Task task : tasks) {
+            for (TaskDTO taskDTO : input)
+                if (Objects.equals(task.getQuestion(), taskDTO.getQuestion()) &&
+                        task.getTaskDomain().getId().equals(taskDTO.getTaskDomain().getId())) {
+                    quantityOfTasks++;
+                }
+        }
+        assertEquals(quantityOfTasks, tasks.size());
     }
 }

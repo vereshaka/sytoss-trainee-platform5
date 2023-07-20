@@ -1,7 +1,9 @@
 package com.sytoss.lessons.bdd.common;
 
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,4 +33,6 @@ public class LessonsDetails {
     private List<PersonalExam> personalExams = new ArrayList<>();
 
     private CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+
+    List<TaskDomainDTO> taskDomains = new ArrayList<>();
 }

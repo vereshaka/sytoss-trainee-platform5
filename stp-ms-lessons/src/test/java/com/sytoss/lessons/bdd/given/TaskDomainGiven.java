@@ -51,9 +51,18 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             TaskDomainDTO result = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainDTO.getName(), disciplineDTO.getId());
             taskDomainDTO.setDiscipline(disciplineDTO);
             if (result == null) {
-                getTaskDomainConnector().save(taskDomainDTO);
+                String stringId="";
+                if (taskDomainDTO.getId() != null) {
+                    stringId = "*" + taskDomainDTO.getId();
+                    taskDomainDTO.setId(null);
+                }
+                TaskDomainDTO taskDomain = getTaskDomainConnector().save(taskDomainDTO);
+                if (!stringId.equals("")){
+                    getTestExecutionContext().getIdMapping().put(stringId,taskDomain.getId());
+                }
             }
         }
+        getTestExecutionContext().getDetails().setTaskDomains(taskDomains);
     }
 
     @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")

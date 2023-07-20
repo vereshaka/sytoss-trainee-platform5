@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
@@ -131,5 +132,15 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^request is \"(.*)\"$")
     public void givenAnswerScript(String request) {
         getTestExecutionContext().getDetails().getCheckRequestParameters().setRequest(request);
+    }
+
+    @Given("^task domain tasks exist")
+    public void taskDomainTasksExist(List<TaskDTO> tasks) {
+        for(TaskDTO task : tasks){
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(),task.getTaskDomain().getId());
+            if(taskDTO==null){
+                getTaskConnector().save(task);
+            }
+        }
     }
 }
