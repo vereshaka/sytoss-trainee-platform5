@@ -63,7 +63,17 @@ public class TaskDomainService {
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
             taskDomainDTO.setDatabaseScript(taskDomainDTO.getDatabaseScript().replaceAll("table", "entity"));
-            taskDomainDTO.setDataScript(taskDomainDTO.getDataScript().replaceAll("data","object"));
+            String dataPuml = taskDomainDTO.getDataScript();
+
+            Pattern pattern = Pattern.compile("data ([A-z]+)");
+            Matcher matcher = pattern.matcher(dataPuml);
+            while (matcher.find()){
+                String match = matcher.group(1);
+                String newDataName = "object \"Data:"+match+"\" as d"+match;
+                dataPuml = dataPuml.replaceAll(matcher.group(0),newDataName);
+            }
+            taskDomainDTO.setDataScript(dataPuml);
+
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
