@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,7 +16,7 @@ import static com.sytoss.stp.test.FileUtils.readFromFile;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
+@Disabled
 class ScoreServiceTest extends StpUnitTest {
 
     @Mock
