@@ -75,6 +75,8 @@ public class TaskServiceTest extends StpUnitTest {
             return result;
         }).when(taskConnector).save(any(TaskDTO.class));
 
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(new TaskDomainDTO());
+
 
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
