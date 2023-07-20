@@ -62,6 +62,8 @@ public class TaskDomainService {
         if (oldTaskDomainDTO == null) {
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
+            taskDomainDTO.setDatabaseScript(taskDomainDTO.getDatabaseScript().replaceAll("table", "entity"));
+            taskDomainDTO.setDataScript(taskDomainDTO.getDataScript().replaceAll("data","object"));
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
