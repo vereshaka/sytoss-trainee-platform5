@@ -32,11 +32,13 @@ public class DatabaseHelperService {
     private static final String password = "~";
 
     private final QueryResultConvertor queryResultConvertor;
+    private String url="";
 
-    private String url = "jdbc:h2:mem:";
-
-    public void generateDatabase(String databaseScript) {
-        url += generateDatabaseName() + ";MODE=Oracle";
+    public void generateDatabase(String startUrl,String databaseScript) {
+        url += startUrl + generateDatabaseName();
+        if(startUrl.contains("mem")){
+            url += ";MODE=Oracle";
+        }
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
             Class.forName("org.h2.Driver");
             File databaseFile = writeDatabaseScriptFile(databaseScript);

@@ -17,15 +17,16 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     private final DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor());
 
+    private String url = "jdbc:h2:~/";
     @Test
     void generateDatabase() {
-        databaseHelperService.generateDatabase(script);
+        databaseHelperService.generateDatabase(url,script);
         Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from answer"));
     }
 
     @Test
     void getExecuteQueryResult() throws SQLException {
-        databaseHelperService.generateDatabase(script);
+        databaseHelperService.generateDatabase(url,script);
         HashMap<String, Object> map = new HashMap<>();
         map.put("ANSWER", "it_is_answer");
         QueryResult queryResult = new QueryResult(List.of(map));
@@ -34,7 +35,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void dropDatabase() {
-        databaseHelperService.generateDatabase(script);
+        databaseHelperService.generateDatabase(url,script);
         databaseHelperService.dropDatabase();
         Assertions.assertThrows(JdbcSQLSyntaxErrorException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
     }
