@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
+import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.*;
@@ -42,6 +43,8 @@ public class TaskServiceTest extends StpUnitTest {
     private TopicService topicService;
     @Mock
     private TaskDomainConnector taskDomainConnector;
+    @Mock
+    private DisciplineConnector disciplineConnector;
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
     @Spy
@@ -75,8 +78,12 @@ public class TaskServiceTest extends StpUnitTest {
             return result;
         }).when(taskConnector).save(any(TaskDTO.class));
 
-        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(new TaskDomainDTO());
-
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
 
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(1L);
@@ -85,7 +92,9 @@ public class TaskServiceTest extends StpUnitTest {
         teacher.setId(1L);
 
         Discipline discipline = new Discipline();
+        discipline.setId(1L);
         discipline.setTeacher(teacher);
+        taskDomain.setDiscipline(discipline);
 
         Topic topic = new Topic();
         topic.setId(1L);
