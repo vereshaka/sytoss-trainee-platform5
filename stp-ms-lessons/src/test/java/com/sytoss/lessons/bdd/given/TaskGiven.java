@@ -132,4 +132,14 @@ public class TaskGiven extends LessonsIntegrationTest {
     public void givenAnswerScript(String request) {
         getTestExecutionContext().getDetails().getCheckRequestParameters().setRequest(request);
     }
+
+    @Given("^task domain tasks exist")
+    public void taskDomainTasksExist(List<TaskDTO> tasks) {
+        for (TaskDTO task : tasks) {
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
+            if (taskDTO == null) {
+                getTaskConnector().save(task);
+            }
+        }
+    }
 }

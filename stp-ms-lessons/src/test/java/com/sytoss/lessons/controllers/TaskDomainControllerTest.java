@@ -4,8 +4,10 @@ import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
+import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.stp.test.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,5 +99,19 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         ResponseEntity<TaskDomainModel> responseEntity = doGet("/api/task-domain/1/overview", httpEntity, TaskDomainModel.class);
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
         Assertions.assertEquals(1, responseEntity.getBody().getCountOfTasks());
+    }
+
+
+    @Test
+    public void shouldReturnTasks() {
+        when(taskDomainService.getTasks(any())).thenReturn(List.of(new Task()));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
+        teacherMap.put("id", 1);
+        when(userConnector.getMyProfile()).thenReturn(teacherMap);
+        HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Task>> result = doGet("/api/task-domain/1/tasks", requestEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
     }
 }

@@ -1,12 +1,13 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
@@ -16,13 +17,10 @@ import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +33,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +81,7 @@ public class TaskDomainService {
         for (Task task : tasks) {
             CheckRequestParameters input = new CheckRequestParameters();
             input.setRequest(task.getEtalonAnswer());
-            input.setScript(taskDomain.getDatabaseScript()+StringUtils.LF+taskDomain.getDataScript());
+            input.setScript(taskDomain.getDatabaseScript() + StringUtils.LF + taskDomain.getDataScript());
             IsCheckEtalon isCheckEtalon = checkTaskConnector.checkEtalon(input);
             if (!isCheckEtalon.isChecked()) {
                 throw new EtalonIsNotValidException("etalon isn't correct for task with question \"" + task.getQuestion()
@@ -122,16 +122,27 @@ public class TaskDomainService {
     }
 
     public byte[] generatePngFromPuml(String puml, ConvertToPumlParameters convertToPumlParameters) {
-        String newPuml=puml;
-        if(convertToPumlParameters.equals(ConvertToPumlParameters.DB)){
+        if (puml == null) {
+            return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
+        }
+        Pattern pattern = Pattern.compile("data ([A-z]+)");
+        Matcher matcher = pattern.matcher(puml);
+        while (matcher.find()){
+            String match = matcher.group(1);
+            String newDataName = "object \"Data:"+match+"\" as d"+match;
+            puml = puml.replaceAll(matcher.group(0),newDataName);
+        }
+        puml = puml.replaceAll("table", "entity").replaceAll("data","object");
+        String newPuml = puml;
+        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
             List<String> entities = pumlConvertor.getEntities(puml);
-            newPuml = String.join(StringUtils.LF+StringUtils.LF,entities);
-        }else if(convertToPumlParameters.equals(ConvertToPumlParameters.DATA)){
+            newPuml = String.join(StringUtils.LF + StringUtils.LF, entities);
+        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
             List<String> objects = pumlConvertor.getObjects(puml);
-            newPuml = String.join(StringUtils.LF+StringUtils.LF,objects);
+            newPuml = String.join(StringUtils.LF + StringUtils.LF, objects);
         }
 
-        String pumlConvertedScript = pumlConvertor.addLinks(newPuml,puml,convertToPumlParameters);
+        String pumlConvertedScript = pumlConvertor.addLinks(newPuml, puml, convertToPumlParameters);
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         try {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
@@ -156,5 +167,9 @@ public class TaskDomainService {
         TaskDomainModel taskDomainModel = new TaskDomainModel();
         taskDomainModel.setCountOfTasks(tasks.size());
         return taskDomainModel;
+    }
+
+    public List<Task> getTasks(Long taskDomainId) {
+        return taskService.findByDomainId(taskDomainId);
     }
 }

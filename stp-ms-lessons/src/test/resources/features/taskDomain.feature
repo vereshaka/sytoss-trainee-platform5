@@ -78,3 +78,27 @@ Feature: Task Domain
     When system retrieve information about "First Domain" task domain tasks count
     Then operation is successful
     And task domain have 1 tasks
+
+  Scenario: Get tasks of task domain
+    Given task domains exist
+      | discipline  | task domain | id |
+      | SQL         | Join        | *1 |
+      | POSTGRE_SQL | Join        | *2 |
+    And task domain tasks exist
+      | task                | taskDomainId |
+      | What is Join?       | *1           |
+      | What is Join?       | *2           |
+      | What is Inner Join? | *1           |
+    When system retrieve information about *1 task domain tasks
+    Then operation is successful
+    And task domain have tasks
+      | task                | taskDomainId |
+      | What is Join?       | *1           |
+      | What is Inner Join? | *1           |
+
+  Scenario: system generate empty scheme image and save in task domain
+    Given "First Domain" task domain exists
+    And "First Domain" task domain doesn't have image
+    When system generate image of scheme and save in "First Domain" task domain with empty script
+    Then operation is successful
+    And  "First Domain" should have image

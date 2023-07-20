@@ -7,13 +7,11 @@ import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.*;
 import io.cucumber.java.DataTableType;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class DataTableCommon extends LessonsIntegrationTest {
 
@@ -72,6 +70,10 @@ public class DataTableCommon extends LessonsIntegrationTest {
         discipline.setName(entry.get("discipline"));
         taskDomainDTO.setName(entry.get("task domain"));
         taskDomainDTO.setDiscipline(discipline);
+        String id = entry.get("id");
+        if (id != null) {
+            taskDomainDTO.setId(Long.parseLong(id.substring(1)));
+        }
         return taskDomainDTO;
     }
 
@@ -81,5 +83,17 @@ public class DataTableCommon extends LessonsIntegrationTest {
         Group group = new Group();
         group.setId(groupId);
         return group;
+    }
+
+    @DataTableType
+    public TaskDTO mapTasksDTO(Map<String, String> entry) {
+        String task = entry.get("task");
+        String taskDomainStringId = entry.get("taskDomainId");
+        Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainStringId);
+        TaskDTO task1 = new TaskDTO();
+        task1.setQuestion(task);
+        TaskDomainDTO taskDomain = getTestExecutionContext().getDetails().getTaskDomains().stream().filter(el -> Objects.equals(el.getId(), taskDomainId)).toList().get(0);
+        task1.setTaskDomain(taskDomain);
+        return task1;
     }
 }
