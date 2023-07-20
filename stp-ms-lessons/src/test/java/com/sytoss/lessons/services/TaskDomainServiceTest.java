@@ -87,6 +87,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName("TaskDomain first");
         taskDomain.setDatabaseScript("script");
+        taskDomain.setDataScript("script");
         taskDomain.setShortDescription("Anything");
         taskDomain.setFullDescription("Anything");
         TaskDomain result = taskDomainService.create(1L, taskDomain);
