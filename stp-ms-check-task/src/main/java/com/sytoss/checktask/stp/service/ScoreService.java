@@ -24,12 +24,10 @@ public class ScoreService {
 
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
-    private String url = "jdbc:h2:mem:";
-
     public Score checkAndScore(CheckTaskParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult queryResultAnswer;
             try {
                 queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
@@ -97,7 +95,7 @@ public class ScoreService {
     public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
 
             try {
@@ -117,7 +115,7 @@ public class ScoreService {
     public QueryResult checkRequest(CheckRequestParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult result;
 
             try {

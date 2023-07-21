@@ -43,14 +43,14 @@ public class DatabaseHelperService {
                 url += generateDatabaseName() + ";MODE=Oracle";
                 connection = DriverManager.getConnection(url, username, password);
             } catch (Exception e) {
-                throw new RuntimeException("Could not create connection", e);
+                throw new CreateDbConnectionException("Could not create connection", e);
             }
         }
         return connection;
     }
 
-    public void generateDatabase(String startUrl,String databaseScript) {
-        url += startUrl + generateDatabaseName();
+    public void generateDatabase(String databaseScript) {
+        url += generateDatabaseName();
         try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
