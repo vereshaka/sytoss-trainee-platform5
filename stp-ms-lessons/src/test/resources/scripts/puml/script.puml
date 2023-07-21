@@ -1,4 +1,3 @@
-
 table Discipline {
 id: long <<PK>>
 name: string
@@ -22,20 +21,20 @@ task_id: long <<PK>>
 topic_id: long <<PK>>
 }
 
-data "Data:Discipline" as dDiscipline {
+data Discipline {
    |= id |= name |
    | 1   | SQL   |
    | 2   | Mongo  |
 }
 
-data "Data:Topic" as dTopic {
+data Topic {
    |= id |= name    |= discipline_id |
    | 1   | Insert   |        1       |
    | 2   | Select   |        2       |
    | 3   | Join     |        1       |
 }
 
-data "Data:Task" as dTask {
+data Task {
    |= id |= question                |= discipline_id |
    | 1   | What is Join?            |        1       |
    | 2   | What is Inner Join?      |        1       |
@@ -43,11 +42,10 @@ data "Data:Task" as dTask {
    | 4   | What is Select?          |        2       |
 }
 
-data "Data:TopicToTask" as dTopicToTask {
+data TopicToTask {
    |= task_id |= topic_id |
    | 1        | 1         |
    | 2        | 3         |
    | 3        | 2         |
    | 4        | 1         |
 }
-

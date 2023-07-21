@@ -280,4 +280,16 @@ public class PumlConvertor {
         }
         return null;
     }
+
+    public static String formatPuml(String puml){
+        Pattern pattern = Pattern.compile("data ([A-z]+)");
+        Matcher matcher = pattern.matcher(puml);
+        while (matcher.find()){
+            String match = matcher.group(1);
+            String newDataName = "object \"Data:"+match+"\" as d"+match;
+            puml = puml.replaceAll(matcher.group(0),newDataName);
+        }
+        puml = puml.replaceAll("table", "entity");
+        return puml;
+    }
 }
