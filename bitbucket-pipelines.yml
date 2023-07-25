@@ -11,11 +11,13 @@ pipelines:
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-check-task:$(echo $VERSION) -f ./stp-ms-check-task/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/docker/Dockerfile .
+            - docker push graphiz:latest
             - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
             - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
             - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
