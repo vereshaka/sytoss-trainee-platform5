@@ -281,7 +281,7 @@ public class PumlConvertor {
         return null;
     }
 
-    public String formatPum(String puml){
+    public String formatPuml(String puml){
         Pattern pattern = Pattern.compile("data ([A-z]+)");
         Matcher matcher = pattern.matcher(puml);
         while (matcher.find()){
