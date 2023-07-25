@@ -25,3 +25,18 @@ Feature: Group
     When system retrieve information about "AT-21-2" group
     Then operation is successful
     And group name should be "AT-21-2"
+
+  Scenario: receive group's students
+    Given "AT-21-2" group exists
+    And "AT-21-2" group has students
+      | firstName | lastName |
+      | Ivan      | Petrov   |
+      | Ivan      | Ivanov   |
+      | Petr      | Ivanov   |
+    When system retrieve information about students of the "AT-21-2" group
+    Then operation is successful
+    And this group should have students
+      | firstName | lastName |
+      | Ivan      | Petrov   |
+      | Ivan      | Ivanov   |
+      | Petr      | Ivanov   |
