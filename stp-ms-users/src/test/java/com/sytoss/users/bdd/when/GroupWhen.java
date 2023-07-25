@@ -49,4 +49,16 @@ public class GroupWhen extends UsersIntegrationTest {
         ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
+
+    @When("^system retrieve information about \"(.*)\" group")
+    public void systemRetrieveInformationAboutGroup(String groupName) {
+        GroupDTO group = getGroupConnector().getByName(groupName);
+        String url = "/api/group/"+group.getId();
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
+        HttpEntity<Group> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Group> responseEntity = doGet(url, httpEntity, Group.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
 }

@@ -19,3 +19,9 @@ Feature: Group
     Given "AT-21-2" group exists
     When "AT-21-2" group is created
     Then operation should be finished with 409 "Group with name "AT-21-2" already exist" error
+
+  Scenario: Get group
+    Given "AT-21-2" group exists
+    When system retrieve information about "AT-21-2" group
+    Then operation is successful
+    And group name should be "AT-21-2"
