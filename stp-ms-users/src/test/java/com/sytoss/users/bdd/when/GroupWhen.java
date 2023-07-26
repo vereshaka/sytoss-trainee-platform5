@@ -7,6 +7,7 @@ import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.UserDTO;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +60,18 @@ public class GroupWhen extends UsersIntegrationTest {
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
         HttpEntity<Group> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Group> responseEntity = doGet(url, httpEntity, Group.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^system retrieve information about students of the \"(.*)\" group")
+    public void systemRetrieveInformationAboutStudentsOfTheGroup(String groupName) {
+        GroupDTO group = getGroupConnector().getByName(groupName);
+        String url = "/api/group/"+group.getId()+"/students";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        UserDTO studentDTO = getTestExecutionContext().getDetails().getUser();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentDTO.getFirstName(), studentDTO.getLastName(), studentDTO.getEmail(), "s"));
+        HttpEntity<Group> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Student>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {});
         getTestExecutionContext().setResponse(responseEntity);
     }
 }
