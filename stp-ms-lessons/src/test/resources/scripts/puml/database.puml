@@ -1,22 +1,22 @@
-entity Discipline {
+table Discipline {
 id: long <<PK>>
 name: string
 }
 
-entity Topic {
+table Topic {
 id: long <<PK>>
 name: string
 discipline_id: long <<FK Discipline(id)>>
 }
 
-entity Task {
+table Task {
 id: long <<PK>>
 question: string
 answer: string
 discipline_id: long <<FK Discipline(id)>>
 }
 
-entity TopicToTask {
+table TopicToTask {
 task_id: long <<PK>>
 topic_id: long <<PK>>
 }

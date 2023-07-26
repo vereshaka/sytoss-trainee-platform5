@@ -33,8 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -62,18 +60,6 @@ public class TaskDomainService {
         if (oldTaskDomainDTO == null) {
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
-            taskDomainDTO.setDatabaseScript(taskDomainDTO.getDatabaseScript().replaceAll("table", "entity"));
-            String dataPuml = taskDomainDTO.getDataScript();
-
-            Pattern pattern = Pattern.compile("data ([A-z]+)");
-            Matcher matcher = pattern.matcher(dataPuml);
-            while (matcher.find()){
-                String match = matcher.group(1);
-                String newDataName = "object \"Data:"+match+"\" as d"+match;
-                dataPuml = dataPuml.replaceAll(matcher.group(0),newDataName);
-            }
-            taskDomainDTO.setDataScript(dataPuml);
-
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
@@ -137,24 +123,15 @@ public class TaskDomainService {
         if (puml == null) {
             return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
         }
-        Pattern pattern = Pattern.compile("data ([A-z]+)");
-        Matcher matcher = pattern.matcher(puml);
-        while (matcher.find()){
-            String match = matcher.group(1);
-            String newDataName = "object \"Data:"+match+"\" as d"+match;
-            puml = puml.replaceAll(matcher.group(0),newDataName);
-        }
-        puml = puml.replaceAll("table", "entity").replaceAll("data","object");
-        String newPuml = puml;
+        puml = pumlConvertor.formatPuml(puml);
+        List<String> objects = new ArrayList<>();
         if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
-            List<String> entities = pumlConvertor.getEntities(puml);
-            newPuml = String.join(StringUtils.LF + StringUtils.LF, entities);
+            objects = pumlConvertor.getEntities(puml);
         } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
-            List<String> objects = pumlConvertor.getObjects(puml);
-            newPuml = String.join(StringUtils.LF + StringUtils.LF, objects);
+            objects = pumlConvertor.getObjects(puml);
         }
 
-        String pumlConvertedScript = pumlConvertor.addLinks(newPuml, puml, convertToPumlParameters);
+        String pumlConvertedScript = pumlConvertor.addLinks(String.join(StringUtils.LF + StringUtils.LF, objects), puml, convertToPumlParameters);
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         try {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);

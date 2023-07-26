@@ -86,8 +86,8 @@ public class TaskDomainServiceTest extends StpUnitTest {
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName("TaskDomain first");
-        taskDomain.setDatabaseScript("script");
-        taskDomain.setDataScript("script");
+        taskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        taskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         taskDomain.setShortDescription("Anything");
         taskDomain.setFullDescription("Anything");
         TaskDomain result = taskDomainService.create(1L, taskDomain);
@@ -95,6 +95,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertEquals(taskDomain.getDatabaseScript(), result.getDatabaseScript());
         assertEquals(taskDomain.getShortDescription(), result.getShortDescription());
         assertEquals(taskDomain.getFullDescription(), result.getFullDescription());
+        assertEquals(FileUtils.readFromFile("puml/script.puml"), taskDomain.getDatabaseScript()+"\n\n"+taskDomain.getDataScript());
     }
 
     @Test
