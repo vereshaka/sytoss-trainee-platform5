@@ -53,4 +53,13 @@ public class GroupControllerTest extends StpApplicationTest {
         ResponseEntity<Void> responseEntity = doPost("/api/group/5/student/9", requestEntity, Void.class);
         assertEquals(200, responseEntity.getStatusCode().value());
     }
+
+    @Test
+    public void shouldGetGroup() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Void> responseEntity = doGet("/api/group/5", requestEntity, Void.class);
+        assertEquals(200, responseEntity.getStatusCode().value());
+    }
 }

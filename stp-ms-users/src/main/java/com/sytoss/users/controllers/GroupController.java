@@ -30,7 +30,7 @@ public class GroupController {
         return groupService.create(group);
     }
 
-    @Operation(description = "Method that assignee student to group")
+    @Operation(description = "Method that assign student to group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Group not found!"),
@@ -42,5 +42,18 @@ public class GroupController {
             @Parameter(description = "Id of student what will be assignee to group")
             @PathVariable("studentId") String studentId) {
         groupService.assignStudentToGroup(groupId, studentId);
+    }
+
+
+    @Operation(description = "Method that get information about group by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group not found!"),
+    })
+    @GetMapping("/{groupId}")
+    public Group getGroup(
+            @Parameter(description = "Id of group")
+            @PathVariable("groupId") Long groupId) {
+        return groupService.getById(groupId);
     }
 }
