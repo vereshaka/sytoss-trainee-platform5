@@ -20,6 +20,7 @@
     <include file="data/STP-251.xml" relativeToChangelogFile="true" />
     <include file="data/STP-309.xml" relativeToChangelogFile="true" />
     <include file="data/STP-315.xml" relativeToChangelogFile="true" />
+    <include file="data/STP-333.xml" relativeToChangelogFile="true" />
     <changeSet id="version_0.0.1" author="KornienkoD">
         <tagDatabase tag="0.0.1" />
     </changeSet>
