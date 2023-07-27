@@ -24,6 +24,9 @@ public class TaskDTO {
     @Column(name = "ETALON_ANSWER")
     private String etalonAnswer;
 
+    @Column(name = "COEFFICIENT")
+    private Double coef;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;

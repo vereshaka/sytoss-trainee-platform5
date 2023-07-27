@@ -23,6 +23,7 @@ public class TaskConvertorTest extends StpUnitTest {
         taskDTO.setId(4L);
         taskDTO.setQuestion("What is SQL?");
         taskDTO.setEtalonAnswer("SQL is life");
+        taskDTO.setCoef(2.0);
         List<TopicDTO> topicDTOList = new ArrayList<>();
         TopicDTO topicDTO = new TopicDTO();
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -49,6 +50,7 @@ public class TaskConvertorTest extends StpUnitTest {
         assertEquals(taskDTO.getId(), task.getId());
         assertEquals(taskDTO.getQuestion(), task.getQuestion());
         assertEquals(taskDTO.getEtalonAnswer(), task.getEtalonAnswer());
+        assertEquals(taskDTO.getCoef(), task.getCoef());
     }
 
     @Test
@@ -57,6 +59,7 @@ public class TaskConvertorTest extends StpUnitTest {
         task.setId(4L);
         task.setQuestion("What is SQL?");
         task.setEtalonAnswer("SQL is life");
+        task.setCoef(2.0);
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(14L);
         task.setTaskDomain(taskDomain);
@@ -84,5 +87,6 @@ public class TaskConvertorTest extends StpUnitTest {
         assertEquals(task.getId(), taskDTO.getId());
         assertEquals(task.getQuestion(), taskDTO.getQuestion());
         assertEquals(task.getEtalonAnswer(), taskDTO.getEtalonAnswer());
+        assertEquals(task.getCoef(), taskDTO.getCoef());
     }
 }
