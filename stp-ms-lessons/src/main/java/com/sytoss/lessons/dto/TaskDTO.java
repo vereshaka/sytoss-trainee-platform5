@@ -27,6 +27,9 @@ public class TaskDTO {
     @Column(name = "COEFFICIENT")
     private Double coef;
 
+    @Column(name = "REQ_COMMAND")
+    private String requiredCommand;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;
