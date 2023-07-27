@@ -62,6 +62,7 @@ public class AnswerServiceTest extends StpUnitTest {
         // first task and the answer that we will process and save
         Task task = new Task();
         task.setId(1L);
+        task.setCoef(2.0);
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(10L);
         taskDomain.setDatabaseScript(".uml");
@@ -77,6 +78,7 @@ public class AnswerServiceTest extends StpUnitTest {
         // second task and the answer what we return at last
         Task nextTask = new Task();
         nextTask.setId(2L);
+        nextTask.setCoef(2.0);
         TaskDomain nextTaskDomain = new TaskDomain();
         nextTaskDomain.setId(11L);
         nextTaskDomain.setDatabaseScript(".uml");
@@ -84,7 +86,7 @@ public class AnswerServiceTest extends StpUnitTest {
         Answer nextAnswer = new Answer();
         nextAnswer.setId(9L);
         nextAnswer.setStatus(AnswerStatus.NOT_STARTED);
-        nextAnswer.setTask(task);
+        nextAnswer.setTask(nextTask);
         input.setAnswers(Arrays.asList(currentAnswer, nextAnswer));
         input.setAmountOfTasks(1);
         input.setTime(10);

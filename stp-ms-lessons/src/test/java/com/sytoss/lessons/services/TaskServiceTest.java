@@ -56,6 +56,7 @@ public class TaskServiceTest extends StpUnitTest {
         input.setId(1L);
         input.setQuestion("What is SQL?");
         input.setEtalonAnswer("SQL is life");
+        input.setCoef(2.0);
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -132,6 +133,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setId(1L);
         taskDTO.setQuestion("Question");
         taskDTO.setEtalonAnswer("Answer");
+        taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
@@ -163,6 +165,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setTaskDomain(new TaskDomainDTO());
         taskDTO.setQuestion("new");
         taskDTO.setEtalonAnswer("one");
+        taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
         when(taskConnector.getReferenceById(anyLong())).thenReturn(taskDTO);
         Topic topic = new Topic();

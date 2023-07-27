@@ -28,5 +28,5 @@ public class Task {
 
     private Long imageId;
 
-    private double coef;
+    private Double coef;
 }
