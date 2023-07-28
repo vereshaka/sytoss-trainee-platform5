@@ -3,7 +3,6 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
-import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.QueryResult;
@@ -21,7 +20,6 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -89,7 +87,7 @@ public class TaskService {
         if (task.getTopics().isEmpty()) {
             task.setTopics(List.of(topic));
         } else {
-            if(!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
+            if (!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
                 task.getTopics().add(topic);
             }
 
@@ -141,9 +139,8 @@ public class TaskService {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
         if (taskDomainDTO != null) {
             String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
-            log.info("Script: " + script);
+            script = pumlConvertor.formatPuml(script);
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-            log.info("Liquibase Script: " + liquibaseScript);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
             checkRequestParameters.setScript(liquibaseScript);
