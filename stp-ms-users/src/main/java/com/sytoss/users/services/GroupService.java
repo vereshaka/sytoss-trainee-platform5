@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -69,5 +70,16 @@ public class GroupService {
         userConverter.toDTO(user, studentDTO);
         groupDTO.getStudents().add(studentDTO);
         groupConnector.save(groupDTO);
+    }
+
+    public List<Student> getStudents(Long groupId) {
+        GroupDTO groupDTO = getDtoById(groupId);
+        List<Student> students = new ArrayList<>();
+        for(StudentDTO studentDTO : groupDTO.getStudents()){
+            Student student = new Student();
+            userConverter.fromDTO(studentDTO,student);
+            students.add(student);
+        }
+        return students;
     }
 }
