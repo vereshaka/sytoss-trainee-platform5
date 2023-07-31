@@ -12,4 +12,6 @@ public interface PersonalExamConnector extends MongoRepository<PersonalExam, Str
     PersonalExam getById(String id);
 
     int countByAnswersTaskTaskDomainIdAndStatusNotLike(Long id, PersonalExamStatus status);
+
+    List<PersonalExam> getAllByExamId(Long examId);
 }
