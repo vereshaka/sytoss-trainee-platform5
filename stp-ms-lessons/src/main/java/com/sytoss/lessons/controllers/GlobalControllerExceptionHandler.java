@@ -91,4 +91,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(EtalonIsNotValidException etalonIsNotValidException) {
         return ResponseEntity.status(409).body(new ApplicationError(etalonIsNotValidException));
     }
+
+    @ExceptionHandler({UserNotIdentifiedException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(UserNotIdentifiedException userNotIdentifiedException) {
+        return ResponseEntity.status(403).body(new ApplicationError(userNotIdentifiedException));
+    }
 }
