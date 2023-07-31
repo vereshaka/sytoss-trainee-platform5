@@ -3,6 +3,7 @@ package com.sytoss.lessons.convertors;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import org.apache.commons.lang3.ObjectUtils;
@@ -39,6 +40,7 @@ public class ExamConvertor {
 
         destination.setTopics(topicDTOList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
+        destination.setTeacherId(source.getTeacher().getId());
     }
 
     public void fromDTO(ExamDTO source, Exam destination) {
@@ -64,5 +66,8 @@ public class ExamConvertor {
 
         destination.setTopics(topicList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
+        Teacher teacher = new Teacher();
+        teacher.setId(source.getTeacherId());
+        destination.setTeacher(teacher);
     }
 }

@@ -38,6 +38,9 @@ public class ExamDTO {
     @Column(name = "NUMBER_OF_TASKS")
     private Integer numberOfTasks;
 
+    @Column(name = "TEACHER_ID")
+    private Long teacherId;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "EXAM2TOPIC",
