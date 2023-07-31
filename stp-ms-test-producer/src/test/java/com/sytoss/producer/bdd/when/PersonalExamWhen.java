@@ -132,4 +132,16 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), studentId));
         return new HttpEntity<>(null, httpHeaders);
     }
+
+    @When("operation for retrieving personal exams for examId {} was called")
+    public void retrievePersonalExamsByExamId(Long examId) {
+        String url = "/api/exam/" + examId + "/personal-exams";
+        log.info("Send request to " + url);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
+        getTestExecutionContext().getDetails().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
 }

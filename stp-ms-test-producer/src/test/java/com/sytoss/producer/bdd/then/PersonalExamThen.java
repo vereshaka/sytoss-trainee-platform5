@@ -1,20 +1,23 @@
 package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class PersonalExamThen extends TestProducerIntegrationTest {
@@ -98,5 +101,19 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
             }
         }
         assertEquals(tasks.size(), quantityOfImages);
+    }
+
+    @Then("operation should return {} personal exams")
+    public void operationShouldReturnPersonalExams(int countPersonalExam, DataTable dataTable) throws JsonProcessingException {
+        List<PersonalExam> personalExams = getMapper().readValue(getTestExecutionContext().getDetails().getResponse().getBody(), new TypeReference<>() {
+        });
+        assertEquals(countPersonalExam, personalExams.size());
+
+        List<String> examNames = personalExams.stream().map(PersonalExam::getName).toList();
+        List<String> compareWithExamNames = dataTable.asList();
+
+        if(!examNames.containsAll(compareWithExamNames)){
+            fail("Invalid exam names were retrieved");
+        }
     }
 }
