@@ -38,19 +38,18 @@ public class TopicController {
         return topicService.getById(topicId);
     }
 
-    @Operation(description = "Method that retrieve task")
+    @Operation(description = "Method that assigns tasks to topic")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task not found!"),
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
-    @PostMapping("/{topicId}/task/{taskId}")
-    public Task assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
-                                  @PathVariable("taskId")
-                                  Long taskId, @Parameter(description = "id of the task to be searched by")
-                                  @PathVariable("topicId")
-                                  Long topicId) {
-        return taskService.assignTaskToTopic(taskId, topicId);
+    @PostMapping("/{topicId}/assign/tasks/")
+    public List<Task> assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
+                                  @PathVariable("topicId") Long topicId,
+                                  @Parameter(description = "id of the task to be searched by")
+                                  @RequestBody List<Long> taskIds) {
+        return taskService.assignTasksToTopic(topicId, taskIds);
     }
 
     @Operation(description = "Method that gets tasks by topic ID")
