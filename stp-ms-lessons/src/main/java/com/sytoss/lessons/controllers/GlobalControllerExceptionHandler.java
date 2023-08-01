@@ -96,4 +96,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleInvalidRequesException(RequestIsNotValidException invalidRequestException) {
         return ResponseEntity.status(400).body(new ApplicationError(invalidRequestException));
     }
+
+    @ExceptionHandler({UserNotIdentifiedException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(UserNotIdentifiedException userNotIdentifiedException) {
+        return ResponseEntity.status(403).body(new ApplicationError(userNotIdentifiedException));
+    }
 }

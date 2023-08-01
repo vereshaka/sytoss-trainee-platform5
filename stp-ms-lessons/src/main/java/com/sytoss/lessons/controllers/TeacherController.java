@@ -1,9 +1,11 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.services.DisciplineService;
+import com.sytoss.lessons.services.ExamService;
 import com.sytoss.lessons.services.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,6 +27,8 @@ public class TeacherController {
 
     private final GroupService groupService;
 
+    private final ExamService examService;
+
     @Operation(description = "Method that retrieve disciplines by teacher")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -43,5 +47,14 @@ public class TeacherController {
     @GetMapping("/my/groups")
     public List<GroupReferenceDTO> getMyGroups() {
         return groupService.findGroups();
+    }
+
+    @Operation(description = "Method that retriew list of exams by teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/my/exams")
+    public List<Exam> getMyExams() {
+        return examService.findExams();
     }
 }

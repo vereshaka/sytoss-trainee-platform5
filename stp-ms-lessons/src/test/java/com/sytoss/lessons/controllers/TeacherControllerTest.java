@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -24,5 +25,15 @@ public class TeacherControllerTest extends LessonsControllerTest {
         ResponseEntity<List<Discipline>> result = doGet("/api/teacher/my/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
         });
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldGetListOfExams() {
+        when(examService.findExams()).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Exam>> response = doGet("/api/teacher/my/exams", httpEntity, new ParameterizedTypeReference<List<Exam>>() {
+        });
+        assertEquals(200, response.getStatusCode().value());
     }
 }
