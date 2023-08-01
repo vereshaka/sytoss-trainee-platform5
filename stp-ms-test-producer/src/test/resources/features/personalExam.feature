@@ -57,3 +57,16 @@ Feature: PersonalExam
       | Inner Join |
       | Left Join  |
     And tasks from exam should have id image
+
+  Scenario: retrieve all personal exams by examId
+    Given personal "Exam1" exam with examId 1 for student with 3 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
+    And personal "Exam2" exam with examId 1 for student with 4 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
+    When operation for retrieving personal exams for examId 1 was called
+    Then operation is successful
+    And operation should return 2 personal exams
+      | Exam1 |
+      | Exam2 |

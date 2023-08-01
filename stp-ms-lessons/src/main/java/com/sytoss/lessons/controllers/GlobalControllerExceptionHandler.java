@@ -91,4 +91,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(EtalonIsNotValidException etalonIsNotValidException) {
         return ResponseEntity.status(409).body(new ApplicationError(etalonIsNotValidException));
     }
+
+    @ExceptionHandler({RequestIsNotValidException.class})
+    public ResponseEntity<ApplicationError> handleInvalidRequesException(RequestIsNotValidException invalidRequestException) {
+        return ResponseEntity.status(400).body(new ApplicationError(invalidRequestException));
+    }
 }

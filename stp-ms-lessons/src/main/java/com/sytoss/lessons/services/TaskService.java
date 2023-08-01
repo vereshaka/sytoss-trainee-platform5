@@ -1,6 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
@@ -17,6 +18,7 @@ import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -144,7 +146,12 @@ public class TaskService {
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
             checkRequestParameters.setScript(liquibaseScript);
-            return checkTaskConnector.checkRequest(checkRequestParameters);
+            try {
+                QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
+                return queryResult;
+            } catch (FeignException e){
+                throw new RequestIsNotValidException(e.contentUTF8());
+            }
         }
         throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
 
