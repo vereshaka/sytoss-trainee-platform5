@@ -24,7 +24,10 @@ public class GroupService extends AbstractService {
             for (GroupReferenceDTO referenceDTO : groupReferenceDTOS) {
                 Group group = new Group();
                 group.setId(referenceDTO.getGroupId());
-                groups.add(group);
+                if(groups.stream().filter(item -> item.getId().equals(referenceDTO.getGroupId())).toList().size() == 0){
+                    groups.add(group);
+                }
+
             }
             return groups;
         }
