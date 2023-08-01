@@ -23,6 +23,8 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class})
     private String name;
 
+    private Long examId;
+
     private Discipline discipline;
 
     @JsonView(PersonalExam.Public.class)

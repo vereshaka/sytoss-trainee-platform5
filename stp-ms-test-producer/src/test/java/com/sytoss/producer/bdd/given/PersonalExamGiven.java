@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,8 +52,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         getPersonalExamConnector().save(personalExam);
     }
 
-    @Given("^personal \"(.*)\" exam for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
-    public void personalExamExist(String examName, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
+    @Given("^personal \"(.*)\" exam(?: with examId (.*)|) for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
+    public void personalExamExist(String examName, String examId, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         if (personalExam != null) {
             personalExam.getAnswers().clear();
@@ -66,6 +67,9 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.setStatus(PersonalExamStatus.valueOf(answerStatus));
+            if(StringUtils.isNotEmpty(examId)) {
+                personalExam.setExamId(Long.valueOf(examId));
+            }
         }
         personalExam.setAnswers(answers);
         getPersonalExamConnector().save(personalExam);

@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.controller;
 
-import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.exceptions.ApplicationError;

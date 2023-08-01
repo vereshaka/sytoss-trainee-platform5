@@ -92,6 +92,11 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(409).body(new ApplicationError(etalonIsNotValidException));
     }
 
+    @ExceptionHandler({RequestIsNotValidException.class})
+    public ResponseEntity<ApplicationError> handleInvalidRequesException(RequestIsNotValidException invalidRequestException) {
+        return ResponseEntity.status(400).body(new ApplicationError(invalidRequestException));
+    }
+
     @ExceptionHandler({UserNotIdentifiedException.class})
     public ResponseEntity<ApplicationError> handleValidationException(UserNotIdentifiedException userNotIdentifiedException) {
         return ResponseEntity.status(403).body(new ApplicationError(userNotIdentifiedException));
