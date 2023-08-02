@@ -1,6 +1,5 @@
 package com.sytoss.users.controllers;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
@@ -40,9 +39,10 @@ public class UserController {
     })
     @PostMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void updateProfile(@RequestParam String firstName,
+                              @RequestParam String middleName,
                               @RequestParam String lastName,
                               @RequestParam MultipartFile photo) {
-        ProfileModel profileModel = new ProfileModel(firstName, lastName, null, photo);
+        ProfileModel profileModel = new ProfileModel(firstName, middleName, lastName, null, photo);
         userService.updatePhoto(profileModel.getPhoto());
         userService.updateProfile(profileModel);
     }
