@@ -21,10 +21,13 @@ public class GroupService extends AbstractService {
         List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId_TeacherId(getCurrentUser().getId());
         if (!groupReferenceDTOS.isEmpty()) {
             List<Group> groups = new ArrayList<>();
-            for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
+            for (GroupReferenceDTO referenceDTO : groupReferenceDTOS) {
                 Group group = new Group();
-                group.setId(groupReferenceDTO.getGroupId());
-                groups.add(group);
+                group.setId(referenceDTO.getGroupId());
+                if (groups.stream().filter(item -> item.getId().equals(referenceDTO.getGroupId())).toList().size() == 0) {
+                    groups.add(group);
+                }
+
             }
             return groups;
         }
