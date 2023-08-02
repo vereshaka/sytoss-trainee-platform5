@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TopicWhen extends LessonsIntegrationTest {
@@ -97,10 +98,12 @@ public class TopicWhen extends LessonsIntegrationTest {
     @When("^assign topic \"(.*)\" to this task$")
     public void linkTopicToThisTask(String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
-        String url = "/api/topic/" + topicDTO.getId() + "/task/" + getTestExecutionContext().getDetails().getTaskId();
+        String url = "/api/topic/" + topicDTO.getId() + "/assign/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<?> httpEntity = new HttpEntity<>(List.of(getTestExecutionContext().getDetails().getTaskId()), httpHeaders);
+        ResponseEntity<List<Task>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
         getTestExecutionContext().setResponse(responseEntity);
     }
 

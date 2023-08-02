@@ -3,14 +3,18 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.TaskDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +34,13 @@ public class DisciplineService extends AbstractService {
 
     private final DisciplineConvertor disciplineConvertor;
 
+    private final TaskConvertor taskConvertor;
+
     private final GroupReferenceConnector groupReferenceConnector;
 
     private final UserConnector userConnector;
+
+    private final TaskConnector taskConnector;
 
     public Discipline getById(Long id) {
         try {
@@ -69,6 +77,17 @@ public class DisciplineService extends AbstractService {
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             result.add(discipline);
+        }
+        return result;
+    }
+
+    public List<Task> findTasksByDisciplineId(Long id) {
+        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineId(id);
+        List<Task> result = new ArrayList<>();
+        for (TaskDTO taskDTO : tasks) {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            result.add(task);
         }
         return result;
     }

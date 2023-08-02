@@ -6,16 +6,14 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import feign.FeignException;
@@ -83,22 +81,27 @@ public class TaskService {
         }
     }
 
-    public Task assignTaskToTopic(Long taskId, Long topicId) {
+    public List<Task> assignTasksToTopic(Long topicId, List<Long> taskIds) {
         Topic topic = topicService.getById(topicId);
-        Task task = getById(taskId);
-        if (task.getTopics().isEmpty()) {
-            task.setTopics(List.of(topic));
-        } else {
-            if (!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
-                task.getTopics().add(topic);
-            }
+        List<Task> result = new ArrayList<>();
+        for (Long taskId: taskIds) {
+            Task task = getById(taskId);
+            task.setId(taskId);
+            if (task.getTopics().isEmpty()) {
+                task.setTopics(List.of(topic));
+            } else {
+                if (!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
+                    task.getTopics().add(topic);
+                }
 
+            }
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            result.add(task);
         }
-        TaskDTO taskDTO = new TaskDTO();
-        taskConvertor.toDTO(task, taskDTO);
-        taskDTO = taskConnector.save(taskDTO);
-        taskConvertor.fromDTO(taskDTO, task);
-        return task;
+        return result;
     }
 
     public List<Task> findByTopicId(Long topicId) {
