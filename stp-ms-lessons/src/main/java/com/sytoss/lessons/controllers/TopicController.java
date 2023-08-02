@@ -44,7 +44,7 @@ public class TopicController {
             @ApiResponse(responseCode = "404", description = "Task not found!"),
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
-    @PostMapping("/{topicId}/assign/tasks/")
+    @PostMapping("/{topicId}/assign/tasks")
     public List<Task> assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
                                   @PathVariable("topicId") Long topicId,
                                   @Parameter(description = "id of the task to be searched by")

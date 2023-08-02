@@ -28,7 +28,7 @@ public class TopicControllerTest extends LessonsControllerTest {
 
         when(taskService.assignTasksToTopic(anyLong(), any(ArrayList.class))).thenReturn(List.of(new Task()));
 
-        ResponseEntity<List<Task>> result = doPost("/api/topic/1/assign/tasks/", requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Task>> result = doPost("/api/topic/1/assign/tasks", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
