@@ -17,9 +17,11 @@ public class UserConverter {
 
     public void toDTO(Student source, StudentDTO destination) {
         toDTO(source, (UserDTO) destination);
-        GroupDTO groupDTO = new GroupDTO();
-        groupConvertor.toDTO(source.getPrimaryGroup(), groupDTO);
-        destination.setPrimaryGroup(groupDTO);
+        if (source.getPrimaryGroup() != null) {
+            GroupDTO groupDTO = new GroupDTO();
+            groupConvertor.toDTO(source.getPrimaryGroup(), groupDTO);
+            destination.setPrimaryGroup(groupDTO);
+        }
     }
 
     public void fromDTO(StudentDTO source, Student destination) {
