@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.lessons.bom.TaskIds;
 import com.sytoss.lessons.services.TaskService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,8 +49,8 @@ public class TopicController {
     public List<Task> assignTaskToTopic(@Parameter(description = "id of the task to be searched by")
                                   @PathVariable("topicId") Long topicId,
                                   @Parameter(description = "id of the task to be searched by")
-                                  @RequestBody List<Long> taskIds) {
-        return taskService.assignTasksToTopic(topicId, taskIds);
+                                  @RequestBody TaskIds taskIds) {
+        return taskService.assignTasksToTopic(topicId, taskIds.getTaskIds());
     }
 
     @Operation(description = "Method that gets tasks by topic ID")

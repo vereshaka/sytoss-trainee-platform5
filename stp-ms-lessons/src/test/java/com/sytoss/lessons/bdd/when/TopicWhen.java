@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bom.TaskIds;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -101,7 +102,9 @@ public class TopicWhen extends LessonsIntegrationTest {
         String url = "/api/topic/" + topicDTO.getId() + "/assign/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<?> httpEntity = new HttpEntity<>(List.of(getTestExecutionContext().getDetails().getTaskId()), httpHeaders);
+        TaskIds taskIds = new TaskIds();
+        taskIds.setTaskIds(List.of(getTestExecutionContext().getDetails().getTaskId()));
+        HttpEntity<?> httpEntity = new HttpEntity<>(taskIds, httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
