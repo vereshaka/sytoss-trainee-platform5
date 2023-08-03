@@ -122,9 +122,19 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
-        dto.setFirstName(profileModel.getFirstName());
-        dto.setMiddleName(profileModel.getMiddleName());
-        dto.setLastName(profileModel.getLastName());
+        if(profileModel.getFirstName() != null){
+            dto.setFirstName(profileModel.getFirstName());
+        }
+        if(profileModel.getMiddleName() != null){
+            dto.setMiddleName(profileModel.getMiddleName());
+        }
+        if(profileModel.getLastName() != null){
+            dto.setLastName(profileModel.getLastName());
+        }
+        if(profileModel.getPhoto() != null){
+          updatePhoto(profileModel.getPhoto());
+        }
+
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
             //TODO: yevgenyv: update group info
         }

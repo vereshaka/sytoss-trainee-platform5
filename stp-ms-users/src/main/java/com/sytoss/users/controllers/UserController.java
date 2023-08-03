@@ -38,12 +38,11 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping(value = "/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void updateProfile(@RequestParam String firstName,
-                              @RequestParam String middleName,
-                              @RequestParam String lastName,
-                              @RequestParam MultipartFile photo) {
+    public void updateProfile(@RequestParam(required = false) String firstName,
+                              @RequestParam(required = false) String middleName,
+                              @RequestParam(required = false) String lastName,
+                              @RequestParam(required = false) MultipartFile photo) {
         ProfileModel profileModel = new ProfileModel(firstName, middleName, lastName, null, photo);
-        userService.updatePhoto(profileModel.getPhoto());
         userService.updateProfile(profileModel);
     }
 
