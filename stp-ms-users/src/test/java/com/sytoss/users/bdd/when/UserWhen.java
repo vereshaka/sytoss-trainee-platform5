@@ -1,6 +1,5 @@
 package com.sytoss.users.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
@@ -55,6 +54,7 @@ public class UserWhen extends UsersIntegrationTest {
 
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("firstName", getTestExecutionContext().getDetails().getUser().getFirstName());
+        body.add("middleName", getTestExecutionContext().getDetails().getUser().getMiddleName());
         body.add("lastName", getTestExecutionContext().getDetails().getUser().getLastName());
         body.add("photo", new FileSystemResource(photoFile));
 

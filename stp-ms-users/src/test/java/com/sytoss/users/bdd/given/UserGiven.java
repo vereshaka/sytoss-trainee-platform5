@@ -29,8 +29,8 @@ public class UserGiven extends UsersIntegrationTest {
         }
     }
 
-    @Given("^student with \"(.*)\" firstName and \"(.*)\" lastName and \"(.*)\" email exists$")
-    public void studentExists(String firstName, String lastName, String email) {
+    @Given("^student with \"(.*)\" firstName, \"(.*)\" middleName and \"(.*)\" lastName and \"(.*)\" email exists$")
+    public void studentExists(String firstName, String middleName, String lastName, String email) {
         String id = "thisIsNotLongId";
         UserDTO studentDTO = getUserConnector().getByUid(id);
         if (studentDTO != null && !(studentDTO instanceof StudentDTO)) {
@@ -40,6 +40,7 @@ public class UserGiven extends UsersIntegrationTest {
         if (studentDTO == null) {
             studentDTO = new StudentDTO();
             studentDTO.setFirstName(firstName);
+            studentDTO.setMiddleName(middleName);
             studentDTO.setLastName(lastName);
             studentDTO.setEmail(email);
             studentDTO.setModerated(false);
