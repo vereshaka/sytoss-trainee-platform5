@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -13,7 +14,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -34,16 +34,22 @@ class GroupServiceTest extends StpUnitTest {
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        DisciplineDTO disciplineDTO = new DisciplineDTO();
-        disciplineDTO.setName("SQL");
-        disciplineDTO.setTeacherId(1L);
-        disciplineDTO.setId(1L);
+        DisciplineDTO disciplineDTO1 = new DisciplineDTO();
+        disciplineDTO1.setName("SQL");
+        disciplineDTO1.setTeacherId(1L);
+        disciplineDTO1.setId(1L);
 
-        GroupReferenceDTO group = new GroupReferenceDTO(1L, disciplineDTO);
-        List<GroupReferenceDTO> input = new ArrayList<>();
-        input.add(group);
+        DisciplineDTO disciplineDTO2 = new DisciplineDTO();
+        disciplineDTO2.setName("Mongo");
+        disciplineDTO2.setTeacherId(1L);
+        disciplineDTO2.setId(2L);
+
+        GroupReferenceDTO group1 = new GroupReferenceDTO(1L, disciplineDTO1);
+        GroupReferenceDTO group2 = new GroupReferenceDTO(2L, disciplineDTO1);
+        GroupReferenceDTO group3 = new GroupReferenceDTO(1L, disciplineDTO2);
+        List<GroupReferenceDTO> input = List.of(group1, group2, group3);
         when(groupConnector.findByDisciplineId_TeacherId(1L)).thenReturn(input);
-        List<GroupReferenceDTO> groupReferenceDTOList = groupService.findGroups();
-        Assertions.assertEquals(1, groupReferenceDTOList.size());
+        List<Group> groups = groupService.findGroups();
+        Assertions.assertEquals(2, groups.size());
     }
 }

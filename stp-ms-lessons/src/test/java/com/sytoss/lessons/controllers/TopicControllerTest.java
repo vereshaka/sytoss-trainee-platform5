@@ -3,22 +3,33 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class TopicControllerTest extends LessonsControllerTest {
 
+
     @Test
     public void shouldAssignTaskToTopic() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        when(taskService.assignTaskToTopic(anyLong(), anyLong())).thenReturn(new Task());
-        ResponseEntity<Task> result = doPost("/api/topic/1/task/1", httpEntity, Task.class);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<List> requestEntity = new HttpEntity<>(List.of(1,2,3), httpHeaders);
+
+        when(taskService.assignTasksToTopic(anyLong(), any(ArrayList.class))).thenReturn(List.of(new Task()));
+
+        ResponseEntity<List<Task>> result = doPost("/api/topic/1/assign/tasks", requestEntity, new ParameterizedTypeReference<>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 

@@ -1,27 +1,25 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
-import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,22 +81,27 @@ public class TaskService {
         }
     }
 
-    public Task assignTaskToTopic(Long taskId, Long topicId) {
+    public List<Task> assignTasksToTopic(Long topicId, List<Long> taskIds) {
         Topic topic = topicService.getById(topicId);
-        Task task = getById(taskId);
-        if (task.getTopics().isEmpty()) {
-            task.setTopics(List.of(topic));
-        } else {
-            if(!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
-                task.getTopics().add(topic);
-            }
+        List<Task> result = new ArrayList<>();
+        for (Long taskId: taskIds) {
+            Task task = getById(taskId);
+            task.setId(taskId);
+            if (task.getTopics().isEmpty()) {
+                task.setTopics(List.of(topic));
+            } else {
+                if (!task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
+                    task.getTopics().add(topic);
+                }
 
+            }
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+            result.add(task);
         }
-        TaskDTO taskDTO = new TaskDTO();
-        taskConvertor.toDTO(task, taskDTO);
-        taskDTO = taskConnector.save(taskDTO);
-        taskConvertor.fromDTO(taskDTO, task);
-        return task;
+        return result;
     }
 
     public List<Task> findByTopicId(Long topicId) {
@@ -141,13 +144,17 @@ public class TaskService {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
         if (taskDomainDTO != null) {
             String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
-            log.info("Script: " + script);
+            script = pumlConvertor.formatPuml(script);
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-            log.info("Liquibase Script: " + liquibaseScript);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
             checkRequestParameters.setScript(liquibaseScript);
-            return checkTaskConnector.checkRequest(checkRequestParameters);
+            try {
+                QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
+                return queryResult;
+            } catch (FeignException e){
+                throw new RequestIsNotValidException(e.contentUTF8());
+            }
         }
         throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
 

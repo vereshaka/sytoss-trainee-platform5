@@ -1,6 +1,7 @@
 package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.services.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/group")
@@ -30,7 +33,7 @@ public class GroupController {
         return groupService.create(group);
     }
 
-    @Operation(description = "Method that assignee student to group")
+    @Operation(description = "Method that assign student to group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Group not found!"),
@@ -42,5 +45,29 @@ public class GroupController {
             @Parameter(description = "Id of student what will be assignee to group")
             @PathVariable("studentId") String studentId) {
         groupService.assignStudentToGroup(groupId, studentId);
+    }
+
+    @Operation(description = "Method that get information about group by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group not found!"),
+    })
+    @GetMapping("/{groupId}")
+    public Group getGroup(
+            @Parameter(description = "Id of group")
+            @PathVariable("groupId") Long groupId) {
+        return groupService.getById(groupId);
+    }
+
+    @Operation(description = "Method that get information about my groups")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group not found!"),
+    })
+    @GetMapping("/{groupId}/students")
+    public List<Student> getStudentsByGroup(
+            @Parameter(description = "Id of group")
+            @PathVariable("groupId") Long groupId) {
+        return groupService.getStudents(groupId);
     }
 }

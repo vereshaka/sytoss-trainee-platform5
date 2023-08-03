@@ -2,14 +2,18 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.GroupReferenceConnector;
+import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.UserConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -37,6 +41,9 @@ public class DisciplineServiceTest extends StpUnitTest {
     private DisciplineConnector disciplineConnector;
 
     @Mock
+    private TaskConnector taskConnector;
+
+    @Mock
     private GroupReferenceConnector groupReferenceConnector;
 
     @InjectMocks
@@ -44,6 +51,18 @@ public class DisciplineServiceTest extends StpUnitTest {
 
     @Spy
     private DisciplineConvertor disciplineConvertor = new DisciplineConvertor();
+
+    @Spy
+    private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(disciplineConvertor);
+
+    @Spy
+    private TopicConvertor topicConvertor = new TopicConvertor(disciplineConvertor);
+
+    @Spy
+    private TaskConditionConvertor taskConditionConvertor;
+
+    @Spy
+    private TaskConvertor taskConvertor = new TaskConvertor(taskDomainConvertor, topicConvertor, taskConditionConvertor);
 
     @Mock
     private UserConnector userConnector;
@@ -171,5 +190,27 @@ public class DisciplineServiceTest extends StpUnitTest {
         when(disciplineConnector.getReferenceById(anyLong())).thenReturn(disciplineDTO);
         byte[] result = disciplineService.getIcon(disciplineId);
         assertEquals(iconBytes, result);
+    }
+
+    @Test
+    public void shouldFindTasksByDisciplineId() {
+        Teacher user = new Teacher();
+        user.setId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        List<TaskDTO> input = new ArrayList<>();
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setName("d1");
+        TaskDomainDTO domainDTO = new TaskDomainDTO();
+        domainDTO.setDiscipline(disciplineDTO);
+        taskDTO.setTaskDomain(domainDTO);
+        input.add(taskDTO);
+        when(taskConnector.getByTaskDomainDisciplineId(1L)).thenReturn(input);
+        List<Task> result = disciplineService.findTasksByDisciplineId(1L);
+        assertEquals(1, result.size());
     }
 }

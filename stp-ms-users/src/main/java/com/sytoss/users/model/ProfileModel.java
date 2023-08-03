@@ -15,6 +15,8 @@ public class ProfileModel {
 
     private String firstName;
 
+    private String middleName;
+
     private String lastName;
 
     private Group primaryGroup;

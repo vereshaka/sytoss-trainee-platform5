@@ -36,6 +36,7 @@ public class UserConverter {
     public void fromDTO(UserDTO source, AbstractUser destination) {
         destination.setId(source.getId());
         destination.setFirstName(source.getFirstName());
+        destination.setMiddleName(source.getMiddleName());
         destination.setLastName(source.getLastName());
         destination.setEmail(source.getEmail());
         destination.setModerated(source.isModerated());
@@ -46,6 +47,7 @@ public class UserConverter {
     public void fromDTO(Jwt source, AbstractUser destination) {
         destination.setEmail(source.getClaim("email"));
         destination.setFirstName(source.getClaim("given_name"));
+        destination.setMiddleName(source.getClaim("middle_name"));
         destination.setLastName(source.getClaim("family_name"));
         destination.setUid(destination.getUid());
     }
@@ -53,6 +55,7 @@ public class UserConverter {
     public void toDTO(AbstractUser source, UserDTO destination) {
         destination.setId(source.getId());
         destination.setFirstName(source.getFirstName());
+        destination.setMiddleName(source.getMiddleName());
         destination.setLastName(source.getLastName());
         destination.setEmail(source.getEmail());
         destination.setModerated(source.isModerated());

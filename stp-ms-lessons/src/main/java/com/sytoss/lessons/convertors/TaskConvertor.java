@@ -28,6 +28,8 @@ public class TaskConvertor {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
+        destination.setCoef(source.getCoef());
+        destination.setRequiredCommand(source.getRequiredCommand());
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
@@ -55,6 +57,8 @@ public class TaskConvertor {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
+        destination.setCoef(source.getCoef());
+        destination.setRequiredCommand(source.getRequiredCommand());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);

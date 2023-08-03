@@ -1,7 +1,7 @@
 Feature: Student
 
   Background:
-    Given student with "FirstName" firstName and "LastName" lastName and "test1@gmail.com" email exists
+    Given student with "FirstName" firstName, "Ivanovich" middleName and "Ivanov" lastName and "test1@gmail.com" email exists
 
   Scenario: receive all groups of student
     And this student assign to group

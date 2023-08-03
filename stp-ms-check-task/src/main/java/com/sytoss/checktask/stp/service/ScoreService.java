@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
@@ -24,12 +24,10 @@ public class ScoreService {
 
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
-    private String url = "jdbc:h2:mem:";
-
     public Score checkAndScore(CheckTaskParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult queryResultAnswer;
             try {
                 queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
@@ -97,7 +95,7 @@ public class ScoreService {
     public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
 
             try {
@@ -117,13 +115,13 @@ public class ScoreService {
     public QueryResult checkRequest(CheckRequestParameters data) {
         DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(url,data.getScript());
+            helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult result;
 
             try {
                 result = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
-                throw new RequestIsNotValidException("Request is not valid", e);
+                throw new RequestIsNotValidException(e.getMessage());
             }
             return result;
         } finally {

@@ -21,4 +21,6 @@ public class ExamConfiguration {
     private int quantityOfTask;
 
     private Student student;
+
+    private Long examId;
 }

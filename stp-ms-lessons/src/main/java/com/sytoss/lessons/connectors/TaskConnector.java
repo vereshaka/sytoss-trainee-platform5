@@ -18,4 +18,6 @@ public interface TaskConnector extends JpaRepository<TaskDTO, Long> {
     List<TaskDTO> findByTaskDomainId(Long taskDomainId);
 
     TaskDTO getByQuestionAndTaskDomainId(String question, Long id);
+
+    List<TaskDTO> getByTaskDomainDisciplineId(Long disciplineId);
 }

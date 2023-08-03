@@ -1,17 +1,17 @@
-object "Data:Discipline" as dDiscipline {
+data Discipline {
    |= id |= name |
    | 1   | SQL   |
    | 2   | Mongo  |
 }
 
-object "Data:Topic" as dTopic {
+data Topic {
    |= id |= name    |= discipline_id |
    | 1   | Insert   |        1       |
    | 2   | Select   |        2       |
    | 3   | Join     |        1       |
 }
 
-object "Data:Task" as dTask {
+data Task {
    |= id |= question                |= discipline_id |
    | 1   | What is Join?            |        1       |
    | 2   | What is Inner Join?      |        1       |
@@ -19,7 +19,7 @@ object "Data:Task" as dTask {
    | 4   | What is Select?          |        2       |
 }
 
-object "Data:TopicToTask" as dTopicToTask {
+data TopicToTask {
    |= task_id |= topic_id |
    | 1        | 1         |
    | 2        | 3         |

@@ -1,6 +1,7 @@
 package com.sytoss.domain.bom.lessons;
 
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,4 +27,6 @@ public class Exam {
     private Integer numberOfTasks;
 
     private List<Topic> topics;
+
+    private Teacher teacher;
 }

@@ -123,6 +123,7 @@ public class UserService extends AbstractStpService {
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
         dto.setFirstName(profileModel.getFirstName());
+        dto.setMiddleName(profileModel.getMiddleName());
         dto.setLastName(profileModel.getLastName());
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
             //TODO: yevgenyv: update group info

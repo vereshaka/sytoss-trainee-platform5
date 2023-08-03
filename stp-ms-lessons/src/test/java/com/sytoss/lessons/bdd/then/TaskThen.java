@@ -11,6 +11,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,10 +77,13 @@ public class TaskThen extends LessonsIntegrationTest {
     @Then("^task with question \"(.*)\" should be assign to \"(.*)\" topic$")
     public void taskTopicShouldBe(String question, String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
-        Task task = (Task) getTestExecutionContext().getResponse().getBody();
-        assertNotNull(task.getTopics());
-        assertEquals(question, task.getQuestion());
-        assertEquals(topicDTO.getName(), task.getTopics().get(1).getName());
+        List<Task> tasks = (ArrayList<Task>) getTestExecutionContext().getResponse().getBody();
+        for (Task task: tasks) {
+            assertNotNull(task.getTopics());
+            assertEquals(question, task.getQuestion());
+            assertEquals(topicDTO.getName(), task.getTopics().get(1).getName());
+        }
+
     }
 
     @Then("^\"(.*)\" condition with (.*) type should be in task with question \"(.*)\"$")

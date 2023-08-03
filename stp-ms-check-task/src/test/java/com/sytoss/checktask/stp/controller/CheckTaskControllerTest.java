@@ -1,7 +1,7 @@
 package com.sytoss.checktask.stp.controller;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
-import com.sytoss.checktask.stp.exceptions.RequestIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.checktask.stp.service.ScoreService;
 import com.sytoss.domain.bom.lessons.QueryResult;
@@ -81,7 +81,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
 
     @Test
     void shouldCheckRequestNotValid() {
-        when(scoreService.checkRequest(any())).thenThrow(new RequestIsNotValidException("", new RuntimeException()));
+        when(scoreService.checkRequest(any())).thenThrow(new RequestIsNotValidException(""));
 
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from asdfasdfasdf");
