@@ -110,4 +110,30 @@ public class UserControllerTest extends StpApplicationTest {
         ResponseEntity<byte[]> result = doGet("/api/user/me/photo", httpEntity, byte[].class);
         assertEquals(200, result.getStatusCode().value());
     }
+
+    @Test
+    public void shouldUpdateProfile() {
+        byte[] photoBytes = {0x01, 0x02, 0x03};
+        File photoFile;
+        try {
+            photoFile = File.createTempFile("photo", ".jpg");
+            Files.write(photoFile.toPath(), photoBytes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("firstName", "name");
+        //body.add("middleName", "name");
+        //body.add("lastName", "name");
+        body.add("photo", new FileSystemResource(photoFile));
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, httpHeaders);
+
+        ResponseEntity<Void> result = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 }
