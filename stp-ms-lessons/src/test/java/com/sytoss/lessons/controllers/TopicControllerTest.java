@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.lessons.bom.TaskIds;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -24,7 +25,9 @@ public class TopicControllerTest extends LessonsControllerTest {
     public void shouldAssignTaskToTopic() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List> requestEntity = new HttpEntity<>(List.of(1,2,3), httpHeaders);
+        TaskIds taskIds = new TaskIds();
+        taskIds.setTaskIds(List.of(1L,2L,3L));
+        HttpEntity<TaskIds> requestEntity = new HttpEntity<>(taskIds, httpHeaders);
 
         when(taskService.assignTasksToTopic(anyLong(), any(ArrayList.class))).thenReturn(List.of(new Task()));
 
