@@ -178,9 +178,12 @@ public class TaskServiceTest extends StpUnitTest {
         discipline.setTeacher(teacher);
         topic.setDiscipline(discipline);
         when(topicService.getById(anyLong())).thenReturn(topic);
-        Task result = taskService.assignTaskToTopic(1L, 1L);
-        assertEquals(1, result.getTopics().size());
-        assertEquals(topic.getName(), result.getTopics().get(0).getName());
+        List<Task> result = taskService.assignTasksToTopic(1L, List.of(1L));
+        for (Task task: result) {
+            assertEquals(1, task.getTopics().size());
+            assertEquals(topic.getName(), task.getTopics().get(0).getName());
+        }
+
     }
 
     @Test

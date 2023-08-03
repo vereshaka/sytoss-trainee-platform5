@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,6 +45,15 @@ public class DisciplinesController {
     @GetMapping("/my")
     public List<Discipline> findAllMyDisciplines() {
         return disciplineService.findAllMyDiscipline();
+    }
+
+    @Operation(description = "Method that retrieve list tasks by discipline id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/{id}/tasks")
+    public List<Task> findTasksByDisciplineId(@PathVariable Long id) {
+        return disciplineService.findTasksByDisciplineId(id);
     }
 
 }
