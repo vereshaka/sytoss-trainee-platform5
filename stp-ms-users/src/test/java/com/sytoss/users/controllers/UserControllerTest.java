@@ -69,6 +69,7 @@ public class UserControllerTest extends StpApplicationTest {
         httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("firstName", "name");
+        body.add("middleName", "name");
         body.add("lastName", "name");
         body.add("photo", new FileSystemResource(photoFile));
 

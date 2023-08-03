@@ -58,6 +58,7 @@ public class UserServiceTest extends StpUnitTest {
         dto.setId(1L);
         dto.setEmail("test@email.com");
         dto.setFirstName("Luidji");
+        dto.setMiddleName("Mock");
         dto.setLastName("Monk");
 
         when(userConnector.getByEmail(anyString())).thenReturn(null).thenReturn(dto);
@@ -66,6 +67,7 @@ public class UserServiceTest extends StpUnitTest {
         AbstractUser result = userService.getOrCreateUser("test@email.com");
         assertEquals(1L, result.getId());
         assertEquals("Luidji", result.getFirstName());
+        assertEquals("Mock", result.getMiddleName());
         assertEquals("Monk", result.getLastName());
         assertEquals("test@email.com", result.getEmail());
     }
@@ -76,6 +78,7 @@ public class UserServiceTest extends StpUnitTest {
         dto.setId(1L);
         dto.setEmail("test@email.com");
         dto.setFirstName("Luidji");
+        dto.setMiddleName("Mock");
         dto.setLastName("Monk");
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
@@ -105,6 +108,7 @@ public class UserServiceTest extends StpUnitTest {
         dto.setId(1L);
         dto.setEmail("test@email.com");
         dto.setFirstName("Luidji");
+        dto.setMiddleName("Mock");
         dto.setLastName("Monk");
 
         when(userConnector.getByEmail(anyString())).thenReturn(dto);
@@ -122,9 +126,10 @@ public class UserServiceTest extends StpUnitTest {
         studentDTO.setId(1L);
         studentDTO.setEmail("test@test.com");
         studentDTO.setFirstName("John");
+        studentDTO.setMiddleName("Mock");
         studentDTO.setLastName("Do");
         studentDTO.setGroups(List.of(createGroupDTO("First Group"), createGroupDTO("Second Group"), createGroupDTO("Third Group")));
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
                 .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -135,7 +140,7 @@ public class UserServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnStudentNotFoundException() {
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John")
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
                 .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -149,6 +154,7 @@ public class UserServiceTest extends StpUnitTest {
         groupDTO.setId(1L);
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setFirstName("John");
+        studentDTO.setMiddleName("Mock");
         studentDTO.setLastName("Do");
         studentDTO.setEmail("test@test.com");
         studentDTO.setPrimaryGroup(groupDTO);
@@ -171,6 +177,7 @@ public class UserServiceTest extends StpUnitTest {
     public void shouldReturnTeacherWithTrueValidFlag() {
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setFirstName("John");
+        teacherDTO.setMiddleName("Mock");
         teacherDTO.setLastName("Do");
         teacherDTO.setEmail("test@test.com");
         byte[] photoBytes = {0x01, 0x02, 0x03};
@@ -201,6 +208,7 @@ public class UserServiceTest extends StpUnitTest {
         dto.setId(1L);
         dto.setEmail(userEmail);
         dto.setFirstName("Luidji");
+        dto.setMiddleName("Mock");
         dto.setLastName("Monk");
         dto.setPhoto(photoBytes);
 
