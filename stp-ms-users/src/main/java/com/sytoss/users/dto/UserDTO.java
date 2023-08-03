@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity(name = "APP_USER")
@@ -37,4 +39,13 @@ public abstract class UserDTO {
 
     @Column(name = "UID")
     private String uid;
+
+    @ManyToMany
+    @JoinTable(
+            name = "GROUP2USER",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
+    private List<GroupDTO> groups;
+
+
 }

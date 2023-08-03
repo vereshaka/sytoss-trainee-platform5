@@ -1,0 +1,16 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/group2student.xml">
+
+    <changeSet author="IgorI" id="group2user_1">
+        <renameTable oldTableName="GROUP2STUDENT" newTableName="GROUP2USER"/>
+        <renameColumn tableName="GROUP2USER" oldColumnName="STUDENT_ID" newColumnName="USER_ID"/>
+        <rollback>
+            <renameTable oldTableName="GROUP2USER" newTableName="GROUP2STUDENT"/>
+            <renameColumn tableName="GROUP2STUDENT" oldColumnName="USER_ID" newColumnName="STUDENT_ID"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

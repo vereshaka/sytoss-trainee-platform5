@@ -155,7 +155,7 @@ public class UserService extends AbstractStpService {
     }
 
     public List<Long> findGroupsId() {
-        List<GroupDTO> groups = ((StudentDTO) getMeAsDto()).getGroups();
+        List<GroupDTO> groups = getMeAsDto().getGroups();
         List<Long> groupsId = new ArrayList<>();
         for (GroupDTO group : groups) {
             groupsId.add(group.getId());

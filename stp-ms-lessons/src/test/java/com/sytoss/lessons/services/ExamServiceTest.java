@@ -6,9 +6,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.ExamConvertor;
-import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
@@ -39,7 +37,8 @@ public class ExamServiceTest extends StpUnitTest {
     private ExamConnector examConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()));
+    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
+            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor()));
 
     @Test
     public void shouldSaveExam() {
