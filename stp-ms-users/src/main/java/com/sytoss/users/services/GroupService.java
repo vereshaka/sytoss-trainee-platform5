@@ -41,7 +41,7 @@ public class GroupService {
 
     private GroupDTO getDtoById(Long id) {
         try {
-            GroupDTO gпroupDTO = groupConnector.findById(id).orElseThrow();
+            GroupDTO groupDTO = groupConnector.findById(id).orElseThrow();
             return groupDTO;
         } catch (EntityNotFoundException e) {
             throw new GroupNotFoundException(id);
