@@ -7,8 +7,8 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import org.apache.commons.lang3.ObjectUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
