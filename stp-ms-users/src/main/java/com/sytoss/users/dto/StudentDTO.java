@@ -16,4 +16,11 @@ public class StudentDTO extends UserDTO {
     @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")
     private GroupDTO primaryGroup;
 
+    @ManyToMany
+    @JoinTable(
+            name = "GROUP2STUDENT",
+            joinColumns = @JoinColumn(name = "STUDENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "GROUP_ID"))
+    private List<GroupDTO> groups;
+
 }
