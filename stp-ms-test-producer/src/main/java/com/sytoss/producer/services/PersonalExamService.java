@@ -30,7 +30,7 @@ public class PersonalExamService extends AbstractStpService {
         personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
         personalExam.setName(examConfiguration.getExamName());
         personalExam.setExamId(examConfiguration.getExamId());
-        personalExam.setDate(new Date());
+        personalExam.setAssignedDate(new Date());
         personalExam.setTime(examConfiguration.getTime());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         List<Answer> answers = generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration);
@@ -108,5 +108,9 @@ public class PersonalExamService extends AbstractStpService {
 
     public List<PersonalExam> getAllByExamId(Long examId) {
         return personalExamConnector.getAllByExamId(examId);
+    }
+
+    public List<PersonalExam> getByUserId(Long userId) {
+        return personalExamConnector.getAllByStudent_Id(userId);
     }
 }

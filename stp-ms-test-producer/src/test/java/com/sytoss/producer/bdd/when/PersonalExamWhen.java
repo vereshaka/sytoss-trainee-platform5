@@ -144,4 +144,16 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         getTestExecutionContext().getDetails().setResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
+
+    @When("operation for retrieving personal exams for userId {} was called")
+    public void retrievePersonalExamsByUserId(Long userId) {
+        String url = "/api/personal-exam/userId/" + userId;
+        log.info("Send request to " + url);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
+        getTestExecutionContext().getDetails().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
 }

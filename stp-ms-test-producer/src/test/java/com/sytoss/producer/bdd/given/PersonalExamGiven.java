@@ -43,7 +43,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
-            personalExam.setDate(dateFormat.parse(date));
+            personalExam.setAssignedDate(dateFormat.parse(date));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -63,6 +63,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setName(examName);
             Student student = new Student();
             student.setUid(studentId);
+            student.setId(Long.valueOf(studentId));
             personalExam.setStudent(student);
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));

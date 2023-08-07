@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @PreAuthorize("isAuthenticated()")
 @RestController
 @RequestMapping("/api/personal-exam")
@@ -83,5 +85,14 @@ public class PersonalExamController {
     @GetMapping("/is-used-now/task-domain/{taskDomainId}")
     public boolean taskDomainIsUsed(@PathVariable(value = "taskDomainId") Long taskDomainId) {
         return personalExamService.taskDomainIsUsed(taskDomainId);
+    }
+
+    @Operation(description = "Method that return personal exams by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/userId/{userId}")
+    public List<PersonalExam> getByUserId(@PathVariable(value = "userId") Long userId) {
+        return personalExamService.getByUserId(userId);
     }
 }
