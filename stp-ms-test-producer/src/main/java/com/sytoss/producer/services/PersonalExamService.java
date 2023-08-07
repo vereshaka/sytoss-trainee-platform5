@@ -112,7 +112,11 @@ public class PersonalExamService extends AbstractStpService {
 
     public PersonalExam review(PersonalExam personalExam) {
         PersonalExam personalExamToChange = getById(personalExam.getId());
-        personalExamToChange.setAnswers(personalExam.getAnswers());
+
+        for (int i = 0; i < personalExam.getAnswers().size(); ++i) {
+            personalExamToChange.getAnswers().get(i).getGrade().setValue(personalExam.getAnswers().get(i).getGrade().getValue());
+        }
+
         personalExam.setStatus(PersonalExamStatus.REVIEWED);
         return personalExamConnector.save(personalExamToChange);
     }
