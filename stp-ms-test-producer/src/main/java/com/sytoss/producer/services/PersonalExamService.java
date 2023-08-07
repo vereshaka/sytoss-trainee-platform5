@@ -109,4 +109,11 @@ public class PersonalExamService extends AbstractStpService {
     public List<PersonalExam> getAllByExamId(Long examId) {
         return personalExamConnector.getAllByExamId(examId);
     }
+
+    public PersonalExam review(PersonalExam personalExam) {
+        PersonalExam personalExamToChange = getById(personalExam.getId());
+        personalExamToChange.setAnswers(personalExam.getAnswers());
+        personalExam.setStatus(PersonalExamStatus.REVIEWED);
+        return personalExamConnector.save(personalExamToChange);
+    }
 }

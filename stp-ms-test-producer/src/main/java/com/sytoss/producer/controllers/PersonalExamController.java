@@ -5,7 +5,6 @@ import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
-import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,9 +22,6 @@ public class PersonalExamController {
 
     @Autowired
     private PersonalExamService personalExamService;
-
-    @Autowired
-    private PersonalExamConnector personalExamConnector;
 
     @Autowired
     private AnswerService answerService;
@@ -83,5 +79,14 @@ public class PersonalExamController {
     @GetMapping("/is-used-now/task-domain/{taskDomainId}")
     public boolean taskDomainIsUsed(@PathVariable(value = "taskDomainId") Long taskDomainId) {
         return personalExamService.taskDomainIsUsed(taskDomainId);
+    }
+
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/review")
+    public PersonalExam review(@RequestBody PersonalExam personalExam) {
+        return personalExamService.review(personalExam);
     }
 }
