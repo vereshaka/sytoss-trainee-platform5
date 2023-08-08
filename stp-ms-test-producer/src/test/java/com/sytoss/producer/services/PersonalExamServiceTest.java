@@ -221,6 +221,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         answer.setStatus(answerStatus);
         answer.setValue(value);
         answer.setGrade(createGrade(grade, comment));
+        answer.setTeacherGrade(createGrade(grade, comment));
         return answer;
     }
 
