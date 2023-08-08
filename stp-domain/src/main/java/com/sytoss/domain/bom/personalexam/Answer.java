@@ -11,6 +11,7 @@ import lombok.Setter;
 @Getter
 public class Answer {
 
+    @JsonView(PersonalExam.Public.class)
     private Long id;
 
     @JsonView(PersonalExam.Public.class)

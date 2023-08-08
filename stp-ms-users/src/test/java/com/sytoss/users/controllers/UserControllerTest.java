@@ -1,6 +1,8 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.stp.test.StpApplicationTest;
 import com.sytoss.users.services.UserService;
@@ -136,5 +138,15 @@ public class UserControllerTest extends StpApplicationTest {
 
         ResponseEntity<Void> result = getRestTemplate().postForEntity(getEndpoint("/api/user/me"), requestEntity, Void.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturnUserByUid() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        when(userService.getById("123-abc-dfe")).thenReturn(new Student());
+        ResponseEntity<Student> response = doGet("/api/user/123-abc-dfe", httpEntity, Student.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

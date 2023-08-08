@@ -95,4 +95,13 @@ public class PersonalExamController {
     public List<PersonalExam> getByUserId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByUserId(userId);
     }
+
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/review")
+    public PersonalExam review(@RequestBody PersonalExam personalExam) {
+        return personalExamService.review(personalExam);
+    }
 }

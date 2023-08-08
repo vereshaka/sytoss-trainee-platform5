@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -89,6 +90,10 @@ public class PersonalExam {
             }
         }
         return null;
+    }
+
+    public Answer getAnswerById(Long id) {
+        return answers.stream().filter(answer -> Objects.equals(answer.getId(), id)).findAny().orElse(null);
     }
 
     public static class Public {

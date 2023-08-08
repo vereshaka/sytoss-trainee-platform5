@@ -3,6 +3,7 @@ package com.sytoss.producer.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -10,6 +11,7 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -112,5 +114,23 @@ public class PersonalExamService extends AbstractStpService {
 
     public List<PersonalExam> getByUserId(Long userId) {
         return personalExamConnector.getAllByStudent_Id(userId);
+    }
+
+    public PersonalExam review(PersonalExam personalExamToChange) {
+        PersonalExam personalExam = getById(personalExamToChange.getId());
+
+        if (ObjectUtils.isEmpty(personalExam)) {
+            throw new PersonalExamNotFoundException(personalExamToChange.getId());
+        }
+
+        personalExamToChange.getAnswers().forEach(
+                answerToChange -> {
+                    Answer answer = personalExam.getAnswerById(answerToChange.getId());
+                    answer.getGrade().setValue(answerToChange.getGrade().getValue());
+                }
+        );
+
+        personalExam.setStatus(PersonalExamStatus.REVIEWED);
+        return personalExamConnector.save(personalExam);
     }
 }

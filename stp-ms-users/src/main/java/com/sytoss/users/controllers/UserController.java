@@ -83,4 +83,13 @@ public class UserController {
     public List<Long> findDisciplineByStudent() {
         return userService.findGroupsId();
     }
+
+    @Operation(description = "Method that retrieve user by uid")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{uid}")
+    public AbstractUser getByUid(@PathVariable("uid") String uid) {
+        return userService.getById(uid);
+    }
 }
