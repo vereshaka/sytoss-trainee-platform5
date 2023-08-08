@@ -119,12 +119,11 @@ public class PersonalExamService extends AbstractStpService {
             throw new PersonalExamNotFoundException(personalExamToChange.getId());
         }
 
-        personalExam.getAnswers().forEach(
-                answer -> personalExamToChange.getAnswers().stream().filter(
-                        answerToChange -> Objects.equals(answer.getId(), answerToChange.getId())
-                ).findAny().ifPresent(
-                        foundAnswer -> answer.getGrade().setValue(foundAnswer.getGrade().getValue())
-                )
+        personalExamToChange.getAnswers().forEach(
+                answerToChange -> {
+                    Answer answer = personalExam.getAnswerById(answerToChange.getId());
+                    answer.getGrade().setValue(answerToChange.getGrade().getValue());
+                }
         );
 
         personalExam.setStatus(PersonalExamStatus.REVIEWED);
