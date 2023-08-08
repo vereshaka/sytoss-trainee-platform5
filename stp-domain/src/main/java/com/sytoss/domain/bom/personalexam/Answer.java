@@ -26,6 +26,9 @@ public class Answer {
     @JsonView(PersonalExam.Public.class)
     private Grade grade;
 
+    @JsonView(PersonalExam.Public.class)
+    private Grade teacherGrade;
+
     public void inProgress() {
         if (this.status.equals(AnswerStatus.NOT_STARTED)) {
             status = AnswerStatus.IN_PROGRESS;
@@ -38,6 +41,7 @@ public class Answer {
 
     public void grade(Grade grade) {
         setGrade(grade);
+        setTeacherGrade(grade);
         setStatus(AnswerStatus.GRADED);
     }
 

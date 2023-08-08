@@ -126,7 +126,7 @@ public class PersonalExamService extends AbstractStpService {
         personalExamToChange.getAnswers().forEach(
                 answerToChange -> {
                     Answer answer = personalExam.getAnswerById(answerToChange.getId());
-                    answer.getGrade().setValue(answerToChange.getGrade().getValue());
+                    answer.getTeacherGrade().setValue(answerToChange.getTeacherGrade().getValue());
                 }
         );
 
