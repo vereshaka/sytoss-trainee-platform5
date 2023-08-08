@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,7 +52,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(studentId, personalExam.getStudent().getUid());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        assertEquals(dateFormat.parse(date), personalExam.getDate());
+        assertEquals(dateFormat.parse(date), personalExam.getAssignedDate());
 
         List<Answer> listAnswer = personalExam.getAnswers();
         Iterator<Answer> i = listAnswer.iterator();

@@ -29,7 +29,10 @@ public class PersonalExam {
     private Discipline discipline;
 
     @JsonView(PersonalExam.Public.class)
-    private Date date;
+    private Date assignedDate;
+
+    @JsonView(PersonalExam.Public.class)
+    private Date startedDate;
 
     @JsonView(PersonalExam.Public.class)
     private Student student;

@@ -19,7 +19,10 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +59,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Discipline discipline = new Discipline();
         discipline.setId(1L);
         discipline.setName("SQL");
-        when(metadataConnector.getDiscipline(anyLong())).thenReturn(discipline);
         when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
         when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
         List<Long> topics = new ArrayList<>();
@@ -174,6 +176,38 @@ public class PersonalExamServiceTest extends StpUnitTest {
         when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
         boolean isUsed = personalExamService.taskDomainIsUsed(1L);
         assertTrue(isUsed);
+    }
+
+    @Test
+    public void shouldReturnPersonalExamsByUserId() throws ParseException {
+        List<PersonalExam> exams = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        when(personalExamConnector.getAllByStudent_Id(1L)).thenReturn(exams);
+
+        List<PersonalExam> result = personalExamService.getByUserId(1L);
+
+        assertEquals(exams.size(), result.size());
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(exams.get(1).getExamId(), result.get(1).getExamId());
+            assertEquals(exams.get(1).getAmountOfTasks(), result.get(1).getAmountOfTasks());
+            assertEquals(exams.get(1).getStatus(), result.get(1).getStatus());
+            assertEquals(exams.get(1).getAssignedDate(), result.get(1).getAssignedDate());
+            assertEquals(exams.get(1).getStartedDate(), result.get(1).getStartedDate());
+        }
+    }
+
+    private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setExamId(examId);
+        personalExam.setName(name);
+        personalExam.setStatus(PersonalExamStatus.FINISHED);
+        personalExam.setAmountOfTasks(amountOfTasks);
+        personalExam.setAssignedDate(assignedDate);
+        personalExam.setStartedDate(startedDate);
+
+        return personalExam;
     }
 
     private Task createTask(String question) {
