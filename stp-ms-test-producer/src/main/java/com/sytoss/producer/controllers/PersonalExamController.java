@@ -91,7 +91,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/userId/{userId}")
+    @GetMapping("/user/{userId}")
     public List<PersonalExam> getByUserId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByUserId(userId);
     }
