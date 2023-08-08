@@ -3,6 +3,7 @@ package com.sytoss.producer.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -10,6 +11,7 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -110,14 +112,22 @@ public class PersonalExamService extends AbstractStpService {
         return personalExamConnector.getAllByExamId(examId);
     }
 
-    public PersonalExam review(PersonalExam personalExam) {
-        PersonalExam personalExamToChange = getById(personalExam.getId());
+    public PersonalExam review(PersonalExam personalExamToChange) {
+        PersonalExam personalExam = getById(personalExamToChange.getId());
 
-        for (int i = 0; i < personalExam.getAnswers().size(); ++i) {
-            personalExamToChange.getAnswers().get(i).getGrade().setValue(personalExam.getAnswers().get(i).getGrade().getValue());
+        if (ObjectUtils.isEmpty(personalExam)) {
+            throw new PersonalExamNotFoundException(personalExamToChange.getId());
         }
 
+        personalExam.getAnswers().forEach(
+                answer -> personalExamToChange.getAnswers().stream().filter(
+                        answerToChange -> Objects.equals(answer.getId(), answerToChange.getId())
+                ).findAny().ifPresent(
+                        foundAnswer -> answer.getGrade().setValue(foundAnswer.getGrade().getValue())
+                )
+        );
+
         personalExam.setStatus(PersonalExamStatus.REVIEWED);
-        return personalExamConnector.save(personalExamToChange);
+        return personalExamConnector.save(personalExam);
     }
 }
