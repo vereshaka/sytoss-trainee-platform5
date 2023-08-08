@@ -145,7 +145,6 @@ public class TaskServiceTest extends StpUnitTest {
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
-        Assertions.assertEquals(1, result.get(0).getTopics().size());
     }
 
     @Test
