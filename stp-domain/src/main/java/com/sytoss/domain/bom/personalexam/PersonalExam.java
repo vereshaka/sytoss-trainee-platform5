@@ -68,7 +68,7 @@ public class PersonalExam {
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
-                summaryGrade += answer.getGrade().getValue();
+                summaryGrade += answer.getTeacherGrade().getValue();
             }
         });
     }
