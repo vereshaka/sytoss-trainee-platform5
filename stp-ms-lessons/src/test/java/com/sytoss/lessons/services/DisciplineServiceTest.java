@@ -62,7 +62,8 @@ public class DisciplineServiceTest extends StpUnitTest {
     private TaskConditionConvertor taskConditionConvertor;
 
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(taskDomainConvertor, topicConvertor, taskConditionConvertor);
+    private TaskConvertor taskConvertor =
+            new TaskConvertor(taskDomainConvertor, taskConditionConvertor);
 
     @Mock
     private UserConnector userConnector;

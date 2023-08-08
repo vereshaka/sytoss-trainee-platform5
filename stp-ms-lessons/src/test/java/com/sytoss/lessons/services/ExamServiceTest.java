@@ -1,14 +1,10 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.ExamConvertor;
-import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
@@ -39,7 +35,8 @@ public class ExamServiceTest extends StpUnitTest {
     private ExamConnector examConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()));
+    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
+            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor()));
 
     @Test
     public void shouldSaveExam() {
@@ -51,6 +48,12 @@ public class ExamServiceTest extends StpUnitTest {
         }).when(examConnector).save(any());
 
         Teacher teacher = createTeacher("John", "Johns");
+
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", teacher).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         Discipline discipline = createDiscipline("SQL", teacher);
         Group group = createGroup("AT-21-2", discipline);
 
@@ -62,6 +65,9 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setDuration(15);
         exam.setNumberOfTasks(10);
         exam.setTopics(List.of(new Topic(), new Topic()));
+        Task task = new Task();
+        task.setTaskDomain(new TaskDomain());
+        exam.setTasks(List.of(task));
 
         Exam result = examService.save(exam);
         Assertions.assertEquals(1L, result.getId());

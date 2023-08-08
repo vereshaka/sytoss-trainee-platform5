@@ -47,4 +47,11 @@ public class ExamDTO {
             joinColumns = @JoinColumn(name = "EXAM_ID"),
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private Collection<TopicDTO> topics;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "EXAM2TASK",
+            joinColumns = @JoinColumn(name = "EXAM_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TASK_ID"))
+    private Collection<TaskDTO> tasks;
 }

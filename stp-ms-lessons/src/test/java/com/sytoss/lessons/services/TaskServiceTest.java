@@ -8,7 +8,10 @@ import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.lessons.convertors.*;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
+import com.sytoss.lessons.convertors.TaskConditionConvertor;
+import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -46,7 +49,8 @@ public class TaskServiceTest extends StpUnitTest {
     @Mock
     private DisciplineConnector disciplineConnector;
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
+            new DisciplineConvertor()), new TaskConditionConvertor());
     @Spy
     private PumlConvertor pumlConvertor;
 
@@ -179,7 +183,7 @@ public class TaskServiceTest extends StpUnitTest {
         topic.setDiscipline(discipline);
         when(topicService.getById(anyLong())).thenReturn(topic);
         List<Task> result = taskService.assignTasksToTopic(1L, List.of(1L));
-        for (Task task: result) {
+        for (Task task : result) {
             assertEquals(1, task.getTopics().size());
             assertEquals(topic.getName(), task.getTopics().get(0).getName());
         }
@@ -188,7 +192,7 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnQueryResult() {
-        HashMap<String,Object> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("1", "1");
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
