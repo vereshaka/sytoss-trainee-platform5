@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.dto.GroupsIds;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
@@ -170,5 +171,16 @@ public class DisciplineController {
     public List<Topic> findByDisciplineId(
             @PathVariable(value = "disciplineId") Long discipleId) {
         return topicService.findByDiscipline(discipleId);
+    }
+
+    @Operation(description = "Method that assign groups to discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping(value = "/{disciplineId}/assign/groups")
+    public void assignGroupsToDiscipline(
+            @PathVariable(value = "disciplineId") Long disciplineId,
+            @RequestBody GroupsIds groupsIds) {
+        disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
     }
 }
