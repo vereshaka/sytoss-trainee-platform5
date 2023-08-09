@@ -1,6 +1,7 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
@@ -75,8 +76,16 @@ public class ExamConvertor {
             topicConvertor.fromDTO(topicDTO, topic);
             topicList.add(topic);
         });
+        List<Task> tasksList = new ArrayList<>();
+
+        source.getTasks().forEach(taskDTO -> {
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            tasksList.add(task);
+        });
 
         destination.setTopics(topicList);
+        destination.setTasks(tasksList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
