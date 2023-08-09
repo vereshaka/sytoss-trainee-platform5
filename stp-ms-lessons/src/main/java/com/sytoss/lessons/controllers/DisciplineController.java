@@ -183,4 +183,27 @@ public class DisciplineController {
             @RequestBody GroupsIds groupsIds) {
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
     }
+
+    @Operation(description = "Method that assign groups to discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping(value = "/{disciplineId}/topic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Discipline updateDiscipline(
+            @Parameter(description = "id of discipline to be searched")
+            @PathVariable("disciplineId") Long disciplineId,
+            @RequestParam String name,
+            @RequestParam(required = false) String shortDescription,
+            @RequestParam(required = false) String fullDescription,
+            @RequestParam(required = false) Double duration,
+            @RequestParam(required = false) MultipartFile icon) throws IOException {
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        discipline.setName(name);
+        discipline.setShortDescription(shortDescription);
+        discipline.setFullDescription(fullDescription);
+        discipline.setDuration(duration);
+        discipline.setIcon(icon.getBytes());
+        return disciplineService.updateDiscipline(discipline);
+    }
 }
