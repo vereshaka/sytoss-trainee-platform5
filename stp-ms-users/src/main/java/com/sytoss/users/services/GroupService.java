@@ -75,11 +75,22 @@ public class GroupService {
     public List<Student> getStudents(Long groupId) {
         GroupDTO groupDTO = getDtoById(groupId);
         List<Student> students = new ArrayList<>();
-        for(StudentDTO studentDTO : groupDTO.getStudents()){
+        for (StudentDTO studentDTO : groupDTO.getStudents()) {
             Student student = new Student();
-            userConverter.fromDTO(studentDTO,student);
+            userConverter.fromDTO(studentDTO, student);
             students.add(student);
         }
         return students;
+    }
+
+    public List<Group> getAllGroups() {
+        List<GroupDTO> groupDTOS = groupConnector.findAll();
+        List<Group> groups = new ArrayList<>();
+        for (GroupDTO groupDTO : groupDTOS) {
+            Group group = new Group();
+            groupConvertor.fromDTO(groupDTO, group);
+            groups.add(group);
+        }
+        return groups;
     }
 }
