@@ -14,4 +14,9 @@ public class Student extends AbstractUser {
     public boolean isValid() {
         return super.isValid() && ObjectUtils.isNotEmpty(primaryGroup);
     }
+
+    @Override
+    public String getType() {
+        return "student";
+    }
 }
