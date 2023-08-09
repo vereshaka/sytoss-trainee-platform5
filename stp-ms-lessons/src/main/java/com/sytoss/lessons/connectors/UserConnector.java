@@ -14,6 +14,6 @@ public interface UserConnector {
     @GetMapping("user/me")
     Object getMyProfile();
 
-    @GetMapping("my/groupsId")
+    @GetMapping("user/me/groupsId")
     List<Long> findMyGroupId();
 }

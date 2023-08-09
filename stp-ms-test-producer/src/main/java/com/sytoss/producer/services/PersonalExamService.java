@@ -3,6 +3,7 @@ package com.sytoss.producer.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
@@ -10,6 +11,7 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,7 +32,7 @@ public class PersonalExamService extends AbstractStpService {
         personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
         personalExam.setName(examConfiguration.getExamName());
         personalExam.setExamId(examConfiguration.getExamId());
-        personalExam.setDate(new Date());
+        personalExam.setAssignedDate(new Date());
         personalExam.setTime(examConfiguration.getTime());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         List<Answer> answers = generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration);
@@ -108,5 +110,27 @@ public class PersonalExamService extends AbstractStpService {
 
     public List<PersonalExam> getAllByExamId(Long examId) {
         return personalExamConnector.getAllByExamId(examId);
+    }
+
+    public List<PersonalExam> getByUserId(Long userId) {
+        return personalExamConnector.getAllByStudent_Id(userId);
+    }
+
+    public PersonalExam review(PersonalExam personalExamToChange) {
+        PersonalExam personalExam = getById(personalExamToChange.getId());
+
+        if (ObjectUtils.isEmpty(personalExam)) {
+            throw new PersonalExamNotFoundException(personalExamToChange.getId());
+        }
+
+        personalExamToChange.getAnswers().forEach(
+                answerToChange -> {
+                    Answer answer = personalExam.getAnswerById(answerToChange.getId());
+                    answer.getTeacherGrade().setValue(answerToChange.getTeacherGrade().getValue());
+                }
+        );
+
+        personalExam.setStatus(PersonalExamStatus.REVIEWED);
+        return personalExamConnector.save(personalExam);
     }
 }

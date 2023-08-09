@@ -146,4 +146,10 @@ public class DisciplineService extends AbstractService {
         }
         return disciplines;
     }
+
+    public void assignGroupsToDiscipline(Long disciplineId, List<Long> groupsIds) {
+        for (Long id : groupsIds) {
+            assignGroupToDiscipline(disciplineId, id);
+        }
+    }
 }

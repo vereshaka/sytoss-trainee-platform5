@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -28,7 +29,10 @@ public class PersonalExam {
     private Discipline discipline;
 
     @JsonView(PersonalExam.Public.class)
-    private Date date;
+    private Date assignedDate;
+
+    @JsonView(PersonalExam.Public.class)
+    private Date startedDate;
 
     @JsonView(PersonalExam.Public.class)
     private Student student;
@@ -64,7 +68,7 @@ public class PersonalExam {
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
-                summaryGrade += answer.getGrade().getValue();
+                summaryGrade += answer.getTeacherGrade().getValue();
             }
         });
     }
@@ -86,6 +90,10 @@ public class PersonalExam {
             }
         }
         return null;
+    }
+
+    public Answer getAnswerById(Long id) {
+        return answers.stream().filter(answer -> Objects.equals(answer.getId(), id)).findAny().orElse(null);
     }
 
     public static class Public {

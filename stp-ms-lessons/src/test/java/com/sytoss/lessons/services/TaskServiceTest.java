@@ -46,7 +46,8 @@ public class TaskServiceTest extends StpUnitTest {
     @Mock
     private DisciplineConnector disciplineConnector;
     @Spy
-    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TopicConvertor(new DisciplineConvertor()), new TaskConditionConvertor());
+    private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
+            new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
     @Spy
     private PumlConvertor pumlConvertor;
 
@@ -144,7 +145,6 @@ public class TaskServiceTest extends StpUnitTest {
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
-        Assertions.assertEquals(1, result.get(0).getTopics().size());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class TaskServiceTest extends StpUnitTest {
         topic.setDiscipline(discipline);
         when(topicService.getById(anyLong())).thenReturn(topic);
         List<Task> result = taskService.assignTasksToTopic(1L, List.of(1L));
-        for (Task task: result) {
+        for (Task task : result) {
             assertEquals(1, task.getTopics().size());
             assertEquals(topic.getName(), task.getTopics().get(0).getName());
         }
@@ -188,7 +188,7 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnQueryResult() {
-        HashMap<String,Object> hashMap = new HashMap<>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("1", "1");
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);

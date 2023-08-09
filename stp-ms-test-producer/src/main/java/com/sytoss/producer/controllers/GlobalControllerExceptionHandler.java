@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.sytoss.domain.bom.exceptions.ApplicationError;
 import com.sytoss.domain.bom.exceptions.business.*;
+import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,5 +35,10 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({PersonalExamHasNoAnswerException.class})
     public ResponseEntity<ApplicationError> handleValidationException(PersonalExamHasNoAnswerException personalExamHasNoAnswerException) {
         return ResponseEntity.status(404).body(new ApplicationError(personalExamHasNoAnswerException));
+    }
+
+    @ExceptionHandler({PersonalExamNotFoundException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(PersonalExamNotFoundException personalExamNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(personalExamNotFoundException));
     }
 }

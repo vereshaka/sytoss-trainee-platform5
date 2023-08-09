@@ -29,4 +29,6 @@ public class Exam {
     private List<Topic> topics;
 
     private Teacher teacher;
+
+    private List<Task> tasks;
 }
