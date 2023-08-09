@@ -11,6 +11,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,11 +79,13 @@ public class ExamConvertor {
         });
         List<Task> tasksList = new ArrayList<>();
 
-        source.getTasks().forEach(taskDTO -> {
-            Task task = new Task();
-            taskConvertor.fromDTO(taskDTO, task);
-            tasksList.add(task);
-        });
+        if (!CollectionUtils.isEmpty(source.getTasks())) {
+            source.getTasks().forEach(taskDTO -> {
+                Task task = new Task();
+                taskConvertor.fromDTO(taskDTO, task);
+                tasksList.add(task);
+            });
+        }
 
         destination.setTopics(topicList);
         destination.setTasks(tasksList);
