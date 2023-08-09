@@ -101,4 +101,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(UserNotIdentifiedException userNotIdentifiedException) {
         return ResponseEntity.status(403).body(new ApplicationError(userNotIdentifiedException));
     }
+
+    @ExceptionHandler({ExamNotFoundException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(ExamNotFoundException examNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(examNotFoundException));
+    }
 }
