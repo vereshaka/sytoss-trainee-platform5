@@ -6,14 +6,16 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import feign.FeignException;
@@ -84,7 +86,7 @@ public class TaskService {
     public List<Task> assignTasksToTopic(Long topicId, List<Long> taskIds) {
         Topic topic = topicService.getById(topicId);
         List<Task> result = new ArrayList<>();
-        for (Long taskId: taskIds) {
+        for (Long taskId : taskIds) {
             Task task = getById(taskId);
             task.setId(taskId);
             if (task.getTopics().isEmpty()) {
@@ -152,8 +154,11 @@ public class TaskService {
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
                 return queryResult;
-            } catch (FeignException e){
-                throw new RequestIsNotValidException(e.contentUTF8());
+            } catch (Exception e) {
+                log.error("Error during check request", e);
+                if (e instanceof FeignException) {
+                    throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
+                }
             }
         }
         throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
