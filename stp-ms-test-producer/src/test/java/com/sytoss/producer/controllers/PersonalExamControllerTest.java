@@ -105,7 +105,7 @@ public class PersonalExamControllerTest extends StpApplicationTest {
 
         when(personalExamService.getByStudentId(1L)).thenReturn(exams);
 
-        ResponseEntity<List<Task>> result = doGet("/api/personal-exam/user/1", httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Task>> result = doGet("/api/personal-exam/teacher/1", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
