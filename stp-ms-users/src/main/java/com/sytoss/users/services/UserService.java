@@ -5,13 +5,12 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
-import com.sytoss.users.dto.GroupDTO;
-import com.sytoss.users.dto.StudentDTO;
-import com.sytoss.users.dto.TeacherDTO;
-import com.sytoss.users.dto.UserDTO;
+import com.sytoss.users.dto.*;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
@@ -37,6 +36,10 @@ public class UserService extends AbstractStpService {
     private final UserConverter userConverter;
 
     private final GroupConvertor groupConvertor;
+
+    private final GroupReferenceConnector groupReferenceConnector;
+
+    private final GroupConnector groupConnector;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -134,9 +137,19 @@ public class UserService extends AbstractStpService {
         if(profileModel.getPhoto() != null){
           updatePhoto(profileModel.getPhoto());
         }
-
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
-            //TODO: yevgenyv: update group info
+            GroupDTO groupDTO = groupConnector.getByName(profileModel.getPrimaryGroup().getName());
+            if(groupDTO==null){
+                groupDTO = new GroupDTO();
+                groupConvertor.toDTO(profileModel.getPrimaryGroup(), groupDTO);
+                groupDTO = groupConnector.save(groupDTO);
+                profileModel.getPrimaryGroup().setId(groupDTO.getId());
+            }
+            ((StudentDTO) dto).setPrimaryGroup(groupDTO);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
+            groupReferenceDTO.setGroupId(((StudentDTO) dto).getPrimaryGroup().getId());
+            groupReferenceDTO.setStudent((StudentDTO) dto);
+            groupReferenceConnector.save(groupReferenceDTO);
         }
         userConnector.save(dto);
     }
