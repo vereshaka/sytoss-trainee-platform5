@@ -36,7 +36,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setAssignedDate(new Date());
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 5 : examConfiguration.getExam().getDuration());
+        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
@@ -88,7 +88,11 @@ public class PersonalExamService extends AbstractService {
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
-        personalExam.start();
+        try {
+            personalExam.start();
+        }catch (Exception e){
+
+        }
         personalExam.getAnswers().get(0).inProgress();
         personalExam = personalExamConnector.save(personalExam);
         Question firstTask = new Question();
