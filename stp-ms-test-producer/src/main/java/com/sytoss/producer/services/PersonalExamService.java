@@ -82,8 +82,8 @@ public class PersonalExamService extends AbstractService {
     public Question start(String personalExamId) {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = getById(personalExamId);
-        if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
-            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+        if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
+            throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();

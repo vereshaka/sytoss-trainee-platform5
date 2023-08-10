@@ -32,7 +32,7 @@ public class AnswerService extends AbstractService {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
-            throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);
+            throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);
