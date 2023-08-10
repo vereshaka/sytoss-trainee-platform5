@@ -9,3 +9,6 @@ de:
     mongodb:
       embedded:
         version: 4.0.2
+check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api/}
+lessons-url: ${LESSONS_URI:http://localhost:9101/api/}
+image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9104/api/}
