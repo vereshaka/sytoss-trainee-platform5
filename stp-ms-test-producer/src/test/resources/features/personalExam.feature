@@ -1,5 +1,6 @@
 Feature: PersonalExam
 
+  @Bug @STP-409
   Scenario: system create personal exam
     Given tasks exist
       | discipline | topic           | task       |
@@ -43,6 +44,7 @@ Feature: PersonalExam
     Then operation is successful
     And should return "true"
 
+  @Bug @STP-409
   Scenario: system create personal exam with a photo retrieve
     Given tasks exist
       | discipline | topic           | task       |

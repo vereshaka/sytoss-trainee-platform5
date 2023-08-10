@@ -91,9 +91,18 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/user/{userId}")
-    public List<PersonalExam> getByUserId(@PathVariable(value = "userId") Long userId) {
-        return personalExamService.getByUserId(userId);
+    @GetMapping("/student/{userId}")
+    public List<PersonalExam> getByStudentId(@PathVariable(value = "userId") Long userId) {
+        return personalExamService.getByStudentId(userId);
+    }
+
+    @Operation(description = "Method that return personal exams by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/teacher/{userId}")
+    public List<PersonalExam> getByTeacherId(@PathVariable(value = "userId") Long userId) {
+        return personalExamService.getByTeacherId(userId);
     }
 
     @Operation(description = "Method that change personal exam status to reviewed")

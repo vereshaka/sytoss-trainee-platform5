@@ -11,13 +11,14 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PersonalExamService extends AbstractStpService {
 
@@ -29,26 +30,26 @@ public class PersonalExamService extends AbstractStpService {
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
-        personalExam.setName(examConfiguration.getExamName());
-        personalExam.setExamId(examConfiguration.getExamId());
+        //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
+        personalExam.setName(examConfiguration.getExam().getName());
+        personalExam.setExamId(examConfiguration.getExam().getId());
         personalExam.setAssignedDate(new Date());
-        personalExam.setTime(examConfiguration.getTime());
+        personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
+        personalExam.setTeacher(examConfiguration.getExam().getTeacher());
+        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 5 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
-        List<Answer> answers = generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration);
+        List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
-        for(Answer answer : answers){
-           answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+        for (Answer answer : answers) {
+            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
         personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
+        log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
     }
 
-    private List<Answer> generateAnswers(int numberOfTasks, ExamConfiguration examConfiguration) {
-        List<Task> tasks = examConfiguration.getTopics().stream()
-                .flatMap(topic -> metadataConnector.getTasksForTopic(topic).stream())
-                .collect(Collectors.toList());
+    private List<Answer> generateAnswers(int numberOfTasks, List<Task> tasks) {
         List<Answer> answers = new ArrayList<>();
         for (int i = 0; i <= numberOfTasks - 1; i++) {
             Random random = new Random();
@@ -112,8 +113,12 @@ public class PersonalExamService extends AbstractStpService {
         return personalExamConnector.getAllByExamId(examId);
     }
 
-    public List<PersonalExam> getByUserId(Long userId) {
+    public List<PersonalExam> getByStudentId(Long userId) {
         return personalExamConnector.getAllByStudent_Id(userId);
+    }
+
+    public List<PersonalExam> getByTeacherId(Long userId) {
+        return personalExamConnector.getAllByTeacher_Id(userId);
     }
 
     public PersonalExam review(PersonalExam personalExamToChange) {

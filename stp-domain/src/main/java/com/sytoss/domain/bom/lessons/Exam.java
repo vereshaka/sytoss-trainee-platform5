@@ -30,5 +30,7 @@ public class Exam {
 
     private Teacher teacher;
 
+    private Discipline discipline;
+
     private List<Task> tasks;
 }

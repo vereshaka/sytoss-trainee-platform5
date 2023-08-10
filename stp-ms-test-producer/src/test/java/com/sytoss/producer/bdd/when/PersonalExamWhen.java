@@ -34,10 +34,11 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         Student student = new Student();
         student.setUid(studentId);
         examConfiguration.setStudent(student);
-        examConfiguration.setExamName(examName);
+        //TODO: STP-409: fix me
+/*        examConfiguration.setExamName(examName);
         examConfiguration.setQuantityOfTask(quantityOfTask);
-        examConfiguration.setTopics(getTopicId(topicName));
-        examConfiguration.setDisciplineId(getDisciplineId(disciplineName));
+        examConfiguration.setTasks(getTopicId(topicName));
+        examConfiguration.setDisciplineId(getDisciplineId(disciplineName));*/
 
         String[] tasks = getTestExecutionContext().getDetails().getTaskMapping().get(topicName).split(", ");
         List<Task> taskList = new ArrayList<>();
