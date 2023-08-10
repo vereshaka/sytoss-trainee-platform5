@@ -138,14 +138,12 @@ public class UserService extends AbstractStpService {
           updatePhoto(profileModel.getPhoto());
         }
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
-            GroupDTO groupDTO = groupConnector.getByName(profileModel.getPrimaryGroup());
-            Group group = new Group();
+            GroupDTO groupDTO = groupConnector.getByName(profileModel.getPrimaryGroup().getName());
             if(groupDTO==null){
-                group.setName(profileModel.getPrimaryGroup());
                 groupDTO = new GroupDTO();
-                groupConvertor.toDTO(group,groupDTO);
+                groupConvertor.toDTO(profileModel.getPrimaryGroup(), groupDTO);
                 groupDTO = groupConnector.save(groupDTO);
-                group.setId(groupDTO.getId());
+                profileModel.getPrimaryGroup().setId(groupDTO.getId());
             }
             ((StudentDTO) dto).setPrimaryGroup(groupDTO);
             GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
