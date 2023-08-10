@@ -20,7 +20,7 @@ import java.util.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PersonalExamService extends AbstractStpService {
+public class PersonalExamService extends AbstractService {
 
     private final MetadataConnector metadataConnector;
 
@@ -80,7 +80,7 @@ public class PersonalExamService extends AbstractStpService {
     }
 
     public Question start(String personalExamId) {
-        String studentId = getMyId();
+        Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);

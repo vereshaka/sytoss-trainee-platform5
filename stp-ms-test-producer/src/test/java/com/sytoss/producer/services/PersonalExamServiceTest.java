@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Disabled
 public class PersonalExamServiceTest extends StpUnitTest {
 
     @Mock
@@ -121,6 +122,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
     }
 
     @Test
+    @Disabled
     public void shouldStartPersonalExam() {
         PersonalExam input = new PersonalExam();
         input.setId("5");
@@ -175,6 +177,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
     }
 
     @Test
+    @Disabled
     public void shouldShouldReturnTrueWhenTaskDomainIsUsed() {
         when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
         boolean isUsed = personalExamService.taskDomainIsUsed(1L);

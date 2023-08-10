@@ -18,7 +18,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
-public class AnswerService extends AbstractStpService {
+public class AnswerService extends AbstractService {
 
     private final MetadataConnector metadataConnector;
 
@@ -29,7 +29,7 @@ public class AnswerService extends AbstractStpService {
     private final PumlConvertor pumlConvertor;
 
     public Answer answer(String personalExamId, String taskAnswer) {
-        String studentId = getMyId();
+        Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(personalExamId, studentId);

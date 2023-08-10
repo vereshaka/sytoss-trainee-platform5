@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ExamService {
+public class ExamService extends AbstractService {
 
     @Autowired
     private PersonalExamService personalExamService;
