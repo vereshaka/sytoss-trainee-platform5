@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(url = "${users-url}", name = "personalExamConnector")
+@FeignClient(url = "${test-producer-url}", name = "personalExamConnector")
 public interface PersonalExamConnector {
 
     @GetMapping("task-domain/{taskDomainId}/is-used-now")
