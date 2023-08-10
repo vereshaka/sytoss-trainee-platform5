@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -152,6 +153,7 @@ public class UserServiceTest extends StpUnitTest {
     public void shouldReturnStudentWithTrueValidFlag() {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
+        groupDTO.setStudents(new ArrayList<>());
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setFirstName("John");
         studentDTO.setMiddleName("Mock");
@@ -197,6 +199,7 @@ public class UserServiceTest extends StpUnitTest {
     private GroupDTO createGroupDTO(String name) {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setName(name);
+        groupDTO.setStudents(new ArrayList<>());
         return groupDTO;
     }
 

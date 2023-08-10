@@ -10,6 +10,8 @@ import com.sytoss.users.dto.TeacherDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UserConvertorTest extends StpUnitTest {
@@ -53,6 +55,7 @@ public class UserConvertorTest extends StpUnitTest {
         studentDTO.setUid("thisIsNotLongId");
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
+        groupDTO.setStudents(List.of(new StudentDTO[]{studentDTO}));
         studentDTO.setPrimaryGroup(groupDTO);
         byte[] photoBytes = {1, 2, 3, 4, 5};
         studentDTO.setPhoto(photoBytes);

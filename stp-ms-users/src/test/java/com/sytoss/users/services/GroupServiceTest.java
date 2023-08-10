@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public class GroupServiceTest extends StpUnitTest {
     public void getByIdTest() {
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
+        groupDTO.setStudents(new ArrayList<>());
         when(groupConnector.findById(any())).thenReturn(Optional.of(groupDTO));
         Group group = groupService.getById(1L);
         Assertions.assertEquals(1L, group.getId());
