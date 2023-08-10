@@ -34,6 +34,8 @@ public class ExamService extends AbstractService {
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
+        //TODO: yevgenyv: re think it
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
         examDTO = examConnector.save(examDTO);

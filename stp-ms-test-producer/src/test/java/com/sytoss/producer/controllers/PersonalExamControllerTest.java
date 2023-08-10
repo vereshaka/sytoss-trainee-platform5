@@ -103,7 +103,7 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
-        when(personalExamService.getByUserId(1L)).thenReturn(exams);
+        when(personalExamService.getByStudentId(1L)).thenReturn(exams);
 
         ResponseEntity<List<Task>> result = doGet("/api/personal-exam/user/1", httpEntity, new ParameterizedTypeReference<>() {
         });

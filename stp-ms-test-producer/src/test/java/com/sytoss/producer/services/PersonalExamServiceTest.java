@@ -189,7 +189,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
         when(personalExamConnector.getAllByStudent_Id(1L)).thenReturn(exams);
 
-        List<PersonalExam> result = personalExamService.getByUserId(1L);
+        List<PersonalExam> result = personalExamService.getByStudentId(1L);
 
         assertEquals(exams.size(), result.size());
         for (int i = 0; i < result.size(); i++) {

@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedExcep
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -27,6 +28,8 @@ public class PersonalExam {
     private Long examId;
 
     private Discipline discipline;
+
+    private Teacher teacher;
 
     @JsonView(PersonalExam.Public.class)
     private Date assignedDate;
