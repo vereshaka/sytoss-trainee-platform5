@@ -70,4 +70,14 @@ public class GroupController {
             @PathVariable("groupId") Long groupId) {
         return groupService.getStudents(groupId);
     }
+
+    @Operation(description = "Method that get information about all groups")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Group not found!"),
+    })
+    @GetMapping("/all")
+    public List<Group> getAllGroups() {
+        return groupService.getAllGroups();
+    }
 }

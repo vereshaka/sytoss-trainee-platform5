@@ -22,8 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -89,6 +88,7 @@ public class DisciplineService extends AbstractService {
             taskConvertor.fromDTO(taskDTO, task);
             result.add(task);
         }
+        result.sort(Comparator.comparing(task -> task.getTaskDomain().getName()));
         return result;
     }
 
@@ -145,5 +145,11 @@ public class DisciplineService extends AbstractService {
             }
         }
         return disciplines;
+    }
+
+    public void assignGroupsToDiscipline(Long disciplineId, List<Long> groupsIds) {
+        for (Long id : groupsIds) {
+            assignGroupToDiscipline(disciplineId, id);
+        }
     }
 }

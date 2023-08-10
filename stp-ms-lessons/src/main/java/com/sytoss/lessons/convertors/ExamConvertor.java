@@ -1,6 +1,7 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
@@ -10,6 +11,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +77,18 @@ public class ExamConvertor {
             topicConvertor.fromDTO(topicDTO, topic);
             topicList.add(topic);
         });
+        List<Task> tasksList = new ArrayList<>();
+
+        if (!CollectionUtils.isEmpty(source.getTasks())) {
+            source.getTasks().forEach(taskDTO -> {
+                Task task = new Task();
+                taskConvertor.fromDTO(taskDTO, task);
+                tasksList.add(task);
+            });
+        }
 
         destination.setTopics(topicList);
+        destination.setTasks(tasksList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());

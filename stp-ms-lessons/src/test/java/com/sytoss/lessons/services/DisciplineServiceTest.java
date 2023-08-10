@@ -10,10 +10,7 @@ import com.sytoss.lessons.connectors.GroupReferenceConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -63,7 +60,7 @@ public class DisciplineServiceTest extends StpUnitTest {
 
     @Spy
     private TaskConvertor taskConvertor =
-            new TaskConvertor(taskDomainConvertor, taskConditionConvertor);
+            new TaskConvertor(taskDomainConvertor, taskConditionConvertor, topicConvertor);
 
     @Mock
     private UserConnector userConnector;
@@ -213,5 +210,17 @@ public class DisciplineServiceTest extends StpUnitTest {
         when(taskConnector.getByTaskDomainDisciplineId(1L)).thenReturn(input);
         List<Task> result = disciplineService.findTasksByDisciplineId(1L);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void assignGroupsToDiscipline() {
+        GroupsIds groupsIds = new GroupsIds();
+        groupsIds.setGroupsIds(List.of(1L, 2L));
+        Long disciplineId = 1L;
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
+        verify(groupReferenceConnector, times(groupsIds.getGroupsIds().size())).save(any(GroupReferenceDTO.class));
     }
 }

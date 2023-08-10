@@ -1,12 +1,14 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
+import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,17 @@ public class ExamService extends AbstractService {
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
             throw new UserNotIdentifiedException("User type not teacher!");
+        }
+    }
+
+    public Exam getById(Long examId) {
+        try {
+            ExamDTO taskDTO = examConnector.getReferenceById(examId);
+            Exam exam = new Exam();
+            examConvertor.fromDTO(taskDTO, exam);
+            return exam;
+        } catch (EntityNotFoundException e) {
+            throw new ExamNotFoundException(examId);
         }
     }
 }

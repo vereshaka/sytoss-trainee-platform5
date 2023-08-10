@@ -25,6 +25,7 @@ public class PersonalExamTest {
 
         Answer answer = new Answer();
         answer.setGrade(grade);
+        answer.setTeacherGrade(grade);
         answer.setStatus(AnswerStatus.GRADED);
 
         return answer;

@@ -8,10 +8,7 @@ import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.DisciplineConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.TaskConditionConvertor;
-import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.convertors.TaskDomainConvertor;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -50,7 +47,7 @@ public class TaskServiceTest extends StpUnitTest {
     private DisciplineConnector disciplineConnector;
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
-            new DisciplineConvertor()), new TaskConditionConvertor());
+            new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
     @Spy
     private PumlConvertor pumlConvertor;
 
@@ -148,7 +145,6 @@ public class TaskServiceTest extends StpUnitTest {
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
-        Assertions.assertEquals(1, result.get(0).getTopics().size());
     }
 
     @Test

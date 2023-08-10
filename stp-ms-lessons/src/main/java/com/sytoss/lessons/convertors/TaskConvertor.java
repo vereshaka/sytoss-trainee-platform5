@@ -22,6 +22,8 @@ public class TaskConvertor {
 
     private final TaskConditionConvertor taskConditionConvertor;
 
+    private final TopicConvertor topicConvertor;
+
     public void fromDTO(TaskDTO source, Task destination) {
         destination.setId(source.getId());
         destination.setQuestion(source.getQuestion());
@@ -39,6 +41,15 @@ public class TaskConvertor {
                 taskConditionList.add(taskCondition);
             });
             destination.setTaskConditions(taskConditionList);
+        }
+        if (source.getTopics() != null) {
+            List<Topic> topicList = new ArrayList<>();
+            source.getTopics().forEach(topicDTO -> {
+                Topic topic = new Topic();
+                topicConvertor.fromDTO(topicDTO, topic);
+                topicList.add(topic);
+            });
+            destination.setTopics(topicList);
         }
     }
 
@@ -59,6 +70,15 @@ public class TaskConvertor {
                 taskConditionDTOList.add(taskConditionDTO);
             });
             destination.setConditions(taskConditionDTOList);
+        }
+        if (source.getTopics() != null) {
+            List<TopicDTO> topicDTOList = new ArrayList<>();
+            source.getTopics().forEach(topic -> {
+                TopicDTO topicDTO = new TopicDTO();
+                topicConvertor.toDTO(topic, topicDTO);
+                topicDTOList.add(topicDTO);
+            });
+            destination.setTopics(topicDTOList);
         }
     }
 }
