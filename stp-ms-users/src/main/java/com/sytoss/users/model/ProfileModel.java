@@ -19,7 +19,7 @@ public class ProfileModel {
 
     private String lastName;
 
-    private Group primaryGroup;
+    private String primaryGroup;
 
     private MultipartFile photo;
 }

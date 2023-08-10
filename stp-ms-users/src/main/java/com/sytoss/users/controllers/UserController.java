@@ -41,8 +41,9 @@ public class UserController {
     public void updateProfile(@RequestParam(required = false) String firstName,
                               @RequestParam(required = false) String middleName,
                               @RequestParam(required = false) String lastName,
+                              @RequestParam(required = false) Group primaryGroup,
                               @RequestParam(required = false) MultipartFile photo) {
-        ProfileModel profileModel = new ProfileModel(firstName, middleName, lastName, null, photo);
+        ProfileModel profileModel = new ProfileModel(firstName, middleName, lastName, primaryGroup.getName(), photo);
         userService.updateProfile(profileModel);
     }
 
