@@ -15,7 +15,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,26 +28,23 @@ public class PersonalExamService extends AbstractStpService {
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setDiscipline(getDiscipline(examConfiguration.getDisciplineId()));
-        personalExam.setName(examConfiguration.getExamName());
-        personalExam.setExamId(examConfiguration.getExamId());
+        //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
+        personalExam.setName(examConfiguration.getExam().getName());
+        personalExam.setExamId(examConfiguration.getExam().getId());
         personalExam.setAssignedDate(new Date());
-        personalExam.setTime(examConfiguration.getTime());
+        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 5 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
-        List<Answer> answers = generateAnswers(examConfiguration.getQuantityOfTask(), examConfiguration);
+        List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
-        for(Answer answer : answers){
-           answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+        for (Answer answer : answers) {
+            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
         personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
         return personalExam;
     }
 
-    private List<Answer> generateAnswers(int numberOfTasks, ExamConfiguration examConfiguration) {
-        List<Task> tasks = examConfiguration.getTopics().stream()
-                .flatMap(topic -> metadataConnector.getTasksForTopic(topic).stream())
-                .collect(Collectors.toList());
+    private List<Answer> generateAnswers(int numberOfTasks, List<Task> tasks) {
         List<Answer> answers = new ArrayList<>();
         for (int i = 0; i <= numberOfTasks - 1; i++) {
             Random random = new Random();

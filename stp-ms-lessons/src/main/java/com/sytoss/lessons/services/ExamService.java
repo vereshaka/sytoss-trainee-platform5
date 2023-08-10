@@ -3,9 +3,13 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,12 +28,25 @@ public class ExamService extends AbstractService {
 
     private final ExamConvertor examConvertor;
 
+    private final UserConnector userConnector;
+
+    private final PersonalExamConnector personalExamConnector;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
         examDTO = examConnector.save(examDTO);
         examConvertor.fromDTO(examDTO, exam);
+        List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
+        for (Student student: students){
+            try {
+                personalExamConnector.create(new ExamConfiguration(exam, student));
+            } catch (Exception e) {
+                //TODO: yevgenyv: need to re think return answer
+                log.error("Could not create a personal exam for student", e);
+            }
+        }
         return exam;
     }
 
