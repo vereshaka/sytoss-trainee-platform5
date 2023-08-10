@@ -15,7 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Service
 @Slf4j
@@ -33,7 +37,7 @@ public class PersonalExamService extends AbstractStpService {
         //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
         personalExam.setName(examConfiguration.getExam().getName());
         personalExam.setExamId(examConfiguration.getExam().getId());
-        personalExam.setAssignedDate(new Date());
+        personalExam.setAssignedDate(new Date(System.currentTimeMillis()));
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
         personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 5 : examConfiguration.getExam().getDuration());

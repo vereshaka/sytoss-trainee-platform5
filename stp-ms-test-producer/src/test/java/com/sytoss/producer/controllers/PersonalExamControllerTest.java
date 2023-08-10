@@ -15,7 +15,7 @@ import org.springframework.http.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -94,8 +94,12 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     public void shouldGetPersonalExamByUserId() throws ParseException, JOSEException {
         List<PersonalExam> exams = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L,"Math", 5,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
+        exams.add(createPersonalExam(2L,"SQL", 10,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
 
         HttpHeaders httpHeaders = new HttpHeaders();
 

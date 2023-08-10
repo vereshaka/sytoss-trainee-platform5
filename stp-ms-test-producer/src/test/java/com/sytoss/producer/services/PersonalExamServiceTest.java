@@ -20,14 +20,15 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -185,8 +186,18 @@ public class PersonalExamServiceTest extends StpUnitTest {
     public void shouldReturnPersonalExamsByUserId() throws ParseException {
         List<PersonalExam> exams = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L, "Math", 5,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
+        exams.add(createPersonalExam(1L, "Math", 5,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
+        exams.add(createPersonalExam(1L, "Math", 5,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
+        exams.add(createPersonalExam(2L, "SQL", 10,
+                new Date(format.parse("14.12.2018").getTime()),
+                new Date(format.parse("14.12.2018").getTime())));
         when(personalExamConnector.getAllByStudent_Id(1L)).thenReturn(exams);
 
         List<PersonalExam> result = personalExamService.getByStudentId(1L);

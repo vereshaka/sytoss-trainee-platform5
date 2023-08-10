@@ -9,6 +9,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.apache.commons.lang3.StringUtils;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,7 +44,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
-            personalExam.setAssignedDate(dateFormat.parse(date));
+            personalExam.setAssignedDate(new Date(dateFormat.parse(date).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }

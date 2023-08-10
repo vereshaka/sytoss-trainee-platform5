@@ -11,7 +11,7 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +59,7 @@ public class PersonalExam {
     public void start() {
         if (status.equals(PersonalExamStatus.NOT_STARTED)) {
             status = PersonalExamStatus.IN_PROGRESS;
+            setStartedDate(new Date(System.currentTimeMillis()));
         } else if (status.equals(PersonalExamStatus.IN_PROGRESS)) {
             throw new PersonalExamAlreadyStartedException();
         } else {
