@@ -153,6 +153,7 @@ public class TaskService {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
                 return queryResult;
             } catch (FeignException e){
+                log.error("Error during check request", e);
                 throw new RequestIsNotValidException(e.contentUTF8());
             }
         }
