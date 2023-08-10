@@ -106,4 +106,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(ExamNotFoundException examNotFoundException) {
         return ResponseEntity.status(404).body(new ApplicationError(examNotFoundException));
     }
+
+    @ExceptionHandler({GroupNotFoundException.class})
+    public ResponseEntity<?> handleValidationException(GroupNotFoundException groupNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(groupNotFoundException));
+    }
 }

@@ -2,9 +2,11 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.GroupNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
@@ -12,6 +14,7 @@ import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +77,14 @@ public class ExamService extends AbstractService {
             ExamDTO taskDTO = examConnector.getReferenceById(examId);
             Exam exam = new Exam();
             examConvertor.fromDTO(taskDTO, exam);
+            Group group;
+            try {
+                group = userConnector.getGroup(exam.getGroup().getId());
+            } catch (FeignException e) {
+                throw new GroupNotFoundException(taskDTO.getGroupId());
+            }
+
+            exam.setGroup(group);
             return exam;
         } catch (EntityNotFoundException e) {
             throw new ExamNotFoundException(examId);
