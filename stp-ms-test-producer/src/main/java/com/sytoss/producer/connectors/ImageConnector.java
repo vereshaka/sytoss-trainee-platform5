@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(url = "${image-provider-url}", name = "ImageConnector")
 public interface ImageConnector {
-    @PostMapping("/convert/image")
+    @PostMapping("/image/convert")
     Long convertImage(@RequestBody String question);
 }
