@@ -11,12 +11,14 @@ import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PersonalExamService extends AbstractStpService {
 
@@ -41,6 +43,7 @@ public class PersonalExamService extends AbstractStpService {
         }
         personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
+        log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
     }
 
