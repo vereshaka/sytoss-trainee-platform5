@@ -6,12 +6,10 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
-import com.sytoss.users.dto.GroupDTO;
-import com.sytoss.users.dto.StudentDTO;
-import com.sytoss.users.dto.TeacherDTO;
-import com.sytoss.users.dto.UserDTO;
+import com.sytoss.users.dto.*;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
@@ -37,6 +35,8 @@ public class UserService extends AbstractStpService {
     private final UserConverter userConverter;
 
     private final GroupConvertor groupConvertor;
+
+    private final GroupReferenceConnector groupReferenceConnector;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -101,7 +101,11 @@ public class UserService extends AbstractStpService {
             userConverter.fromDTO(getJwt(), newUser);
             StudentDTO userDto = new StudentDTO();
             userConverter.toDTO(newUser, userDto);
-            userConnector.save(userDto);
+            userDto = userConnector.save(userDto);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
+            groupReferenceDTO.setGroupId(userDto.getId());
+            groupReferenceDTO.setStudent(userDto);
+            groupReferenceConnector.save(groupReferenceDTO);
         } else {
             throw new IllegalArgumentException("Unsupported user type: " + userType);
         }
