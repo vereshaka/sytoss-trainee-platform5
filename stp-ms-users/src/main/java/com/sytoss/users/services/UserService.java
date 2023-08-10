@@ -125,19 +125,19 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
-        if(profileModel.getFirstName() != null){
+        if(profileModel.getFirstName() != null && !profileModel.getFirstName().equals("null")){
             dto.setFirstName(profileModel.getFirstName());
         }
-        if(profileModel.getMiddleName() != null){
+        if(profileModel.getMiddleName() != null && !profileModel.getMiddleName().equals("null")){
             dto.setMiddleName(profileModel.getMiddleName());
         }
-        if(profileModel.getLastName() != null){
+        if(profileModel.getLastName() != null && !profileModel.getLastName().equals("null")){
             dto.setLastName(profileModel.getLastName());
         }
         if(profileModel.getPhoto() != null){
           updatePhoto(profileModel.getPhoto());
         }
-        if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
+        if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null && !profileModel.getPrimaryGroup().equals("undefined")) {
             GroupDTO groupDTO = groupConnector.getByName(profileModel.getPrimaryGroup());
             Group group = new Group();
             if(groupDTO==null){
