@@ -101,11 +101,7 @@ public class UserService extends AbstractStpService {
             userConverter.fromDTO(getJwt(), newUser);
             StudentDTO userDto = new StudentDTO();
             userConverter.toDTO(newUser, userDto);
-            userDto = userConnector.save(userDto);
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
-            groupReferenceDTO.setGroupId(userDto.getId());
-            groupReferenceDTO.setStudent(userDto);
-            groupReferenceConnector.save(groupReferenceDTO);
+            userConnector.save(userDto);
         } else {
             throw new IllegalArgumentException("Unsupported user type: " + userType);
         }
@@ -140,7 +136,10 @@ public class UserService extends AbstractStpService {
         }
 
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
-            //TODO: yevgenyv: update group info
+           /* GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
+            groupReferenceDTO.setGroupId(userDto.getPrimaryGroup().getId());
+            groupReferenceDTO.setStudent(userDto);
+            groupReferenceConnector.save(groupReferenceDTO);*/
         }
         userConnector.save(dto);
     }
