@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
@@ -16,6 +16,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -88,12 +89,20 @@ public class PersonalExamService extends AbstractService {
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
         }
-        try {
+        Answer answer;
+        if (PersonalExamStatus.NOT_STARTED.equals(personalExam.getStatus())) {
             personalExam.start();
-        }catch (Exception e){
-
+            answer = personalExam.getAnswers().get(0);
+            answer.inProgress();
+        } else if (PersonalExamStatus.IN_PROGRESS.equals(personalExam.getStatus())){
+            answer = personalExam.getAnswers().stream().filter(item -> item.getStatus().equals(AnswerStatus.IN_PROGRESS)).findFirst().orElse(null);
+            if (answer == null) {
+                //TODO: yevgenyv: not possible from business logic case
+                answer = personalExam.getAnswers().stream().filter(item -> item.getStatus().equals(AnswerStatus.NOT_STARTED)).findFirst().get();
+            }
+        } else {
+            throw new PersonalExamIsFinishedException();
         }
-        personalExam.getAnswers().get(0).inProgress();
         personalExam = personalExamConnector.save(personalExam);
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
@@ -102,8 +111,8 @@ public class PersonalExamService extends AbstractService {
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
-        taskModel.setQuestion(personalExam.getAnswers().get(0).getTask().getQuestion());
-        taskModel.setSchema(personalExam.getAnswers().get(0).getTask().getTaskDomain().getDatabaseScript());
+        taskModel.setQuestion(answer.getTask().getQuestion());
+        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(1);
         firstTask.setTask(taskModel);
         return firstTask;
