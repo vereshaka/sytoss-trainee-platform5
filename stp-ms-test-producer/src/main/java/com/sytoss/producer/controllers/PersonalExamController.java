@@ -58,13 +58,13 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/{personalExamId}/task/answer")
-    public ResponseEntity<Answer> answer(
+    public ResponseEntity<Question> answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody String taskAnswer) {
-        Answer answer = answerService.answer(personalExamId, taskAnswer);
-        if (answer != null) {
-            return ResponseEntity.ok(answer);
+        Question question = answerService.answer(personalExamId, taskAnswer);
+        if (question != null) {
+            return ResponseEntity.ok(question);
         }
         return ResponseEntity.accepted().body(null);
     }
@@ -76,12 +76,15 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "409", description = "Exam is already started!")
     })
     @GetMapping("/{personalExamId}/start")
-    public Question start(
+    public ResponseEntity<Question> start(
             @PathVariable("personalExamId")
             String personalExamId) {
-        return personalExamService.start(personalExamId);
+        Question answer = personalExamService.start(personalExamId);
+        if (answer != null) {
+            return ResponseEntity.ok(answer);
+        }
+        return ResponseEntity.accepted().body(null);
     }
-
 
     @Operation(description = "Method that return personal exam by task domain id")
     @ApiResponses(value = {

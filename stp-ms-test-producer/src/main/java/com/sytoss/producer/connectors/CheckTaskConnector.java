@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "answerClient", url = "${check-task-url}")
 public interface CheckTaskConnector {
 
-    @PostMapping("/api/task/check")
+    @PostMapping("/task/check")
     Score checkAnswer(@RequestBody CheckTaskParameters checkTaskParameters);
 }

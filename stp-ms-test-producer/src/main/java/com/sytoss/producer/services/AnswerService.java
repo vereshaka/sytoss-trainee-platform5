@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -28,23 +29,42 @@ public class AnswerService extends AbstractService {
 
     private final PumlConvertor pumlConvertor;
 
-    public Answer answer(String personalExamId, String taskAnswer) {
+    public Question answer(String personalExamId, String taskAnswer) {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
-        if (!Objects.equals(personalExam.getStudent().getUid(), studentId)) {
+        if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         personalExamConnector.save(personalExam);
-        return personalExam.getNextAnswer();
+        answer = personalExam.getNextAnswer();
+
+        Question firstTask = new Question();
+        ExamModel examModel = new ExamModel();
+        examModel.setName(personalExam.getName());
+        examModel.setTime(personalExam.getTime());
+        examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
+        firstTask.setExam(examModel);
+        TaskModel taskModel = new TaskModel();
+        taskModel.setQuestion(answer.getTask().getQuestion());
+        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
+        taskModel.setQuestionNumber(
+                personalExam.getAnswers().size()
+                        - personalExam.getAnswers().stream()
+                        .filter(item -> item.getStatus().equals(AnswerStatus.NOT_STARTED))
+                        .collect(Collectors.toUnmodifiableList()).size() + 1);
+
+        firstTask.setTask(taskModel);
+
+        return firstTask;
     }
 
     @Async
     void checkAnswer(Answer answer, PersonalExam personalExam) {
-        Task task = metadataConnector.getTaskById(answer.getTask().getId());
-        TaskDomain taskDomain = metadataConnector.getTaskDomain(answer.getTask().getTaskDomain().getId());
+        Task task = answer.getTask();
+        TaskDomain taskDomain = task.getTaskDomain();
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());

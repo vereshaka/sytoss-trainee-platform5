@@ -16,7 +16,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -27,7 +26,7 @@ public class PersonalExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-   private final ImageConnector imageConnector;
+    private final ImageConnector imageConnector;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -94,11 +93,16 @@ public class PersonalExamService extends AbstractService {
             personalExam.start();
             answer = personalExam.getAnswers().get(0);
             answer.inProgress();
-        } else if (PersonalExamStatus.IN_PROGRESS.equals(personalExam.getStatus())){
+        } else if (PersonalExamStatus.IN_PROGRESS.equals(personalExam.getStatus())) {
             answer = personalExam.getAnswers().stream().filter(item -> item.getStatus().equals(AnswerStatus.IN_PROGRESS)).findFirst().orElse(null);
             if (answer == null) {
                 //TODO: yevgenyv: not possible from business logic case
-                answer = personalExam.getAnswers().stream().filter(item -> item.getStatus().equals(AnswerStatus.NOT_STARTED)).findFirst().get();
+                Optional<Answer> notStartedAnswer = personalExam.getAnswers().stream().filter(item -> item.getStatus().equals(AnswerStatus.NOT_STARTED)).findFirst();
+                if (notStartedAnswer.isPresent()) {
+                    answer = notStartedAnswer.get();
+                } else {
+                    return null;
+                }
             }
         } else {
             throw new PersonalExamIsFinishedException();
