@@ -38,8 +38,8 @@ public class AnswerService extends AbstractService {
         Answer answer = personalExam.getCurrentAnswer();
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
-        personalExamConnector.save(personalExam);
         answer = personalExam.getNextAnswer();
+        personalExamConnector.save(personalExam);
 
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
@@ -94,7 +94,6 @@ public class AnswerService extends AbstractService {
         Answer answer = personalExam.getCurrentAnswer();
         String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
         String dataScript = answer.getTask().getTaskDomain().getDataScript();
-        pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
-        return null;
+        return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
     }
 }
