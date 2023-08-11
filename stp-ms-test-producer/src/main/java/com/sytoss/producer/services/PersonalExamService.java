@@ -1,6 +1,5 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
@@ -26,7 +25,7 @@ public class PersonalExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-   private final ImageConnector imageConnector;
+    private final ImageConnector imageConnector;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -90,7 +89,7 @@ public class PersonalExamService extends AbstractService {
         }
         try {
             personalExam.start();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         personalExam.getAnswers().get(0).inProgress();
@@ -118,6 +117,13 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByStudentId(Long userId) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_Id(userId);
+        for (PersonalExam personalExam : personalExams) {
+            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.setMaxGrade(0);
+                personalExam.setSummaryGrade(0);
+            }
+        }
         return personalExamConnector.getAllByStudent_Id(userId);
     }
 
