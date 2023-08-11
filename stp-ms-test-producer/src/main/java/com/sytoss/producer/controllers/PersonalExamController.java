@@ -1,7 +1,7 @@
 package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
@@ -67,6 +67,18 @@ public class PersonalExamController {
             return ResponseEntity.ok(question);
         }
         return ResponseEntity.accepted().body(null);
+    }
+
+    @Operation(description = "Method for answering tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/{personalExamId}/task/check")
+    public QueryResult check(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @RequestBody String taskAnswer) {
+        return answerService.check(personalExamId, taskAnswer);
     }
 
 

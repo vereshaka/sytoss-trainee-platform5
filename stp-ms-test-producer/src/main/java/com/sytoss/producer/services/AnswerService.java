@@ -3,6 +3,7 @@ package com.sytoss.producer.services;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
@@ -95,5 +96,16 @@ public class AnswerService extends AbstractService {
         String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
         String dataScript = answer.getTask().getTaskDomain().getDataScript();
         return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
+    }
+
+    public QueryResult check(String personalExamId, String taskAnswer) {
+        CheckRequestParameters request = new CheckRequestParameters();
+        request.setRequest(taskAnswer);
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
+        Answer answer = personalExam.getCurrentAnswer();
+        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
+        String dataScript = answer.getTask().getTaskDomain().getDataScript();
+        request.setScript(databaseScript + "\n\n" + dataScript);
+        return checkTaskConnector.testAnswer(request);
     }
 }

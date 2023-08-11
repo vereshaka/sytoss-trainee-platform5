@@ -1,5 +1,7 @@
 package com.sytoss.producer.connectors;
 
+import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import feign.Headers;
@@ -13,4 +15,8 @@ public interface CheckTaskConnector {
 
     @PostMapping("/task/check")
     Score checkAnswer(@RequestBody CheckTaskParameters checkTaskParameters);
+
+
+    @PostMapping("/task/check-request")
+    QueryResult testAnswer(@RequestBody CheckRequestParameters body) ;
 }
