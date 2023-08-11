@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -78,5 +78,23 @@ public class AnswerService extends AbstractService {
         grade.setComment(score.getComment());
         answer.grade(grade);
         personalExamConnector.save(personalExam);
+    }
+
+    public byte[] getDbImage(String personalExamId) {
+        return getImage(personalExamId, ConvertToPumlParameters.DB);
+    }
+
+    public byte[] getDataImage(String personalExamId) {
+        return getImage(personalExamId, ConvertToPumlParameters.DATA);
+    }
+
+
+    private byte[] getImage(String personalExamId, ConvertToPumlParameters type) {
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
+        Answer answer = personalExam.getCurrentAnswer();
+        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
+        String dataScript = answer.getTask().getTaskDomain().getDataScript();
+        pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
+        return null;
     }
 }

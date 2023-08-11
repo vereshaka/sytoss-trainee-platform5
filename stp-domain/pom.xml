@@ -19,6 +19,17 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.credibledoc</groupId>
+            <artifactId>plantuml-core</artifactId>
+            <version>1.0.48</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.plantuml</groupId>
+            <artifactId>plantuml</artifactId>
+            <version>1.2023.10</version>
+        </dependency>
     </dependencies>
 
 </project>

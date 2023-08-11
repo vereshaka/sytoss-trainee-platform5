@@ -1,12 +1,19 @@
 package com.sytoss.domain.bom.convertors;
 
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -291,5 +298,37 @@ public class PumlConvertor {
         }
         puml = puml.replaceAll("table", "entity");
         return puml;
+    }
+
+    public byte[] generatePngFromPuml(String puml, ConvertToPumlParameters convertToPumlParameters) {
+        if (puml == null) {
+            return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
+        }
+        puml = formatPuml(puml);
+        List<String> objects = new ArrayList<>();
+        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
+            objects = getEntities(puml);
+        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
+            objects = getObjects(puml);
+        }
+
+        String pumlConvertedScript = addLinks(String.join(StringUtils.LF + StringUtils.LF, objects), puml, convertToPumlParameters);
+        ByteArrayOutputStream png = new ByteArrayOutputStream();
+        try {
+            SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
+            String result = reader.outputImage(png).getDescription();
+
+            File imageFile = File.createTempFile("img", ".png");
+            ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
+            BufferedImage bufferedImage = ImageIO.read(bis);
+            ImageIO.write(bufferedImage, "png", imageFile);
+
+            if (!result.isEmpty()) {
+                return png.toByteArray();
+            }
+        } catch (Exception e) {
+            throw new TaskDomainCouldNotCreateImageException();
+        }
+        return null;
     }
 }

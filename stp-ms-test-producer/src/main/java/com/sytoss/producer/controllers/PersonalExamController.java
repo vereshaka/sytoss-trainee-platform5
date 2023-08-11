@@ -70,6 +70,29 @@ public class PersonalExamController {
     }
 
 
+    @Operation(description = "Method returns image of db structure for task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/{personalExamId}/task/dbStructure")
+    public byte[] getDbStructureImage(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId) {
+        return  answerService.getDbImage(personalExamId);
+    }
+
+    @Operation(description = "Method returns image of db data for task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/{personalExamId}/task/dbData")
+    public byte[] getDbDataImage(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId) {
+        return  answerService.getDataImage(personalExamId);
+    }
+
+
     @Operation(description = "Method that start exam for student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
