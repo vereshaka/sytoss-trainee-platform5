@@ -131,6 +131,13 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByStudentId(Long userId) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_Id(userId);
+        for (PersonalExam personalExam : personalExams) {
+            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.setMaxGrade(0);
+                personalExam.setSummaryGrade(0);
+            }
+        }
         return personalExamConnector.getAllByStudent_Id(userId);
     }
 
