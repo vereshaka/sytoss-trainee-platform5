@@ -1,9 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.connectors.ImageConnector;
@@ -56,20 +54,32 @@ public class PersonalExamServiceTest extends StpUnitTest {
             result.setId("1ada");
             return result;
         }).when(personalExamConnector).save(any());
-
-        ExamConfiguration examConfiguration = new ExamConfiguration();
-      /*  examConfiguration.setExamName("Exam First");
-        examConfiguration.setDisciplineId(1L);*/
         Discipline discipline = new Discipline();
         discipline.setId(1L);
         discipline.setName("SQL");
-        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
-        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
-        List<Long> topics = new ArrayList<>();
-        topics.add(1L);
-        topics.add(2L);
-       /* examConfiguration.setTasks(topics);
-        examConfiguration.setQuantityOfTask(2);*/
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+        examConfiguration.setExam(new Exam());
+        examConfiguration.getExam().setName("Exam First");
+        examConfiguration.getExam().setDiscipline(discipline);
+        List<Topic> topics = new ArrayList<>();
+        Topic topic = new Topic();
+        topic.setId(1L);
+        topics.add(topic);
+        topic = new Topic();
+        topic.setId(2L);
+        topics.add(topic);
+        examConfiguration.getExam().setTopics(topics);
+        List<Task> tasks = new ArrayList<>();
+        Task task = new Task();
+        task.setId(1L);
+        task.setQuestion("What is select");
+        tasks.add(task);
+        task = new Task();
+        task.setId(2L);
+        task.setQuestion("What is join");
+        tasks.add(task);
+        examConfiguration.getExam().setTasks(tasks);
+        examConfiguration.getExam().setNumberOfTasks(2);
         Student student = new Student();
         student.setUid("notLongId");
         examConfiguration.setStudent(student);
@@ -77,6 +87,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
         assertEquals("1ada", personalExam.getId());
+        System.out.println(personalExam.getAssignedDate());
     }
 
     @Test
