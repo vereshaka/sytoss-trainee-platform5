@@ -77,7 +77,7 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     public void testAnswer() throws JOSEException {
         String examId = "123";
         String taskAnswer = "taskAnswer";
-        Answer expectedAnswer = new Answer();
+        Question expectedAnswer = new Question();
 
         when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
 
@@ -86,8 +86,8 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, httpHeaders);
 
-        ResponseEntity<Answer> result = doPost("/api/personal-exam/12dsa/task/answer", requestEntity, Answer.class);
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        ResponseEntity<Question> result = doPost("/api/personal-exam/12dsa/task/answer", requestEntity, Question.class);
+        assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
     }
 
     @Test
