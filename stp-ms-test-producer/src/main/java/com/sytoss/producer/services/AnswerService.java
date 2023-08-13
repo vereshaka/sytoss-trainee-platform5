@@ -2,6 +2,7 @@ package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
@@ -10,7 +11,9 @@ import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AnswerService extends AbstractService {
 
     private final MetadataConnector metadataConnector;
@@ -103,9 +107,24 @@ public class AnswerService extends AbstractService {
         request.setRequest(taskAnswer);
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
-        String dataScript = answer.getTask().getTaskDomain().getDataScript();
-        request.setScript(databaseScript + "\n\n" + dataScript);
-        return checkTaskConnector.testAnswer(request);
+
+        String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
+                + answer.getTask().getTaskDomain().getDataScript();
+        script = pumlConvertor.formatPuml(script);
+        String liquibaseScript = pumlConvertor.convertToLiquibase(script);
+        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+        checkRequestParameters.setRequest(taskAnswer);
+        checkRequestParameters.setScript(liquibaseScript);
+
+        request.setScript(liquibaseScript);
+        try {
+            QueryResult queryResult = checkTaskConnector.testAnswer(request);
+            return queryResult;
+        } catch (Exception e) {
+            log.error("Error during check request", e);
+            if (e instanceof FeignException) {
+                throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
+            } else throw e;
+        }
     }
 }

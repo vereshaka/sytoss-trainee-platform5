@@ -72,15 +72,15 @@ public class PersonalExamController {
     @Operation(description = "Method for answering tasks")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/{personalExamId}/task/check")
     public QueryResult check(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody String taskAnswer) {
-        return answerService.check(personalExamId, taskAnswer);
+        return answerService.check(personalExamId, taskAnswer.replaceAll("\"", ""));
     }
-
 
     @Operation(description = "Method returns image of db structure for task")
     @ApiResponses(value = {
@@ -90,7 +90,7 @@ public class PersonalExamController {
     public byte[] getDbStructureImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
-        return  answerService.getDbImage(personalExamId);
+        return answerService.getDbImage(personalExamId);
     }
 
     @Operation(description = "Method returns image of db data for task")
@@ -101,7 +101,7 @@ public class PersonalExamController {
     public byte[] getDbDataImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
-        return  answerService.getDataImage(personalExamId);
+        return answerService.getDataImage(personalExamId);
     }
 
 

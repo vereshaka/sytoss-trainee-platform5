@@ -38,6 +38,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
         personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
+        personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
         for (Answer answer : answers) {
