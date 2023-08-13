@@ -41,10 +41,16 @@ public class AnswerService extends AbstractService {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         Answer answer = personalExam.getCurrentAnswer();
+        if (answer == null){
+            return null;
+        }
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
         personalExamConnector.save(personalExam);
+        if (answer == null){
+            return null;
+        }
 
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
