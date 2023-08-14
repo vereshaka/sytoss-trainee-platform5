@@ -92,6 +92,7 @@ public class PersonalExam {
                 return answer;
             }
         }
+        setStatus(PersonalExamStatus.FINISHED);
         return null;
     }
 
