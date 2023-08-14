@@ -60,6 +60,7 @@ public class AnswerService extends AbstractService {
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestion(answer.getTask().getQuestion());
+        taskModel.setQuestionImageId(answer.getTask().getImageId());
         taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(
                 personalExam.getAnswers().size()

@@ -12,4 +12,6 @@ public class TaskModel {
     private String schema;
 
     private Integer questionNumber;
+
+    private Long questionImageId;
 }

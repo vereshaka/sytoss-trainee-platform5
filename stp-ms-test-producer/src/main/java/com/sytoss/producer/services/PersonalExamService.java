@@ -119,6 +119,7 @@ public class PersonalExamService extends AbstractService {
         taskModel.setQuestion(answer.getTask().getQuestion());
         taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(1);
+        taskModel.setQuestionImageId(answer.getTask().getImageId());
         firstTask.setTask(taskModel);
         return firstTask;
     }
