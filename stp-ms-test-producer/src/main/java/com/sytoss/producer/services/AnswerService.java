@@ -61,11 +61,11 @@ public class AnswerService extends AbstractService {
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestion(answer.getTask().getQuestion());
         taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
-        taskModel.setQuestionNumber(
-                personalExam.getAnswers().size()
-                        - personalExam.getAnswers().stream()
-                        .filter(item -> item.getStatus().equals(AnswerStatus.NOT_STARTED))
-                        .collect(Collectors.toUnmodifiableList()).size() + 1);
+        Long processedQuestionsNum = personalExam.getAnswers().stream()
+                .filter(item -> item.getStatus().equals(AnswerStatus.ANSWERED)
+                        || item.getStatus().equals(AnswerStatus.GRADED))
+                .count();
+        taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
 
         firstTask.setTask(taskModel);
 
