@@ -3,7 +3,6 @@ package com.sytoss.producer.connectors;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ public interface PersonalExamConnector extends MongoRepository<PersonalExam, Str
 
     List<PersonalExam> getAllByExamId(Long examId);
 
-    List<PersonalExam> getAllByStudent_Id(Long studentId);
+    List<PersonalExam> getAllByStudent_IdOrderByAssignedDateDesc(Long studentId);
 
-    List<PersonalExam> getAllByTeacher_Id(Long teacherId);
+    List<PersonalExam> getAllByTeacher_IdOrderByAssignedDateDesc(Long teacherId);
 }
