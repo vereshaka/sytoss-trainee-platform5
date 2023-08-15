@@ -1,5 +1,6 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.exceptions.business.ConvertToImageException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
@@ -15,7 +16,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -131,18 +141,18 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByStudentId(Long userId) {
-        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_Id(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
         for (PersonalExam personalExam : personalExams) {
             if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
                 personalExam.setMaxGrade(0);
                 personalExam.setSummaryGrade(0);
             }
         }
-        return personalExamConnector.getAllByStudent_Id(userId);
+        return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
     }
 
     public List<PersonalExam> getByTeacherId(Long userId) {
-        return personalExamConnector.getAllByTeacher_Id(userId);
+        return personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
     }
 
     public PersonalExam review(PersonalExam personalExamToChange) {
@@ -162,4 +172,50 @@ public class PersonalExamService extends AbstractService {
         personalExam.setStatus(PersonalExamStatus.REVIEWED);
         return personalExamConnector.save(personalExam);
     }
+
+    public byte[] getQuestionImage(String personalExamId) {
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
+
+        if (ObjectUtils.isEmpty(personalExam)) {
+            log.warn("Personal exam with id: [{}] was not found", personalExamId);
+            throw new PersonalExamNotFoundException(personalExamId);
+        }
+
+        Answer answer = personalExam.getCurrentAnswer();
+        return convertToImage(answer.getTask().getQuestion());
+    }
+
+    private byte[] convertToImage(String question) {
+        BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics2D = tempImage.createGraphics();
+
+        Font font = new Font("Arial", Font.BOLD, 20);
+        graphics2D.setFont(font);
+        FontMetrics fontMetrics = graphics2D.getFontMetrics();
+
+        int width = fontMetrics.stringWidth(question) + 30;
+        int height = fontMetrics.getHeight();
+
+        graphics2D.dispose();
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics graphics = image.getGraphics();
+
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, width, height);
+        graphics.setColor(Color.BLACK);
+        graphics.setFont(font);
+        graphics.drawString(question, 10, fontMetrics.getAscent());
+        graphics.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(image, "png", baos);
+        } catch (IOException e) {
+            throw new ConvertToImageException("Error during image creating", e);
+        }
+
+        return baos.toByteArray();
+    }
+
 }

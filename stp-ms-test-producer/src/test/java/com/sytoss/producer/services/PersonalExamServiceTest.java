@@ -190,7 +190,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
         exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        when(personalExamConnector.getAllByStudent_Id(1L)).thenReturn(exams);
+        when(personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(1L)).thenReturn(exams);
 
         List<PersonalExam> result = personalExamService.getByStudentId(1L);
 
@@ -202,6 +202,22 @@ public class PersonalExamServiceTest extends StpUnitTest {
             assertEquals(exams.get(1).getAssignedDate(), result.get(1).getAssignedDate());
             assertEquals(exams.get(1).getStartedDate(), result.get(1).getStartedDate());
         }
+    }
+
+    @Test
+    public void shouldReturnQuestionImage() {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("123-abc-def");
+        Task task = createTask("question");
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        answer.setTask(task);
+        personalExam.setAnswers(List.of(answer));
+
+        when(personalExamConnector.getById("123-abc-def")).thenReturn(personalExam);
+
+        byte[] result = personalExamService.getQuestionImage("123-abc-def");
+
+        assertNotNull(result);
     }
 
     private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
