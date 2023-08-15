@@ -63,6 +63,17 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     }
 
     @Test
+    public void shouldReturnQuestionImage() {
+        when(personalExamService.getQuestionImage("123-abc-def")).thenReturn(new byte[]{});
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<byte[]> result = doGet("/api/personal-exam/123-abc-def/task/question", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
     public void shouldStartTest() throws JOSEException {
         when(personalExamService.start(anyString())).thenReturn(new Question());
         HttpHeaders httpHeaders = new HttpHeaders();
