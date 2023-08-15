@@ -22,7 +22,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -151,5 +154,31 @@ public class DisciplineService extends AbstractService {
         for (Long id : groupsIds) {
             assignGroupToDiscipline(disciplineId, id);
         }
+    }
+
+    public Discipline updateDiscipline(Discipline discipline) {
+        DisciplineDTO updatedDisciplineDTO = disciplineConnector.getReferenceById(discipline.getId());
+        if (updatedDisciplineDTO.equals(null)) {
+            throw new DisciplineNotFoundException(discipline.getId());
+        }
+        if (!Objects.equals(discipline.getName(), null)) {
+            updatedDisciplineDTO.setName(discipline.getName());
+        }
+        if (!Objects.equals(discipline.getShortDescription(), null)) {
+            updatedDisciplineDTO.setShortDescription(discipline.getShortDescription());
+        }
+        if (!Objects.equals(discipline.getFullDescription(), null)) {
+            updatedDisciplineDTO.setFullDescription(discipline.getFullDescription());
+        }
+        if (!Objects.equals(discipline.getDuration(), null)) {
+            updatedDisciplineDTO.setDuration(discipline.getDuration());
+        }
+        if (!Objects.equals(discipline.getIcon(), null)) {
+            updatedDisciplineDTO.setIcon(discipline.getIcon());
+        }
+        disciplineConnector.save(updatedDisciplineDTO);
+        Discipline updatedDiscipline = new Discipline();
+        disciplineConvertor.fromDTO(updatedDisciplineDTO, updatedDiscipline);
+        return updatedDiscipline;
     }
 }
