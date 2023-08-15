@@ -156,4 +156,13 @@ public class PersonalExamController {
     public PersonalExam review(@RequestBody PersonalExam personalExam) {
         return personalExamService.review(personalExam);
     }
+
+    @Operation(description = "Method that retriev question image")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/{personalExamId}/task/question")
+    public byte[] getQuestionImage(@PathVariable("personalExamId") String personalExamId) {
+        return personalExamService.getQuestionImage(personalExamId);
+    }
 }
