@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -182,17 +183,10 @@ public class PersonalExamService extends AbstractService {
         }
 
         Answer answer = personalExam.getCurrentAnswer();
-        File imageFile = convertToImage(answer.getTask().getQuestion());
-        byte[] imageBytes;
-        try {
-            imageBytes = Files.readAllBytes(Path.of(imageFile.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return imageBytes;
+        return convertToImage(answer.getTask().getQuestion());
     }
 
-    private File convertToImage(String question) {
+    private byte[] convertToImage(String question) {
         BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = tempImage.createGraphics();
 
@@ -215,14 +209,14 @@ public class PersonalExamService extends AbstractService {
         graphics.drawString(question, 10, fontMetrics.getAscent());
         graphics.dispose();
 
-        File imageFile;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            imageFile = File.createTempFile("img", ".png");
-            ImageIO.write(image, "png", imageFile);
-        } catch (Exception e) {
+            ImageIO.write(image, "png", baos);
+        } catch (IOException e) {
             throw new ConvertToImageException("Error during image creating", e);
         }
-        return imageFile;
+
+        return baos.toByteArray();
     }
 
 }
