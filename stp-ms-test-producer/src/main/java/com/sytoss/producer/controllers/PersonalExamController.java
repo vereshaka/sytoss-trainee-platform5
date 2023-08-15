@@ -52,6 +52,21 @@ public class PersonalExamController {
         return personalExamService.summary(examId);
     }
 
+    @Operation(description = "Method that start exam for student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "409", description = "Exam is already started!")
+    })
+    @GetMapping("/{personalExamId}/start")
+    public ResponseEntity<Question> start(
+            @PathVariable("personalExamId")
+            String personalExamId) {
+        Question question = personalExamService.start(personalExamId);
+        if (question != null) {
+            return ResponseEntity.ok(question);
+        }
+        return ResponseEntity.accepted().body(null);
+    }
 
     @Operation(description = "Method for answering tasks")
     @ApiResponses(value = {
@@ -62,9 +77,9 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody String taskAnswer) {
-        Question question = answerService.answer(personalExamId, taskAnswer);
-        if (question != null) {
-            return ResponseEntity.ok(question);
+        Question nextQuestion = answerService.answer(personalExamId, taskAnswer);
+        if (nextQuestion != null) {
+            return ResponseEntity.ok(nextQuestion);
         }
         return ResponseEntity.accepted().body(null);
     }
@@ -102,23 +117,6 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDataImage(personalExamId);
-    }
-
-
-    @Operation(description = "Method that start exam for student")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-            @ApiResponse(responseCode = "409", description = "Exam is already started!")
-    })
-    @GetMapping("/{personalExamId}/start")
-    public ResponseEntity<Question> start(
-            @PathVariable("personalExamId")
-            String personalExamId) {
-        Question answer = personalExamService.start(personalExamId);
-        if (answer != null) {
-            return ResponseEntity.ok(answer);
-        }
-        return ResponseEntity.accepted().body(null);
     }
 
     @Operation(description = "Method that return personal exam by task domain id")
