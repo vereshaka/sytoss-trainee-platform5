@@ -47,6 +47,7 @@ public class PersonalExam {
 
     private Integer amountOfTasks;
 
+    @JsonView(PersonalExam.Public.class)
     private PersonalExamStatus status;
 
     @JsonView(PersonalExam.Public.class)
