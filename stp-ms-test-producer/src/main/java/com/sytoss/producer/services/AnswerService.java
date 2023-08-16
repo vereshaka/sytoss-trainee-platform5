@@ -84,7 +84,8 @@ public class AnswerService extends AbstractService {
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        double gradeValue = score.getValue() * (answer.getTask().getCoef() * (3.0 / personalExam.getSumOfCoef()));
+        //TODO:BodenchukY Max grade is always 0, need to set it when create exam
+        double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();
         grade.setValue(gradeValue);
         grade.setComment(score.getComment());
