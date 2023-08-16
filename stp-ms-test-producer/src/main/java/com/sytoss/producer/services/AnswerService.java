@@ -59,7 +59,6 @@ public class AnswerService extends AbstractService {
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
-        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         Long processedQuestionsNum = personalExam.getAnswers().stream()
                 .filter(item -> item.getStatus().equals(AnswerStatus.ANSWERED)
                         || item.getStatus().equals(AnswerStatus.GRADED))
