@@ -1,5 +1,11 @@
 package com.sytoss.lessons.config;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.source.RemoteJWKSet;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.util.DefaultResourceRetriever;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
@@ -15,6 +21,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,9 +38,12 @@ public class AppConfig {
     private UserConvertor userConvertor;
 
     @Bean
-    public JwtDecoder jwtDecoder(final OAuth2ResourceServerProperties properties) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(
-                properties.getJwt().getJwkSetUri()).build();
+    public JwtDecoder jwtDecoder(final OAuth2ResourceServerProperties properties) throws MalformedURLException {
+        DefaultJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
+        RemoteJWKSet<SecurityContext> securityContextRemoteJWKSet = new RemoteJWKSet<>(new URL(properties.getJwt().getJwkSetUri()), new DefaultResourceRetriever());
+        JWSVerificationKeySelector rs256 = new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, securityContextRemoteJWKSet);
+        jwtProcessor.setJWSKeySelector(rs256);
+        NimbusJwtDecoder jwtDecoder = new NimbusJwtDecoder(jwtProcessor);
 
         jwtDecoder.setClaimSetConverter(new Converter<>() {
 
