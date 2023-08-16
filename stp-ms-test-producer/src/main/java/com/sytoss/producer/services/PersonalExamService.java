@@ -51,10 +51,13 @@ public class PersonalExamService extends AbstractService {
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
+        double sumOfCoef = 0;
         for (Answer answer : answers) {
             answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+            sumOfCoef += answer.getTask().getCoef();
         }
         personalExam.setStudent(examConfiguration.getStudent());
+        personalExam.setSumOfCoef(sumOfCoef);
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
@@ -67,6 +70,7 @@ public class PersonalExamService extends AbstractService {
             int numTask = random.nextInt(tasks.size());
             Task task = tasks.get(numTask);
             Answer answer = new Answer();
+            answer.setId((long) (i + 1));
             answer.setStatus(AnswerStatus.NOT_STARTED);
             answer.setTask(task);
             answers.add(answer);
@@ -143,12 +147,12 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getByStudentId(Long userId) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
-        for (PersonalExam personalExam : personalExams) {
-            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
-                personalExam.setMaxGrade(0);
-                personalExam.setSummaryGrade(0);
-            }
-        }
+//        for (PersonalExam personalExam : personalExams) {
+//            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+//                personalExam.setMaxGrade(0);
+//                personalExam.setSummaryGrade(0);
+//            }
+//        }
         return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
     }
 
