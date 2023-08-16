@@ -27,9 +27,15 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.sytoss.common.SSLUtil.disableSSL;
+
 @Configuration
 @Slf4j
 public class AppConfig {
+
+    static {
+        disableSSL();
+    }
 
     @Autowired
     private UserConnector userConnector;
