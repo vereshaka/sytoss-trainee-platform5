@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import com.sytoss.stp.test.StpApplicationTest;
+import io.cucumber.java.bs.A;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -88,14 +89,20 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     public void testAnswer() throws JOSEException {
         String examId = "123";
         String taskAnswer = "taskAnswer";
+        Date startDate = new Date();
+        Date endDate = new Date();
         Question expectedAnswer = new Question();
+        AnswerModule answerModule = new AnswerModule();
+        answerModule.setAnswer(taskAnswer);
+        answerModule.setStartAnswerDate(startDate);
+        answerModule.setEndAnswerDate(endDate);
 
-        when(answerService.answer(examId, taskAnswer)).thenReturn(expectedAnswer);
+        when(answerService.answer(examId, taskAnswer, startDate, endDate)).thenReturn(expectedAnswer);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(taskAnswer, httpHeaders);
+        HttpEntity<AnswerModule> requestEntity = new HttpEntity<>(answerModule, httpHeaders);
 
         ResponseEntity<Question> result = doPost("/api/personal-exam/12dsa/task/answer", requestEntity, Question.class);
         assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
