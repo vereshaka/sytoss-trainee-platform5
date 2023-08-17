@@ -26,6 +26,8 @@ public class Exam {
 
     private Integer numberOfTasks;
 
+    private Integer maxGrade;
+
     private List<Topic> topics;
 
     private Teacher teacher;

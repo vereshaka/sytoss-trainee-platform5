@@ -39,10 +39,11 @@ public class PersonalExamService extends AbstractService {
         personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
+        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
         for (Answer answer : answers) {
-            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+         //   answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
         }
         personalExam.setStudent(examConfiguration.getStudent());
         personalExam = personalExamConnector.save(personalExam);
@@ -133,12 +134,12 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getByStudentId(Long userId) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
-        for (PersonalExam personalExam : personalExams) {
+        /*for (PersonalExam personalExam : personalExams) {
             if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
                 personalExam.setMaxGrade(0);
                 personalExam.setSummaryGrade(0);
             }
-        }
+        }*/
         return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
     }
 

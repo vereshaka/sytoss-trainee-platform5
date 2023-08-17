@@ -54,4 +54,7 @@ public class ExamDTO {
             joinColumns = @JoinColumn(name = "EXAM_ID"),
             inverseJoinColumns = @JoinColumn(name = "TASK_ID"))
     private Collection<TaskDTO> tasks;
+
+    @Column(name = "MAX_GRADE")
+    private Integer maxGrade;
 }

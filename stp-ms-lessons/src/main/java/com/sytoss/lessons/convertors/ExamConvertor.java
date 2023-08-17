@@ -55,6 +55,7 @@ public class ExamConvertor {
         destination.setTasks(taskDTOList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
         destination.setTeacherId(source.getTeacher().getId());
+        destination.setMaxGrade(source.getMaxGrade());
     }
 
     public void fromDTO(ExamDTO source, Exam destination) {
@@ -93,5 +94,6 @@ public class ExamConvertor {
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);
+        destination.setMaxGrade(source.getMaxGrade());
     }
 }
