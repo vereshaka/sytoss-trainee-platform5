@@ -80,7 +80,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswerModule answerModule
             ) {
-        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getStartAnswerDate(), answerModule.getEndAnswerDate());
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }

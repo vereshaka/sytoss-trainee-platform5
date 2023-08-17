@@ -89,15 +89,15 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     public void testAnswer() throws JOSEException {
         String examId = "123";
         String taskAnswer = "taskAnswer";
-        Date startDate = new Date();
-        Date endDate = new Date();
+        Date uiDate = new Date();
+        Long timeSpent = 10L;
         Question expectedAnswer = new Question();
         AnswerModule answerModule = new AnswerModule();
         answerModule.setAnswer(taskAnswer);
-        answerModule.setStartAnswerDate(startDate);
-        answerModule.setEndAnswerDate(endDate);
+        answerModule.setAnswerUIDate(uiDate);
+        answerModule.setTimeSpent(timeSpent);
 
-        when(answerService.answer(examId, taskAnswer, startDate, endDate)).thenReturn(expectedAnswer);
+        when(answerService.answer(examId, taskAnswer, uiDate, timeSpent)).thenReturn(expectedAnswer);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));

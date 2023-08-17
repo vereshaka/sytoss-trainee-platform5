@@ -11,7 +11,7 @@ public class AnswerModule {
 
     private String answer;
 
-    private Date startAnswerDate;
+    private Date answerUIDate;
 
-    private Date endAnswerDate;
+    private Long timeSpent;
 }

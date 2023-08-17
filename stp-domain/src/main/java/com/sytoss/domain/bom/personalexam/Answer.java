@@ -31,7 +31,9 @@ public class Answer {
     @JsonView(PersonalExam.Public.class)
     private Grade teacherGrade;
 
-    private Date realDateAnswer;
+    private Date answerDate;
+
+    private Date answerUIDate;
 
     private Long timeSpent;
 
