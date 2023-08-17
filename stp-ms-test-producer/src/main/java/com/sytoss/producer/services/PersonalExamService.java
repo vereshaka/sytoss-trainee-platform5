@@ -130,8 +130,6 @@ public class PersonalExamService extends AbstractService {
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
-        taskModel.setQuestion(answer.getTask().getQuestion());
-        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(1);
         firstTask.setTask(taskModel);
         return firstTask;

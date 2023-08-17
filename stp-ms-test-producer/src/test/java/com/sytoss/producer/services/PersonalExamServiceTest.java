@@ -152,7 +152,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Question result = personalExamService.start("5");
-        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
     @Test
