@@ -58,6 +58,7 @@ public class PersonalExam {
     @JsonView(PersonalExam.Public.class)
     private float summaryGrade;
 
+    @JsonView(PersonalExam.Public.class)
     private double maxGrade;
 
     private double sumOfCoef;
