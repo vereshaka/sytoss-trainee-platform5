@@ -72,9 +72,6 @@ databaseChangeLog:
                   type: long
                   constraints:
                     primaryKey: true
-              - column:
-                  name: Data
-                  type: Discipline
   - changeSet:
       id: init-tables
       author: compiled
