@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -76,8 +78,9 @@ public class PersonalExamController {
     public ResponseEntity<Question> answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
-        Question nextQuestion = answerService.answer(personalExamId, taskAnswer);
+            @RequestBody AnswerModule answerModule
+            ) {
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getStartAnswerDate(), answerModule.getEndAnswerDate());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }

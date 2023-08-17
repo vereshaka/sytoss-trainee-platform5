@@ -7,6 +7,8 @@ import com.sytoss.domain.bom.lessons.Task;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Setter
 @Getter
 public class Answer {
@@ -28,6 +30,10 @@ public class Answer {
 
     @JsonView(PersonalExam.Public.class)
     private Grade teacherGrade;
+
+    private Date realDateAnswer;
+
+    private Long timeSpent;
 
     public void inProgress() {
         if (this.status.equals(AnswerStatus.NOT_STARTED)) {

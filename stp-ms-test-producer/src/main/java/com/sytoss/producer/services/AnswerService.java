@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class AnswerService extends AbstractService {
 
     private final PumlConvertor pumlConvertor;
 
-    public Question answer(String personalExamId, String taskAnswer) {
+    public Question answer(String personalExamId, String taskAnswer, Date startAnswerDate, Date endAnswerDate) {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
@@ -44,6 +45,8 @@ public class AnswerService extends AbstractService {
         if (answer == null){
             return null;
         }
+        answer.setRealDateAnswer(new Date());
+        answer.setTimeSpent((endAnswerDate.getTime() - startAnswerDate.getTime()) / 1000);
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
