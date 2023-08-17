@@ -20,12 +20,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -49,11 +46,11 @@ public class PersonalExamService extends AbstractService {
         personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
+        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
         double sumOfCoef = 0;
         for (Answer answer : answers) {
-            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
             sumOfCoef += answer.getTask().getCoef();
         }
         personalExam.setStudent(examConfiguration.getStudent());

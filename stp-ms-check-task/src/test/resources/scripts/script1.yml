@@ -1,56 +1,83 @@
 databaseChangeLog:
   - changeSet:
       id: create-tables
-      author: ivan-larin
+      author: compiled
       changes:
         - createTable:
-            tableName: Authors
+            tableName: Discipline
             columns:
               - column:
                   name: id
-                  type: int
+                  type: long
                   constraints:
                     primaryKey: true
-                    nullable: false
-              -  column:
-                   name: Name
-                   type: varchar
-                   constraints:
-                     nullable: false
-        - createTable:
-            tableName: Books
-            columns:
               - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: Book_name
+                  name: name
                   type: varchar
-                  constraints:
-                    nullable: false
+        - createTable:
+            tableName: Topic
+            columns:
               - column:
-                  name: Author_id
-                  type: int
+                  name: id
+                  type: long
                   constraints:
-                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar
+              - column:
+                  name: discipline_id
+                  type: long
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: Topic
+                  baseColumnNames: discipline_id
+                  constraintName: fk_topic_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
+        - createTable:
+            tableName: Task
+            columns:
+              - column:
+                  name: id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: question
+                  type: varchar
+              - column:
+                  name: answer
+                  type: varchar
+              - column:
+                  name: discipline_id
+                  type: long
+            foreignKeyConstraints:
+              - foreignKeyConstraint:
+                  baseTableName: Task
+                  baseColumnNames: discipline_id
+                  constraintName: fk_task_2_discipline
+                  referencedTableName: Discipline
+                  referencedColumnNames: id
+        - createTable:
+            tableName: TopicToTask
+            columns:
+              - column:
+                  name: task_id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: topic_id
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: Data
+                  type: Discipline
   - changeSet:
-      id: init-foreign-keys
-      author: ivan-larin
-      changes:
-        - addForeignKeyConstraint:
-            baseTableName: Books
-            baseColumnNames: Author_id
-            referencedTableName: Authors
-            referencedColumnNames: id
-            constraintName: FK_book_author
-            onDelete: CASCADE
-  - changeSet:
-      id: insert-answer
-      author: ivan-larin
+      id: init-tables
+      author: compiled
       changes:
         - insert:
             columns:
@@ -58,62 +85,135 @@ databaseChangeLog:
                   name: id
                   value: 1
               - column:
-                  name: Name
-                  value: Ivan Ivanov
-            tableName: Authors
+                  name: name
+                  value: SQL
+            tableName: Discipline
         - insert:
             columns:
               - column:
                   name: id
                   value: 2
               - column:
-                  name: Name
-                  value: Ivan Petrov
-            tableName: Authors
+                  name: name
+                  value: Mongo
+            tableName: Discipline
         - insert:
             columns:
               - column:
-                  name: Book_name
-                  value: Book1
-              - column:
-                  name: Author_id
+                  name: id
                   value: 1
-            tableName: Books
-        - insert:
-            columns:
               - column:
-                  name: Book_name
-                  value: Book2
+                  name: name
+                  value: Insert
               - column:
-                  name: Author_id
+                  name: discipline_id
                   value: 1
-            tableName: Books
+            tableName: Topic
         - insert:
             columns:
               - column:
-                  name: Book_name
-                  value: Book3
-              - column:
-                  name: Author_id
-                  value: 1
-            tableName: Books
-        - insert:
-            columns:
-              - column:
-                  name: Book_name
-                  value: Book4
-              - column:
-                  name: Author_id
+                  name: id
                   value: 2
-            tableName: Books
+              - column:
+                  name: name
+                  value: Select
+              - column:
+                  name: discipline_id
+                  value: 2
+            tableName: Topic
         - insert:
             columns:
               - column:
-                  name: Book_name
-                  value: Book5
+                  name: id
+                  value: 3
               - column:
-                  name: Author_id
+                  name: name
+                  value: Join
+              - column:
+                  name: discipline_id
+                  value: 1
+            tableName: Topic
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: question
+                  value: What is Join?
+              - column:
+                  name: discipline_id
+                  value: 1
+            tableName: Task
+        - insert:
+            columns:
+              - column:
+                  name: id
                   value: 2
-            tableName: Books
-
-
+              - column:
+                  name: question
+                  value: What is Inner Join?
+              - column:
+                  name: discipline_id
+                  value: 1
+            tableName: Task
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: question
+                  value: What is Join?
+              - column:
+                  name: discipline_id
+                  value: 1
+            tableName: Task
+        - insert:
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: question
+                  value: What is Select?
+              - column:
+                  name: discipline_id
+                  value: 2
+            tableName: Task
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  value: 1
+              - column:
+                  name: topic_id
+                  value: 1
+            tableName: TopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  value: 2
+              - column:
+                  name: topic_id
+                  value: 3
+            tableName: TopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  value: 3
+              - column:
+                  name: topic_id
+                  value: 2
+            tableName: TopicToTask
+        - insert:
+            columns:
+              - column:
+                  name: task_id
+                  value: 4
+              - column:
+                  name: topic_id
+                  value: 1
+            tableName: TopicToTask

@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,8 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void generateDatabase() {
-        databaseHelperService.generateDatabase(script);
-        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from answer"));
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
+        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
     }
 
     @Test
