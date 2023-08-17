@@ -59,8 +59,6 @@ public class AnswerService extends AbstractService {
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
-        taskModel.setQuestion(answer.getTask().getQuestion());
-        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         Long processedQuestionsNum = personalExam.getAnswers().stream()
                 .filter(item -> item.getStatus().equals(AnswerStatus.ANSWERED)
                         || item.getStatus().equals(AnswerStatus.GRADED))
@@ -79,10 +77,12 @@ public class AnswerService extends AbstractService {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
-        String script = taskDomain.getDatabaseScript() + StringUtils.LF + taskDomain.getDataScript();
+        String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
+        script = pumlConvertor.formatPuml(script);
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
+        //TODO:BodenchukY Max grade is always 0, need to set it when create exam
         double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();
         grade.setValue(gradeValue);

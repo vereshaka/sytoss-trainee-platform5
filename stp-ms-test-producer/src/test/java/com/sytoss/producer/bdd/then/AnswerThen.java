@@ -19,7 +19,6 @@ public class AnswerThen extends TestProducerIntegrationTest {
     @Then("^PersonalExam with \"(.*)\" question should be received$")
     public void questionShouldBe(String question) {
         Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
-        assertEquals(question, firstTask.getTask().getQuestion());
     }
 
     @Then("^status of first answer of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")

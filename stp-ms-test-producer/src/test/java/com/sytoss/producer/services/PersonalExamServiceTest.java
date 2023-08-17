@@ -152,7 +152,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Question result = personalExamService.start("5");
-        assertEquals(input.getAnswers().get(0).getTask().getQuestion(), result.getTask().getQuestion());
     }
 
     @Test
@@ -202,6 +201,22 @@ public class PersonalExamServiceTest extends StpUnitTest {
             assertEquals(exams.get(1).getAssignedDate(), result.get(1).getAssignedDate());
             assertEquals(exams.get(1).getStartedDate(), result.get(1).getStartedDate());
         }
+    }
+
+    @Test
+    public void shouldReturnQuestionImage() {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("123-abc-def");
+        Task task = createTask("question");
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        answer.setTask(task);
+        personalExam.setAnswers(List.of(answer));
+
+        when(personalExamConnector.getById("123-abc-def")).thenReturn(personalExam);
+
+        byte[] result = personalExamService.getQuestionImage("123-abc-def");
+
+        assertNotNull(result);
     }
 
     private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {

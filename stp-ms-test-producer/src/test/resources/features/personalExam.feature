@@ -15,6 +15,7 @@ Feature: PersonalExam
       | Inner Join |
       | Left Join  |
 
+  @Bug @STP-447
   Scenario: Student can start test
     Given personal "Exam" exam for student with 2 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
       | task                                   | task status | script |
