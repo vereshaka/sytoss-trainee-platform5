@@ -260,8 +260,8 @@ public class TaskDomainServiceTest extends StpUnitTest {
     void generatePngFromPuml() {
         String pumlScript = FileUtils.readFromFile("puml/script2.puml");
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
-       /* assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
-        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));*/
+        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
+        assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
     }
 
     @Test
