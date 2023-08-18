@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
-    private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)(\\([A-z]+\\))))>>");
+    private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)\\s?(\\([A-z]+\\))))>>");
     private String indent;
 
     public String convertToLiquibase(String script) {
@@ -318,7 +318,7 @@ public class PumlConvertor {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
 
-            File imageFile = File.createTempFile("img", ".png");
+            File imageFile = File.createTempFile("img", ".png",new File("D:\\sytoss-trainee-platform7\\stp-ms-lessons\\src\\test\\resources\\scripts"));
             ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
             BufferedImage bufferedImage = ImageIO.read(bis);
             ImageIO.write(bufferedImage, "png", imageFile);

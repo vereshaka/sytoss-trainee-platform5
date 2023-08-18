@@ -1,0 +1,19 @@
+table Regions {
+  region_id: long <<PK>>
+  region_name: string
+}
+
+table Countries {
+  country_id: CHAR(2) <<PK>>
+  country_name: string
+  region_id: long <<FK Regions(region_id)>>
+}
+
+table Locations {
+  location_id   NUMBER(4) <<PK>>
+  street_address VARCHAR2(40)
+  postal_code    VARCHAR2(12)
+  city       VARCHAR2(30)
+  state_province VARCHAR2(25)
+  country_id  CHAR(2) <<FK Countries (country_id)>>
+}
