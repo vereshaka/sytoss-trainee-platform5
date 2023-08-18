@@ -1,6 +1,8 @@
 package com.sytoss.users.services;
 
 import com.sytoss.common.AbstractStpService;
+import com.sytoss.domain.bom.exceptions.business.LoadImageException;
+import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -12,13 +14,13 @@ import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
 import com.sytoss.users.dto.*;
 import com.sytoss.users.model.ProfileModel;
-import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
 import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +42,9 @@ public class UserService extends AbstractStpService {
     private final GroupReferenceConnector groupReferenceConnector;
 
     private final GroupConnector groupConnector;
+
+    @Value("${registration.allow-registration}")
+    private String isAllowed;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -93,6 +98,9 @@ public class UserService extends AbstractStpService {
         String userType = getJwt().getClaim("userType") != null ? getJwt().getClaim("userType").toString().toLowerCase() : "unknown";
         log.info("No user found for " + email + ". Start creation " + userType + " based on token info...");
         if (userType.equalsIgnoreCase("teacher")) {
+            if (isAllowed.equals("false")) {
+                throw new NotAllowedTeacherRegistrationException("Registration teacher isn't allowed");
+            }
             Teacher newUser = new Teacher();
             userConverter.fromDTO(getJwt(), newUser);
             TeacherDTO userDto = new TeacherDTO();
@@ -125,21 +133,21 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
-        if(profileModel.getFirstName() != null){
+        if (profileModel.getFirstName() != null) {
             dto.setFirstName(profileModel.getFirstName());
         }
-        if(profileModel.getMiddleName() != null){
+        if (profileModel.getMiddleName() != null) {
             dto.setMiddleName(profileModel.getMiddleName());
         }
-        if(profileModel.getLastName() != null){
+        if (profileModel.getLastName() != null) {
             dto.setLastName(profileModel.getLastName());
         }
-        if(profileModel.getPhoto() != null){
-          updatePhoto(profileModel.getPhoto());
+        if (profileModel.getPhoto() != null) {
+            updatePhoto(profileModel.getPhoto());
         }
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
             GroupDTO groupDTO = groupConnector.getByName(profileModel.getPrimaryGroup().getName());
-            if(groupDTO==null){
+            if (groupDTO == null) {
                 groupDTO = new GroupDTO();
                 groupConvertor.toDTO(profileModel.getPrimaryGroup(), groupDTO);
                 groupDTO = groupConnector.save(groupDTO);
