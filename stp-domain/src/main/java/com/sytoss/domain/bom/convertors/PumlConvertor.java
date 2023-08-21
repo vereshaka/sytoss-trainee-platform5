@@ -212,7 +212,7 @@ public class PumlConvertor {
         List<String> allMatches = new ArrayList<>();
         while (matcher.find()) {
             String match = matcher.group();
-            if(match.matches("\\|\s+") || match.contains("<null>")){
+            if(match.matches("\\| +") || match.contains("<null>")){
                 match="null";
             }
             else{
