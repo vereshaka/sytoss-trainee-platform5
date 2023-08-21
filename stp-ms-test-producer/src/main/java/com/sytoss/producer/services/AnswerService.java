@@ -18,7 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -42,7 +44,7 @@ public class AnswerService extends AbstractService {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         Answer answer = personalExam.getCurrentAnswer();
-        if (answer == null){
+        if (answer == null) {
             return null;
         }
         answer.setAnswerDate(new Date());
@@ -51,8 +53,14 @@ public class AnswerService extends AbstractService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(personalExam.getStartedDate());
+        calendar.add(Calendar.SECOND, personalExam.getTime());
+        if (answerUIDate.after(calendar.getTime())) {
+            personalExam.setStatus(PersonalExamStatus.FINISHED);
+        }
         personalExamConnector.save(personalExam);
-        if (answer == null){
+        if (answer == null) {
             return null;
         }
 
