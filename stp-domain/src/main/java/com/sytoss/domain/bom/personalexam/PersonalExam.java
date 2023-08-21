@@ -109,6 +109,5 @@ public class PersonalExam {
     }
 
     public static class Public {
-
     }
 }

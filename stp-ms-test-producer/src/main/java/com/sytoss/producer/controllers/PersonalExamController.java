@@ -136,6 +136,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/student/{userId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByStudentId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByStudentId(userId);
     }
