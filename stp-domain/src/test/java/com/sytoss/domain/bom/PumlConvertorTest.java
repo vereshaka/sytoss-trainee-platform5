@@ -24,6 +24,7 @@ class PumlConvertorTest {
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script.yml");
 
+        System.out.println(pumlConvertedScript);
         List<String> pumlScriptStrings = Arrays.stream(pumlConvertedScript.split("\n")).toList();
         List<String> liquibaseScriptStrings = Arrays.stream(liquibaseScript.split("\n")).toList();
         int quantityOfStrings = 0;

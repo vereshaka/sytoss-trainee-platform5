@@ -207,12 +207,17 @@ public class PumlConvertor {
 
     private List<String> getRowValues(String row) {
         row = row.trim();
-        Pattern pattern = Pattern.compile("\\|=?\\s[A-z0-9?\\s]+");
+        Pattern pattern = Pattern.compile("\\|=?\\s<?[A-z0-9?\\s]+>?\\s+");
         Matcher matcher = pattern.matcher(row);
         List<String> allMatches = new ArrayList<>();
         while (matcher.find()) {
             String match = matcher.group();
-            match = match.replaceAll("[|=]", "").trim();
+            if(match.matches("\\|\s+") || match.contains("<null>")){
+                match="null";
+            }
+            else{
+                match = match.replaceAll("[|=]", "").trim();
+            }
             allMatches.add(match);
         }
         return allMatches;
