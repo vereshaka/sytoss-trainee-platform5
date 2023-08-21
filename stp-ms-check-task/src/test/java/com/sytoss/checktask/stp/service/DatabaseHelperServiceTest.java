@@ -7,12 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 class DatabaseHelperServiceTest extends StpUnitTest {
-
-    private static final String script = "{databaseChangeLog: [{changeSet: {author: ivan-larin, changes: [{createTable: {columns: [{column: {name: Answer, type: varchar}}], tableName: Answer}}, {createTable: {columns: [{column: {name: Etalon, type: varchar}}], tableName: Etalon}}], id: create_answer}}, {changeSet: {author: ivan-larin, changes: [{insert: {columns: [{column: {name: Answer, value: it_is_answer}}], tableName: Answer}}, {insert: {columns: [{column: {name: Etalon, value: it_is_etalon}}], tableName: Etalon}}], id: insert-answer}}]}";
 
     private final DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor());
 
@@ -24,16 +21,32 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void getExecuteQueryResult() throws SQLException {
-        databaseHelperService.generateDatabase(script);
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
         HashMap<String, Object> map = new HashMap<>();
-        map.put("ANSWER", "it_is_answer");
-        QueryResult queryResult = new QueryResult(List.of(map));
-        Assertions.assertEquals(queryResult.getRow(0), databaseHelperService.getExecuteQueryResult("select * from answer").getRow(0));
+        map.put("ID", 1L);
+        map.put("NAME", "SQL");
+        HashMap<String, Object> map2 = new HashMap<>();
+        map2.put("ID", 2L);
+        map2.put("NAME", "Mongo");
+        QueryResult queryResult = new QueryResult(List.of(map,map2));
+        int quantityOfInitiatedElements = map.size() + map2.size();
+
+        QueryResult queryResultFromDatabase = databaseHelperService.getExecuteQueryResult("select * from discipline");
+        int quantityOfElements = 0;
+        for (int i = 0; i < queryResultFromDatabase.getResultMapList().size(); i++) {
+            List<String> keys = queryResultFromDatabase.getRow(i).keySet().stream().toList();
+            for (String key : keys) {
+                if (Objects.equals(queryResultFromDatabase.getRow(i).get(key), queryResult.getRow(i).get(key))) {
+                    quantityOfElements++;
+                }
+            }
+        }
+        Assertions.assertEquals(quantityOfInitiatedElements,quantityOfElements);
     }
 
     @Test
     void dropDatabase() {
-        databaseHelperService.generateDatabase(script);
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
         databaseHelperService.dropDatabase();
         Assertions.assertThrows(CreateDbConnectionException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
     }
