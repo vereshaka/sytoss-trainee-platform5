@@ -27,9 +27,6 @@ public class TaskDTO {
     @Column(name = "COEFFICIENT")
     private Double coef;
 
-    @Column(name = "REQ_COMMAND")
-    private String requiredCommand;
-
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;
@@ -41,7 +38,7 @@ public class TaskDTO {
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private List<TopicDTO> topics;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
     private List<TaskConditionDTO> conditions = new ArrayList<>();
 }

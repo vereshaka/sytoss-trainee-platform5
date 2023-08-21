@@ -29,6 +29,4 @@ public class Task {
     private Long imageId;
 
     private Double coef;
-
-    private String requiredCommand;
 }
