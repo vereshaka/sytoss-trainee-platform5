@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -84,9 +85,7 @@ public class ScoreService {
             for (String columnName : keyListEtalon) {
                 Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
                 Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
-                etalonFieldValue = etalonFieldValue!=null ? etalonFieldValue : "null";
-                answerFieldValue = answerFieldValue!=null ? answerFieldValue : "null";
-                if (!etalonFieldValue.equals(answerFieldValue)) {
+                if (!Objects.equals(etalonFieldValue,answerFieldValue)) {
                     return false;
                 }
             }
