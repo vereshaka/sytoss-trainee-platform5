@@ -43,8 +43,8 @@ public class UserService extends AbstractStpService {
 
     private final GroupConnector groupConnector;
 
-    @Value("${registration.allow-registration}")
-    private String isAllowed;
+    @Value("#{new Boolean('${registration.allow-registration}')}")
+    private boolean isAllowed;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
@@ -98,7 +98,7 @@ public class UserService extends AbstractStpService {
         String userType = getJwt().getClaim("userType") != null ? getJwt().getClaim("userType").toString().toLowerCase() : "unknown";
         log.info("No user found for " + email + ". Start creation " + userType + " based on token info...");
         if (userType.equalsIgnoreCase("teacher")) {
-            if (isAllowed.equals("false")) {
+            if (!isAllowed) {
                 throw new NotAllowedTeacherRegistrationException("Registration teacher isn't allowed");
             }
             Teacher newUser = new Teacher();
