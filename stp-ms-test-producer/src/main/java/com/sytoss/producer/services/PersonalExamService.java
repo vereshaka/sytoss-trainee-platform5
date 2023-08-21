@@ -142,17 +142,24 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getByStudentId(Long userId) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
-//        for (PersonalExam personalExam : personalExams) {
-//            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
-//                personalExam.setMaxGrade(0);
-//                personalExam.setSummaryGrade(0);
-//            }
-//        }
-        return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
+
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
+            }
+        });
+
+        return personalExams;
     }
 
     public List<PersonalExam> getByTeacherId(Long userId) {
-        return personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
+            }
+        });
+        return personalExams;
     }
 
     public PersonalExam review(PersonalExam personalExamToChange) {
