@@ -35,7 +35,7 @@ public class AnswerService extends AbstractService {
 
     private final PumlConvertor pumlConvertor;
 
-    public Question answer(String personalExamId, String taskAnswer, Date answerUIDate, Long timeSpent) {
+    public Question answer(String personalExamId, String taskAnswer, Date answerUIDate, Long timeSpent, Long taskId) {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
