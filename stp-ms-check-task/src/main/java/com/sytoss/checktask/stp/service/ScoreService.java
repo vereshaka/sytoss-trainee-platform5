@@ -85,7 +85,7 @@ public class ScoreService {
             for (String columnName : keyListEtalon) {
                 Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
                 Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
-                if (!Objects.equals(etalonFieldValue,answerFieldValue)) {
+                if (!Objects.equals(etalonFieldValue, answerFieldValue)) {
                     return false;
                 }
             }
