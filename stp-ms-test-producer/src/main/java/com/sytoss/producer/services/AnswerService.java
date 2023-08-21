@@ -81,6 +81,7 @@ public class AnswerService extends AbstractService {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
+        checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
         script = pumlConvertor.formatPuml(script);
         String liquibase = pumlConvertor.convertToLiquibase(script);
