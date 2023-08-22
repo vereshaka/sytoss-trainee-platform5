@@ -89,8 +89,10 @@ pipelines:
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
-            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+#            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
+            - export VERSION="0.2.0"
+#            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - export NEWVERS="0.2.1"
             - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
             - mvn release:perform -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
@@ -117,7 +119,7 @@ pipelines:
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - export VERSION=$(./version.sh -m ${OLDVERSION} | tr -d '\r\n')
+            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
             - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
             - mvn release:perform -DskipTests -Darguments=-DskipTests
