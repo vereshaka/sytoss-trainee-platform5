@@ -31,7 +31,7 @@ pipelines:
           name: Build and push
           script:
             - git config --global user.email $EMAIL
-            - mvn clean install
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
@@ -58,7 +58,7 @@ pipelines:
           name: Build and push
           script:
             - git config --global user.email $EMAIL
-            - mvn clean install
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
             - export VERSION=$(./version.sh -p ${OLDVERSION} | tr -d '\r\n')
@@ -114,7 +114,7 @@ pipelines:
           name: Build and push
           script:
             - git config --global user.email $EMAIL
-            - mvn clean install
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
             - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
