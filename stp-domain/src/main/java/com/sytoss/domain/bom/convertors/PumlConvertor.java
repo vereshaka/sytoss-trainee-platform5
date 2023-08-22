@@ -291,7 +291,7 @@ public class PumlConvertor {
             String newDataName = "object \"Data:"+match+"\" as d"+match;
             puml = puml.replaceAll(matcher.group(0),newDataName);
         }
-        puml = puml.replaceAll("table", "entity");
+        puml = puml.replaceAll("table", "entity").replaceAll("\\|(?>\\s?)+=","|=");
         return puml;
     }
 
