@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
+
+    private static final String NULL_VALUE_DISPLAY = "";
     private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)\\s?(\\([A-z]+\\))))>>");
     private String indent;
 
@@ -188,7 +190,8 @@ public class PumlConvertor {
             values = values.stream().map(String::trim).toList();
             HashMap<String, String> valuesInRow = new LinkedHashMap<>();
             for (int j = 0; j < header.size(); j++) {
-                valuesInRow.put(header.get(j), values.get(j));
+                String value = values.size() > j ? values.get(j) :  NULL_VALUE_DISPLAY;
+                valuesInRow.put(header.get(j), value);
             }
             valuesInTable.add(valuesInRow);
         }
