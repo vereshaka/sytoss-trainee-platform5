@@ -14,6 +14,4 @@ public class AnswerModule {
     private Date answerUIDate;
 
     private Long timeSpent;
-
-    private Long taskId;
 }

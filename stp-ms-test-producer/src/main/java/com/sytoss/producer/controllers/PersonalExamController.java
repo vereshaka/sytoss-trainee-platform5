@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -79,8 +78,8 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswerModule answerModule
-            ) {
-        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent(), answerModule.getTaskId());
+    ) {
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }
