@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sytoss.stp</groupId>
     <artifactId>sytosstraineeplatform</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <packaging>pom</packaging>
 
@@ -35,9 +34,9 @@
     </parent>
 
     <scm>
-        <connection>scm:git:https://x-token-auth:${REPOSITORY_OAUTH_ACCESS_TOKEN}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
-        <url>https://bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://${USERNAME}:${PASSWORD}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
+        <url>https://${USERNAME}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
+        <tag></tag>
     </scm>
 
     <dependencyManagement>
