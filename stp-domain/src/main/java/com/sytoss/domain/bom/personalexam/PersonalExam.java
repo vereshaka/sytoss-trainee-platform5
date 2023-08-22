@@ -43,6 +43,12 @@ public class PersonalExam {
     private Date startedDate;
 
     @JsonView(PersonalExam.Public.class)
+    private Date relevantFrom;
+
+    @JsonView(PersonalExam.Public.class)
+    private Date relevantTo;
+
+    @JsonView(PersonalExam.Public.class)
     private Student student;
 
     @JsonView(PersonalExam.Public.class)
@@ -109,6 +115,5 @@ public class PersonalExam {
     }
 
     public static class Public {
-
     }
 }

@@ -22,3 +22,5 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
+registration:
+  allow-registration: ${ALLOW_TEACHER_REGISTRATION:true}

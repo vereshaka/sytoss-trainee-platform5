@@ -4,7 +4,6 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Date;
 import java.util.List;
 

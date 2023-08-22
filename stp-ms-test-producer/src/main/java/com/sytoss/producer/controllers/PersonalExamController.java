@@ -80,7 +80,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswerModule answerModule
             ) {
-        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent(), answerModule.getTaskId());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }
@@ -96,7 +96,7 @@ public class PersonalExamController {
     public QueryResult check(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
+            @RequestParam String taskAnswer) {
         return answerService.check(personalExamId, taskAnswer.replaceAll("\"", ""));
     }
 
@@ -136,6 +136,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/student/{userId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByStudentId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByStudentId(userId);
     }

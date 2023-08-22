@@ -18,7 +18,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -35,14 +37,14 @@ public class AnswerService extends AbstractService {
 
     private final PumlConvertor pumlConvertor;
 
-    public Question answer(String personalExamId, String taskAnswer, Date answerUIDate, Long timeSpent) {
+    public Question answer(String personalExamId, String taskAnswer, Date answerUIDate, Long timeSpent, Long taskId) {
         Long studentId = getCurrentUser().getId();
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         Answer answer = personalExam.getCurrentAnswer();
-        if (answer == null){
+        if (answer == null) {
             return null;
         }
         answer.setAnswerDate(new Date());
@@ -51,8 +53,14 @@ public class AnswerService extends AbstractService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(personalExam.getStartedDate());
+        calendar.add(Calendar.SECOND, personalExam.getTime());
+        if (answerUIDate.after(calendar.getTime())) {
+            personalExam.setStatus(PersonalExamStatus.FINISHED);
+        }
         personalExamConnector.save(personalExam);
-        if (answer == null){
+        if (answer == null) {
             return null;
         }
 
@@ -81,6 +89,7 @@ public class AnswerService extends AbstractService {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
+        checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
         script = pumlConvertor.formatPuml(script);
         String liquibase = pumlConvertor.convertToLiquibase(script);

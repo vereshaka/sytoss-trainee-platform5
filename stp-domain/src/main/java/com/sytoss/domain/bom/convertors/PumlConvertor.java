@@ -41,16 +41,23 @@ public class PumlConvertor {
         List<String> objectsCreateScript = objects.stream().map(this::convertPumlObjectToLiquibase).toList();
         String entityInitScriptText = String.join("", objectsCreateScript);
         initTableStringBuilder.append(entityInitScriptText);
-        return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder;
+
+        indent = StringUtils.leftPad(StringUtils.SPACE, 2);
+        StringBuilder foreignKeyStringBuilder = createChangeSet("init-foreign-keys");
+        indent += StringUtils.leftPad(StringUtils.SPACE, 2);
+        List<String> foreignKeysCreateScript = entities.stream().map(this::initForeignKeys).toList();
+        String foreignKeysScriptText = String.join("", foreignKeysCreateScript);
+        foreignKeyStringBuilder.append(foreignKeysScriptText);
+        return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder + foreignKeyStringBuilder;
     }
 
     public List<String> getEntities(String script) {
-        Pattern pattern = Pattern.compile("entity.+\\{(?>\\n?.+)+\\n}");
+        Pattern pattern = Pattern.compile("entity.+\\{\\n?(?>\\n?.+)+\\n?\\n}");
         List<String> entities = new ArrayList<>();
         Matcher matcher = pattern.matcher(script);
         while (matcher.find()) {
             for (int j = 0; j <= matcher.groupCount(); j++) {
-                entities.add(matcher.group(j));
+                entities.add(matcher.group(j).replaceAll("(?m)^[ \\t]*\\r?\\n",""));
             }
         }
         return entities;
@@ -99,7 +106,6 @@ public class PumlConvertor {
         entity.append(indent).append("- createTable:").append(StringUtils.LF)
                 .append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF)
                 .append(innerIndent).append("columns:").append(StringUtils.LF);
-        StringBuilder foreignKeyConstraintsStringBuilder = null;
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -107,18 +113,6 @@ public class PumlConvertor {
             if (value.matches("\\S+\\s<<.+>>")) {
                 if (value.contains("PK")) {
                     primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(StringUtils.SPACE, 10));
-                } else if (value.contains("FK")) {
-                    Matcher matcher = foreignKeyPattern.matcher(value);
-                    if (matcher.find()) {
-                        String entityName2 = matcher.group(2);
-                        String entityName2FieldName = matcher.group(4);
-                        entityName2 = entityName2.replaceAll("\\(.+?\\)", "");
-                        entityName2FieldName = entityName2FieldName.replaceAll("[()]", "");
-                        if (foreignKeyConstraintsStringBuilder == null) {
-                            foreignKeyConstraintsStringBuilder = new StringBuilder();
-                        }
-                        foreignKeyConstraintsStringBuilder.append(createForeignKey(name, key, entityName2, entityName2FieldName));
-                    }
                 }
                 value = value.replaceAll("<<.+>>", "").trim();
             }
@@ -129,10 +123,6 @@ public class PumlConvertor {
             if (primaryKeyStringBuilder != null) {
                 entity.append(columnsIndent).append(primaryKeyStringBuilder).append(StringUtils.LF);
             }
-        }
-        if (foreignKeyConstraintsStringBuilder != null) {
-            entity.append(innerIndent).append("foreignKeyConstraints:").append(StringUtils.LF)
-                    .append(innerIndent).append(foreignKeyConstraintsStringBuilder).append(StringUtils.LF);
         }
         return entity.toString();
     }
@@ -154,9 +144,9 @@ public class PumlConvertor {
 
     private StringBuilder createForeignKey(String entityName1, String entityName1Field, String entityName2, String entityName2Field) {
         StringBuilder addForeignKey = new StringBuilder();
-        String innerIndent = indent + StringUtils.leftPad(StringUtils.SPACE, 10);
+        String innerIndent = indent + StringUtils.leftPad(StringUtils.SPACE, 4);
 
-        addForeignKey.append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- foreignKeyConstraint:").append(StringUtils.LF)
+        addForeignKey.append(StringUtils.leftPad(StringUtils.SPACE, 8)).append("- addForeignKeyConstraint:").append(StringUtils.LF)
                 .append(innerIndent).append("baseTableName: ").append(entityName1).append(StringUtils.LF)
                 .append(innerIndent).append("baseColumnNames: ").append(entityName1Field).append(StringUtils.LF)
                 .append(innerIndent).append("constraintName: ").append("fk_").append(entityName1.toLowerCase()).append("_2_").append(entityName2.toLowerCase()).append(StringUtils.LF)
@@ -207,12 +197,17 @@ public class PumlConvertor {
 
     private List<String> getRowValues(String row) {
         row = row.trim();
-        Pattern pattern = Pattern.compile("\\|=?\\s[A-z0-9?\\s]+");
+        Pattern pattern = Pattern.compile("\\|=?\\s<?[A-z0-9?\\s]+>?\\s+");
         Matcher matcher = pattern.matcher(row);
         List<String> allMatches = new ArrayList<>();
         while (matcher.find()) {
             String match = matcher.group();
-            match = match.replaceAll("[|=]", "").trim();
+            if(match.matches("\\| +") || match.contains("<null>")){
+                match="null";
+            }
+            else{
+                match = match.replaceAll("[|=]", "").trim();
+            }
             allMatches.add(match);
         }
         return allMatches;
@@ -330,5 +325,41 @@ public class PumlConvertor {
             throw new TaskDomainCouldNotCreateImageException();
         }
         return null;
+    }
+
+    private String initForeignKeys(String entity) {
+        String name = getName(entity, 1);
+        Map<String, String> parameters = getParameters(entity);
+        return returnInitForeignKeys(name, parameters);
+    }
+
+    private String returnInitForeignKeys(String name, Map<String, String> parameters) {
+        StringBuilder foreignKeys = new StringBuilder();
+        StringBuilder foreignKeyConstraintsStringBuilder = null;
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            if (value.matches("\\S+\\s<<.+>>")) {
+                if (value.contains("FK")) {
+                    Matcher matcher = foreignKeyPattern.matcher(value);
+                    if (matcher.find()) {
+                        String entityName2 = matcher.group(2);
+                        String entityName2FieldName = matcher.group(4);
+                        entityName2 = entityName2.replaceAll("\\(.+?\\)", "");
+                        entityName2FieldName = entityName2FieldName.replaceAll("[()]", "");
+                        if (foreignKeyConstraintsStringBuilder == null) {
+                            foreignKeyConstraintsStringBuilder = new StringBuilder();
+                        }
+                        foreignKeyConstraintsStringBuilder.append(createForeignKey(name, key, entityName2, entityName2FieldName)).append("\n");
+                    }
+                }
+                value = value.replaceAll("<<.+>>", "").trim();
+            }
+        }
+        if(foreignKeyConstraintsStringBuilder!=null){
+            foreignKeys.append(foreignKeyConstraintsStringBuilder);
+        }
+
+        return foreignKeys.toString();
     }
 }

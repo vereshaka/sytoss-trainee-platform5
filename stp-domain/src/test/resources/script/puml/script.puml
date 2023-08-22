@@ -4,9 +4,11 @@ name: string
 }
 
 entity Topic {
+
 id: long <<PK>>
 name: string
 discipline_id: long <<FK Discipline(id)>>
+
 }
 
 entity Task {

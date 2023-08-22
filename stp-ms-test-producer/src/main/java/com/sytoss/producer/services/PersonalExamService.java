@@ -1,9 +1,6 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.exceptions.business.ConvertToImageException;
-import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
-import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
-import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -41,6 +38,8 @@ public class PersonalExamService extends AbstractService {
         personalExam.setName(examConfiguration.getExam().getName());
         personalExam.setExamId(examConfiguration.getExam().getId());
         personalExam.setAssignedDate(new Date());
+        personalExam.setRelevantFrom(examConfiguration.getExam().getRelevantFrom());
+        personalExam.setRelevantTo(examConfiguration.getExam().getRelevantTo());
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
         personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
@@ -93,12 +92,16 @@ public class PersonalExamService extends AbstractService {
 
     public Question start(String personalExamId) {
         Long studentId = getCurrentUser().getId();
+        Date currentDate = new Date();
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
+        }
+        if (currentDate.before(personalExam.getRelevantFrom())) {
+            throw new PersonalExamStartedDateException();
         }
         Answer answer;
         if (PersonalExamStatus.NOT_STARTED.equals(personalExam.getStatus())) {
@@ -142,17 +145,24 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getByStudentId(Long userId) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
-//        for (PersonalExam personalExam : personalExams) {
-//            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
-//                personalExam.setMaxGrade(0);
-//                personalExam.setSummaryGrade(0);
-//            }
-//        }
-        return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
+
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
+            }
+        });
+
+        return personalExams;
     }
 
     public List<PersonalExam> getByTeacherId(Long userId) {
-        return personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
+            }
+        });
+        return personalExams;
     }
 
     public PersonalExam review(PersonalExam personalExamToChange) {
