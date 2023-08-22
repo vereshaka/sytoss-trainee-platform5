@@ -25,7 +25,7 @@ public abstract class AbstractUser {
 
     private boolean isModerated;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String uid;
 
     public boolean isValid() {

@@ -13,22 +13,22 @@ import java.util.Date;
 @Getter
 public class Answer {
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Long id;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String value;
 
-    @JsonView({PersonalExam.Public.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Task task;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private AnswerStatus status;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Grade grade;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Grade teacherGrade;
 
     private Date answerDate;
