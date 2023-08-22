@@ -120,12 +120,21 @@ public class AnswerService extends AbstractService {
         return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
     }
 
-    public QueryResult check(String personalExamId, String taskAnswer) {
-        CheckRequestParameters request = new CheckRequestParameters();
-        request.setRequest(taskAnswer);
+    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
+        return check(taskAnswer, answer);
+    }
 
+    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {
+        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
+        Answer answer = personalExam.getAnswerById(Long.valueOf(answerId));
+        return check(taskAnswer, answer);
+    }
+
+    public QueryResult check(String taskAnswer, Answer answer) {
+        CheckRequestParameters request = new CheckRequestParameters();
+        request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
         script = pumlConvertor.formatPuml(script);

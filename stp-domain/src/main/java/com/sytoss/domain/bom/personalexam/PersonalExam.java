@@ -24,10 +24,10 @@ import java.util.Objects;
 public class PersonalExam {
 
     @MongoId
-    @JsonView({PersonalExam.Public.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String id;
 
-    @JsonView({PersonalExam.Public.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String name;
 
     private Long examId;
@@ -36,35 +36,35 @@ public class PersonalExam {
 
     private Teacher teacher;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date assignedDate;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date startedDate;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date relevantFrom;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date relevantTo;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Student student;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private List<Answer> answers = new ArrayList<>();
 
     private Integer time;
 
     private Integer amountOfTasks;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private PersonalExamStatus status;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private float summaryGrade;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
 
     private double sumOfCoef;
@@ -115,5 +115,8 @@ public class PersonalExam {
     }
 
     public static class Public {
+    }
+
+    public static class TeacherOnly {
     }
 }
