@@ -30,6 +30,7 @@ pipelines:
       - step:
           name: Build and push
           script:
+            - git config --global user.email $EMAIL
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
@@ -56,8 +57,7 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - git config --global user.email "github@sytoss.com"
-            - git config --global user.name "TechUserSytoss"
+            - git config --global user.email $EMAIL
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
@@ -85,8 +85,7 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - git config --global user.email "github@sytoss.com"
-            - git config --global user.name "TechUserSytoss"
+            - git config --global user.email $EMAIL
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
@@ -114,8 +113,7 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - git config --global user.email "github@sytoss.com"
-            - git config --global user.name "TechUserSytoss"
+            - git config --global user.email $EMAIL
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
