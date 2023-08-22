@@ -94,7 +94,7 @@ pipelines:
 #            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
             - export NEWVERS="0.2.1"
             - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
-            - mvn release:perform -Darguments="-DskipTests=true -DskipDeploy=true" -DscmCommentPrefix="[skip ci]"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest
