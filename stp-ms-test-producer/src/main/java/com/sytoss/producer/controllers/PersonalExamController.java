@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
@@ -46,7 +47,8 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView(PersonalExam.Public.class)
+
+    @JsonView({PersonalExam.TeacherOnly.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
@@ -76,8 +78,9 @@ public class PersonalExamController {
     public ResponseEntity<Question> answer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
-        Question nextQuestion = answerService.answer(personalExamId, taskAnswer);
+            @RequestBody AnswerModule answerModule
+    ) {
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }
@@ -90,11 +93,25 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/{personalExamId}/task/check")
-    public QueryResult check(
+    public QueryResult checkCurrentAnswer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody String taskAnswer) {
-        return answerService.check(personalExamId, taskAnswer.replaceAll("\"", ""));
+        return answerService.checkCurrentAnswer(personalExamId, taskAnswer.replaceAll("\"", ""));
+    }
+
+    @Operation(description = "Method for answering tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    @PostMapping("/{personalExamId}/task/check/{answerId}")
+    public QueryResult checkAnswerById(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @PathVariable(value = "answerId") String answerId,
+            @RequestBody  String taskAnswer) {
+        return answerService.checkByAnswerId(personalExamId, taskAnswer.replaceAll("\"", ""), answerId);
     }
 
     @Operation(description = "Method returns image of db structure for task")
@@ -133,6 +150,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/student/{userId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByStudentId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByStudentId(userId);
     }

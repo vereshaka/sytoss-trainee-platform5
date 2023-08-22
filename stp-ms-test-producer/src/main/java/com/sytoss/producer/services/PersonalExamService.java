@@ -1,9 +1,6 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.exceptions.business.ConvertToImageException;
-import com.sytoss.domain.bom.exceptions.business.PersonalExamHasNoAnswerException;
-import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
-import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
+import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -20,12 +17,10 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -41,20 +36,27 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
         //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
+        Date relevantFrom = examConfiguration.getExam().getRelevantFrom();
+        Date relevantTo = examConfiguration.getExam().getRelevantTo();
         personalExam.setName(examConfiguration.getExam().getName());
         personalExam.setExamId(examConfiguration.getExam().getId());
         personalExam.setAssignedDate(new Date());
+        personalExam.setRelevantFrom(relevantFrom);
+        personalExam.setRelevantTo(relevantTo);
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
+        personalExam.setTime((int) TimeUnit.MILLISECONDS.toMinutes(relevantTo.getTime()-relevantFrom.getTime()));
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
+        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
+        double sumOfCoef = 0;
         for (Answer answer : answers) {
-            answer.getTask().setImageId(imageConnector.convertImage(answer.getTask().getQuestion()));
+            sumOfCoef += answer.getTask().getCoef();
         }
         personalExam.setStudent(examConfiguration.getStudent());
+        personalExam.setSumOfCoef(sumOfCoef);
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
@@ -67,6 +69,7 @@ public class PersonalExamService extends AbstractService {
             int numTask = random.nextInt(tasks.size());
             Task task = tasks.get(numTask);
             Answer answer = new Answer();
+            answer.setId((long) (i + 1));
             answer.setStatus(AnswerStatus.NOT_STARTED);
             answer.setTask(task);
             answers.add(answer);
@@ -92,12 +95,16 @@ public class PersonalExamService extends AbstractService {
 
     public Question start(String personalExamId) {
         Long studentId = getCurrentUser().getId();
+        Date currentDate = new Date();
         PersonalExam personalExam = getById(personalExamId);
         if (!Objects.equals(personalExam.getStudent().getId(), studentId)) {
             throw new StudentDontHaveAccessToPersonalExam(studentId, personalExamId);
         }
         if (personalExam.getAnswers().isEmpty()) {
             throw new PersonalExamHasNoAnswerException();
+        }
+        if (currentDate.before(personalExam.getRelevantFrom())) {
+            throw new PersonalExamStartedDateException();
         }
         Answer answer;
         if (PersonalExamStatus.NOT_STARTED.equals(personalExam.getStatus())) {
@@ -126,8 +133,6 @@ public class PersonalExamService extends AbstractService {
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
-        taskModel.setQuestion(answer.getTask().getQuestion());
-        taskModel.setSchema(answer.getTask().getTaskDomain().getDatabaseScript());
         taskModel.setQuestionNumber(1);
         firstTask.setTask(taskModel);
         return firstTask;
@@ -143,17 +148,24 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getByStudentId(Long userId) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
-        for (PersonalExam personalExam : personalExams) {
-            if (!personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
-                personalExam.setMaxGrade(0);
-                personalExam.setSummaryGrade(0);
+
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
             }
-        }
-        return personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
+        });
+
+        return personalExams;
     }
 
     public List<PersonalExam> getByTeacherId(Long userId) {
-        return personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        personalExams.forEach(personalExam -> {
+            if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                personalExam.summary();
+            }
+        });
+        return personalExams;
     }
 
     public PersonalExam review(PersonalExam personalExamToChange) {

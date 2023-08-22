@@ -7,9 +7,5 @@ import lombok.Setter;
 @Setter
 public class TaskModel {
 
-    private String question;
-
-    private String schema;
-
     private Integer questionNumber;
 }
