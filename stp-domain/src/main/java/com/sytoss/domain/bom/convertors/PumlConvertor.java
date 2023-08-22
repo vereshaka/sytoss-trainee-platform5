@@ -203,14 +203,14 @@ public class PumlConvertor {
             row = row.substring(1);
         }
         if (row.endsWith("|")) {
-            row = row.substring(0, row.length() - 1);
+            row = row.substring(0, row.length() - 1).trim();
         }
         String[] rawValues = row.split("\\|");
         List<String> allMatches = new ArrayList<>();
         for (int i = 0; i < rawValues.length; i++) {
             String value = rawValues[i].trim();
             if (value.startsWith("=")){
-                value = value.substring(1);
+                value = value.substring(1).trim();
             }
             allMatches.add(value.equals("<null>") ? "null" : value);
         }

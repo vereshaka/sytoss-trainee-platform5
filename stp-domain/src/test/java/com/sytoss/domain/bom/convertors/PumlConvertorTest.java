@@ -64,7 +64,7 @@ class PumlConvertorTest {
         PumlConvertor pumlConvertor = new PumlConvertor();
         String script = readFromFile("puml/script_v1.puml");
         String pumlScript = pumlConvertor.formatPuml(script);
-        log.info(pumlScript);
+        //log.info(pumlScript);
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         log.info(pumlConvertedScript);
     }

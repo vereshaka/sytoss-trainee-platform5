@@ -20,7 +20,7 @@ public class QueryResultConvertor {
         while (resultSet.next()) {
             HashMap<String, Object> row = new HashMap<>(columns);
             for (int i = 1; i <= columns; ++i) {
-                row.put(metaData.getColumnName(i), resultSet.getObject(i));
+                row.put(metaData.getColumnName(i).toUpperCase(), resultSet.getObject(i));
             }
             hashMapList.add(row);
         }
