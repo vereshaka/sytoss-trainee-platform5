@@ -39,6 +39,9 @@
         <tag></tag>
     </scm>
 
+    <distributionManagement>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
