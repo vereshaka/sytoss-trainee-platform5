@@ -9,7 +9,7 @@ pipelines:
           script:
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
-            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )            -
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest
@@ -26,14 +26,20 @@ pipelines:
             - docker system prune -a -f
           services:
               - docker
-    deploy_dockerhub:
+    release(SNAPSHOT removing):
       - step:
-          name: Deploy to DockerHub
+          name: Build and push
           script:
             - mvn clean install
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
-            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - chmod +x version.sh
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -DskipTests -Darguments=-DskipTests
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
+            - docker push sytoss/graphiz:latest
             - docker build -t sytoss/stp-ms-check-task:$(echo $VERSION) -f ./stp-ms-check-task/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/docker/Dockerfile .
             - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/docker/Dockerfile .
@@ -47,16 +53,87 @@ pipelines:
             - docker system prune -a -f
           services:
             - docker
-    deploy_to_prod:
+    path:
       - step:
-          name: Deploy to prod
+          name: Build and push
           script:
             - mvn clean install
-            - cd .. && ls -l
-            - git clone https://$USERNAME:$PASSWORD@bitbucket.org/sytoss-trainee-platform/server.git
-            - cd server && git checkout master && cd ..
-            - $([ -d mkdir server/stp-ms-test-producer ]) || mkdir server/stp-ms-test-producer
-            - cp -rf build/stp-ms-test-producer/target server/stp-ms-test-producer/
-            - cd server
-            - git config --global user.email $EMAIL
-            - git add . && git commit -m "build [skip ci]" && git push
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - chmod +x version.sh
+            - export VERSION=$(./version.sh -p ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
+            - docker push sytoss/graphiz:latest
+            - docker build -t sytoss/stp-ms-check-task:$(echo $VERSION) -f ./stp-ms-check-task/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/docker/Dockerfile .
+            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
+    minor:
+      - step:
+          name: Build and push
+          script:
+            - mvn clean install
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - chmod +x version.sh
+            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
+            - docker push sytoss/graphiz:latest
+            - docker build -t sytoss/stp-ms-check-task:$(echo $VERSION) -f ./stp-ms-check-task/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/docker/Dockerfile .
+            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
+    major:
+      - step:
+          name: Build and push
+          script:
+            - mvn clean install
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - chmod +x version.sh
+            - export VERSION=$(./version.sh -m ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
+            - docker push sytoss/graphiz:latest
+            - docker build -t sytoss/stp-ms-check-task:$(echo $VERSION) -f ./stp-ms-check-task/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-image-provider:$(echo $VERSION) -f ./stp-ms-image-provider/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-test-producer:$(echo $VERSION) -f ./stp-ms-test-producer/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-lessons:$(echo $VERSION) -f ./stp-ms-lessons/src/main/docker/Dockerfile .
+            - docker build -t sytoss/stp-ms-users:$(echo $VERSION) -f ./stp-ms-users/src/main/docker/Dockerfile .
+            - docker push sytoss/stp-ms-check-task:$(echo $VERSION)
+            - docker push sytoss/stp-ms-image-provider:$(echo $VERSION)
+            - docker push sytoss/stp-ms-test-producer:$(echo $VERSION)
+            - docker push sytoss/stp-ms-lessons:$(echo $VERSION)
+            - docker push sytoss/stp-ms-users:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
