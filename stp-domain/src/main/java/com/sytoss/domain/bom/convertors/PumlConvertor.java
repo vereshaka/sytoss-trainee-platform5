@@ -8,7 +8,6 @@ import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -200,19 +199,34 @@ public class PumlConvertor {
 
     private List<String> getRowValues(String row) {
         row = row.trim();
-        Pattern pattern = Pattern.compile("\\|=?\\s<?[A-z0-9?\\s]+>?\\s+");
-        Matcher matcher = pattern.matcher(row);
+        if (row.startsWith("|")) {
+            row = row.substring(1);
+        }
+        if (row.endsWith("|")) {
+            row = row.substring(0, row.length() - 1);
+        }
+        String[] rawValues = row.split("\\|");
         List<String> allMatches = new ArrayList<>();
+        for (int i = 0; i < rawValues.length; i++) {
+            String value = rawValues[i].trim();
+            if (value.startsWith("=")){
+                value = value.substring(1);
+            }
+            allMatches.add(value.equals("<null>") ? "null" : value);
+        }
+
+        /*Pattern pattern = Pattern.compile("\\|(?:=)?(?: +)?(\\w+)");
+        Matcher matcher = pattern.matcher(row);
+
         while (matcher.find()) {
             String match = matcher.group();
-            if(match.matches("\\| +") || match.contains("<null>")){
-                match="null";
-            }
-            else{
+            if (match.matches("\\| +") || match.contains("<null>")) {
+                match = "null";
+            } else {
                 match = match.replaceAll("[|=]", "").trim();
             }
             allMatches.add(match);
-        }
+        }*/
         return allMatches;
     }
 
