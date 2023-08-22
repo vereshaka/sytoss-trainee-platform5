@@ -35,8 +35,8 @@
     </parent>
 
     <scm>
-        <connection>scm:git:https://x-token-auth:${REPOSITORY_OAUTH_ACCESS_TOKEN}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
-        <url>https://bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
+        <connection>scm:git:https://${USERNAME}:${PASSWORD}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
+        <url>https://${USERNAME}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
         <tag>HEAD</tag>
     </scm>
 
