@@ -40,6 +40,14 @@
     </scm>
 
     <distributionManagement>
+        <repository>
+            <id>repo-id</id>
+            <url>http://fake.com/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshot-repo-id</id>
+            <url>http://fake.com/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencyManagement>
