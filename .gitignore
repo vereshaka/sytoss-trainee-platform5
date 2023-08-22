@@ -29,6 +29,7 @@ dist/
 **/pom.xml.branch
 **/release.properties
 **/pom.xml.backup
+**/version.sh
 version.sh
 # JetBrains IDE
 .idea/
