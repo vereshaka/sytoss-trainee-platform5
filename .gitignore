@@ -22,7 +22,12 @@ dist/
 # Maven
 target/
 dist/
-
+**/pom.xml.releaseBackup
+**/pom.xml.next
+**/pom.xml.tag
+**/pom.xml.branch
+**/release.properties
+**/pom.xml.backup
 # JetBrains IDE
 .idea/
 
