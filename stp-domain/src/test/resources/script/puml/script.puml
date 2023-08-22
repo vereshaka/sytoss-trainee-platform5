@@ -1,13 +1,14 @@
-
 entity Discipline {
 id: long <<PK>>
 name: string
 }
 
 entity Topic {
+
 id: long <<PK>>
 name: string
 discipline_id: long <<FK Discipline(id)>>
+
 }
 
 entity Task {
@@ -43,11 +44,10 @@ object "Data:Task" as dTask {
    | 4   | What is Select?          |        2       |
 }
 
-object "Data:TopicToTask" as dTopicToTask {
+object "Data:Topic" as dTopicToTask {
    |= task_id |= topic_id |
    | 1        | 1         |
    | 2        | 3         |
    | 3        | 2         |
    | 4        | 1         |
 }
-

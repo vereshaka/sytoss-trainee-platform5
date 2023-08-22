@@ -4,7 +4,6 @@ import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
-import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
@@ -22,15 +21,9 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import net.sourceforge.plantuml.SourceStringReader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,35 +113,7 @@ public class TaskDomainService {
     }
 
     public byte[] generatePngFromPuml(String puml, ConvertToPumlParameters convertToPumlParameters) {
-        if (puml == null) {
-            return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
-        }
-        puml = pumlConvertor.formatPuml(puml);
-        List<String> objects = new ArrayList<>();
-        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
-            objects = pumlConvertor.getEntities(puml);
-        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
-            objects = pumlConvertor.getObjects(puml);
-        }
-
-        String pumlConvertedScript = pumlConvertor.addLinks(String.join(StringUtils.LF + StringUtils.LF, objects), puml, convertToPumlParameters);
-        ByteArrayOutputStream png = new ByteArrayOutputStream();
-        try {
-            SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
-            String result = reader.outputImage(png).getDescription();
-
-            File imageFile = File.createTempFile("img", ".png");
-            ByteArrayInputStream bis = new ByteArrayInputStream(png.toByteArray());
-            BufferedImage bufferedImage = ImageIO.read(bis);
-            ImageIO.write(bufferedImage, "png", imageFile);
-
-            if (!result.isEmpty()) {
-                return png.toByteArray();
-            }
-        } catch (Exception e) {
-            throw new TaskDomainCouldNotCreateImageException();
-        }
-        return null;
+        return pumlConvertor.generatePngFromPuml(puml, convertToPumlParameters);
     }
 
     public TaskDomainModel getCountOfTasks(Long taskDomainId) {

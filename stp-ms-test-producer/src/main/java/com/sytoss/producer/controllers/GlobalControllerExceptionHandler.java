@@ -41,4 +41,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(PersonalExamNotFoundException personalExamNotFoundException) {
         return ResponseEntity.status(404).body(new ApplicationError(personalExamNotFoundException));
     }
+
+    @ExceptionHandler({RequestIsNotValidException.class})
+    public ResponseEntity<ApplicationError> handleInvalidRequesException(RequestIsNotValidException invalidRequestException) {
+        return ResponseEntity.status(400).body(new ApplicationError(invalidRequestException));
+    }
 }

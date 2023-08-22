@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,6 +36,16 @@ public class ExamService extends AbstractService {
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
+        List<Task> distinctTasks = new ArrayList<>();
+        for(Task task : exam.getTasks()){
+            if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
+                distinctTasks.add(task);
+            }
+        }
+        exam.setTasks(distinctTasks);
+        exam.setNumberOfTasks(distinctTasks.size());
+        //TODO: yevgenyv: re think it
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
         examDTO = examConnector.save(examDTO);

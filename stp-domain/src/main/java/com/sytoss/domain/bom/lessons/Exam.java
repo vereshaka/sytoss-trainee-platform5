@@ -4,7 +4,6 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Date;
 import java.util.List;
 
@@ -26,9 +25,13 @@ public class Exam {
 
     private Integer numberOfTasks;
 
+    private Integer maxGrade;
+
     private List<Topic> topics;
 
     private Teacher teacher;
+
+    private Discipline discipline;
 
     private List<Task> tasks;
 }

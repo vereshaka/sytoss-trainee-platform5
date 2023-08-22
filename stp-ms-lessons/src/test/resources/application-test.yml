@@ -18,3 +18,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:9030/realms/traineeplatform/protocol/openid-connect/certs
+users-url: ${USER_URI:http://localhost:9102/api}
+test-producer-url: ${TEST_PRODUCER_URI:http://localhost:9103/api}
+check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api}

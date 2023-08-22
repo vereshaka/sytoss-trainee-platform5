@@ -13,4 +13,6 @@ public class Group {
     private String name;
 
     private Discipline discipline;
+
+    private int countOfStudents;
 }

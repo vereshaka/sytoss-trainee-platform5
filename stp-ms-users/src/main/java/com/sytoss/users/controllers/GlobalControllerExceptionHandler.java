@@ -2,6 +2,7 @@ package com.sytoss.users.controllers;
 
 import com.sytoss.domain.bom.exceptions.ApplicationError;
 import com.sytoss.domain.bom.exceptions.business.GroupExistException;
+import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
 import com.sytoss.domain.bom.exceptions.business.notfound.GroupNotFoundException;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
 import com.sytoss.users.services.exceptions.UserPhotoNotFoundException;
@@ -32,5 +33,10 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({UserPhotoNotFoundException.class})
     public ResponseEntity<?> handleValidationException(UserPhotoNotFoundException userPhotoNotFoundException) {
         return ResponseEntity.status(404).body(new ApplicationError(userPhotoNotFoundException));
+    }
+
+    @ExceptionHandler({NotAllowedTeacherRegistrationException.class})
+    public ResponseEntity<?> handleValidationException(NotAllowedTeacherRegistrationException notAllowedTeacherRegistrationException) {
+        return ResponseEntity.status(403).body(new ApplicationError(notAllowedTeacherRegistrationException));
     }
 }

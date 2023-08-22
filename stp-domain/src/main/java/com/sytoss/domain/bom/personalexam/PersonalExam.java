@@ -5,7 +5,10 @@ import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedExcep
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
@@ -16,9 +19,12 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonalExam {
 
     @MongoId
+    @JsonView({PersonalExam.Public.class})
     private String id;
 
     @JsonView({PersonalExam.Public.class})
@@ -28,11 +34,19 @@ public class PersonalExam {
 
     private Discipline discipline;
 
+    private Teacher teacher;
+
     @JsonView(PersonalExam.Public.class)
     private Date assignedDate;
 
     @JsonView(PersonalExam.Public.class)
     private Date startedDate;
+
+    @JsonView(PersonalExam.Public.class)
+    private Date relevantFrom;
+
+    @JsonView(PersonalExam.Public.class)
+    private Date relevantTo;
 
     @JsonView(PersonalExam.Public.class)
     private Student student;
@@ -44,11 +58,13 @@ public class PersonalExam {
 
     private Integer amountOfTasks;
 
+    @JsonView(PersonalExam.Public.class)
     private PersonalExamStatus status;
 
     @JsonView(PersonalExam.Public.class)
     private float summaryGrade;
 
+    @JsonView(PersonalExam.Public.class)
     private double maxGrade;
 
     private double sumOfCoef;
@@ -56,6 +72,7 @@ public class PersonalExam {
     public void start() {
         if (status.equals(PersonalExamStatus.NOT_STARTED)) {
             status = PersonalExamStatus.IN_PROGRESS;
+            startedDate = new Date();
         } else if (status.equals(PersonalExamStatus.IN_PROGRESS)) {
             throw new PersonalExamAlreadyStartedException();
         } else {
@@ -89,6 +106,7 @@ public class PersonalExam {
                 return answer;
             }
         }
+        setStatus(PersonalExamStatus.FINISHED);
         return null;
     }
 
@@ -97,6 +115,5 @@ public class PersonalExam {
     }
 
     public static class Public {
-
     }
 }

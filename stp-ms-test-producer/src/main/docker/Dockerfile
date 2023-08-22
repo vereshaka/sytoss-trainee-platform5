@@ -1,4 +1,4 @@
-FROM sytoss/openjdk:17.0.2-slim
+FROM sytoss/graphiz:latest
 
 RUN groupadd stpuser
 RUN useradd -r -g stpuser stpuser
