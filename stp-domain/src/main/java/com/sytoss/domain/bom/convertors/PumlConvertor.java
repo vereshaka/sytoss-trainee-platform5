@@ -332,7 +332,10 @@ public class PumlConvertor {
             String newDataName = "object \"Data:" + match + "\" as d" + match;
             puml = puml.replaceAll(matcher.group(0), newDataName);
         }
-        puml = puml.replaceAll("table", "entity");
+        puml = puml.replaceAll("table", "entity").replaceAll("undefined","");
+        List<String> pumlParts = Arrays.stream(puml.split("\n")).toList().stream().filter(el->!el.equals("")).toList();
+        puml = String.join("\n",pumlParts);
+        puml = puml.replaceAll("entity","\nentity").replaceAll("object","\nobject");
         return puml;
     }
 
