@@ -183,10 +183,16 @@ public class PumlConvertor {
                 if (currentColumn.isBoolean()) {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
-                    String[] dates = rows.getValue().split("\\.");
-                    object.append(columnsIndent).append("valueComputed: CAST(N'").append(dates[2]).append("-")
-                            .append(dates[1]).append("-")
-                            .append(dates[0]).append("' as DateTime)").append(StringUtils.LF);
+                    if(rows.getValue().matches("\\d{4}-\\d{2}-\\d{2}")){
+                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as DateTime)").append(StringUtils.LF);
+                    }else if(rows.getValue().matches("\\d{2}.\\d{2}.\\d{4}")){
+                        String[] dates = rows.getValue().split("\\.");
+                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(dates[2]).append("-")
+                                .append(dates[1]).append("-")
+                                .append(dates[0]).append("' as DateTime)").append(StringUtils.LF);
+                    }
+
+
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);
                 } else {
