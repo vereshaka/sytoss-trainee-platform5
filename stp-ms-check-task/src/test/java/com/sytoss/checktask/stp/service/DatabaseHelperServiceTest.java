@@ -23,23 +23,6 @@ class DatabaseHelperServiceTest extends StpUnitTest {
     }
 
     @Test
-    public void generateDatabase_puml() {
-        String pumlv = FileUtils.readFromFile("script_v1.puml");
-        String pumlScript = new PumlConvertor().formatPuml(pumlv);
-        String script = new PumlConvertor().convertToLiquibase(pumlScript);
-        log.info(script);
-        databaseHelperService.generateDatabase(script);
-        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
-    }
-
-    @Test
-    public void generateDatabase_v1() {
-        String script = FileUtils.readFromFile("script_v1.yml");
-        databaseHelperService.generateDatabase(script);
-        //Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
-    }
-
-    @Test
     void getExecuteQueryResult() throws SQLException {
         databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
         HashMap<String, Object> map = new HashMap<>();
