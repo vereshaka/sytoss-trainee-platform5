@@ -1,6 +1,5 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
@@ -9,7 +8,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 class DatabaseHelperServiceTest extends StpUnitTest {
@@ -18,8 +19,8 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void generateDatabase() {
-        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
-        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("script_v1.yml"));
+        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from Client"));
     }
 
     @Test
@@ -31,7 +32,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
         HashMap<String, Object> map2 = new HashMap<>();
         map2.put("ID", 2L);
         map2.put("NAME", "Mongo");
-        QueryResult queryResult = new QueryResult(List.of(map,map2));
+        QueryResult queryResult = new QueryResult(List.of(map, map2));
         int quantityOfInitiatedElements = map.size() + map2.size();
 
         QueryResult queryResultFromDatabase = databaseHelperService.getExecuteQueryResult("select * from discipline");
@@ -44,7 +45,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
                 }
             }
         }
-        Assertions.assertEquals(quantityOfInitiatedElements,quantityOfElements);
+        Assertions.assertEquals(quantityOfInitiatedElements, quantityOfElements);
     }
 
     @Test

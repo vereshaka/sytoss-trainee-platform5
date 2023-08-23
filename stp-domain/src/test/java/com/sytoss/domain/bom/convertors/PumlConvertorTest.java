@@ -21,10 +21,9 @@ class PumlConvertorTest {
     @Test
     void convertToLiquibase() {
         PumlConvertor pumlConvertor = new PumlConvertor();
-        String pumlScript = readFromFile("puml/script.puml");
+        String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
-        String liquibaseScript = readFromFile("liquibase/script.yml");
-
+        String liquibaseScript = readFromFile("liquibase/script_v1.yml");
         System.out.println(pumlConvertedScript);
         List<String> pumlScriptStrings = Arrays.stream(pumlConvertedScript.split("\n")).toList();
         List<String> liquibaseScriptStrings = Arrays.stream(liquibaseScript.split("\n")).toList();
@@ -42,9 +41,9 @@ class PumlConvertorTest {
     @Test
     void convertToLiquibase2() {
         PumlConvertor pumlConvertor = new PumlConvertor();
-        String pumlScript = readFromFile("puml/script.puml");
+        String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
-        String liquibaseScript = readFromFile("liquibase/script.yml");
+        String liquibaseScript = readFromFile("liquibase/script_v1.yml");
         System.out.println(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
@@ -58,25 +57,6 @@ class PumlConvertorTest {
         String pumlExampleScript = readFromFile("puml/scriptWithLinks.puml");
         assertEquals(pumlExampleScript, pumlConvertedScript);
     }
-
-    @Test
-    public void shouldCreateScript_v1(){
-        PumlConvertor pumlConvertor = new PumlConvertor();
-        String script = readFromFile("puml/script_v1.puml");
-        String pumlScript = pumlConvertor.formatPuml(script);
-        //log.info(pumlScript);
-        String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
-        log.info(pumlConvertedScript);
-    }
-
-    @Test
-    public void shouldParse(){
-        PumlConvertor pumlConvertor = new PumlConvertor();
-        String script = readFromFile("puml/script_v1.puml");
-        List<Table> result = pumlConvertor.parse(script);
-        //log.info(pumlScript);
-    }
-
 
     private String readFromFile(String path)  {
         ClassLoader classLoader = getClass().getClassLoader();

@@ -35,6 +35,6 @@ public class Column {
         if (datatype.contains("\\(")) {
             return datatype.split("\\(")[0].trim();
         } else
-            return datatype.trim();
+            return datatype.trim().toUpperCase();
     }
 }
