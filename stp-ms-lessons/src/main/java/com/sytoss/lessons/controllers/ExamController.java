@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ExamModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.services.ExamService;
@@ -76,9 +77,12 @@ public class ExamController {
     public Exam update(
             @Parameter(description = "id of exam to update")
             @PathVariable("examId") Long examId,
-            @RequestBody Exam exam
+            @RequestBody ExamModel examModel
     ) {
+        Exam exam = new Exam();
         exam.setId(examId);
+        exam.setRelevantFrom(examModel.getRelevantFrom());
+        exam.setRelevantTo(examModel.getRelevantTo());
         return examService.update(exam);
     }
 }
