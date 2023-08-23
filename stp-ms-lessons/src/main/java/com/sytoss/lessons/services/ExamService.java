@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -88,5 +89,24 @@ public class ExamService extends AbstractService {
         } catch (EntityNotFoundException e) {
             throw new ExamNotFoundException(examId);
         }
+    }
+
+    public Exam reschedule(ScheduleModel scheduleModel, Long examId) {
+        ExamDTO examToUpdateDTO = examConnector.getReferenceById(examId);
+        Exam examToUpdate = new Exam();
+        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
+        examToUpdate.setRelevantTo(scheduleModel.getRelevantTo());
+        examToUpdate.setRelevantFrom(scheduleModel.getRelevantFrom());
+        examConvertor.toDTO(examToUpdate, examToUpdateDTO);
+
+        examToUpdateDTO = examConnector.save(examToUpdateDTO);
+        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
+
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+        examConfiguration.setExam(examToUpdate);
+
+        personalExamConnector.reschedule(examConfiguration);
+
+        return examToUpdate;
     }
 }

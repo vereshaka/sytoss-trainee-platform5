@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.sytoss.domain.bom.exceptions.ApplicationError;
 import com.sytoss.domain.bom.exceptions.business.*;
+import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -45,5 +46,10 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({RequestIsNotValidException.class})
     public ResponseEntity<ApplicationError> handleInvalidRequesException(RequestIsNotValidException invalidRequestException) {
         return ResponseEntity.status(400).body(new ApplicationError(invalidRequestException));
+    }
+
+    @ExceptionHandler({ExamNotFoundException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(ExamNotFoundException examNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError(examNotFoundException));
     }
 }

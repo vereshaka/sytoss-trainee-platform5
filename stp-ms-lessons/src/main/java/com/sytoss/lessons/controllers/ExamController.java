@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.services.ExamService;
@@ -64,5 +65,18 @@ public class ExamController {
             @PathVariable(value = "examId") Long examId) {
         Exam exam = examService.getById(examId);
         return ListUtils.emptyIfNull(exam.getTasks());
+    }
+
+    @Operation(description = "Method that update exam by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PostMapping(value = "/{examId}/reschedule")
+    public Exam reschedule(
+            @Parameter(description = "id of exam to update")
+            @PathVariable("examId") Long examId,
+            @RequestBody ScheduleModel scheduleModel
+    ) {
+        return examService.reschedule(scheduleModel, examId);
     }
 }
