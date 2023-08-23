@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -90,12 +91,12 @@ public class ExamService extends AbstractService {
         }
     }
 
-    public Exam update(Exam exam) {
-        ExamDTO examToUpdateDTO = examConnector.getReferenceById(exam.getId());
+    public Exam reschedule(ScheduleModel scheduleModel, Long examId) {
+        ExamDTO examToUpdateDTO = examConnector.getReferenceById(examId);
         Exam examToUpdate = new Exam();
         examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
-        examToUpdate.setRelevantTo(exam.getRelevantTo());
-        examToUpdate.setRelevantFrom(exam.getRelevantFrom());
+        examToUpdate.setRelevantTo(scheduleModel.getRelevantTo());
+        examToUpdate.setRelevantFrom(scheduleModel.getRelevantFrom());
         examConvertor.toDTO(examToUpdate, examToUpdateDTO);
 
         examToUpdateDTO = examConnector.save(examToUpdateDTO);
@@ -104,7 +105,7 @@ public class ExamService extends AbstractService {
         ExamConfiguration examConfiguration = new ExamConfiguration();
         examConfiguration.setExam(examToUpdate);
 
-        personalExamConnector.update(examConfiguration);
+        personalExamConnector.reschedule(examConfiguration);
 
         return examToUpdate;
     }

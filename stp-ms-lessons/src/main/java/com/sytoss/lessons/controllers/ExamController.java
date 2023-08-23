@@ -1,7 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.ExamModel;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.services.ExamService;
@@ -11,11 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.ListUtils;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -73,16 +71,12 @@ public class ExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @PostMapping(value = "/{examId}/update")
-    public Exam update(
+    @PostMapping(value = "/{examId}/reschedule")
+    public Exam reschedule(
             @Parameter(description = "id of exam to update")
             @PathVariable("examId") Long examId,
-            @RequestBody ExamModel examModel
+            @RequestBody ScheduleModel scheduleModel
     ) {
-        Exam exam = new Exam();
-        exam.setId(examId);
-        exam.setRelevantFrom(examModel.getRelevantFrom());
-        exam.setRelevantTo(examModel.getRelevantTo());
-        return examService.update(exam);
+        return examService.reschedule(scheduleModel, examId);
     }
 }

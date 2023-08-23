@@ -186,8 +186,8 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @PostMapping("/update")
-    public List<PersonalExam> update(@RequestBody ExamConfiguration examConfiguration) {
-        return personalExamService.update(examConfiguration);
+    @PostMapping("/reschedule")
+    public List<PersonalExam> reschedule(@RequestBody ExamConfiguration examConfiguration) {
+        return personalExamService.reschedule(examConfiguration);
     }
 }

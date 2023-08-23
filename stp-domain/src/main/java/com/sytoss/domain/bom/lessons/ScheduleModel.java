@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ExamModel {
+public class ScheduleModel {
 
     private Date relevantFrom;
 

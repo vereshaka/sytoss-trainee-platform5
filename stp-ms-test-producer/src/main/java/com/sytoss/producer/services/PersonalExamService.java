@@ -232,7 +232,7 @@ public class PersonalExamService extends AbstractService {
         return baos.toByteArray();
     }
 
-    public List<PersonalExam> update(ExamConfiguration examConfiguration) {
+    public List<PersonalExam> reschedule(ExamConfiguration examConfiguration) {
         List<PersonalExam> personalExamList = personalExamConnector.getAllByExamId(examConfiguration.getExam().getId());
 
         if (ObjectUtils.isEmpty(personalExamList)) {
