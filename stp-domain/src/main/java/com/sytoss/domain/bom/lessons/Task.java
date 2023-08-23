@@ -25,6 +25,7 @@ public class Task {
 
     private List<Topic> topics = new ArrayList<>();
 
+    @JsonView({PersonalExam.TeacherOnly.class})
     private List<TaskCondition> taskConditions = new ArrayList<>();
 
     private Long imageId;
