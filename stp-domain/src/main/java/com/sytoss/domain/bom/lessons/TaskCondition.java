@@ -1,5 +1,7 @@
 package com.sytoss.domain.bom.lessons;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +11,7 @@ public class TaskCondition {
 
     private Long id;
 
+    @JsonView({PersonalExam.TeacherOnly.class})
     private String value;
 
     private ConditionType type;
