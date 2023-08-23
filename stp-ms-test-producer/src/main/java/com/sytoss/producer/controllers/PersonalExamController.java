@@ -47,7 +47,8 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView(PersonalExam.Public.class)
+
+    @JsonView({PersonalExam.TeacherOnly.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
@@ -92,11 +93,25 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/{personalExamId}/task/check")
-    public QueryResult check(
+    public QueryResult checkCurrentAnswer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestParam String taskAnswer) {
-        return answerService.check(personalExamId, taskAnswer.replaceAll("\"", ""));
+            @RequestBody String taskAnswer) {
+        return answerService.checkCurrentAnswer(personalExamId, taskAnswer.replaceAll("\"", ""));
+    }
+
+    @Operation(description = "Method for answering tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    @PostMapping("/{personalExamId}/task/check/{answerId}")
+    public QueryResult checkAnswerById(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @PathVariable(value = "answerId") String answerId,
+            @RequestBody  String taskAnswer) {
+        return answerService.checkByAnswerId(personalExamId, taskAnswer.replaceAll("\"", ""), answerId);
     }
 
     @Operation(description = "Method returns image of db structure for task")

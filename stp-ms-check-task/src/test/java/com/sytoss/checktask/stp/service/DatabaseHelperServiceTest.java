@@ -1,14 +1,17 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.*;
 
+@Slf4j
 class DatabaseHelperServiceTest extends StpUnitTest {
 
     private final DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor());

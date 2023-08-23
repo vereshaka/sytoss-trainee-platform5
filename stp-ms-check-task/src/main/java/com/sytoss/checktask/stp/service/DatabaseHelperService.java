@@ -30,6 +30,9 @@ public class DatabaseHelperService {
 
     private static final String password = "~";
 
+    private static final String ORACLE_MODE = "MODE=Oracle";
+    private static final String MSSQL_MODE = "MODE=MSSQLServer";
+
     private final QueryResultConvertor queryResultConvertor;
 
     private String url = "jdbc:h2:mem:";
@@ -40,7 +43,7 @@ public class DatabaseHelperService {
         if (connection == null) {
             try {
                 Class.forName("org.h2.Driver");
-                url += generateDatabaseName() + ";MODE=Oracle";
+                url += generateDatabaseName() + ";" + MSSQL_MODE;
                 connection = DriverManager.getConnection(url, username, password);
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);

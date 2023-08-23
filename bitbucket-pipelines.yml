@@ -30,13 +30,13 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - mvn clean install
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - chmod +x version.sh
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
-            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
-            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest
@@ -57,14 +57,14 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - mvn clean install
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - chmod +x version.sh
             - export VERSION=$(./version.sh -p ${OLDVERSION} | tr -d '\r\n')
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
-            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
-            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest
@@ -85,14 +85,14 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - mvn clean install
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - chmod +x version.sh
-            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
+            - export VERSION=$(./version.sh -m ${OLDVERSION} | tr -d '\r\n')
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
-            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
-            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest
@@ -113,14 +113,14 @@ pipelines:
       - step:
           name: Build and push
           script:
-            - mvn clean install
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
             - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
             - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
-            - chmod +x version.sh
-            - export VERSION=$(./version.sh -m ${OLDVERSION} | tr -d '\r\n')
+            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
             - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
-            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
-            - mvn release:perform -DskipTests -Darguments=-DskipTests
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
             - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
             - docker build -t sytoss/graphiz:latest -f ./stp-common/src/main/docker/Dockerfile .
             - docker push sytoss/graphiz:latest

@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -36,14 +37,16 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
         //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
+        Date relevantFrom = examConfiguration.getExam().getRelevantFrom();
+        Date relevantTo = examConfiguration.getExam().getRelevantTo();
         personalExam.setName(examConfiguration.getExam().getName());
         personalExam.setExamId(examConfiguration.getExam().getId());
         personalExam.setAssignedDate(new Date());
-        personalExam.setRelevantFrom(examConfiguration.getExam().getRelevantFrom());
-        personalExam.setRelevantTo(examConfiguration.getExam().getRelevantTo());
+        personalExam.setRelevantFrom(relevantFrom);
+        personalExam.setRelevantTo(relevantTo);
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime(examConfiguration.getExam().getDuration() == null ? 200 : examConfiguration.getExam().getDuration());
+        personalExam.setTime((int) TimeUnit.MILLISECONDS.toMinutes(relevantTo.getTime()-relevantFrom.getTime()));
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());

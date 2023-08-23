@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: init-tables
+      author: compiled
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: IdSale
+                  value: 4
+              - column:
+                  name: IdProduct
+                  value: 1
+              - column:
+                  name: IdClient
+                  value: 1
+              - column:
+                  name: Quantity
+                  valueNumeric: 10
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-11' as DateTime)
+            tableName: Sale
+  - changeSet:
+      id: create-tables
+      author: compiled
+      changes:
+        - createTable:
+            tableName: Sale1
+            columns:
+              - column:
+                  name: IdSale
+                  type: long
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: IdClient
+                  type: long
+              - column:
+                  name: IdProduct
+                  type: long
+              - column:
+                  name: Quantity
+                  type: long
+              - column:
+                  name: DateSale
+                  type: date

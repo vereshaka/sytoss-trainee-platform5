@@ -12,9 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Grade {
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double value;
 
-    @JsonView(PersonalExam.Public.class)
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String comment;
 }
