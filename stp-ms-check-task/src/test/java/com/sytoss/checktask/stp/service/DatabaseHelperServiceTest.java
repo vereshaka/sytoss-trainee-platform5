@@ -1,14 +1,17 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.*;
 
+@Slf4j
 class DatabaseHelperServiceTest extends StpUnitTest {
 
     private final DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor());
@@ -17,6 +20,23 @@ class DatabaseHelperServiceTest extends StpUnitTest {
     void generateDatabase() {
         databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
         Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
+    }
+
+    @Test
+    public void generateDatabase_puml() {
+        String pumlv = FileUtils.readFromFile("script_v1.puml");
+        String pumlScript = new PumlConvertor().formatPuml(pumlv);
+        String script = new PumlConvertor().convertToLiquibase(pumlScript);
+        log.info(script);
+        databaseHelperService.generateDatabase(script);
+        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
+    }
+
+    @Test
+    public void generateDatabase_v1() {
+        String script = FileUtils.readFromFile("script_v1.yml");
+        databaseHelperService.generateDatabase(script);
+        //Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from discipline"));
     }
 
     @Test

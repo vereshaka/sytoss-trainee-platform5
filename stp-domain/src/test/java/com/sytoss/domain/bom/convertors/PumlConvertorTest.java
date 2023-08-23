@@ -69,6 +69,14 @@ class PumlConvertorTest {
         log.info(pumlConvertedScript);
     }
 
+    @Test
+    public void shouldParse(){
+        PumlConvertor pumlConvertor = new PumlConvertor();
+        String script = readFromFile("puml/script_v1.puml");
+        List<Table> result = pumlConvertor.parse(script);
+        //log.info(pumlScript);
+    }
+
 
     private String readFromFile(String path)  {
         ClassLoader classLoader = getClass().getClassLoader();

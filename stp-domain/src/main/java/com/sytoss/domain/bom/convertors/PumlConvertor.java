@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -25,6 +26,102 @@ public class PumlConvertor {
     private static final String NULL_VALUE_DISPLAY = "";
     private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)\\s?(\\([A-z]+\\))))>>");
     private String indent;
+
+    public List<Table> parse(String pumlScript) {
+        String boundary = UUID.randomUUID().toString();
+        String workedScript = pumlScript
+                .replaceAll("table", boundary + "table")
+                .replaceAll("data", boundary + "data");
+        List<String> items = Arrays.stream(workedScript.split(boundary)).filter(item -> !item.trim().isEmpty()).collect(Collectors.toUnmodifiableList());
+        List<String> tables = items.stream().filter(item -> item.trim().startsWith("table")).collect(Collectors.toUnmodifiableList());
+        List<String> datas = items.stream().filter(item -> item.trim().startsWith("data")).collect(Collectors.toUnmodifiableList());
+        List<Table> result = new ArrayList<>();
+        tables.forEach(item -> result.add(parseTable(item)));
+        datas.forEach(item -> parseData(item, result));
+        validate(result);
+        return result;
+    }
+
+    private void validate(List<Table> result) {
+        //TODO: yevgenyv: add validation
+    }
+
+    private Table parseTable(String tableScript) {
+        Table result = new Table();
+        String[] definitions = tableScript.split("\\{");
+        if (definitions.length != 2) {
+            throw new RuntimeException("Unexpected format: #1");
+        }
+        result.setName(definitions[0].replaceAll("table", "").trim());
+        List<String> lines = Arrays.stream(definitions[1].trim().replaceAll("}", "").split("\n")).filter(item -> !item.trim().isEmpty()).collect(Collectors.toUnmodifiableList());
+        lines.forEach(item -> result.getColumns().add(parseColumn(item)));
+        return result;
+    }
+
+    private Column parseColumn(String columnDefinition) {
+        String source = columnDefinition.trim().replaceAll("( )+", " ");
+        Column result = new Column();
+        String[] temp = source.split(":");
+        result.setName(temp[0].trim());
+        temp = temp[1].split("<<");
+        result.setDatatype(temp[0].trim());
+        for (int i = 1; i < temp.length; i++) {
+            String additional = temp[i].replaceAll(">>", "").trim();
+            if (additional.equals("PK")) {
+                result.setPrimary(true);
+                result.setNullable(false);
+            } else if (additional.equals("NULLABLE")) {
+                result.setNullable(true);
+            } else if (additional.startsWith("FK")) {
+                String[] dividedSpring = additional.substring(2).trim().split("\\(");
+                result.setForeignKey(new ForeignKey());
+                result.getForeignKey().setTargetTable(dividedSpring[0]);
+                result.getForeignKey().setTargetColumn(dividedSpring[1].replaceAll("\\)", "").trim());
+            }
+        }
+        return result;
+    }
+
+    private void parseData(String dataScript, List<Table> tables) {
+        String[] definitions = dataScript.split("\\{");
+        if (definitions.length != 2) {
+            throw new RuntimeException("Unexpected format: #1");
+        }
+        String tableName = definitions[0].replaceAll("data", "").trim();
+        Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
+        if (result == null) {
+            throw new RuntimeException("Table not found for data. Table name: " + tableName);
+        }
+        List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).collect(Collectors.toUnmodifiableList());
+        List<String> headers = Arrays.stream(lines.get(0).replaceAll("=", "").split("\\|")).filter(item -> item.trim().length() > 0).collect(Collectors.toUnmodifiableList());
+        for (int i = 1; i < lines.size(); i++) {
+            String rawString = lines.get(i).trim();
+            String source = rawString;
+            if (source.startsWith("|")) {
+                source = source.substring(1);
+            }
+            if (source.endsWith("|")) {
+                source = source.substring(0, source.length() - 1);
+            }
+            List<String> values = List.of(source.split("\\|"));
+            DataRow row = new DataRow();
+            row.setRaw(rawString);
+            if (values.size() > headers.size()){
+                throw new RuntimeException("Wrong amount of columns. \n" + lines.get(0) +"\n"+rawString);
+            }
+            for (int j = 1; j < values.size(); j++) {
+                row.getValues().put(headers.get(j), values.get(j));
+            }
+        }
+        lines.forEach(item -> result.getRows().add(parseRow(item, result)));
+    }
+
+    private DataRow parseRow(String rawString, Table table) {
+        DataRow result = new DataRow();
+        result.setRaw(rawString);
+        //result.getValues().
+        return result;
+    }
 
     public String convertToLiquibase(String script) {
         indent = StringUtils.leftPad(StringUtils.SPACE, 2);

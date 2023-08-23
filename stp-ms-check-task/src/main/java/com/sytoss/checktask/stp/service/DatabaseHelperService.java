@@ -31,8 +31,7 @@ public class DatabaseHelperService {
     private static final String password = "~";
 
     private static final String ORACLE_MODE = "MODE=Oracle";
-    private static final String MSSQL_MODE = "MODE=MSSQLServer;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE";
-
+    private static final String MSSQL_MODE = "MODE=MSSQLServer";
 
     private final QueryResultConvertor queryResultConvertor;
 
