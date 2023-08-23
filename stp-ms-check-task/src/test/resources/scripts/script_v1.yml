@@ -1,27 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: init-tables
-      author: compiled
-      changes:
-        - insert:
-            columns:
-              - column:
-                  name: IdSale
-                  value: 4
-              - column:
-                  name: IdProduct
-                  value: 1
-              - column:
-                  name: IdClient
-                  value: 1
-              - column:
-                  name: Quantity
-                  valueNumeric: 10
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-11' as DateTime)
-            tableName: Sale
-  - changeSet:
       id: create-tables
       author: compiled
       changes:
@@ -45,3 +23,25 @@ databaseChangeLog:
               - column:
                   name: DateSale
                   type: date
+  - changeSet:
+      id: init-tables
+      author: compiled
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: IdSale
+                  value: 4
+              - column:
+                  name: IdProduct
+                  value: 1
+              - column:
+                  name: IdClient
+                  value: 1
+              - column:
+                  name: Quantity
+                  valueNumeric: 10
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-11' as DateTime)
+            tableName: Sale
