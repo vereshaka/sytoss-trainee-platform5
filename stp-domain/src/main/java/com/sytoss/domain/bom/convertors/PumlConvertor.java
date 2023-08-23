@@ -32,9 +32,9 @@ public class PumlConvertor {
         String workedScript = pumlScript
                 .replaceAll("table", boundary + "table")
                 .replaceAll("data", boundary + "data");
-        List<String> items = Arrays.stream(workedScript.split(boundary)).filter(item -> !item.trim().isEmpty()).collect(Collectors.toUnmodifiableList());
-        List<String> tables = items.stream().filter(item -> item.trim().startsWith("table")).collect(Collectors.toUnmodifiableList());
-        List<String> datas = items.stream().filter(item -> item.trim().startsWith("data")).collect(Collectors.toUnmodifiableList());
+        List<String> items = Arrays.stream(workedScript.split(boundary)).filter(item -> !item.trim().isEmpty()).toList();
+        List<String> tables = items.stream().filter(item -> item.trim().startsWith("table")).toList();
+        List<String> datas = items.stream().filter(item -> item.trim().startsWith("data")).toList();
         List<Table> result = new ArrayList<>();
         tables.forEach(item -> result.add(parseTable(item)));
         datas.forEach(item -> parseData(item, result));
@@ -53,7 +53,7 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         result.setName(definitions[0].replaceAll("table", "").trim());
-        List<String> lines = Arrays.stream(definitions[1].trim().replaceAll("}", "").split("\n")).filter(item -> !item.trim().isEmpty()).collect(Collectors.toUnmodifiableList());
+        List<String> lines = Arrays.stream(definitions[1].trim().replaceAll("}", "").split("\n")).filter(item -> !item.trim().isEmpty()).toList();
         lines.forEach(item -> result.getColumns().add(parseColumn(item)));
         return result;
     }
@@ -92,8 +92,8 @@ public class PumlConvertor {
         if (result == null) {
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
-        List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).collect(Collectors.toUnmodifiableList());
-        List<String> headers = Arrays.stream(lines.get(0).replaceAll("=", "").split("\\|")).filter(item -> item.trim().length() > 0).collect(Collectors.toUnmodifiableList());
+        List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
+        List<String> headers = Arrays.stream(lines.get(0).replaceAll("=", "").split("\\|")).filter(item -> item.trim().length() > 0).toList();
         for (int i = 1; i < lines.size(); i++) {
             String rawString = lines.get(i).trim();
             String source = rawString;
@@ -112,15 +112,8 @@ public class PumlConvertor {
             for (int j = 1; j < values.size(); j++) {
                 row.getValues().put(headers.get(j), values.get(j));
             }
+            result.getRows().add(row);
         }
-        lines.forEach(item -> result.getRows().add(parseRow(item, result)));
-    }
-
-    private DataRow parseRow(String rawString, Table table) {
-        DataRow result = new DataRow();
-        result.setRaw(rawString);
-        //result.getValues().
-        return result;
     }
 
     public String convertToLiquibase(String script) {
