@@ -52,16 +52,17 @@ public class TaskDomainService {
         DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElseThrow(() -> new DisciplineNotFoundException(disciplineId));
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
         if (oldTaskDomainDTO == null) {
-            TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
-            taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
-            taskDomainDTO.setDiscipline(disciplineDTO);
-            taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
-            taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
             String liquibaseScript = pumlConvertor.convertToLiquibase(taskDomain.getDatabaseScript()+"\n\n"+taskDomain.getDataScript());
             boolean isValid = checkTaskConnector.checkValidation(liquibaseScript);
             if(!isValid){
                 throw new TaskDomainScriptIsNotValidException("Script is not valid");
             }
+            TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+            taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
+            taskDomainDTO.setDiscipline(disciplineDTO);
+            taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
+            taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
+
             return taskDomain;
         } else {
             throw new TaskDomainAlreadyExist(taskDomain.getName());
