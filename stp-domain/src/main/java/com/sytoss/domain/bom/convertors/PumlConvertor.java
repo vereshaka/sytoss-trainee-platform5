@@ -24,7 +24,6 @@ public class PumlConvertor {
 
     private static final String NULL_VALUE_DISPLAY = "";
     private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)\\s?(\\([A-z]+\\))))>>");
-    private String indent;
 
     public List<Table> parse(String pumlScript) {
         String boundary = UUID.randomUUID().toString();
@@ -246,60 +245,6 @@ public class PumlConvertor {
         return allMatches.get(positionInScript);
     }
 
-    private Map<String, String> getParameters(String entity) {
-        Pattern parametersPattern = Pattern.compile("\\w+:\\s?\\w+(\\s<<.+>>)?");
-        Matcher matcher = parametersPattern.matcher(entity);
-        List<String> groupsOfParameters = getGroups(matcher);
-        Map<String, String> parameters = new LinkedHashMap<>();
-        for (String group : groupsOfParameters) {
-            List<String> values = Arrays.stream(group.split(":")).toList();
-            values = values.stream().map(String::trim).toList();
-            parameters.put(values.get(0), values.get(1));
-        }
-        return parameters;
-    }
-
-    private List<String> getGroups(Matcher matcher) {
-        List<String> groups = new ArrayList<>();
-        while (matcher.find()) {
-            groups.add(matcher.group(0));
-        }
-        return groups;
-    }
-
-  /*  private String convertPumlEntityToLiquibase(String entity) {
-        String name = getName(entity, 1);
-        Map<String, String> parameters = getParameters(entity);
-        return returnCreateTableLiquibaseGroup(name, parameters);
-    }*/
-
-   /* private String returnCreateTableLiquibaseGroup(String name, Map<String, String> parameters) {
-        StringBuilder entity = new StringBuilder();
-        String innerIndent = indent + StringUtils.leftPad(StringUtils.SPACE, 4);
-        entity.append(indent).append("- createTable:").append(StringUtils.LF)
-                .append(innerIndent).append("tableName: ").append(name).append(StringUtils.LF)
-                .append(innerIndent).append("columns:").append(StringUtils.LF);
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            StringBuilder primaryKeyStringBuilder = null;
-            if (value.matches("\\S+\\s<<.+>>")) {
-                if (value.contains("PK")) {
-                    primaryKeyStringBuilder = createPrimaryKey(indent + StringUtils.leftPad(StringUtils.SPACE, 10));
-                }
-                value = value.replaceAll("<<.+>>", "").trim();
-            }
-            String columnsIndent = innerIndent + "      ";
-            entity.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
-                    .append(columnsIndent).append("name: ").append(key).append(StringUtils.LF)
-                    .append(columnsIndent).append("type: ").append(value.toLowerCase(Locale.ENGLISH).equals("string") ? "varchar" : value).append(StringUtils.LF);
-            if (primaryKeyStringBuilder != null) {
-                entity.append(columnsIndent).append(primaryKeyStringBuilder).append(StringUtils.LF);
-            }
-        }
-        return entity.toString();
-    }*/
-
     private StringBuilder createChangeSet(String purpose) {
         String indent = StringUtils.leftPad(StringUtils.SPACE, 2);
         String innerIndent = StringUtils.leftPad(StringUtils.SPACE, 6);
@@ -322,87 +267,6 @@ public class PumlConvertor {
         }
         return objects;
     }
-
-   /* private String convertPumlObjectToLiquibase(String object) {
-        String name = getName(object, 3);
-        List<Map<String, String>> parameters = getObjectData(object);
-        return returnInitTableLiquibaseGroup(name, parameters);
-    }*/
-
-    private List<Map<String, String>> getObjectData(String object) {
-        Pattern parametersPattern = Pattern.compile("\\|.+\\|");
-        Matcher matcher = parametersPattern.matcher(object);
-        List<String> rows = getGroups(matcher);
-        List<String> header = getRowValues(rows.get(0));
-        List<Map<String, String>> valuesInTable = new ArrayList<>();
-
-        for (int i = 1; i < rows.size(); i++) {
-            if (rows.get(i).contains("|=")) {
-                continue;
-            }
-            List<String> values = getRowValues(rows.get(i));
-            values = values.stream().map(String::trim).toList();
-            HashMap<String, String> valuesInRow = new LinkedHashMap<>();
-            for (int j = 0; j < header.size(); j++) {
-                String value = values.size() > j ? values.get(j) : NULL_VALUE_DISPLAY;
-                valuesInRow.put(header.get(j), value);
-            }
-            valuesInTable.add(valuesInRow);
-        }
-        return valuesInTable;
-    }
-
-    private List<String> getRowValues(String row) {
-        row = row.trim();
-        if (row.startsWith("|")) {
-            row = row.substring(1);
-        }
-        if (row.endsWith("|")) {
-            row = row.substring(0, row.length() - 1).trim();
-        }
-        String[] rawValues = row.split("\\|");
-        List<String> allMatches = new ArrayList<>();
-        for (int i = 0; i < rawValues.length; i++) {
-            String value = rawValues[i].trim();
-            if (value.startsWith("=")) {
-                value = value.substring(1).trim();
-            }
-            allMatches.add(value.equals("<null>") ? "null" : value);
-        }
-
-        /*Pattern pattern = Pattern.compile("\\|(?:=)?(?: +)?(\\w+)");
-        Matcher matcher = pattern.matcher(row);
-
-        while (matcher.find()) {
-            String match = matcher.group();
-            if (match.matches("\\| +") || match.contains("<null>")) {
-                match = "null";
-            } else {
-                match = match.replaceAll("[|=]", "").trim();
-            }
-            allMatches.add(match);
-        }*/
-        return allMatches;
-    }
-
-    /*private String returnInitTableLiquibaseGroup(String name, List<Map<String, String>> parameters) {
-        StringBuilder object = new StringBuilder();
-        String innerIndent = indent + StringUtils.leftPad(StringUtils.SPACE, 4);
-        for (Map<String, String> map : parameters) {
-            object.append(indent).append("- insert:").append(StringUtils.LF)
-                    .append(innerIndent).append("columns:").append(StringUtils.LF);
-
-            String columnsIndent = innerIndent + "      ";
-            for (Map.Entry<String, String> entry : map.entrySet()) {
-                object.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
-                        .append(columnsIndent).append("name: ").append(entry.getKey()).append(StringUtils.LF)
-                        .append(columnsIndent).append("value: ").append(entry.getValue()).append(StringUtils.LF);
-            }
-            object.append(innerIndent).append("tableName: ").append(name.substring(1)).append(StringUtils.LF);
-        }
-
-        return object.toString();
-    }*/
 
     public String addLinks(String script, String mainScript, ConvertToPumlParameters convertToPumlParameters) {
         String stringBuilder = "@startuml" + StringUtils.LF + StringUtils.LF +
@@ -497,40 +361,4 @@ public class PumlConvertor {
         }
         return null;
     }
-
-    /*private String initForeignKeys(String entity) {
-        String name = getName(entity, 1);
-        Map<String, String> parameters = getParameters(entity);
-        return returnInitForeignKeys(name, parameters);
-    }*/
-
-    /*private String returnInitForeignKeys(String name, Map<String, String> parameters) {
-        StringBuilder foreignKeys = new StringBuilder();
-        StringBuilder foreignKeyConstraintsStringBuilder = null;
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            if (value.matches("\\S+\\s<<.+>>")) {
-                if (value.contains("FK")) {
-                    Matcher matcher = foreignKeyPattern.matcher(value);
-                    if (matcher.find()) {
-                        String entityName2 = matcher.group(2);
-                        String entityName2FieldName = matcher.group(4);
-                        entityName2 = entityName2.replaceAll("\\(.+?\\)", "");
-                        entityName2FieldName = entityName2FieldName.replaceAll("[()]", "");
-                        if (foreignKeyConstraintsStringBuilder == null) {
-                            foreignKeyConstraintsStringBuilder = new StringBuilder();
-                        }
-                        foreignKeyConstraintsStringBuilder.append(createForeignKey(name, key, entityName2, entityName2FieldName)).append("\n");
-                    }
-                }
-                value = value.replaceAll("<<.+>>", "").trim();
-            }
-        }
-        if(foreignKeyConstraintsStringBuilder!=null){
-            foreignKeys.append(foreignKeyConstraintsStringBuilder);
-        }
-
-        return foreignKeys.toString();
-    }*/
 }
