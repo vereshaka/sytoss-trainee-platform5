@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
@@ -56,6 +57,11 @@ public class TaskDomainService {
             taskDomainDTO.setDiscipline(disciplineDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
+            String liquibaseScript = pumlConvertor.convertToLiquibase(taskDomain.getDatabaseScript()+"\n\n"+taskDomain.getDataScript());
+            boolean isValid = checkTaskConnector.checkValidation(liquibaseScript);
+            if(!isValid){
+                throw new TaskDomainScriptIsNotValidException("Script is not valid");
+            }
             return taskDomain;
         } else {
             throw new TaskDomainAlreadyExist(taskDomain.getName());

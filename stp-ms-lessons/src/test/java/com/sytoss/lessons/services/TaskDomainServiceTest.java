@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -294,5 +295,26 @@ public class TaskDomainServiceTest extends StpUnitTest {
         when(taskService.findByDomainId(any())).thenReturn(taskList);
         List<com.sytoss.domain.bom.lessons.Task> result = taskDomainService.getTasks(1L);
         assertEquals(taskList.size(), result.size());
+    }
+
+    @Test
+    public void shouldNotCreateTaskDomainWhenScriptIsNotValid() {
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        when(disciplineConnector.findById(any())).thenReturn(Optional.of(disciplineDTO));
+        when(taskDomainConnector.getByNameAndDisciplineId("TaskDomain first", 1L)).thenReturn(null);
+        Mockito.doAnswer((Answer<TaskDomainDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            TaskDomainDTO result = (TaskDomainDTO) args[0];
+            result.setId(1L);
+            return result;
+        }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setName("TaskDomain first");
+        taskDomain.setDatabaseScript("Anything");
+        taskDomain.setDataScript("Anything");
+        taskDomain.setShortDescription("Anything");
+        taskDomain.setFullDescription("Anything");
+        assertThrows(TaskDomainScriptIsNotValidException.class, ()-> taskDomainService.create(1L, taskDomain));
     }
 }
