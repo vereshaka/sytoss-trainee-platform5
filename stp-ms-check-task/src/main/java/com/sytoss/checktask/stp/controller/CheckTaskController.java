@@ -48,4 +48,14 @@ public class CheckTaskController {
             @RequestBody CheckRequestParameters body) {
         return scoreService.checkRequest(body);
     }
+
+    @ApiResponses(
+            value = {@ApiResponse(responseCode = "200", description = "Success|OK"),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "")),
+                    @ApiResponse(responseCode = "406", description = "Not Acceptable", content = @Content(mediaType = ""))})
+    @PostMapping("check-validation")
+    public boolean checkValidation(
+            @RequestBody String script) {
+        return scoreService.checkValidation(script);
+    }
 }

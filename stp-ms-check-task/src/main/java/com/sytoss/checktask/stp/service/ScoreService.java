@@ -129,4 +129,15 @@ public class ScoreService {
             helperServiceProviderObject.dropDatabase();
         }
     }
+
+    public boolean checkValidation(String script) {
+        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
+        try {
+            helperServiceProviderObject.generateDatabase(script);
+            helperServiceProviderObject.dropDatabase();
+        } catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }
