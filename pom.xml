@@ -4,7 +4,7 @@
 
     <groupId>com.sytoss.stp</groupId>
     <artifactId>sytosstraineeplatform</artifactId>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.2.1</version>
 
     <packaging>pom</packaging>
 
@@ -36,7 +36,7 @@
     <scm>
         <connection>scm:git:https://${USERNAME}:${PASSWORD}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
         <url>https://${USERNAME}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
-        <tag></tag>
+        <tag>0.2.1</tag>
     </scm>
 
 <!--    <distributionManagement>-->
