@@ -166,4 +166,13 @@ public class PersonalExamController {
     public byte[] getQuestionImage(@PathVariable("personalExamId") String personalExamId) {
         return personalExamService.getQuestionImage(personalExamId);
     }
+
+    @Operation(description = "Method that update all personal exams by exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PostMapping("/update")
+    public List<PersonalExam> update(@RequestBody ExamConfiguration examConfiguration) {
+        return personalExamService.update(examConfiguration);
+    }
 }

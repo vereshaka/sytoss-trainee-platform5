@@ -89,4 +89,23 @@ public class ExamService extends AbstractService {
             throw new ExamNotFoundException(examId);
         }
     }
+
+    public Exam update(Exam exam) {
+        ExamDTO examToUpdateDTO = examConnector.getReferenceById(exam.getId());
+        Exam examToUpdate = new Exam();
+        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
+        examToUpdate.setRelevantTo(exam.getRelevantTo());
+        examToUpdate.setRelevantFrom(exam.getRelevantFrom());
+        examConvertor.toDTO(examToUpdate, examToUpdateDTO);
+
+        examToUpdateDTO = examConnector.save(examToUpdateDTO);
+        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
+
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+        examConfiguration.setExam(examToUpdate);
+
+        personalExamConnector.update(examConfiguration);
+
+        return examToUpdate;
+    }
 }

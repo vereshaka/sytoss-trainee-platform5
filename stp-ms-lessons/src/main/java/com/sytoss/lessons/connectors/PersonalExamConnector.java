@@ -14,5 +14,8 @@ public interface PersonalExamConnector {
 
     @PostMapping("personal-exam/create")
     void create(ExamConfiguration configuration);
+
+    @PostMapping("personal-exam/update")
+    void update(ExamConfiguration configuration);
 }
 

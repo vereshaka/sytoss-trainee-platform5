@@ -10,9 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.ListUtils;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -64,5 +66,19 @@ public class ExamController {
             @PathVariable(value = "examId") Long examId) {
         Exam exam = examService.getById(examId);
         return ListUtils.emptyIfNull(exam.getTasks());
+    }
+
+    @Operation(description = "Method that update exam by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PostMapping(value = "/{examId}/update")
+    public Exam update(
+            @Parameter(description = "id of exam to update")
+            @PathVariable("examId") Long examId,
+            @RequestBody Exam exam
+    ) {
+        exam.setId(examId);
+        return examService.update(exam);
     }
 }

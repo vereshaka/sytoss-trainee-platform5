@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.business.*;
+import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -228,4 +229,19 @@ public class PersonalExamService extends AbstractService {
         return baos.toByteArray();
     }
 
+    public List<PersonalExam> update(ExamConfiguration examConfiguration) {
+        List<PersonalExam> personalExamList = personalExamConnector.getAllByExamId(examConfiguration.getExam().getId());
+
+        if (ObjectUtils.isEmpty(personalExamList)) {
+            throw new ExamNotFoundException(examConfiguration.getExam().getId());
+        }
+
+        personalExamList.forEach(personalExam -> {
+            personalExam.setRelevantFrom(examConfiguration.getExam().getRelevantFrom());
+            personalExam.setRelevantTo(examConfiguration.getExam().getRelevantTo());
+            personalExamConnector.save(personalExam);
+        });
+
+        return personalExamList;
+    }
 }
