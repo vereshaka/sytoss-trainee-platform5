@@ -14,16 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class PumlConvertor {
-
-    private static final String NULL_VALUE_DISPLAY = "";
-    private final Pattern foreignKeyPattern = Pattern.compile("<<(\\S+\\s(([A-z]+)\\s?(\\([A-z]+\\))))>>");
 
     public List<Table> parse(String pumlScript) {
         String boundary = UUID.randomUUID().toString();
@@ -151,7 +146,7 @@ public class PumlConvertor {
                 constraintStringBuilder.append(columnsIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("primaryKey: true");
             }
             if (column.isNullable()) {
-                if(column.isPrimary()){
+                if (column.isPrimary()) {
                     constraintStringBuilder.append(StringUtils.LF);
                 }
                 constraintStringBuilder.append(columnsIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("nullable: true");
@@ -183,9 +178,9 @@ public class PumlConvertor {
                 if (currentColumn.isBoolean()) {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
-                    if(rows.getValue().matches("\\d{4}-\\d{2}-\\d{2}")){
+                    if (rows.getValue().matches("\\d{4}-\\d{2}-\\d{2}")) {
                         object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as DateTime)").append(StringUtils.LF);
-                    }else if(rows.getValue().matches("\\d{2}.\\d{2}.\\d{4}")){
+                    } else if (rows.getValue().matches("\\d{2}.\\d{2}.\\d{4}")) {
                         String[] dates = rows.getValue().split("\\.");
                         object.append(columnsIndent).append("valueComputed: CAST(N'").append(dates[2]).append("-")
                                 .append(dates[1]).append("-")
@@ -229,28 +224,6 @@ public class PumlConvertor {
         return addForeignKey;
     }
 
-    public List<String> getEntities(String script) {
-        Pattern pattern = Pattern.compile("entity.+\\{\\n?(?>\\n?.+)+\\n?\\n}");
-        List<String> entities = new ArrayList<>();
-        Matcher matcher = pattern.matcher(script);
-        while (matcher.find()) {
-            for (int j = 0; j <= matcher.groupCount(); j++) {
-                entities.add(matcher.group(j).replaceAll("(?m)^[ \\t]*\\r?\\n", ""));
-            }
-        }
-        return entities;
-    }
-
-    private String getName(String entity, int positionInScript) {
-        Pattern pattern = Pattern.compile("\\S+");
-        Matcher matcher = pattern.matcher(entity);
-        List<String> allMatches = new ArrayList<>();
-        for (int i = 0; i <= positionInScript && matcher.find(); i++) {
-            allMatches.add(matcher.group());
-        }
-        return allMatches.get(positionInScript);
-    }
-
     private StringBuilder createChangeSet(String purpose) {
         String indent = StringUtils.leftPad(StringUtils.SPACE, 2);
         String innerIndent = StringUtils.leftPad(StringUtils.SPACE, 6);
@@ -262,97 +235,26 @@ public class PumlConvertor {
         return changeSet;
     }
 
-    public List<String> getObjects(String script) {
-        Pattern pattern = Pattern.compile("object.+\\{(?>\\n?.+)+\\n}");
-        List<String> objects = new ArrayList<>();
-        Matcher matcher = pattern.matcher(script);
-        while (matcher.find()) {
-            for (int j = 0; j <= matcher.groupCount(); j++) {
-                objects.add(matcher.group(j));
-            }
-        }
-        return objects;
-    }
-
-    public String addLinks(String script, String mainScript, ConvertToPumlParameters convertToPumlParameters) {
-        String stringBuilder = "@startuml" + StringUtils.LF + StringUtils.LF +
-                script + StringUtils.LF + StringUtils.LF +
-                initLinks(mainScript, convertToPumlParameters) + StringUtils.LF +
-                "@enduml";
-        return stringBuilder;
-    }
-
-    private String initLinks(String script, ConvertToPumlParameters convertToPumlParameters) {
-        StringBuilder entityStringBuilder = new StringBuilder();
-        StringBuilder dataStringBuilder = new StringBuilder();
-        List<String> entities = getEntities(script);
-        Matcher matcher;
-        for (String entity : entities) {
-            matcher = foreignKeyPattern.matcher(entity);
-            if (matcher.find()) {
-                String entityLink = convertToLink(entity, ConvertToPumlParameters.DB);
-                String dataLink = convertToLink(entity, ConvertToPumlParameters.DATA);
-                if (entityLink != null) {
-                    entityStringBuilder.append(entityLink).append("\n");
-                }
-                if (dataLink != null) {
-                    dataStringBuilder.append(dataLink).append("\n");
-                }
-            }
-        }
-
-        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
-            return entityStringBuilder.toString();
-        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
-            return dataStringBuilder.toString();
-        } else {
-            return entityStringBuilder.append("\n").append(dataStringBuilder).toString();
-        }
-    }
-
-    private String convertToLink(String entity, ConvertToPumlParameters convertToPumlParameters) {
-        Matcher matcher = foreignKeyPattern.matcher(entity);
-        if (matcher.find()) {
-            String name = getName(entity, 1);
-            String match = matcher.group(3);
-            if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
-                name = "d" + name;
-                match = "d" + match;
-            }
-            return name + " --o " + match + " : " + matcher.group(1);
-        }
-        return null;
-    }
-
-    public String formatPuml(String puml) {
-        Pattern pattern = Pattern.compile("data ([A-z]+)");
-        Matcher matcher = pattern.matcher(puml);
-        while (matcher.find()) {
-            String match = matcher.group(1);
-            String newDataName = "object \"Data:" + match + "\" as d" + match;
-            puml = puml.replaceAll(matcher.group(0), newDataName);
-        }
-        puml = puml.replaceAll("table", "entity").replaceAll("undefined","");
-        List<String> pumlParts = Arrays.stream(puml.split("\n")).toList().stream().filter(el->!el.equals("")).toList();
-        puml = String.join("\n",pumlParts);
-        puml = puml.replaceAll("entity","\nentity").replaceAll("object","\nobject");
-        return puml;
-    }
-
     public byte[] generatePngFromPuml(String puml, ConvertToPumlParameters convertToPumlParameters) {
         if (puml == null) {
             return getClass().getClassLoader().getResource("plantUMLBlank.jpg").getFile().getBytes();
         }
-        puml = formatPuml(puml);
-        List<String> objects = new ArrayList<>();
-        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
-            objects = getEntities(puml);
-        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
-            objects = getObjects(puml);
-        }
 
-        String pumlConvertedScript = addLinks(String.join(StringUtils.LF + StringUtils.LF, objects), puml, convertToPumlParameters);
+        List<Table> tables = parse(puml);
+        StringBuilder pumlStringBuilder;
+        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
+            pumlStringBuilder = new StringBuilder(String.join("\n", tables.stream().map(this::createTable).toList()));
+        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
+            pumlStringBuilder = new StringBuilder(String.join("\n", tables.stream().map(this::createObject).toList()));
+        } else {
+            pumlStringBuilder = new StringBuilder(String.join("\n", tables.stream().map(this::createTable).toList()));
+            pumlStringBuilder.append(StringUtils.LF).append(String.join("\n", tables.stream().map(this::createObject).toList()));
+        }
+        pumlStringBuilder.append(String.join("\n", tables.stream().map(el -> initLinks(el, convertToPumlParameters)).toList()));
+
         ByteArrayOutputStream png = new ByteArrayOutputStream();
+        String pumlConvertedScript = "@startuml\n" + pumlStringBuilder + "\n@enduml";
+        System.out.println(pumlConvertedScript);
         try {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
@@ -370,4 +272,83 @@ public class PumlConvertor {
         }
         return null;
     }
+
+    public String createTable(Table table) {
+        StringBuilder createTableStringBuilder = new StringBuilder();
+        createTableStringBuilder.append("entity ").append(table.getName()).append(" {").append(StringUtils.LF);
+        for (Column column : table.getColumns()) {
+            createTableStringBuilder.append(StringUtils.leftPad(StringUtils.SPACE, 2)).append(column.getName()).append(": ").append(column.getDatatype());
+            if (column.isPrimary()) {
+                createTableStringBuilder.append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("<<PK>>");
+            }
+            if (column.isNullable()) {
+                createTableStringBuilder.append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("<<NULLABLE>>");
+            }
+            if (column.getForeignKey() != null) {
+                createTableStringBuilder.append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("<<FK ").append(column.getForeignKey().getTargetTable()).append("(").append(column.getForeignKey().getTargetColumn()).append(")").append(">>");
+            }
+            createTableStringBuilder.append(StringUtils.LF);
+        }
+        createTableStringBuilder.append("}");
+
+        return createTableStringBuilder.toString();
+    }
+
+    public String createObject(Table table) {
+        StringBuilder initTableStringBuilder = new StringBuilder();
+        initTableStringBuilder.append("object \"Data:").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
+        List<String> columnsName = table.getColumns().stream().map(Column::getName).toList();
+        String delimiter = "|= ";
+        String header = delimiter + String.join(" " + delimiter, columnsName) + " |";
+        initTableStringBuilder.append(header).append(StringUtils.LF);
+
+        for (DataRow dataRow : table.getRows()) {
+            initTableStringBuilder.append(dataRow.getRaw()).append(StringUtils.LF);
+        }
+
+        initTableStringBuilder.append("}");
+
+        return initTableStringBuilder.toString();
+    }
+
+    private String initLinks(Table table, ConvertToPumlParameters convertToPumlParameters) {
+        if (convertToPumlParameters.equals(ConvertToPumlParameters.DB)) {
+            return initEntityLinks(table);
+        } else if (convertToPumlParameters.equals(ConvertToPumlParameters.DATA)) {
+            return initObjectLinks(table);
+        } else {
+            return initEntityLinks(table) + StringUtils.LF + initObjectLinks(table);
+        }
+
+    }
+
+    private String initEntityLinks(Table table) {
+        StringBuilder initLinksStringBuilder = new StringBuilder();
+        for (Column column : table.getColumns()) {
+            if (column.getForeignKey() != null) {
+                initLinksStringBuilder.append(table.getName()).append(" --o ")
+                        .append(column.getForeignKey().getTargetTable())
+                        .append(": FK ").append(column.getForeignKey().getTargetTable())
+                        .append("(").append(column.getForeignKey().getTargetColumn()).append(")")
+                        .append(StringUtils.LF);
+            }
+        }
+        return initLinksStringBuilder.toString();
+    }
+
+    private String initObjectLinks(Table table) {
+        StringBuilder initLinksStringBuilder = new StringBuilder();
+        for (Column column : table.getColumns()) {
+            if (column.getForeignKey() != null) {
+                initLinksStringBuilder.append("d").append(table.getName()).append(" --o ")
+                        .append("d")
+                        .append(column.getForeignKey().getTargetTable())
+                        .append(": FK ").append(column.getForeignKey().getTargetTable())
+                        .append("(").append(column.getForeignKey().getTargetColumn()).append(")")
+                        .append(StringUtils.LF);
+            }
+        }
+        return initLinksStringBuilder.toString();
+    }
 }
+

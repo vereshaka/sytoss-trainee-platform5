@@ -1,8 +1,6 @@
 package com.sytoss.domain.bom.convertors;
 
-import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -47,16 +45,16 @@ class PumlConvertorTest {
         System.out.println(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
-
+/*
     @Test
     void addLinksTest() {
         PumlConvertor pumlConvertor = new PumlConvertor();
-        String pumlScript = readFromFile("puml/script.puml");
+        String pumlScript = readFromFile("puml/script_v1.puml");
         List<String> entities = pumlConvertor.getEntities(pumlScript);
         String pumlConvertedScript = pumlConvertor.addLinks(String.join(StringUtils.LF + StringUtils.LF, entities), pumlScript, ConvertToPumlParameters.DB);
         String pumlExampleScript = readFromFile("puml/scriptWithLinks.puml");
         assertEquals(pumlExampleScript, pumlConvertedScript);
-    }
+    }*/
 
     private String readFromFile(String path)  {
         ClassLoader classLoader = getClass().getClassLoader();
