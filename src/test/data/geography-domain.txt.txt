@@ -8,7 +8,7 @@ table Regions {
 }
 
 table Countries {
-  country_id: long <<PK>>
+  country_id: string <<PK>>
   country_name: string
   region_id: long <<FK Regions(region_id)>>
 }
@@ -20,7 +20,6 @@ POSTAL_CODE: string
 CITY: string
 STATE_PROVINCE: string
 COUNTRY_ID: string <<FK Countries(country_id)>>
-
 }
 
 data Regions {
