@@ -52,10 +52,7 @@ public class AnswerService extends AbstractService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(personalExam.getStartedDate());
-        calendar.add(Calendar.SECOND, personalExam.getTime());
-        if (answerUIDate.after(calendar.getTime())) {
+        if (answerUIDate.compareTo(personalExam.getRelevantTo()) >= 0) {
             personalExam.setStatus(PersonalExamStatus.FINISHED);
         }
         personalExamConnector.save(personalExam);
