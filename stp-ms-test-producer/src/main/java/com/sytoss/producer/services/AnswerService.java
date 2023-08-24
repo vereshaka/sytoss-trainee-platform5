@@ -90,7 +90,6 @@ public class AnswerService extends AbstractService {
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
-        script = pumlConvertor.formatPuml(script);
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
@@ -137,7 +136,6 @@ public class AnswerService extends AbstractService {
         request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
-        script = pumlConvertor.formatPuml(script);
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
         CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
         checkRequestParameters.setRequest(taskAnswer);
@@ -145,8 +143,7 @@ public class AnswerService extends AbstractService {
 
         request.setScript(liquibaseScript);
         try {
-            QueryResult queryResult = checkTaskConnector.testAnswer(request);
-            return queryResult;
+            return checkTaskConnector.testAnswer(request);
         } catch (Exception e) {
             log.error("Error during check request", e);
             if (e instanceof FeignException) {
