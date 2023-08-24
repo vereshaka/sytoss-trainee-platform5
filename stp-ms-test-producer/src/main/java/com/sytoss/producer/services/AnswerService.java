@@ -52,9 +52,6 @@ public class AnswerService extends AbstractService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(personalExam.getStartedDate());
-        calendar.add(Calendar.SECOND, personalExam.getTime());
         if (answerUIDate.compareTo(personalExam.getRelevantTo()) >= 0) {
             personalExam.finish();
         }
@@ -143,7 +140,8 @@ public class AnswerService extends AbstractService {
 
         request.setScript(liquibaseScript);
         try {
-            return checkTaskConnector.testAnswer(request);
+            QueryResult queryResult = checkTaskConnector.testAnswer(request);
+            return queryResult;
         } catch (Exception e) {
             log.error("Error during check request", e);
             if (e instanceof FeignException) {
