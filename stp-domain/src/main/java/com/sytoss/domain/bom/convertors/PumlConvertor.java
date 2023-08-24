@@ -179,7 +179,7 @@ public class PumlConvertor {
             for (Map.Entry<String, String> rows : dataRow.getValues().entrySet()) {
                 object.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
                         .append(columnsIndent).append("name: ").append(rows.getKey()).append(StringUtils.LF);
-                Column currentColumn = table.getColumns().get(table.getColumns().stream().map(Column::getName).toList().indexOf(rows.getKey()));
+                Column currentColumn = table.getColumns().get(table.getColumns().stream().map(el->el.getName().toUpperCase()).toList().indexOf(rows.getKey().toUpperCase()));
                 if (currentColumn.isBoolean()) {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
