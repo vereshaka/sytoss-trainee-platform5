@@ -55,7 +55,7 @@ public class AnswerService extends AbstractService {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(personalExam.getStartedDate());
         calendar.add(Calendar.SECOND, personalExam.getTime());
-        if (answerUIDate.after(personalExam.getRelevantTo())) {
+        if (answerUIDate.compareTo(personalExam.getRelevantTo()) >= 0) {
             personalExam.finish();
         }
         personalExamConnector.save(personalExam);
