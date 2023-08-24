@@ -46,7 +46,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setRelevantTo(relevantTo);
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime((int) TimeUnit.MILLISECONDS.toMinutes(relevantTo.getTime()-relevantFrom.getTime()));
+        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime()-relevantFrom.getTime()));
         personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
