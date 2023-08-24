@@ -146,7 +146,6 @@ public class TaskService {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(taskDomainRequestParameters.getTaskDomainId());
         if (taskDomainDTO != null) {
             String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
-            //script = pumlConvertor.formatPuml(script);
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());

@@ -1,6 +1,6 @@
 table Client {
-  IdClient:     long    <<PK>>     <<FK Client(IdClient)>>
-  FName: string <<NULLABLE>>
+  IdClient: long <<PK>>
+  FName: string
   MName: string
   LName: string
   Company: string
@@ -14,7 +14,7 @@ table Product {
   Type: string
   Sort: string
   Price: long
-  Stock: number
+  Stock: string
   CityProduct: string
 }
 

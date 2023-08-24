@@ -126,7 +126,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
     public void shouldStartPersonalExam() {
         PersonalExam input = new PersonalExam();
         input.setId("5");
-        input.setStatus(PersonalExamStatus.NOT_STARTED);
         Task task = new Task();
         task.setId(1L);
         TaskDomain taskDomain = new TaskDomain();
@@ -158,7 +157,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
     public void shouldNotStartExamWhenItStarted() {
         PersonalExam input = new PersonalExam();
         input.setId("5");
-        input.setStatus(PersonalExamStatus.IN_PROGRESS);
+        input.start();
         Task task = new Task();
         task.setId(1L);
         Answer answer = new Answer();
@@ -223,7 +222,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setExamId(examId);
         personalExam.setName(name);
-        personalExam.setStatus(PersonalExamStatus.FINISHED);
+        personalExam.finish();
         personalExam.setAmountOfTasks(amountOfTasks);
         personalExam.setAssignedDate(assignedDate);
         personalExam.setStartedDate(startedDate);

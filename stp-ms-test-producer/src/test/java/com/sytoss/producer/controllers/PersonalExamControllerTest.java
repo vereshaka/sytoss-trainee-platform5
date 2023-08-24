@@ -132,7 +132,7 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setExamId(examId);
         personalExam.setName(name);
-        personalExam.setStatus(PersonalExamStatus.FINISHED);
+        personalExam.finish();
         personalExam.setAmountOfTasks(amountOfTasks);
         personalExam.setAssignedDate(assignedDate);
         personalExam.setStartedDate(startedDate);

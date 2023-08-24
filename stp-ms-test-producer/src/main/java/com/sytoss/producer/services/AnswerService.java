@@ -53,7 +53,7 @@ public class AnswerService extends AbstractService {
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
         if (answerUIDate.compareTo(personalExam.getRelevantTo()) >= 0) {
-            personalExam.setStatus(PersonalExamStatus.FINISHED);
+            personalExam.finish();
         }
         personalExamConnector.save(personalExam);
         if (answer == null) {
@@ -87,7 +87,6 @@ public class AnswerService extends AbstractService {
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
-        script = pumlConvertor.formatPuml(script);
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
@@ -134,7 +133,6 @@ public class AnswerService extends AbstractService {
         request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
-        script = pumlConvertor.formatPuml(script);
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
         CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
         checkRequestParameters.setRequest(taskAnswer);

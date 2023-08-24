@@ -192,7 +192,6 @@ public class TaskDomainServiceTest extends StpUnitTest {
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
         personalExam.getAnswers().add(answer);
-        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExams.add(personalExam);
         when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(true);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);
@@ -258,7 +257,7 @@ public class TaskDomainServiceTest extends StpUnitTest {
 
     @Test
     void generatePngFromPuml() {
-        String pumlScript = FileUtils.readFromFile("puml/script2.puml");
+        String pumlScript = FileUtils.readFromFile("puml/script_v1.puml");
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));

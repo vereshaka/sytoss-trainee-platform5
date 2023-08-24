@@ -47,7 +47,6 @@ public class PersonalExamService extends AbstractService {
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
         personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime()-relevantFrom.getTime()));
-        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
@@ -183,7 +182,7 @@ public class PersonalExamService extends AbstractService {
                 }
         );
 
-        personalExam.setStatus(PersonalExamStatus.REVIEWED);
+        personalExam.review();
         return personalExamConnector.save(personalExam);
     }
 

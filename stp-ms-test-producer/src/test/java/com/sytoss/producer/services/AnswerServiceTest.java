@@ -57,7 +57,6 @@ public class AnswerServiceTest extends StpUnitTest {
 
         PersonalExam input = new PersonalExam();
         input.setId(examId);
-        input.setStatus(PersonalExamStatus.NOT_STARTED);
         Discipline discipline = new Discipline();
         discipline.setId(22L);
         input.setDiscipline(discipline);
