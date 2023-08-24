@@ -55,8 +55,8 @@ public class AnswerService extends AbstractService {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(personalExam.getStartedDate());
         calendar.add(Calendar.SECOND, personalExam.getTime());
-        if (answerUIDate.after(calendar.getTime())) {
-            personalExam.setStatus(PersonalExamStatus.FINISHED);
+        if (answerUIDate.after(personalExam.getRelevantTo())) {
+            personalExam.finish();
         }
         personalExamConnector.save(personalExam);
         if (answer == null) {
@@ -137,7 +137,6 @@ public class AnswerService extends AbstractService {
         request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
-        script = pumlConvertor.formatPuml(script);
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
         CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
         checkRequestParameters.setRequest(taskAnswer);

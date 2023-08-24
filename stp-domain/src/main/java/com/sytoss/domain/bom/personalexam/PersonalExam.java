@@ -6,10 +6,8 @@ import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.ArrayList;
@@ -59,7 +57,8 @@ public class PersonalExam {
     private Integer amountOfTasks;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private PersonalExamStatus status;
+    @Setter(AccessLevel.NONE)
+    private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private float summaryGrade;
@@ -106,12 +105,31 @@ public class PersonalExam {
                 return answer;
             }
         }
-        setStatus(PersonalExamStatus.FINISHED);
+        status = PersonalExamStatus.FINISHED;
         return null;
     }
 
     public Answer getAnswerById(Long id) {
         return answers.stream().filter(answer -> Objects.equals(answer.getId(), id)).findAny().orElse(null);
+    }
+
+    public void finish() {
+        status = PersonalExamStatus.FINISHED;
+
+        answers.forEach(answer -> {
+            if (ObjectUtils.isEmpty(answer.getGrade())) {
+                Grade grade = new Grade();
+                grade.setValue(0);
+                grade.setComment("Not answered");
+                answer.setGrade(grade);
+                answer.setStatus(AnswerStatus.GRADED);
+                answer.setTeacherGrade(grade);
+            }
+        });
+    }
+
+    public void review() {
+        status = PersonalExamStatus.REVIEWED;
     }
 
     public static class Public {

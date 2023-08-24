@@ -67,7 +67,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setStudent(student);
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
-            personalExam.setStatus(PersonalExamStatus.valueOf(answerStatus));
+            personalExam.start();
             if(StringUtils.isNotEmpty(examId)) {
                 personalExam.setExamId(Long.valueOf(examId));
             }

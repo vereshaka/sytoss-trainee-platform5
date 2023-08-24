@@ -192,7 +192,6 @@ public class TaskDomainServiceTest extends StpUnitTest {
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
         personalExam.getAnswers().add(answer);
-        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExams.add(personalExam);
         when(personalExamConnector.taskDomainIsUsed(anyLong())).thenReturn(true);
         when(taskDomainConnector.getReferenceById(anyLong())).thenReturn(taskDomainDTO);

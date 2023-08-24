@@ -14,7 +14,6 @@ public class PersonalExamTest {
     @Test
     public void shouldStartPersonalExam() {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setStatus(PersonalExamStatus.NOT_STARTED);
         personalExam.start();
         assertEquals(PersonalExamStatus.IN_PROGRESS, personalExam.getStatus());
     }
@@ -22,14 +21,14 @@ public class PersonalExamTest {
     @Test
     public void shouldNotStartPersonalExamWhenItStarted() {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setStatus(PersonalExamStatus.IN_PROGRESS);
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExam.start());
+        personalExam.start();
+        assertThrows(PersonalExamAlreadyStartedException.class, personalExam::start);
     }
 
     @Test
     public void shouldNotStartPersonalExamWhenItFinished() {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setStatus(PersonalExamStatus.FINISHED);
-        assertThrows(PersonalExamIsFinishedException.class, () -> personalExam.start());
+        personalExam.finish();
+        assertThrows(PersonalExamIsFinishedException.class, personalExam::start);
     }
 }
