@@ -79,4 +79,18 @@ public class TaskDomainController {
                                            @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getTasks(taskDomainId);
     }
+
+    @Operation(description = "Method that update task domain bu id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PostMapping("/{taskDomainId}/update")
+    public TaskDomain updateById(
+            @Parameter(description = "id of task domain to update")
+            @PathVariable("taskDomainId") Long taskDomainId,
+            @RequestBody TaskDomain taskDomain
+    ) {
+        taskDomain.setId(taskDomainId);
+        return taskDomainService.updateById(taskDomain);
+    }
 }
