@@ -126,4 +126,18 @@ public class TaskDomainService {
     public List<Task> getTasks(Long taskDomainId) {
         return taskService.findByDomainId(taskDomainId);
     }
+
+    public TaskDomain updateById(TaskDomain taskDomain) {
+        TaskDomain taskDomainToUpdate = getById(taskDomain.getId());
+        taskDomainToUpdate.setName(taskDomain.getName());
+        taskDomainToUpdate.setShortDescription(taskDomain.getShortDescription());
+        taskDomainToUpdate.setDatabaseScript(taskDomain.getDatabaseScript());
+        taskDomainToUpdate.setDataScript(taskDomain.getDataScript());
+
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainConvertor.toDTO(taskDomainToUpdate, taskDomainDTO);
+        taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
+        taskDomainConvertor.fromDTO(taskDomainDTO, taskDomainToUpdate);
+        return taskDomainToUpdate;
+    }
 }
