@@ -12,6 +12,7 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -46,7 +47,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setRelevantTo(relevantTo);
         personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
         personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime()-relevantFrom.getTime()));
+        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
         List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
@@ -245,5 +246,19 @@ public class PersonalExamService extends AbstractService {
         });
 
         return personalExamList;
+    }
+
+    @Scheduled(fixedRate = 60 * 1000)
+    public void setExpiredTestsAsDone() {
+        List<PersonalExam> allPersonalExams = personalExamConnector.findAll();
+        Date currentDate = new Date();
+        for (PersonalExam personalExam : allPersonalExams) {
+            if (personalExam.getRelevantTo().before(currentDate) &&
+                    (personalExam.getStatus().equals(PersonalExamStatus.NOT_STARTED)
+                            || personalExam.getStatus().equals(PersonalExamStatus.IN_PROGRESS))) {
+                personalExam.finish();
+                personalExamConnector.save(personalExam);
+            }
+        }
     }
 }

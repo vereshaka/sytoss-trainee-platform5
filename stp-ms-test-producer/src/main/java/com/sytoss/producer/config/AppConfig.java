@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -33,6 +34,7 @@ import static com.sytoss.common.SSLUtil.disableSSL;
 
 @Configuration
 @Slf4j
+@EnableScheduling
 public class AppConfig {
 
     @Autowired
