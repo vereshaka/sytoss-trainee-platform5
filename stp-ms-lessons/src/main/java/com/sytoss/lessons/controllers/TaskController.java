@@ -83,4 +83,14 @@ public class TaskController {
     public QueryResult getQueryResult(@RequestBody TaskDomainRequestParameters taskDomainRequestParameters) {
         return taskService.getQueryResult(taskDomainRequestParameters);
     }
+
+    @Operation(description = "Method that updates task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+    })
+    @PutMapping
+    public Task updateTask(@RequestBody Task task) {
+        return taskService.updateTask(task);
+    }
 }

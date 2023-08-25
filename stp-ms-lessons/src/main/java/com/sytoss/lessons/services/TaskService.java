@@ -15,7 +15,9 @@ import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import feign.FeignException;
@@ -26,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +42,8 @@ public class TaskService {
     private final TaskConditionService conditionService;
 
     private final TaskConvertor taskConvertor;
+
+    private final TaskConditionConvertor taskConditionConvertor;
 
     private final TopicService topicService;
 
@@ -162,5 +169,46 @@ public class TaskService {
         }
         throw new TaskDomainNotFoundException(taskDomainRequestParameters.getTaskDomainId());
 
+    }
+
+    public Task updateTask(Task task) {
+        log.debug("Updating Task with id [{}]", task.getId());
+
+        Optional<TaskDTO> taskDTO = taskConnector.findById(task.getId());
+        if (taskDTO.isEmpty()) {
+            throw new TaskNotFoundException(task.getId());
+        }
+
+        TaskDTO updateTaskDTO = taskDTO.get();
+
+        if(Objects.nonNull(task.getQuestion())) {
+            updateTaskDTO.setQuestion(task.getQuestion());
+        }
+
+        if(Objects.nonNull(task.getEtalonAnswer())) {
+            updateTaskDTO.setEtalonAnswer(task.getEtalonAnswer());
+        }
+
+        if(Objects.nonNull(task.getCoef())) {
+            updateTaskDTO.setCoef(task.getCoef());
+        }
+
+        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
+
+        updateTaskDTO = taskConnector.save(updateTaskDTO);
+        taskConvertor.fromDTO(updateTaskDTO, task);
+
+        return task;
+    }
+
+    //todo: check how to update when condition with a proper value already exists in DB
+    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
+        return task.getTaskConditions().stream()
+                .map(taskCondition -> {
+                    TaskConditionDTO updatedTaskCondition = new TaskConditionDTO();
+                    taskConditionConvertor.toDTO(taskCondition, updatedTaskCondition);
+
+                    return updatedTaskCondition;
+                }).collect(Collectors.toList());
     }
 }
