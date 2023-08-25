@@ -48,7 +48,7 @@ public class TopicService {
             topicDTO = topicConnector.saveAndFlush(topicDTO);
             topicConvertor.fromDTO(topicDTO, topic);
             double startDuration = discipline.getDuration() == null ? 0 : discipline.getDuration();
-            discipline.setDuration(startDuration+ topicDTO.getDuration());
+            discipline.setDuration(startDuration + (topicDTO.getDuration() == null ? 0 : topicDTO.getDuration()));
             disciplineService.updateDiscipline(discipline);
             return topic;
         } else {
