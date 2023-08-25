@@ -1,7 +1,6 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
-import com.sytoss.domain.bom.exceptions.business.WrongInputException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -185,7 +184,7 @@ public class DisciplineController {
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
     }
 
-    @Operation(description = "Method that assign groups to discipline")
+    @Operation(description = "Method that update discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
@@ -196,20 +195,12 @@ public class DisciplineController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String shortDescription,
             @RequestParam(required = false) String fullDescription,
-            @RequestParam(required = false) String duration,
             @RequestParam(required = false) MultipartFile icon) throws IOException {
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
         discipline.setName(name);
         discipline.setShortDescription(shortDescription);
         discipline.setFullDescription(fullDescription);
-        try{
-            discipline.setDuration(Double.parseDouble(duration));
-        } catch(Exception e){
-            throw new WrongInputException("Duration isn't valid");
-        }
-
-
         if (icon != null) {
             discipline.setIcon(icon.getBytes());
         }
