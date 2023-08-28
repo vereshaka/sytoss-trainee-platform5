@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.common;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
@@ -8,10 +9,11 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
+import liquibase.util.StringUtil;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class DataTableCommon extends LessonsIntegrationTest {
 
@@ -95,5 +97,27 @@ public class DataTableCommon extends LessonsIntegrationTest {
         TaskDomainDTO taskDomain = getTestExecutionContext().getDetails().getTaskDomains().stream().filter(el -> Objects.equals(el.getId(), taskDomainId)).toList().get(0);
         task1.setTaskDomain(taskDomain);
         return task1;
+    }
+
+    @DataTableType
+    public QueryResult mapQueryResult(DataTable table) {
+        List<Map<String, String>> tableMaps = table.entries();
+        List<Map<String, Object>> resultMaps = new ArrayList<>();
+        for(Map<String, String> tableMap: tableMaps){
+            Map<String, Object> resultMap = new HashMap<>();
+            for(String key : tableMap.keySet().stream().toList()){
+                resultMap.put(key, StringUtil.isNumeric(tableMap.get(key)) ? Integer.parseInt(tableMap.get(key)) : tableMap.get(key));
+            }
+            resultMaps.add(resultMap);
+        }
+        QueryResult queryResult = new QueryResult();
+
+        List<String> header = tableMaps.get(0).keySet().stream().toList();
+        queryResult.setHeader(header);
+        for (Map<String, Object> row : resultMaps) {
+            queryResult.addValues(row);
+        }
+
+        return queryResult;
     }
 }

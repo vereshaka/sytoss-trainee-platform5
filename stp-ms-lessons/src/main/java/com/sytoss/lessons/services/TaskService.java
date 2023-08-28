@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;

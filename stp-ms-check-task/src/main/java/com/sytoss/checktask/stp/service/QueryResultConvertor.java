@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
@@ -12,20 +13,27 @@ import java.util.List;
 @Component
 public class QueryResultConvertor {
 
-    public List<HashMap<String, Object>> convertFromResultSet(ResultSet resultSet) throws SQLException {
+    public QueryResult convertFromResultSet(QueryResult queryResult, ResultSet resultSet) throws SQLException {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int columns = resultSet.getMetaData().getColumnCount();
-        List<HashMap<String, Object>> hashMapList = new ArrayList<>();
-        resultSet.beforeFirst();
-        while (resultSet.next()) {
-            HashMap<String, Object> row = new HashMap<>(columns);
-            for (int i = 1; i <= columns; ++i) {
-                row.put(metaData.getColumnName(i).toUpperCase(), resultSet.getObject(i));
-            }
-            hashMapList.add(row);
+        List<String> header = new ArrayList<>();
+        for (int i = 1; i <= columns; i++) {
+            header.add(metaData.getColumnName(i));
         }
 
-        return hashMapList;
+        queryResult.setHeader(header);
+        resultSet.beforeFirst();
+
+        while (resultSet.next()) {
+            HashMap<String, Object> row = new HashMap<>();
+            for(int i = 1; i<=columns; i++){
+                String columnName = metaData.getColumnName(i);
+                row.put(columnName,resultSet.getObject(columnName));
+            }
+            queryResult.addValues(row);
+        }
+
+        return queryResult;
     }
 }
 

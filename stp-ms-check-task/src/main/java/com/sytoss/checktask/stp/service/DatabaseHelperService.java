@@ -1,7 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -110,7 +110,9 @@ public class DatabaseHelperService {
         try (Statement statement = getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             log.info("query result was got");
-            return new QueryResult(queryResultConvertor.convertFromResultSet(resultSet));
+            QueryResult queryResult = new QueryResult();
+            queryResultConvertor.convertFromResultSet(queryResult,resultSet);
+            return queryResult;
         }
     }
 }
