@@ -1,7 +1,7 @@
 package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;

@@ -1,6 +1,6 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;

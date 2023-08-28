@@ -3,7 +3,7 @@ package com.sytoss.checktask.stp.bdd.when;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;

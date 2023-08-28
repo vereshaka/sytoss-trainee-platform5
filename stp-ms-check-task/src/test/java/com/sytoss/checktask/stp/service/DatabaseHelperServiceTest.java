@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import lombok.extern.slf4j.Slf4j;
@@ -32,15 +32,18 @@ class DatabaseHelperServiceTest extends StpUnitTest {
         HashMap<String, Object> map2 = new HashMap<>();
         map2.put("ID", 2L);
         map2.put("NAME", "Mongo");
-        QueryResult queryResult = new QueryResult(List.of(map, map2));
+        QueryResult queryResult = new QueryResult();
+        queryResult.setHeader(List.of("ID", "NAME"));
+        queryResult.addValues(map);
+        queryResult.addValues(map2);
         int quantityOfInitiatedElements = map.size() + map2.size();
 
         QueryResult queryResultFromDatabase = databaseHelperService.getExecuteQueryResult("select * from discipline");
         int quantityOfElements = 0;
+        List<String> keys = queryResultFromDatabase.getHeader();
         for (int i = 0; i < queryResultFromDatabase.getResultMapList().size(); i++) {
-            List<String> keys = queryResultFromDatabase.getRow(i).keySet().stream().toList();
             for (String key : keys) {
-                if (Objects.equals(queryResultFromDatabase.getRow(i).get(key), queryResult.getRow(i).get(key))) {
+                if (Objects.equals(queryResultFromDatabase.getValue(i, key), queryResult.getValue(i, key))) {
                     quantityOfElements++;
                 }
             }

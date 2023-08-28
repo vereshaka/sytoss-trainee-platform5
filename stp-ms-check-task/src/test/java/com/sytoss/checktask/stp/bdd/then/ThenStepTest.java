@@ -1,14 +1,10 @@
 package com.sytoss.checktask.stp.bdd.then;
 
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
-import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
-
-import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,16 +40,12 @@ public class ThenStepTest extends CheckTaskIntegrationTest {
     }
 
     @Then("^query result should be$")
-    public void shouldReturnQueryIsValid(DataTable table) {
+    public void shouldReturnQueryIsValid(QueryResult queryResult) {
         QueryResult response = (QueryResult) getTestExecutionContext().getResponse().getBody();
-        List<String> header = table.row(0);
-        for (int i = 1; i < table.height(); i++) {
-            HashMap<String, Object> resultRow = response.getRow(i - 1);
-            for (int j = 0; j < header.size(); j++) {
-
-                String columnName = header.get(j).toUpperCase();
-                String columnValue = table.row(i).get(j);
-                assertEquals(columnValue, resultRow.get(columnName).toString());
+        for (int i = 1; i < queryResult.getResultMapList().size(); i++) {
+            for (String columnName: queryResult.getHeader()) {
+                Object columnValue = queryResult.getValue(i,columnName);
+                assertEquals(columnValue, response.getValue(i,columnName.toUpperCase()));
             }
         }
     }

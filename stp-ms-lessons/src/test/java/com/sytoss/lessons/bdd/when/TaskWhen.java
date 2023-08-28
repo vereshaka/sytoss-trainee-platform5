@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
@@ -139,7 +140,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         hashMap.put("ID", 2);
         hashMap.put("NAME", "Mongo");
         list.add(hashMap);
-        QueryResult queryResult = new QueryResult(list);
+        QueryResult queryResult = new QueryResult();
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", 1);
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
