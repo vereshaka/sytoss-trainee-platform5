@@ -258,6 +258,7 @@ public class PersonalExamService extends AbstractService {
                             || personalExam.getStatus().equals(PersonalExamStatus.IN_PROGRESS))) {
                 personalExam.finish();
                 personalExamConnector.save(personalExam);
+                log.info("Personal exam with id="+personalExam.getId()+"is finished");
             }
         }
     }
