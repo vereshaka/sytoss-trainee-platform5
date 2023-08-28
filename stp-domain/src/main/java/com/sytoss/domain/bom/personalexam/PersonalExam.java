@@ -99,6 +99,11 @@ public class PersonalExam {
     }
 
     public Answer getNextAnswer() {
+        if (isTimeOut()) {
+            finish();
+            return null;
+        }
+
         for (Answer answer : answers) {
             if (answer.getStatus().equals(AnswerStatus.NOT_STARTED)) {
                 answer.setStatus(AnswerStatus.IN_PROGRESS);
@@ -124,12 +129,18 @@ public class PersonalExam {
                 answer.setGrade(grade);
                 answer.setStatus(AnswerStatus.GRADED);
                 answer.setTeacherGrade(grade);
+                answer.setAnswerDate(new Date());
+                answer.setTimeSpent(0L);
             }
         });
     }
 
     public void review() {
         status = PersonalExamStatus.REVIEWED;
+    }
+
+    private boolean isTimeOut() {
+        return new Date().compareTo(relevantTo) >= 0;
     }
 
     public static class Public {
