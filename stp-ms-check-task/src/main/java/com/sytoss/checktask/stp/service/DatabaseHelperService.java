@@ -111,7 +111,7 @@ public class DatabaseHelperService {
              ResultSet resultSet = statement.executeQuery(query)) {
             log.info("query result was got");
             QueryResult queryResult = new QueryResult();
-            queryResultConvertor.convertFromResultSet(queryResult,resultSet);
+            queryResultConvertor.convertFromResultSet(resultSet,queryResult);
             return queryResult;
         }
     }

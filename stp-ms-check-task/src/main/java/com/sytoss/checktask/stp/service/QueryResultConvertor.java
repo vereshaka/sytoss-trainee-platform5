@@ -13,27 +13,27 @@ import java.util.List;
 @Component
 public class QueryResultConvertor {
 
-    public QueryResult convertFromResultSet(QueryResult queryResult, ResultSet resultSet) throws SQLException {
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columns = resultSet.getMetaData().getColumnCount();
+    public QueryResult convertFromResultSet(ResultSet source,QueryResult destination) throws SQLException {
+        ResultSetMetaData metaData = source.getMetaData();
+        int columns = source.getMetaData().getColumnCount();
         List<String> header = new ArrayList<>();
         for (int i = 1; i <= columns; i++) {
             header.add(metaData.getColumnName(i));
         }
 
-        queryResult.setHeader(header);
-        resultSet.beforeFirst();
+        destination.setHeader(header);
+        source.beforeFirst();
 
-        while (resultSet.next()) {
+        while (source.next()) {
             HashMap<String, Object> row = new HashMap<>();
             for(int i = 1; i<=columns; i++){
                 String columnName = metaData.getColumnName(i);
-                row.put(columnName,resultSet.getObject(columnName));
+                row.put(columnName,source.getObject(columnName));
             }
-            queryResult.addValues(row);
+            destination.addValues(row);
         }
 
-        return queryResult;
+        return destination;
     }
 }
 
