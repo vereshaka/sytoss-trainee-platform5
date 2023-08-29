@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
@@ -28,8 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -229,5 +229,45 @@ public class TaskServiceTest extends StpUnitTest {
         assertEquals(input.getId(), result.getId());
         assertEquals(input.getQuestion(), result.getQuestion());
         assertNotNull(input.getDeleteDate());
+    }
+
+    @Test
+    public void shouldReturnTopics() {
+        when(taskConnector.getReferenceById(1L)).thenReturn(createTaskDTO());
+        List<Topic> topics = taskService.getTopics(1L);
+        assertNotEquals(0, topics.size());
+    }
+
+    @Test
+    public void shouldThrowTaskNotFoundWhenGetTopics() {
+        when(taskConnector.getReferenceById(1L)).thenThrow(new TaskNotFoundException(1L));
+        assertThrows(TaskNotFoundException.class, () -> taskService.getTopics(1L));
+    }
+
+    private TaskDTO createTaskDTO() {
+        TopicDTO topic = createTopicDTO();
+
+        TaskDTO task = new TaskDTO();
+        task.setId(1L);
+        task.setCoef(1.0);
+        task.setQuestion("Question 1");
+        task.setTopics(List.of(topic));
+        task.setTaskDomain(createTaskDomainDTO());
+
+        return task;
+    }
+
+    private TopicDTO createTopicDTO() {
+        TopicDTO topic = new TopicDTO();
+        topic.setId(1L);
+        topic.setDiscipline(new DisciplineDTO());
+        topic.setName("Name");
+        return topic;
+    }
+
+    private TaskDomainDTO createTaskDomainDTO() {
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setDiscipline(new DisciplineDTO());
+        return taskDomainDTO;
     }
 }
