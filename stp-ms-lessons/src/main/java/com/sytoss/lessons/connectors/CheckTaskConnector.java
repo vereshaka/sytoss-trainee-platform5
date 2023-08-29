@@ -18,5 +18,5 @@ public interface CheckTaskConnector {
     QueryResult checkRequest(@RequestBody CheckRequestParameters body);
 
     @PostMapping("/task/check-validation")
-    boolean checkValidation(@RequestBody String script);
+    boolean checkValidation(@RequestBody String body);
 }
