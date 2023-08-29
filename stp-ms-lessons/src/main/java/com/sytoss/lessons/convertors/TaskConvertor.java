@@ -30,15 +30,22 @@ public class TaskConvertor {
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
-        if (!source.getConditions().isEmpty()) {
+
+        if(source.getConditions().isEmpty()){
+            destination.setRequiredCommand("");
+            destination.setTaskConditions(new ArrayList<>());
+        }
+        else{
             List<TaskCondition> taskConditionList = new ArrayList<>();
             source.getConditions().forEach(taskConditionDTO -> {
                 TaskCondition taskCondition = new TaskCondition();
                 taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
                 taskConditionList.add(taskCondition);
             });
-            destination.setTaskConditions(String.join(",",taskConditionList.stream().map(TaskCondition::getValue).toList()));
+            destination.setTaskConditions(taskConditionList);
+            destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
         }
+
         if (source.getTopics() != null) {
             List<Topic> topicList = new ArrayList<>();
             source.getTopics().forEach(topicDTO -> {
@@ -58,18 +65,21 @@ public class TaskConvertor {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
-        if (!source.getTaskConditions().equals("")) {
-            List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
-            Arrays.stream(source.getTaskConditions().split(",")).map(String::trim).toList().forEach(taskConditionString -> {
-                TaskCondition taskCondition = new TaskCondition();
-                taskCondition.setValue(taskConditionString);
-                taskCondition.setType(ConditionType.CONTAINS);
-                TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
-                taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
-                taskConditionDTOList.add(taskConditionDTO);
-            });
-            destination.setConditions(taskConditionDTOList);
+
+        if(!source.getRequiredCommand().equals("")){
+            List<TaskCondition> taskConditions = new ArrayList<>();
+            fromRequiredCommandToTaskConditions(source.getRequiredCommand(),taskConditions);
+            if(!taskConditions.isEmpty()){
+                List<TaskConditionDTO> taskConditionDTOS = new ArrayList<>();
+                source.getTaskConditions().forEach(taskCondition -> {
+                    TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+                    taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+                    taskConditionDTOS.add(taskConditionDTO);
+                });
+            }
+
         }
+
         if (source.getTopics() != null) {
             List<TopicDTO> topicDTOList = new ArrayList<>();
             source.getTopics().forEach(topic -> {
@@ -79,5 +89,26 @@ public class TaskConvertor {
             });
             destination.setTopics(topicDTOList);
         }
+    }
+
+    public void fromRequiredCommandToTaskConditions(Task task){
+        if(!task.getRequiredCommand().equals("")){
+            List<TaskCondition> taskConditions = new ArrayList<>();
+            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(),taskConditions));
+        }
+    }
+
+    private List<TaskCondition> fromRequiredCommandToTaskConditions(String requiredCommand, List<TaskCondition> taskConditions){
+        if(taskConditions==null){
+            taskConditions = new ArrayList<>();
+        }
+        List<String> commands = Arrays.stream(requiredCommand.split(",")).map(String::trim).toList();
+        for (String command : commands) {
+            TaskCondition taskCondition = new TaskCondition();
+            taskCondition.setValue(command);
+            taskCondition.setType(ConditionType.CONTAINS);
+            taskConditions.add(taskCondition);
+        }
+        return taskConditions;
     }
 }

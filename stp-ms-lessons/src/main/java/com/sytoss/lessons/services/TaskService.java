@@ -77,8 +77,8 @@ public class TaskService {
     public Task removeCondition(Long taskId, Long conditionId) {
         Task task = getById(taskId);
         TaskCondition taskCondition = conditionService.getById(conditionId);
-        if (task.getTaskConditions().contains(taskCondition.getValue())) {
-            task.removeCondition(taskCondition.getValue());
+        if (task.getTaskConditions().contains(taskCondition)) {
+            task.getTaskConditions().remove(taskCondition);
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
@@ -125,8 +125,8 @@ public class TaskService {
 
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
-        if (!result.getTaskConditions().contains(taskCondition.getValue())) {
-            result.addCondition(taskCondition.getValue());
+        if (!result.getTaskConditions().contains(taskCondition)) {
+            result.getTaskConditions().add(taskCondition);
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
@@ -192,7 +192,7 @@ public class TaskService {
             updateTaskDTO.setCoef(task.getCoef());
         }
 
-        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task, updateTaskDTO));
+        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
@@ -200,13 +200,44 @@ public class TaskService {
         return task;
     }
 
-    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task, TaskDTO taskDTO) {
-        List<TaskConditionDTO> taskConditionDTOList = taskDTO.getConditions();
+    //todo: check how to update when condition with a proper value already exists in DB
+    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
+        taskConvertor.fromRequiredCommandToTaskConditions(task);
+        TaskDTO oldTaskDTO = taskConnector.getById(task.getId());
+        Task oldTask = new Task();
+        taskConvertor.fromDTO(oldTaskDTO, oldTask);
+        List<TaskCondition> newTaskConditions = task.getTaskConditions();
+        List<TaskCondition> oldTaskConditions = oldTask.getTaskConditions();
 
-        /*for (int i = 0; i < task.getTaskConditions().size(); ++i) {
-            taskConditionDTOList.get(i).setValue(task.getTaskConditions().get(i).getValue());
+        List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
+
+        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
+        idForDelete.forEach(conditionService::deleteById);
+
+        for (TaskCondition taskCondition : newTaskConditions) {
+            TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+            taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+            newTaskConditionsDTO.add(conditionService.addCondition(taskConditionDTO));
         }
-*/
-        return taskConditionDTOList;
+
+        return newTaskConditionsDTO;
+    }
+
+    private List<TaskCondition> compareTaskConditionsLists(List<TaskCondition> oldTaskConditionList, List<TaskCondition> newTaskConditionList) {
+        List<TaskCondition> newListOfTaskConditions = new ArrayList<>();
+        for (TaskCondition taskCondition : newTaskConditionList) {
+            boolean isConditionExists = false;
+            for (TaskCondition oldTaskCondition : oldTaskConditionList) {
+                if (taskCondition.getValue().equals(oldTaskCondition.getValue())
+                        && taskCondition.getType().equals(taskCondition.getType())) {
+                    isConditionExists = true;
+                    break;
+                }
+            }
+            if (!isConditionExists) {
+                newListOfTaskConditions.add(taskCondition);
+            }
+        }
+        return newListOfTaskConditions;
     }
 }

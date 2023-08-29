@@ -29,4 +29,17 @@ public class TaskConditionService {
             throw new TaskConditionNotFoundException(id);
         }
     }
+
+    public void deleteById(Long id) {
+        try {
+            taskConditionConnector.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public TaskConditionDTO addCondition(TaskConditionDTO taskConditionDTO) {
+        return taskConditionConnector.save(taskConditionDTO);
+    }
 }

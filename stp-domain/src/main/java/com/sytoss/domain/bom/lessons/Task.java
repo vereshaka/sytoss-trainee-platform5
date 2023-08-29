@@ -25,17 +25,11 @@ public class Task {
     private List<Topic> topics = new ArrayList<>();
 
     @JsonView({PersonalExam.TeacherOnly.class})
-    private String taskConditions;
+    private List<TaskCondition> taskConditions;
 
     private Long imageId;
 
     private Double coef;
 
-    public void addCondition(String condition) {
-        taskConditions += condition;
-    }
-
-    public void removeCondition(String condition) {
-        taskConditions = taskConditions.replaceAll(condition + ",?", "");
-    }
+    private String requiredCommand;
 }

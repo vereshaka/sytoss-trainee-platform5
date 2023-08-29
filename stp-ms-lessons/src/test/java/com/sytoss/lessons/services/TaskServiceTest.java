@@ -103,14 +103,11 @@ public class TaskServiceTest extends StpUnitTest {
         topic.setId(1L);
         topic.setDiscipline(discipline);
 
-        TaskCondition taskCondition = new TaskCondition();
-        taskCondition.setId(1L);
-
         Task input = new Task();
         input.setQuestion("question");
         input.setTaskDomain(taskDomain);
         input.setTopics(List.of(topic));
-        input.setTaskConditions(List.of(taskCondition));
+        input.setRequiredCommand("");
 
         Task result = taskService.create(input);
 
