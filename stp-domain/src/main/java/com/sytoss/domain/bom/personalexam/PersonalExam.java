@@ -1,5 +1,6 @@
 package com.sytoss.domain.bom.personalexam;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
@@ -98,6 +99,7 @@ public class PersonalExam {
         return null;
     }
 
+    @JsonIgnore
     public Answer getNextAnswer() {
         if (isTimeOut()) {
             finish();
@@ -139,6 +141,7 @@ public class PersonalExam {
         status = PersonalExamStatus.REVIEWED;
     }
 
+    @JsonIgnore
     private boolean isTimeOut() {
         return new Date().compareTo(relevantTo) >= 0;
     }
