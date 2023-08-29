@@ -1,9 +1,6 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -12,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -39,7 +37,7 @@ public class TaskConvertor {
                 taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
                 taskConditionList.add(taskCondition);
             });
-            destination.setTaskConditions(taskConditionList);
+            destination.setTaskConditions(String.join(",",taskConditionList.stream().map(TaskCondition::getValue).toList()));
         }
         if (source.getTopics() != null) {
             List<Topic> topicList = new ArrayList<>();
@@ -60,9 +58,12 @@ public class TaskConvertor {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
-        if (!source.getTaskConditions().isEmpty()) {
+        if (!source.getTaskConditions().equals("")) {
             List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
-            source.getTaskConditions().forEach(taskCondition -> {
+            Arrays.stream(source.getTaskConditions().split(",")).map(String::trim).toList().forEach(taskConditionString -> {
+                TaskCondition taskCondition = new TaskCondition();
+                taskCondition.setValue(taskConditionString);
+                taskCondition.setType(ConditionType.CONTAINS);
                 TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
                 taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
                 taskConditionDTOList.add(taskConditionDTO);

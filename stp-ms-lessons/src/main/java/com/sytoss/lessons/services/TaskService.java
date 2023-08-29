@@ -1,12 +1,12 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,8 +77,8 @@ public class TaskService {
     public Task removeCondition(Long taskId, Long conditionId) {
         Task task = getById(taskId);
         TaskCondition taskCondition = conditionService.getById(conditionId);
-        if (task.getTaskConditions().contains(taskCondition)) {
-            task.getTaskConditions().remove(taskCondition);
+        if (task.getTaskConditions().contains(taskCondition.getValue())) {
+            task.removeCondition(taskCondition.getValue());
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(task, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
@@ -126,8 +125,8 @@ public class TaskService {
 
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
-        if (!result.getTaskConditions().contains(taskCondition)) {
-            result.getTaskConditions().add(taskCondition);
+        if (!result.getTaskConditions().contains(taskCondition.getValue())) {
+            result.addCondition(taskCondition.getValue());
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
@@ -181,15 +180,15 @@ public class TaskService {
 
         TaskDTO updateTaskDTO = taskDTO.get();
 
-        if(Objects.nonNull(task.getQuestion())) {
+        if (Objects.nonNull(task.getQuestion())) {
             updateTaskDTO.setQuestion(task.getQuestion());
         }
 
-        if(Objects.nonNull(task.getEtalonAnswer())) {
+        if (Objects.nonNull(task.getEtalonAnswer())) {
             updateTaskDTO.setEtalonAnswer(task.getEtalonAnswer());
         }
 
-        if(Objects.nonNull(task.getCoef())) {
+        if (Objects.nonNull(task.getCoef())) {
             updateTaskDTO.setCoef(task.getCoef());
         }
 
@@ -204,10 +203,10 @@ public class TaskService {
     private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task, TaskDTO taskDTO) {
         List<TaskConditionDTO> taskConditionDTOList = taskDTO.getConditions();
 
-        for (int i = 0; i < task.getTaskConditions().size(); ++i) {
+        /*for (int i = 0; i < task.getTaskConditions().size(); ++i) {
             taskConditionDTOList.get(i).setValue(task.getTaskConditions().get(i).getValue());
         }
-
+*/
         return taskConditionDTOList;
     }
 }

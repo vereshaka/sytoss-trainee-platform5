@@ -1,7 +1,6 @@
 package com.sytoss.domain.bom.lessons;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +25,17 @@ public class Task {
     private List<Topic> topics = new ArrayList<>();
 
     @JsonView({PersonalExam.TeacherOnly.class})
-    private List<TaskCondition> taskConditions = new ArrayList<>();
+    private String taskConditions;
 
     private Long imageId;
 
     private Double coef;
+
+    public void addCondition(String condition) {
+        taskConditions += condition;
+    }
+
+    public void removeCondition(String condition) {
+        taskConditions = taskConditions.replaceAll(condition + ",?", "");
+    }
 }

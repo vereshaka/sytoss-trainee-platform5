@@ -1,8 +1,8 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
-import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
