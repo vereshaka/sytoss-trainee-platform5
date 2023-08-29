@@ -1,10 +1,10 @@
 package com.sytoss.checktask.stp.controller;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
-import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.checktask.stp.service.ScoreService;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
@@ -15,10 +15,6 @@ import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.sytoss.stp.test.FileUtils.readFromFile;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,8 +61,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
 
     @Test
     void shouldCheckRequest() {
-        List<HashMap<String, Object>> resultMapList = new ArrayList<>();
-        when(scoreService.checkRequest(any())).thenReturn(new QueryResult(resultMapList));
+        when(scoreService.checkRequest(any())).thenReturn(new QueryResult());
 
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from Authors");

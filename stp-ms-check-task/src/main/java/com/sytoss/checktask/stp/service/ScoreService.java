@@ -72,8 +72,8 @@ public class ScoreService {
             return false;
         }
         for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
-            List<String> keyListEtalon = queryResultEtalon.getResultMapList().get(i).keySet().stream().toList();
-            List<String> keyListAnswer = queryResultAnswer.getResultMapList().get(i).keySet().stream().toList();
+            List<String> keyListEtalon = queryResultEtalon.getHeader();
+            List<String> keyListAnswer = queryResultAnswer.getHeader();
             if (keyListAnswer.size() < keyListEtalon.size()) {
                 return false;
             }
@@ -83,8 +83,8 @@ public class ScoreService {
                 return false;
             }
             for (String columnName : keyListEtalon) {
-                Object etalonFieldValue = queryResultEtalon.getResultMapList().get(i).get(columnName);
-                Object answerFieldValue = queryResultAnswer.getResultMapList().get(i).get(columnName);
+                Object etalonFieldValue = queryResultEtalon.getValue(i,columnName);
+                Object answerFieldValue = queryResultAnswer.getValue(i,columnName);
                 if (!Objects.equals(etalonFieldValue, answerFieldValue)) {
                     return false;
                 }

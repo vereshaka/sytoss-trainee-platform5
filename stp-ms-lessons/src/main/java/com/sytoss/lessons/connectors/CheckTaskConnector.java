@@ -1,6 +1,6 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import org.springframework.cloud.openfeign.FeignClient;

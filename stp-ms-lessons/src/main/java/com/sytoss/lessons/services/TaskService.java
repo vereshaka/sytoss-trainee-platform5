@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.QueryResult;
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -193,7 +193,7 @@ public class TaskService {
             updateTaskDTO.setCoef(task.getCoef());
         }
 
-        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
+        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task, updateTaskDTO));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
@@ -201,14 +201,13 @@ public class TaskService {
         return task;
     }
 
-    //todo: check how to update when condition with a proper value already exists in DB
-    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
-        return task.getTaskConditions().stream()
-                .map(taskCondition -> {
-                    TaskConditionDTO updatedTaskCondition = new TaskConditionDTO();
-                    taskConditionConvertor.toDTO(taskCondition, updatedTaskCondition);
+    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task, TaskDTO taskDTO) {
+        List<TaskConditionDTO> taskConditionDTOList = taskDTO.getConditions();
 
-                    return updatedTaskCondition;
-                }).collect(Collectors.toList());
+        for (int i = 0; i < task.getTaskConditions().size(); ++i) {
+            taskConditionDTOList.get(i).setValue(task.getTaskConditions().get(i).getValue());
+        }
+
+        return taskConditionDTOList;
     }
 }

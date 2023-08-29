@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
@@ -194,13 +195,15 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainDTO.setId(1L);
         taskDomainDTO.setDataScript("Script");
         taskDomainDTO.setDatabaseScript("Script");
-        QueryResult queryResult = new QueryResult(List.of(hashMap));
+        QueryResult queryResult = new QueryResult();
+        queryResult.setHeader(List.of("1"));
+        queryResult.addValues(hashMap);
         when(checkTaskConnector.checkRequest(any())).thenReturn(queryResult);
         when(taskDomainConnector.getReferenceById(any())).thenReturn(taskDomainDTO);
         TaskDomainRequestParameters taskDomainRequestParameters = new TaskDomainRequestParameters();
         taskDomainRequestParameters.setRequest("");
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
-        assertEquals("1", result.getResultMapList().get(0).get("1"));
+        assertEquals("1", result.getValue(0,"1"));
     }
 }

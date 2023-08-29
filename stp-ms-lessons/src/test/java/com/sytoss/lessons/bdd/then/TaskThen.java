@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.ConditionType;
-import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
@@ -10,14 +10,13 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.bson.assertions.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TaskThen extends LessonsIntegrationTest {
 
@@ -78,7 +77,7 @@ public class TaskThen extends LessonsIntegrationTest {
     public void taskTopicShouldBe(String question, String topicName) {
         TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, getTestExecutionContext().getDetails().getDisciplineId());
         List<Task> tasks = (ArrayList<Task>) getTestExecutionContext().getResponse().getBody();
-        for (Task task: tasks) {
+        for (Task task : tasks) {
             assertNotNull(task.getTopics());
             assertEquals(question, task.getQuestion());
             assertEquals(topicDTO.getName(), task.getTopics().get(1).getName());
@@ -95,16 +94,12 @@ public class TaskThen extends LessonsIntegrationTest {
     }
 
     @Then("^query result should be$")
-    public void shouldReturnQueryIsValid(DataTable table) {
+    public void shouldReturnQueryIsValid(QueryResult queryResult) {
         QueryResult response = (QueryResult) getTestExecutionContext().getResponse().getBody();
-        List<String> header = table.row(0);
-        for (int i = 1; i < table.height(); i++) {
-            HashMap<String, Object> resultRow = response.getRow(i - 1);
-            for (int j = 0; j < header.size(); j++) {
-
-                String columnName = header.get(j).toUpperCase();
-                String columnValue = table.row(i).get(j);
-                assertEquals(columnValue, resultRow.get(columnName).toString());
+        for (int i = 1; i < queryResult.getResultMapList().size(); i++) {
+            for (String columnName : queryResult.getHeader()) {
+                Object columnValue = queryResult.getValue(i, columnName);
+                assertEquals(columnValue, response.getValue(i, columnName));
             }
         }
     }
