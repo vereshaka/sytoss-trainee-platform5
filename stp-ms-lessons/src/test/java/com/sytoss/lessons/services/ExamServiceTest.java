@@ -5,10 +5,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.ExamDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -103,6 +100,24 @@ public class ExamServiceTest extends StpUnitTest {
 
         List<Exam> result = examService.findExams();
         Assertions.assertEquals(1, result.size());
+    }
+
+    @Test
+    public void shouldReturnExamsByTaskId() {
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setDiscipline(new DisciplineDTO());
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setDiscipline(new DisciplineDTO());
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTopics(List.of(topicDTO));
+        taskDTO.setTaskDomain(taskDomainDTO);
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setTopics(List.of(topicDTO));
+        examDTO.setTasks(List.of(taskDTO));
+
+        when(examConnector.findByTasks_Id(1L)).thenReturn(List.of(examDTO));
+        List<Exam> examList = examService.getExamsByTaskId(1L);
+        Assertions.assertNotEquals(0, examList.size());
     }
 
     private Group createGroup(String groupName, Discipline discipline) {

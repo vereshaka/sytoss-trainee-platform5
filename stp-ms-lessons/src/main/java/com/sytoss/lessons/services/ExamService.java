@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -108,5 +110,19 @@ public class ExamService extends AbstractService {
         personalExamConnector.reschedule(examConfiguration);
 
         return examToUpdate;
+    }
+
+    public List<Exam> getExamsByTaskId(Long taskId) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_Id(taskId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new TaskNotFoundException(taskId);
+        }
+
+        return examDTOList.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
     }
 }

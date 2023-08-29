@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -17,6 +18,7 @@ import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
+import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -52,6 +54,8 @@ public class TaskService {
     private final TaskDomainConnector taskDomainConnector;
 
     private final PumlConvertor pumlConvertor;
+
+    private final ExamService examService;
 
     public Task getById(Long id) {
         try {
@@ -209,5 +213,13 @@ public class TaskService {
         }
 
         return taskConditionDTOList;
+    }
+
+    public List<Topic> getTopics(Long taskId) {
+        return getById(taskId).getTopics();
+    }
+
+    public List<Exam> getExams(Long taskId) {
+        return examService.getExamsByTaskId(taskId);
     }
 }
