@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -92,5 +95,18 @@ public class TaskController {
     @PutMapping
     public Task updateTask(@RequestBody Task task) {
         return taskService.updateTask(task);
+    }
+
+    @Operation(description = "Method that retriew topics by task id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!")
+    })
+    @GetMapping("/{taskId}/topics")
+    public List<Topic> getTopics(
+            @Parameter(description = "task id for which topics will be searched")
+            @PathVariable Long taskId
+    ) {
+        return taskService.getTopics(taskId);
     }
 }

@@ -210,4 +210,8 @@ public class TaskService {
 
         return taskConditionDTOList;
     }
+
+    public List<Topic> getTopics(Long taskId) {
+        return getById(taskId).getTopics();
+    }
 }
