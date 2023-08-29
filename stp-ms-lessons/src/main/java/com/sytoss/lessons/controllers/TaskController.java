@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -97,7 +98,7 @@ public class TaskController {
         return taskService.updateTask(task);
     }
 
-    @Operation(description = "Method that retriew topics by task id")
+    @Operation(description = "Method that retrieve topics by task id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task not found!")
@@ -108,5 +109,19 @@ public class TaskController {
             @PathVariable Long taskId
     ) {
         return taskService.getTopics(taskId);
+    }
+
+
+    @Operation(description = "Method that retrieve exams by task id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!")
+    })
+    @GetMapping("{taskId}/exams")
+    public List<Exam> getExams(
+            @Parameter(description = "task id for which exams will be searched")
+            @PathVariable Long taskId
+    ) {
+        return taskService.getExams(taskId);
     }
 }
