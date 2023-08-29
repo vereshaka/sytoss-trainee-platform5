@@ -88,4 +88,13 @@ public class TaskControllerTest extends LessonsControllerTest {
         ResponseEntity<QueryResult> result = doPost("/api/task/check-request-result", requestEntity, QueryResult.class);
         assertEquals(200, result.getStatusCode().value());
     }
+
+    @Test
+    public void shouldDeleteTask() {
+        when(taskService.deleteTask(anyLong())).thenReturn(new Task());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Task> result = doGet("/api/task/5", httpEntity, Task.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
 }

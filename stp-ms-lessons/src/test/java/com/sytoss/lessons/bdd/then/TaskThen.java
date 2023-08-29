@@ -29,7 +29,7 @@ public class TaskThen extends LessonsIntegrationTest {
 
     @Then("^task with question \"(.*)\" should be created$")
     public void taskShouldBe(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId());
         assertNotNull(taskDTO);
         assertEquals(question, taskDTO.getQuestion());
     }
@@ -48,7 +48,7 @@ public class TaskThen extends LessonsIntegrationTest {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " not found");
             }
             TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
-            List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsId(topic.getId());
+            List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsIdAndDeleteDateIsNull(topic.getId());
             for (TaskDTO taskDTO : taskDTOS) {
                 getTaskConnector().delete(taskDTO);
             }
@@ -102,5 +102,11 @@ public class TaskThen extends LessonsIntegrationTest {
                 assertEquals(columnValue, response.getValue(i, columnName));
             }
         }
+    }
+
+    @Then("task should be deleted")
+    public void taskShouldBeDeleted() {
+        Task task = (Task) getTestExecutionContext().getResponse().getBody();
+        assertNotNull(task.getDeleteDate());
     }
 }

@@ -24,12 +24,13 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class TaskServiceTest extends StpUnitTest {
@@ -139,7 +140,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+        when(taskConnector.findByTopicsIdAndDeleteDateIsNull(anyLong())).thenReturn(List.of(taskDTO));
 
         List<Task> result = taskService.findByTopicId(1L);
         Assertions.assertEquals(1L, result.get(0).getId());
@@ -205,5 +206,28 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
         assertEquals("1", result.getValue(0,"1"));
+    }
+
+    @Test
+    public void shouldDeleteTask() {
+        TaskDTO input = new TaskDTO();
+        input.setId(1L);
+        input.setQuestion("What is SQL?");
+        input.setEtalonAnswer("SQL is life");
+        input.setCoef(2.0);
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        input.setTaskDomain(taskDomainDTO);
+        List<TopicDTO> topicDTOList = new ArrayList<>();
+        input.setTopics(topicDTOList);
+        when(taskConnector.getByIdAndDeleteDateIsNull(anyLong())).thenReturn(input);
+        input.setDeleteDate(new Date());
+        when(taskConnector.save(any())).thenReturn(input);
+        Task result = taskService.deleteTask(1L);
+        assertEquals(input.getId(), result.getId());
+        assertEquals(input.getQuestion(), result.getQuestion());
+        assertNotNull(input.getDeleteDate());
     }
 }

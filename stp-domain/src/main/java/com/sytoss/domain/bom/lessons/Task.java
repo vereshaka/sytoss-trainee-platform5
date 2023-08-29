@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -31,4 +32,6 @@ public class Task {
     private Long imageId;
 
     private Double coef;
+
+    private Date deleteDate;
 }

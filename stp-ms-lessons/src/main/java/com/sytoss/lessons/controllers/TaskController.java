@@ -93,4 +93,11 @@ public class TaskController {
     public Task updateTask(@RequestBody Task task) {
         return taskService.updateTask(task);
     }
+
+    @PostMapping("/{taskId}/delete")
+    public Task deleteTask(@Parameter(description = "id of the task to be deleted by")
+                        @PathVariable("taskId")
+                                Long taskId) {
+        return taskService.deleteTask(taskId);
+    }
 }
