@@ -71,7 +71,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         task.setTopics(List.of(topic));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
-        if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
+        if (getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
             ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
             getTestExecutionContext().setResponse(responseEntity);
         } else {
@@ -119,7 +119,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         taskCondition.setId(getTestExecutionContext().getDetails().getTaskConditionId());
         taskCondition.setType(type);
         taskCondition.setValue(conditionValue);
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(taskQuestion, getTestExecutionContext().getDetails().getDisciplineId());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskCondition> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
         String url = "/api/task/" + taskDTO.getId() + "/condition";
@@ -153,6 +153,15 @@ public class TaskWhen extends LessonsIntegrationTest {
         HttpEntity<TaskDomainRequestParameters> requestEntity = new HttpEntity<>(taskDomainRequestParameters, httpHeaders);
         ResponseEntity<QueryResult> responseEntity = doPost(url, requestEntity, QueryResult.class);
 
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("delete task")
+    public void requestSentDeleteTask() {
+        String url = "/api/task/" + getTestExecutionContext().getDetails().getTaskId() + "/delete";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

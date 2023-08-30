@@ -50,14 +50,10 @@ public class AnswerService extends AbstractService {
         answer.answer(taskAnswer);
         checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
-        if (answerUIDate.compareTo(personalExam.getRelevantTo()) >= 0) {
-            personalExam.finish();
-        }
         personalExamConnector.save(personalExam);
         if (answer == null) {
             return null;
         }
-
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());

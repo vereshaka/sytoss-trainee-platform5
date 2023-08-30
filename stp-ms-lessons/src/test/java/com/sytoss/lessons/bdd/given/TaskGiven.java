@@ -21,7 +21,7 @@ public class TaskGiven extends LessonsIntegrationTest {
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId());
 
         if (taskDTO == null) {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
@@ -38,7 +38,7 @@ public class TaskGiven extends LessonsIntegrationTest {
 
     @Given("^task with question \"(.*)\" doesnt exist$")
     public void taskNotExist(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId());
         if (taskDTO != null) {
             getTaskConnector().delete(taskDTO);
         }
@@ -53,7 +53,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(columns.get("task"), disciplineDTO.getId());
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(columns.get("task"), disciplineDTO.getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
                 taskDTO.setQuestion(columns.get("task"));
@@ -103,7 +103,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO taskDto = getTaskConnector().getById(getTestExecutionContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
         } else {
-            TaskDTO taskDto = getTaskConnector().getById(12345L);
+            TaskDTO taskDto = getTaskConnector().getByIdAndDeleteDateIsNull(12345L);
             if (taskDto != null) {
                 getTaskConnector().delete(taskDto);
             }
@@ -136,7 +136,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^task domain tasks exist")
     public void taskDomainTasksExist(List<TaskDTO> tasks) {
         for (TaskDTO task : tasks) {
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainIdAndDeleteDateIsNull(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 getTaskConnector().save(task);
             }

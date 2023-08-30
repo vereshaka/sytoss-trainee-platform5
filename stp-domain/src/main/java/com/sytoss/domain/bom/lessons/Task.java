@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -25,11 +26,13 @@ public class Task {
     private List<Topic> topics = new ArrayList<>();
 
     @JsonView({PersonalExam.TeacherOnly.class})
-    private List<TaskCondition> taskConditions;
+    private List<TaskCondition> taskConditions = new ArrayList<>();
 
     private Long imageId;
 
     private Double coef;
+
+    private Date deleteDate;
 
     private String requiredCommand;
 }

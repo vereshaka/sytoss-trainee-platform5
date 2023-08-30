@@ -83,3 +83,9 @@ Feature: Task
       | id | name  |
       | 1  | SQL   |
       | 2  | Mongo |
+
+  Scenario: Delete task
+    Given task with question "What are the different subsets of SQL?" exists
+    When delete task
+    Then operation is successful
+    And should return task with "What are the different subsets of SQL?" question
