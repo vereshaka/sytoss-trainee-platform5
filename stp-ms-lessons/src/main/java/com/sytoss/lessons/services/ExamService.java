@@ -45,8 +45,11 @@ public class ExamService extends AbstractService {
                 distinctTasks.add(task);
             }
         }
+        if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
+            exam.setNumberOfTasks(distinctTasks.size());
+        }
         exam.setTasks(distinctTasks);
-        exam.setNumberOfTasks(distinctTasks.size());
+
         //TODO: yevgenyv: re think it
         exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
         ExamDTO examDTO = new ExamDTO();
