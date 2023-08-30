@@ -29,8 +29,12 @@ public class PumlConvertor {
         List<String> tables = items.stream().filter(item -> item.trim().startsWith("table")).toList();
         List<String> datas = items.stream().filter(item -> item.trim().startsWith("data")).toList();
         List<Table> result = new ArrayList<>();
-        tables.forEach(item -> result.add(parseTable(item)));
-        datas.forEach(item -> parseData(item, result));
+        if(tables.size()>0){
+            tables.forEach(item -> result.add(parseTable(item)));
+        }
+        if(datas.size()>0){
+            datas.forEach(item -> parseData(item, result));
+        }
         validate(result);
         return result;
     }
@@ -55,24 +59,27 @@ public class PumlConvertor {
         String source = columnDefinition.trim().replaceAll("( )+", " ");
         Column result = new Column();
         String[] temp = source.split(":");
-        result.setName(temp[0].trim());
-        temp = temp[1].split("<<");
-        result.setDatatype(temp[0].trim());
-        for (int i = 1; i < temp.length; i++) {
-            String additional = temp[i].replaceAll(">>", "").trim();
-            if (additional.equals("PK")) {
-                result.setPrimary(true);
-                result.setNullable(false);
-            } else if (additional.equals("NULLABLE")) {
-                result.setNullable(true);
-            } else if (additional.startsWith("FK")) {
-                String[] dividedSpring = additional.substring(2).trim().split("\\(");
-                result.setForeignKey(new ForeignKey());
-                result.getForeignKey().setTargetTable(dividedSpring[0]);
-                result.getForeignKey().setTargetColumn(dividedSpring[1].replaceAll("\\)", "").trim());
+        if(temp.length>1){
+            result.setName(temp[0].trim());
+            temp = temp[1].split("<<");
+            result.setDatatype(temp[0].trim());
+            for (int i = 1; i < temp.length; i++) {
+                String additional = temp[i].replaceAll(">>", "").trim();
+                if (additional.equals("PK")) {
+                    result.setPrimary(true);
+                    result.setNullable(false);
+                } else if (additional.equals("NULLABLE")) {
+                    result.setNullable(true);
+                } else if (additional.startsWith("FK")) {
+                    String[] dividedSpring = additional.substring(2).trim().split("\\(");
+                    result.setForeignKey(new ForeignKey());
+                    result.getForeignKey().setTargetTable(dividedSpring[0]);
+                    result.getForeignKey().setTargetColumn(dividedSpring[1].replaceAll("\\)", "").trim());
+                }
             }
+            return result;
         }
-        return result;
+        return null;
     }
 
     private void parseData(String dataScript, List<Table> tables) {
@@ -303,10 +310,19 @@ public class PumlConvertor {
         initTableStringBuilder.append(header).append(StringUtils.LF);
 
         for (DataRow dataRow : table.getRows()) {
+            if(dataRow.getValues().size()<table.getColumns().size()){
+                StringBuilder rawBuilder = new StringBuilder("| ");
+                for(Column column : table.getColumns()){
+                    String value = dataRow.getValues().get(column.getName());
+                    value = value!=null ? value : "null";
+                    rawBuilder.append(value).append(" | ");
+                }
+                dataRow.setRaw(rawBuilder.toString());
+            }
             initTableStringBuilder.append(dataRow.getRaw()).append(StringUtils.LF);
         }
 
-        initTableStringBuilder.append("}");
+        initTableStringBuilder.append("}").append("\n");
 
         return initTableStringBuilder.toString();
     }
