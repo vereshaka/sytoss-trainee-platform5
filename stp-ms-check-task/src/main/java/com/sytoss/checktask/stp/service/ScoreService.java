@@ -1,12 +1,12 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
-import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
-import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.QueryResult;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
@@ -128,5 +128,16 @@ public class ScoreService {
         } finally {
             helperServiceProviderObject.dropDatabase();
         }
+    }
+
+    public boolean checkValidation(String script) {
+        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
+        try {
+            helperServiceProviderObject.generateDatabase(script);
+            helperServiceProviderObject.dropDatabase();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }
