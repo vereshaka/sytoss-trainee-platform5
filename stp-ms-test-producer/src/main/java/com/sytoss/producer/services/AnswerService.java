@@ -126,8 +126,6 @@ public class AnswerService extends AbstractService {
 
     public QueryResult check(String taskAnswer, Answer answer) {
         CheckRequestParameters request = new CheckRequestParameters();
-        System.out.println("taskAnswer" + taskAnswer);
-        System.out.println("answer" + answer);
         request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
