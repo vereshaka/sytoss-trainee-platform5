@@ -32,31 +32,31 @@ public class TaskConvertor {
         destination.setTaskDomain(taskDomain);
         destination.setDeleteDate(source.getDeleteDate());
 
-        if(source.getConditions().isEmpty()){
+        if (source.getConditions().isEmpty()) {
             destination.setRequiredCommand("");
             destination.setTaskConditions(new ArrayList<>());
-        }
-        else{
+        } else {
 
-        if (!source.getConditions().isEmpty()) {
-            List<TaskCondition> taskConditionList = new ArrayList<>();
-            source.getConditions().forEach(taskConditionDTO -> {
-                TaskCondition taskCondition = new TaskCondition();
-                taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
-                taskConditionList.add(taskCondition);
-            });
-            destination.setTaskConditions(taskConditionList);
-            destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
-        }
+            if (!source.getConditions().isEmpty()) {
+                List<TaskCondition> taskConditionList = new ArrayList<>();
+                source.getConditions().forEach(taskConditionDTO -> {
+                    TaskCondition taskCondition = new TaskCondition();
+                    taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
+                    taskConditionList.add(taskCondition);
+                });
+                destination.setTaskConditions(taskConditionList);
+                destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
+            }
 
-        if (source.getTopics() != null) {
-            List<Topic> topicList = new ArrayList<>();
-            source.getTopics().forEach(topicDTO -> {
-                Topic topic = new Topic();
-                topicConvertor.fromDTO(topicDTO, topic);
-                topicList.add(topic);
-            });
-            destination.setTopics(topicList);
+            if (source.getTopics() != null) {
+                List<Topic> topicList = new ArrayList<>();
+                source.getTopics().forEach(topicDTO -> {
+                    Topic topic = new Topic();
+                    topicConvertor.fromDTO(topicDTO, topic);
+                    topicList.add(topic);
+                });
+                destination.setTopics(topicList);
+            }
         }
     }
 

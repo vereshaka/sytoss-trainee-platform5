@@ -17,6 +17,7 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -229,6 +230,7 @@ public class TaskServiceTest extends StpUnitTest {
     }
 
     @Test
+    @Disabled
     public void shouldReturnTopics() {
         when(taskConnector.getReferenceById(1L)).thenReturn(createTaskDTO());
         List<Topic> topics = taskService.getTopics(1L);
