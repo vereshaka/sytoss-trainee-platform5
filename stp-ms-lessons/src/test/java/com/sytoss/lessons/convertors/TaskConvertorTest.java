@@ -81,6 +81,7 @@ public class TaskConvertorTest extends StpUnitTest {
         List<TaskCondition> taskConditionList = new ArrayList<>();
         taskConditionList.add(taskCondition);
         task.setTaskConditions(taskConditionList);
+        task.setRequiredCommand(taskCondition.getValue());
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
 

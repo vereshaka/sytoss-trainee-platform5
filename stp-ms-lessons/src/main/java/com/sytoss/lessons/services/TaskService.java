@@ -1,12 +1,12 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
@@ -18,7 +18,6 @@ import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -181,19 +180,19 @@ public class TaskService {
 
         TaskDTO updateTaskDTO = taskDTO.get();
 
-        if(Objects.nonNull(task.getQuestion())) {
+        if (Objects.nonNull(task.getQuestion())) {
             updateTaskDTO.setQuestion(task.getQuestion());
         }
 
-        if(Objects.nonNull(task.getEtalonAnswer())) {
+        if (Objects.nonNull(task.getEtalonAnswer())) {
             updateTaskDTO.setEtalonAnswer(task.getEtalonAnswer());
         }
 
-        if(Objects.nonNull(task.getCoef())) {
+        if (Objects.nonNull(task.getCoef())) {
             updateTaskDTO.setCoef(task.getCoef());
         }
 
-        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task, updateTaskDTO));
+        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
@@ -213,14 +212,45 @@ public class TaskService {
         throw new TaskNotFoundException(id);
     }
 
-    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task, TaskDTO taskDTO) {
-        List<TaskConditionDTO> taskConditionDTOList = taskDTO.getConditions();
+    //todo: check how to update when condition with a proper value already exists in DB
+    private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
+        taskConvertor.fromRequiredCommandToTaskConditions(task);
+        TaskDTO oldTaskDTO = taskConnector.getById(task.getId());
+        Task oldTask = new Task();
+        taskConvertor.fromDTO(oldTaskDTO, oldTask);
+        List<TaskCondition> newTaskConditions = task.getTaskConditions();
+        List<TaskCondition> oldTaskConditions = oldTask.getTaskConditions();
 
-        for (int i = 0; i < task.getTaskConditions().size(); ++i) {
-            taskConditionDTOList.get(i).setValue(task.getTaskConditions().get(i).getValue());
+        List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
+
+        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
+        idForDelete.forEach(conditionService::deleteById);
+
+        for (TaskCondition taskCondition : newTaskConditions) {
+            TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+            taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+            newTaskConditionsDTO.add(conditionService.addCondition(taskConditionDTO));
         }
 
-        return taskConditionDTOList;
+        return newTaskConditionsDTO;
+    }
+
+    private List<TaskCondition> compareTaskConditionsLists(List<TaskCondition> oldTaskConditionList, List<TaskCondition> newTaskConditionList) {
+        List<TaskCondition> newListOfTaskConditions = new ArrayList<>();
+        for (TaskCondition taskCondition : newTaskConditionList) {
+            boolean isConditionExists = false;
+            for (TaskCondition oldTaskCondition : oldTaskConditionList) {
+                if (taskCondition.getValue().equals(oldTaskCondition.getValue())
+                        && taskCondition.getType().equals(taskCondition.getType())) {
+                    isConditionExists = true;
+                    break;
+                }
+            }
+            if (!isConditionExists) {
+                newListOfTaskConditions.add(taskCondition);
+            }
+        }
+        return newListOfTaskConditions;
     }
 
     public List<Topic> getTopics(Long taskId) {

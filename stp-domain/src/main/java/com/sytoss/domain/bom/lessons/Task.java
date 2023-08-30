@@ -1,7 +1,6 @@
 package com.sytoss.domain.bom.lessons;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,4 +33,6 @@ public class Task {
     private Double coef;
 
     private Date deleteDate;
+
+    private String requiredCommand;
 }

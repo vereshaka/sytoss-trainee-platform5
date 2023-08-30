@@ -1,9 +1,6 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -12,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -33,23 +31,32 @@ public class TaskConvertor {
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
         destination.setDeleteDate(source.getDeleteDate());
-        if (!source.getConditions().isEmpty()) {
-            List<TaskCondition> taskConditionList = new ArrayList<>();
-            source.getConditions().forEach(taskConditionDTO -> {
-                TaskCondition taskCondition = new TaskCondition();
-                taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
-                taskConditionList.add(taskCondition);
-            });
-            destination.setTaskConditions(taskConditionList);
-        }
-        if (source.getTopics() != null) {
-            List<Topic> topicList = new ArrayList<>();
-            source.getTopics().forEach(topicDTO -> {
-                Topic topic = new Topic();
-                topicConvertor.fromDTO(topicDTO, topic);
-                topicList.add(topic);
-            });
-            destination.setTopics(topicList);
+
+        if (source.getConditions().isEmpty()) {
+            destination.setRequiredCommand("");
+            destination.setTaskConditions(new ArrayList<>());
+        } else {
+
+            if (!source.getConditions().isEmpty()) {
+                List<TaskCondition> taskConditionList = new ArrayList<>();
+                source.getConditions().forEach(taskConditionDTO -> {
+                    TaskCondition taskCondition = new TaskCondition();
+                    taskConditionConvertor.fromDTO(taskConditionDTO, taskCondition);
+                    taskConditionList.add(taskCondition);
+                });
+                destination.setTaskConditions(taskConditionList);
+                destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
+            }
+
+            if (source.getTopics() != null) {
+                List<Topic> topicList = new ArrayList<>();
+                source.getTopics().forEach(topicDTO -> {
+                    Topic topic = new Topic();
+                    topicConvertor.fromDTO(topicDTO, topic);
+                    topicList.add(topic);
+                });
+                destination.setTopics(topicList);
+            }
         }
     }
 
@@ -62,15 +69,21 @@ public class TaskConvertor {
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
         destination.setDeleteDate(source.getDeleteDate());
-        if (!source.getTaskConditions().isEmpty()) {
-            List<TaskConditionDTO> taskConditionDTOList = new ArrayList<>();
-            source.getTaskConditions().forEach(taskCondition -> {
-                TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
-                taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
-                taskConditionDTOList.add(taskConditionDTO);
-            });
-            destination.setConditions(taskConditionDTOList);
+
+        if(!source.getRequiredCommand().equals("")){
+            List<TaskCondition> taskConditions = new ArrayList<>();
+            fromRequiredCommandToTaskConditions(source.getRequiredCommand(),taskConditions);
+            if(!taskConditions.isEmpty()){
+                List<TaskConditionDTO> taskConditionDTOS = new ArrayList<>();
+                source.getTaskConditions().forEach(taskCondition -> {
+                    TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
+                    taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
+                    taskConditionDTOS.add(taskConditionDTO);
+                });
+            }
+
         }
+
         if (source.getTopics() != null) {
             List<TopicDTO> topicDTOList = new ArrayList<>();
             source.getTopics().forEach(topic -> {
@@ -80,5 +93,26 @@ public class TaskConvertor {
             });
             destination.setTopics(topicDTOList);
         }
+    }
+
+    public void fromRequiredCommandToTaskConditions(Task task){
+        if(!task.getRequiredCommand().equals("")){
+            List<TaskCondition> taskConditions = new ArrayList<>();
+            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(),taskConditions));
+        }
+    }
+
+    private List<TaskCondition> fromRequiredCommandToTaskConditions(String requiredCommand, List<TaskCondition> taskConditions){
+        if(taskConditions==null){
+            taskConditions = new ArrayList<>();
+        }
+        List<String> commands = Arrays.stream(requiredCommand.split(",")).map(String::trim).toList();
+        for (String command : commands) {
+            TaskCondition taskCondition = new TaskCondition();
+            taskCondition.setValue(command);
+            taskCondition.setType(ConditionType.CONTAINS);
+            taskConditions.add(taskCondition);
+        }
+        return taskConditions;
     }
 }
