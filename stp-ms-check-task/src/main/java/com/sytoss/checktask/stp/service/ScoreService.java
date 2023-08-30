@@ -46,11 +46,9 @@ public class ScoreService {
             Score score = grade(queryResultEtalon, queryResultAnswer);
             if (score.getValue() > 0) {
                 for (TaskCondition condition : data.getConditions()) {
-                    if (condition.getType().equals(ConditionType.CONTAINS)) {
-                        if (!data.getRequest().contains(condition.getValue())) {
-                            score.setValue(score.getValue() - 0.3);
-                            break;
-                        }
+                    if ((condition.getType().equals(ConditionType.CONTAINS) && !data.getRequest().contains(condition.getValue())) || (condition.getType().equals(ConditionType.NOT_CONTAINS) && data.getRequest().contains(condition.getValue()))) {
+                        score.setValue(score.getValue() - 0.3);
+                        break;
                     }
                 }
             }

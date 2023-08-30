@@ -31,11 +31,10 @@ public class TaskConvertor {
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
 
-        if(source.getConditions().isEmpty()){
+        if (source.getConditions().isEmpty()) {
             destination.setRequiredCommand("");
             destination.setTaskConditions(new ArrayList<>());
-        }
-        else{
+        } else {
             List<TaskCondition> taskConditionList = new ArrayList<>();
             source.getConditions().forEach(taskConditionDTO -> {
                 TaskCondition taskCondition = new TaskCondition();
@@ -43,6 +42,12 @@ public class TaskConvertor {
                 taskConditionList.add(taskCondition);
             });
             destination.setTaskConditions(taskConditionList);
+
+            taskConditionList.forEach(el -> {
+                if (el.getType().equals(ConditionType.NOT_CONTAINS)) {
+                    el.setValue("!" + el.getValue());
+                }
+            });
             destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
         }
 
@@ -66,18 +71,18 @@ public class TaskConvertor {
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
 
-        if(!source.getRequiredCommand().equals("")){
+        if (!source.getRequiredCommand().equals("")) {
             List<TaskCondition> taskConditions = new ArrayList<>();
-            fromRequiredCommandToTaskConditions(source.getRequiredCommand(),taskConditions);
-            if(!taskConditions.isEmpty()){
+            fromRequiredCommandToTaskConditions(source.getRequiredCommand(), taskConditions);
+            if (!taskConditions.isEmpty()) {
                 List<TaskConditionDTO> taskConditionDTOS = new ArrayList<>();
                 source.getTaskConditions().forEach(taskCondition -> {
                     TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
                     taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
                     taskConditionDTOS.add(taskConditionDTO);
                 });
+                destination.setConditions(taskConditionDTOS);
             }
-
         }
 
         if (source.getTopics() != null) {
@@ -91,22 +96,26 @@ public class TaskConvertor {
         }
     }
 
-    public void fromRequiredCommandToTaskConditions(Task task){
-        if(!task.getRequiredCommand().equals("")){
+    public void fromRequiredCommandToTaskConditions(Task task) {
+        if (!task.getRequiredCommand().equals("")) {
             List<TaskCondition> taskConditions = new ArrayList<>();
-            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(),taskConditions));
+            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(), taskConditions));
         }
     }
 
-    private List<TaskCondition> fromRequiredCommandToTaskConditions(String requiredCommand, List<TaskCondition> taskConditions){
-        if(taskConditions==null){
+    private List<TaskCondition> fromRequiredCommandToTaskConditions(String requiredCommand, List<TaskCondition> taskConditions) {
+        if (taskConditions == null) {
             taskConditions = new ArrayList<>();
         }
         List<String> commands = Arrays.stream(requiredCommand.split(",")).map(String::trim).toList();
         for (String command : commands) {
             TaskCondition taskCondition = new TaskCondition();
-            taskCondition.setValue(command);
-            taskCondition.setType(ConditionType.CONTAINS);
+            if (command.contains("!")) {
+                taskCondition.setType(ConditionType.NOT_CONTAINS);
+            } else {
+                taskCondition.setType(ConditionType.CONTAINS);
+            }
+            taskCondition.setValue(command.replaceAll("!", ""));
             taskConditions.add(taskCondition);
         }
         return taskConditions;
