@@ -18,7 +18,7 @@ public class TopicGiven extends AbstractGiven {
     @Given("^topic with id (.*) contains the following tasks:")
     public void topicContainsTasks(String topicKey, DataTable tasksData) {
         TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
-        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsId(topic.getId());
+        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsIdAndDeleteDateIsNull(topic.getId());
 
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
 

@@ -98,6 +98,18 @@ public class TaskController {
         return taskService.updateTask(task);
     }
 
+    @Operation(description = "Method that deletes task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!")
+    })
+    @PostMapping("/{taskId}/delete")
+    public Task deleteTask(@Parameter(description = "id of the task to be deleted by")
+                        @PathVariable("taskId")
+                                Long taskId) {
+        return taskService.deleteTask(taskId);
+    }
+
     @Operation(description = "Method that retrieve topics by task id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

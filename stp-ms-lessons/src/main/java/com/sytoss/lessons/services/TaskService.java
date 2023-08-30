@@ -28,11 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -118,7 +114,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdAndDeleteDateIsNull(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -143,7 +139,7 @@ public class TaskService {
     }
 
     public List<Task> findByDomainId(Long taskDomainId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdAndDeleteDateIsNull(taskDomainId);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -203,6 +199,18 @@ public class TaskService {
         taskConvertor.fromDTO(updateTaskDTO, task);
 
         return task;
+    }
+
+    public Task deleteTask(Long id) {
+        TaskDTO taskDTO = taskConnector.getByIdAndDeleteDateIsNull(id);
+        if(taskDTO != null) {
+            taskDTO.setDeleteDate(new Date());
+            taskConnector.save(taskDTO);
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        }
+        throw new TaskNotFoundException(id);
     }
 
     private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task, TaskDTO taskDTO) {
