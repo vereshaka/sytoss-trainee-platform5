@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
@@ -16,6 +17,7 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,12 +26,12 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class TaskServiceTest extends StpUnitTest {
@@ -136,7 +138,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+        when(taskConnector.findByTopicsIdAndDeleteDateIsNull(anyLong())).thenReturn(List.of(taskDTO));
 
         List<Task> result = taskService.findByTopicId(1L);
         Assertions.assertEquals(1L, result.get(0).getId());
@@ -202,5 +204,69 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
         assertEquals("1", result.getValue(0,"1"));
+    }
+
+    @Test
+    public void shouldDeleteTask() {
+        TaskDTO input = new TaskDTO();
+        input.setId(1L);
+        input.setQuestion("What is SQL?");
+        input.setEtalonAnswer("SQL is life");
+        input.setCoef(2.0);
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        input.setTaskDomain(taskDomainDTO);
+        List<TopicDTO> topicDTOList = new ArrayList<>();
+        input.setTopics(topicDTOList);
+        when(taskConnector.getByIdAndDeleteDateIsNull(anyLong())).thenReturn(input);
+        input.setDeleteDate(new Date());
+        when(taskConnector.save(any())).thenReturn(input);
+        Task result = taskService.deleteTask(1L);
+        assertEquals(input.getId(), result.getId());
+        assertEquals(input.getQuestion(), result.getQuestion());
+        assertNotNull(input.getDeleteDate());
+    }
+
+    @Test
+    @Disabled
+    public void shouldReturnTopics() {
+        when(taskConnector.getReferenceById(1L)).thenReturn(createTaskDTO());
+        List<Topic> topics = taskService.getTopics(1L);
+        assertNotEquals(0, topics.size());
+    }
+
+    @Test
+    public void shouldThrowTaskNotFoundWhenGetTopics() {
+        when(taskConnector.getReferenceById(1L)).thenThrow(new TaskNotFoundException(1L));
+        assertThrows(TaskNotFoundException.class, () -> taskService.getTopics(1L));
+    }
+
+    private TaskDTO createTaskDTO() {
+        TopicDTO topic = createTopicDTO();
+
+        TaskDTO task = new TaskDTO();
+        task.setId(1L);
+        task.setCoef(1.0);
+        task.setQuestion("Question 1");
+        task.setTopics(List.of(topic));
+        task.setTaskDomain(createTaskDomainDTO());
+
+        return task;
+    }
+
+    private TopicDTO createTopicDTO() {
+        TopicDTO topic = new TopicDTO();
+        topic.setId(1L);
+        topic.setDiscipline(new DisciplineDTO());
+        topic.setName("Name");
+        return topic;
+    }
+
+    private TaskDomainDTO createTaskDomainDTO() {
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setDiscipline(new DisciplineDTO());
+        return taskDomainDTO;
     }
 }

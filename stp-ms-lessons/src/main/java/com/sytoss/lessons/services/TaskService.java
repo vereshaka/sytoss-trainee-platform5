@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -26,10 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +49,8 @@ public class TaskService {
     private final TaskDomainConnector taskDomainConnector;
 
     private final PumlConvertor pumlConvertor;
+
+    private final ExamService examService;
 
     public Task getById(Long id) {
         try {
@@ -113,7 +113,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdAndDeleteDateIsNull(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -138,7 +138,7 @@ public class TaskService {
     }
 
     public List<Task> findByDomainId(Long taskDomainId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdAndDeleteDateIsNull(taskDomainId);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -200,6 +200,18 @@ public class TaskService {
         return task;
     }
 
+    public Task deleteTask(Long id) {
+        TaskDTO taskDTO = taskConnector.getByIdAndDeleteDateIsNull(id);
+        if(taskDTO != null) {
+            taskDTO.setDeleteDate(new Date());
+            taskConnector.save(taskDTO);
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        }
+        throw new TaskNotFoundException(id);
+    }
+
     //todo: check how to update when condition with a proper value already exists in DB
     private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
         taskConvertor.fromRequiredCommandToTaskConditions(task);
@@ -239,5 +251,13 @@ public class TaskService {
             }
         }
         return newListOfTaskConditions;
+    }
+
+    public List<Topic> getTopics(Long taskId) {
+        return getById(taskId).getTopics();
+    }
+
+    public List<Exam> getExams(Long taskId) {
+        return examService.getExamsByTaskId(taskId);
     }
 }

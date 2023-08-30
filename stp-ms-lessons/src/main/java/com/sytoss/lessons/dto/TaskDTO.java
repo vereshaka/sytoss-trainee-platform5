@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -26,6 +27,9 @@ public class TaskDTO {
 
     @Column(name = "COEFFICIENT")
     private Double coef;
+
+    @Column(name = "DELETE_DATE")
+    private Date deleteDate;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")

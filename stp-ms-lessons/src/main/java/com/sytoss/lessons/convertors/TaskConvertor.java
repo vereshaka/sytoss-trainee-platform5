@@ -30,6 +30,7 @@ public class TaskConvertor {
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
+        destination.setDeleteDate(source.getDeleteDate());
 
         if (source.getConditions().isEmpty()) {
             destination.setRequiredCommand("");
@@ -51,14 +52,15 @@ public class TaskConvertor {
             destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
         }
 
-        if (source.getTopics() != null) {
-            List<Topic> topicList = new ArrayList<>();
-            source.getTopics().forEach(topicDTO -> {
-                Topic topic = new Topic();
-                topicConvertor.fromDTO(topicDTO, topic);
-                topicList.add(topic);
-            });
-            destination.setTopics(topicList);
+            if (source.getTopics() != null) {
+                List<Topic> topicList = new ArrayList<>();
+                source.getTopics().forEach(topicDTO -> {
+                    Topic topic = new Topic();
+                    topicConvertor.fromDTO(topicDTO, topic);
+                    topicList.add(topic);
+                });
+                destination.setTopics(topicList);
+            }
         }
     }
 
@@ -70,6 +72,7 @@ public class TaskConvertor {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
+        destination.setDeleteDate(source.getDeleteDate());
 
         if (!source.getRequiredCommand().equals("")) {
             List<TaskCondition> taskConditions = new ArrayList<>();

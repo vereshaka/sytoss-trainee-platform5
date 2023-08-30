@@ -14,4 +14,6 @@ public interface ExamConnector extends JpaRepository<ExamDTO, Long> {
     List<ExamDTO> findByTopicsId(Long topicId);
 
     List<ExamDTO> findByTeacherId(Long teacherId);
+
+    List<ExamDTO> findByTasks_Id(Long taskId);
 }

@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
+import com.sytoss.domain.bom.exceptions.business.TaskDomainScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -113,5 +114,14 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         ResponseEntity<List<Task>> result = doGet("/api/task-domain/1/tasks", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldNotSaveTaskDomainWhenScriptIsNotValid() {
+        when(taskDomainService.create(anyLong(), any())).thenThrow(TaskDomainScriptIsNotValidException.class);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
+        ResponseEntity<TaskDomain> response = doPost("/api/discipline/123/task-domain", httpEntity, TaskDomain.class);
+        assertEquals(400, response.getStatusCode().value());
     }
 }
