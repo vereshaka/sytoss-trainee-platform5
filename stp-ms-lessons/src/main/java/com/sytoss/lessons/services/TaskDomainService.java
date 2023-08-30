@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.EtalonIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.ScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
@@ -54,8 +55,12 @@ public class TaskDomainService {
             TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
             taskDomainConvertor.toDTO(taskDomain, taskDomainDTO);
             taskDomainDTO.setDiscipline(disciplineDTO);
+            if (!isValid(taskDomain)) {
+                throw new ScriptIsNotValidException("Script is not valid");
+            }
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
+
             return taskDomain;
         } else {
             throw new TaskDomainAlreadyExist(taskDomain.getName());
@@ -82,6 +87,9 @@ public class TaskDomainService {
         oldTaskDomain.setName(taskDomain.getName());
         oldTaskDomain.setDatabaseScript(taskDomain.getDatabaseScript());
         oldTaskDomain.setDataScript(taskDomain.getDataScript());
+        if (!isValid(oldTaskDomain)) {
+            throw new ScriptIsNotValidException("Script is not valid");
+        }
         oldTaskDomain.setDiscipline(taskDomain.getDiscipline());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(oldTaskDomain, taskDomainDTO);
@@ -133,11 +141,18 @@ public class TaskDomainService {
         taskDomainToUpdate.setShortDescription(taskDomain.getShortDescription());
         taskDomainToUpdate.setDatabaseScript(taskDomain.getDatabaseScript());
         taskDomainToUpdate.setDataScript(taskDomain.getDataScript());
-
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(taskDomainToUpdate, taskDomainDTO);
+        if (!isValid(taskDomainToUpdate)) {
+            throw new ScriptIsNotValidException("Script is not valid");
+        }
         taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
         taskDomainConvertor.fromDTO(taskDomainDTO, taskDomainToUpdate);
         return taskDomainToUpdate;
+    }
+
+    private boolean isValid(TaskDomain taskDomain) {
+        String liquibaseScript = pumlConvertor.convertToLiquibase(taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript());
+        return checkTaskConnector.checkValidation(liquibaseScript);
     }
 }
