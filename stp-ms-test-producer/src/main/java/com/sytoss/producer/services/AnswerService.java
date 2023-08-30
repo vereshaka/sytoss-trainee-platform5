@@ -111,9 +111,11 @@ public class AnswerService extends AbstractService {
     }
 
     public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
+        String parsedTaskAnswer = taskAnswer.replaceAll("\\n", " ");
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        return check(taskAnswer, answer);
+
+        return check(parsedTaskAnswer, answer);
     }
 
     public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {
@@ -124,6 +126,8 @@ public class AnswerService extends AbstractService {
 
     public QueryResult check(String taskAnswer, Answer answer) {
         CheckRequestParameters request = new CheckRequestParameters();
+        System.out.println("taskAnswer" + taskAnswer);
+        System.out.println("answer" + answer);
         request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
