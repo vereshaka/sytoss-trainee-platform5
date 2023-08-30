@@ -1,5 +1,5 @@
 package com.sytoss.domain.bom.lessons;
 
 public enum ConditionType {
-    CONTAINS
+    CONTAINS, NOT_CONTAINS
 }
