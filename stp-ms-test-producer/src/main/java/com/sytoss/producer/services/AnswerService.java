@@ -111,9 +111,11 @@ public class AnswerService extends AbstractService {
     }
 
     public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
+        String parsedTaskAnswer = taskAnswer.replaceAll("\\n", " ");
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        return check(taskAnswer, answer);
+
+        return check(parsedTaskAnswer, answer);
     }
 
     public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {

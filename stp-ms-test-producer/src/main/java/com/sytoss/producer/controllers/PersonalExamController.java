@@ -97,7 +97,7 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody String taskAnswer) {
-        return answerService.checkCurrentAnswer(personalExamId, taskAnswer.replaceAll("\"", ""));
+        return answerService.checkCurrentAnswer(personalExamId, taskAnswer);
     }
 
     @Operation(description = "Method for answering tasks")
