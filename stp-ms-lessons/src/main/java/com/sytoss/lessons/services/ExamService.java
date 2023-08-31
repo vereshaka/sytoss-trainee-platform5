@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
@@ -37,29 +38,34 @@ public class ExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    public Exam save(Exam exam) {
-        exam.setTeacher((Teacher) getCurrentUser());
-        List<Task> distinctTasks = new ArrayList<>();
-        for(Task task : exam.getTasks()){
-            if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
-                distinctTasks.add(task);
+    public Exam save(Exam exam, List<Group> groups) {
+
+        for (Group group : groups) {
+            exam.setTeacher((Teacher) getCurrentUser());
+            List<Task> distinctTasks = new ArrayList<>();
+            for (Task task : exam.getTasks()) {
+                if (!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())) {
+                    distinctTasks.add(task);
+                }
             }
-        }
-        exam.setTasks(distinctTasks);
-        exam.setNumberOfTasks(distinctTasks.size());
-        //TODO: yevgenyv: re think it
-        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
-        ExamDTO examDTO = new ExamDTO();
-        examConvertor.toDTO(exam, examDTO);
-        examDTO = examConnector.save(examDTO);
-        examConvertor.fromDTO(examDTO, exam);
-        List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
-        for (Student student: students){
-            try {
-                personalExamConnector.create(new ExamConfiguration(exam, student));
-            } catch (Exception e) {
-                //TODO: yevgenyv: need to re think return answer
-                log.error("Could not create a personal exam for student", e);
+            exam.setGroup(group);
+            exam.setTasks(distinctTasks);
+            exam.setNumberOfTasks(distinctTasks.size());
+            //TODO: yevgenyv: re think it
+            exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
+            ExamDTO examDTO = new ExamDTO();
+            examConvertor.toDTO(exam, examDTO);
+            examDTO = examConnector.save(examDTO);
+            examConvertor.fromDTO(examDTO, exam);
+
+            List<Student> students = userConnector.getStudentOfGroup(group.getId());
+            for (Student student : students) {
+                try {
+                    personalExamConnector.create(new ExamConfiguration(exam, student));
+                } catch (Exception e) {
+                    //TODO: yevgenyv: need to re think return answer
+                    log.error("Could not create a personal exam for student", e);
+                }
             }
         }
         return exam;
