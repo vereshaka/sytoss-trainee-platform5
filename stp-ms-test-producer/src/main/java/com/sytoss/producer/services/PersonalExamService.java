@@ -130,7 +130,7 @@ public class PersonalExamService extends AbstractService {
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());
-        examModel.setTime(personalExam.getTime());
+        examModel.setTime((int) TimeUnit.MILLISECONDS.toSeconds(personalExam.getRelevantTo().getTime() - new Date().getTime()));
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
