@@ -4,7 +4,7 @@
 
     <groupId>com.sytoss.stp</groupId>
     <artifactId>sytosstraineeplatform</artifactId>
-    <version>0.2.5-SNAPSHOT</version>
+    <version>0.2.6-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 

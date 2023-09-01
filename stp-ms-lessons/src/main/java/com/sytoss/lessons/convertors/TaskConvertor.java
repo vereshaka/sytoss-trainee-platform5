@@ -73,12 +73,12 @@ public class TaskConvertor {
         destination.setTaskDomain(taskDomainDTO);
         destination.setDeleteDate(source.getDeleteDate());
 
-        if (!source.getRequiredCommand().equals("")) {
+        if (source.getRequiredCommand() != null && !source.getRequiredCommand().equals("")) {
             List<TaskCondition> taskConditions = new ArrayList<>();
             fromRequiredCommandToTaskConditions(source.getRequiredCommand(), taskConditions);
             if (!taskConditions.isEmpty()) {
                 List<TaskConditionDTO> taskConditionDTOS = new ArrayList<>();
-                source.getTaskConditions().forEach(taskCondition -> {
+                taskConditions.forEach(taskCondition -> {
                     TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
                     taskConditionConvertor.toDTO(taskCondition, taskConditionDTO);
                     taskConditionDTOS.add(taskConditionDTO);
