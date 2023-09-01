@@ -38,28 +38,30 @@ public class ExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    public Exam save(Exam exam, List<Group> groups) {
+    public List<Exam> save(Exam exam, List<Group> groups) {
+        List<Exam> exams = new ArrayList<>();
 
-        for (Group group : groups) {
+        for(Group group : groups){
             exam.setTeacher((Teacher) getCurrentUser());
             List<Task> distinctTasks = new ArrayList<>();
-            for (Task task : exam.getTasks()) {
-                if (!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())) {
+            for(Task task : exam.getTasks()){
+                if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
                     distinctTasks.add(task);
                 }
             }
-            exam.setGroup(group);
+            if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
+                exam.setNumberOfTasks(distinctTasks.size());
+            }
             exam.setTasks(distinctTasks);
-            exam.setNumberOfTasks(distinctTasks.size());
+            exam.setGroup(group);
             //TODO: yevgenyv: re think it
             exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
             ExamDTO examDTO = new ExamDTO();
             examConvertor.toDTO(exam, examDTO);
             examDTO = examConnector.save(examDTO);
             examConvertor.fromDTO(examDTO, exam);
-
-            List<Student> students = userConnector.getStudentOfGroup(group.getId());
-            for (Student student : students) {
+            List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
+            for (Student student: students){
                 try {
                     personalExamConnector.create(new ExamConfiguration(exam, student));
                 } catch (Exception e) {
@@ -67,8 +69,10 @@ public class ExamService extends AbstractService {
                     log.error("Could not create a personal exam for student", e);
                 }
             }
+            exams.add(exam);
         }
-        return exam;
+
+        return exams;
     }
 
     public List<Exam> findExams() {
