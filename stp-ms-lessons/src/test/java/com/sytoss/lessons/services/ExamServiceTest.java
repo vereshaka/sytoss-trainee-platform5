@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
+import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
@@ -18,9 +19,11 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -32,14 +35,16 @@ public class ExamServiceTest extends StpUnitTest {
     @Mock
     private ExamConnector examConnector;
 
+
+    @Mock
+    private UserConnector userConnector;
+
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())));
 
     @Test
-    @Disabled
     public void shouldSaveExam() {
-        //TODO: STP-409: fix me
         Mockito.doAnswer((org.mockito.stubbing.Answer<ExamDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
             ExamDTO result = (ExamDTO) args[0];
@@ -69,8 +74,9 @@ public class ExamServiceTest extends StpUnitTest {
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));
 
-        Exam result = examService.save(exam);
-        Assertions.assertEquals(1L, result.getId());
+        List<Exam> result = examService.save(exam, List.of(group));
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).getId());
     }
 
     @Test
@@ -99,7 +105,7 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.findByTeacherId(1L)).thenReturn(List.of(exam));
 
         List<Exam> result = examService.findExams();
-        Assertions.assertEquals(1, result.size());
+        assertEquals(1, result.size());
     }
 
     @Test
