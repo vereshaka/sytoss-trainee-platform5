@@ -3,7 +3,7 @@
     <parent>
         <artifactId>sytosstraineeplatform</artifactId>
         <groupId>com.sytoss.stp</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -13,7 +13,7 @@
         <dependency>
             <groupId>com.sytoss.stp</groupId>
             <artifactId>stp-common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.sytoss.stp</groupId>
             <artifactId>stp-domain</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
