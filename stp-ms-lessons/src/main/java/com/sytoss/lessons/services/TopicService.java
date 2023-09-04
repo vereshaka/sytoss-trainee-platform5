@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Slf4j
@@ -74,5 +75,35 @@ public class TopicService {
         } catch (EntityNotFoundException e) {
             throw new TopicNotFoundException(id);
         }
+    }
+
+    public Topic update(Topic topic) {
+        Topic topicToUpdate = getById(topic.getId());
+        TopicDTO topicDTO = new TopicDTO();
+
+        if (Objects.nonNull(topic.getName())) {
+            topicToUpdate.setName(topic.getName());
+        }
+
+        if (Objects.nonNull(topic.getShortDescription())) {
+            topicToUpdate.setShortDescription(topic.getShortDescription());
+        }
+
+        if (Objects.nonNull(topic.getFullDescription())) {
+            topicToUpdate.setFullDescription(topic.getFullDescription());
+        }
+
+        if (Objects.nonNull(topic.getDuration())) {
+            topicToUpdate.setDuration(topic.getDuration());
+        }
+
+        if (Objects.nonNull(topic.getIcon())) {
+            topic.setIcon(topic.getIcon());
+        }
+
+        topicConvertor.toDTO(topicToUpdate, topicDTO);
+        topicDTO = topicConnector.save(topicDTO);
+        topicConvertor.fromDTO(topicDTO, topicToUpdate);
+        return topicToUpdate;
     }
 }
