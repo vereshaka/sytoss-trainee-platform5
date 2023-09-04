@@ -1,16 +1,17 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
-import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
+import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
+import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,11 @@ public class ScoreService {
             Score score = grade(queryResultEtalon, queryResultAnswer);
             if (score.getValue() > 0) {
                 for (TaskCondition condition : data.getConditions()) {
-                    if ((condition.getType().equals(ConditionType.CONTAINS) && !data.getRequest().contains(condition.getValue())) || (condition.getType().equals(ConditionType.NOT_CONTAINS) && data.getRequest().contains(condition.getValue()))) {
+                    if ((condition.getType().equals(ConditionType.CONTAINS)
+                            && !StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
+                            || (condition.getType().equals(ConditionType.NOT_CONTAINS)
+                            && StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
+                    ) {
                         score.setValue(score.getValue() - 0.3);
                         break;
                     }
@@ -81,8 +86,8 @@ public class ScoreService {
                 return false;
             }
             for (String columnName : keyListEtalon) {
-                Object etalonFieldValue = queryResultEtalon.getValue(i,columnName);
-                Object answerFieldValue = queryResultAnswer.getValue(i,columnName);
+                Object etalonFieldValue = queryResultEtalon.getValue(i, columnName);
+                Object answerFieldValue = queryResultAnswer.getValue(i, columnName);
                 if (!Objects.equals(etalonFieldValue, answerFieldValue)) {
                     return false;
                 }
