@@ -98,7 +98,7 @@ public class TopicService {
         }
 
         if (Objects.nonNull(topic.getIcon())) {
-            topic.setIcon(topic.getIcon());
+            topicToUpdate.setIcon(topic.getIcon());
         }
 
         topicConvertor.toDTO(topicToUpdate, topicDTO);
