@@ -132,6 +132,7 @@ public class PersonalExamService extends AbstractService {
         examModel.setName(personalExam.getName());
         examModel.setTime((int) TimeUnit.MILLISECONDS.toSeconds(personalExam.getRelevantTo().getTime() - new Date().getTime()));
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
+        examModel.setRelevantTo(personalExam.getRelevantTo());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestionNumber(1);

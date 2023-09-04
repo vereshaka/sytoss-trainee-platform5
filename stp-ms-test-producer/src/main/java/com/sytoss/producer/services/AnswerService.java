@@ -59,6 +59,7 @@ public class AnswerService extends AbstractService {
         examModel.setName(personalExam.getName());
         examModel.setTime(personalExam.getTime());
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
+        examModel.setRelevantTo(personalExam.getRelevantTo());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         Long processedQuestionsNum = personalExam.getAnswers().stream()
