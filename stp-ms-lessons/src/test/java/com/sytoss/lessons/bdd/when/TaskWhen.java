@@ -71,7 +71,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         task.setTopics(List.of(topic));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
-        if (getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
+        if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
             ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
             getTestExecutionContext().setResponse(responseEntity);
         } else {
@@ -119,7 +119,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         taskCondition.setId(getTestExecutionContext().getDetails().getTaskConditionId());
         taskCondition.setType(type);
         taskCondition.setValue(conditionValue);
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(taskQuestion, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(taskQuestion, getTestExecutionContext().getDetails().getDisciplineId());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskCondition> httpEntity = new HttpEntity<>(taskCondition, httpHeaders);
         String url = "/api/task/" + taskDTO.getId() + "/condition";
