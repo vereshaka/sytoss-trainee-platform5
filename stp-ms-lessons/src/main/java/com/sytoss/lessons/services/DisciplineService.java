@@ -84,7 +84,7 @@ public class DisciplineService extends AbstractService {
     }
 
     public List<Task> findTasksByDisciplineId(Long id) {
-        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineIdAndDeleteDateIsNull(id);
+        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineId(id);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : tasks) {
             Task task = new Task();

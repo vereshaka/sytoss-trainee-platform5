@@ -28,9 +28,6 @@ public class TaskDTO {
     @Column(name = "COEFFICIENT")
     private Double coef;
 
-    @Column(name = "DELETE_DATE")
-    private Date deleteDate;
-
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;

@@ -32,6 +32,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class TaskServiceTest extends StpUnitTest {
@@ -138,7 +139,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsIdAndDeleteDateIsNull(anyLong())).thenReturn(List.of(taskDTO));
+        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
 
         List<Task> result = taskService.findByTopicId(1L);
         Assertions.assertEquals(1L, result.get(0).getId());
@@ -208,25 +209,26 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldDeleteTask() {
-        TaskDTO input = new TaskDTO();
-        input.setId(1L);
-        input.setQuestion("What is SQL?");
-        input.setEtalonAnswer("SQL is life");
-        input.setCoef(2.0);
+        TaskDTO taskDTO = new TaskDTO();
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        disciplineDTO.setTeacherId(1L);
         taskDomainDTO.setDiscipline(disciplineDTO);
-        input.setTaskDomain(taskDomainDTO);
-        List<TopicDTO> topicDTOList = new ArrayList<>();
-        input.setTopics(topicDTOList);
-        when(taskConnector.getByIdAndDeleteDateIsNull(anyLong())).thenReturn(input);
-        input.setDeleteDate(new Date());
-        when(taskConnector.save(any())).thenReturn(input);
-        Task result = taskService.deleteTask(1L);
-        assertEquals(input.getId(), result.getId());
-        assertEquals(input.getQuestion(), result.getQuestion());
-        assertNotNull(input.getDeleteDate());
+        taskDTO.setId(1L);
+        taskDTO.setTaskDomain(new TaskDomainDTO());
+        taskDTO.setQuestion("new");
+        taskDTO.setEtalonAnswer("one");
+        taskDTO.setCoef(2.0);
+        taskDTO.setTaskDomain(taskDomainDTO);
+
+        when(taskConnector.getReferenceById(1L)).thenReturn(taskDTO);
+        doNothing().when(taskConnector).deleteById(1L);
+
+        Task task = taskService.deleteTask(1L);
+
+        assertEquals(1L, task.getId());
     }
 
     @Test
