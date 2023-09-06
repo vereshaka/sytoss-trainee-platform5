@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -92,5 +94,31 @@ public class TaskDomainController {
     ) {
         taskDomain.setId(taskDomainId);
         return taskDomainService.updateById(taskDomain);
+    }
+
+    @Operation(description = "Method that delete task domain by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task domain not found!")
+    })
+    @DeleteMapping("/{taskDomainId}/delete")
+    public TaskDomain delete(
+            @Parameter(description = "Id of task domain to delete")
+            @PathVariable("taskDomainId") Long taskDomainId
+    ) {
+        return taskDomainService.delete(taskDomainId);
+    }
+
+    @Operation(description = "Method that retrieve exams by task domain id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task domain not found")
+    })
+    @GetMapping("/{taskDomainId}/exams")
+    public List<Exam> getExams(
+            @Parameter(description = "Id of task domain to get exams")
+            @PathVariable("taskDomainId") Long taskDomainId
+    ) {
+        return taskDomainService.getExams(taskDomainId);
     }
 }
