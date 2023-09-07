@@ -161,7 +161,7 @@ public class TaskDomainService {
     }
 
     public TaskDomain delete(Long taskDomainId) {
-        TaskDomain taskDomain = getById(taskDomainId);
+        TaskDomainDTO taskDomain = taskDomainConnector.getReferenceById(taskDomainId);
         List<Task> tasks = taskService.findByDomainId(taskDomainId);
 
         if (Objects.nonNull(tasks)) {
@@ -170,9 +170,11 @@ public class TaskDomainService {
             });
         }
 
-        taskDomainConnector.deleteById(taskDomain.getId());
+        taskDomainConnector.delete(taskDomain);
+        TaskDomain taskDomainDeleted = new TaskDomain();
+        taskDomainConvertor.fromDTO(taskDomain, taskDomainDeleted);
 
-        return taskDomain;
+        return taskDomainDeleted;
     }
 
     public List<Exam> getExams(Long taskDomainId) {
