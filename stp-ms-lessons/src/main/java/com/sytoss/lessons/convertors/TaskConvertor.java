@@ -30,7 +30,6 @@ public class TaskConvertor {
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
-        destination.setDeleteDate(source.getDeleteDate());
 
         if (source.getConditions().isEmpty()) {
             destination.setRequiredCommand("");
@@ -71,7 +70,6 @@ public class TaskConvertor {
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
-        destination.setDeleteDate(source.getDeleteDate());
 
         if (source.getRequiredCommand() != null && !source.getRequiredCommand().equals("")) {
             List<TaskCondition> taskConditions = new ArrayList<>();

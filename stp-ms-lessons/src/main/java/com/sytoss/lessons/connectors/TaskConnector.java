@@ -9,15 +9,13 @@ import java.util.List;
 @Repository
 public interface TaskConnector extends JpaRepository<TaskDTO, Long> {
 
-    TaskDTO getByIdAndDeleteDateIsNull(long taskId);
+    TaskDTO getByQuestionAndTopicsDisciplineId(String question, Long disciplineId);
 
-    TaskDTO getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(String question, Long disciplineId);
+    List<TaskDTO> findByTopicsId(Long id);
 
-    List<TaskDTO> findByTopicsIdAndDeleteDateIsNull(Long id);
+    List<TaskDTO> findByTaskDomainId(Long taskDomainId);
 
-    List<TaskDTO> findByTaskDomainIdAndDeleteDateIsNull(Long taskDomainId);
+    TaskDTO getByQuestionAndTaskDomainId(String question, Long id);
 
-    TaskDTO getByQuestionAndTaskDomainIdAndDeleteDateIsNull(String question, Long id);
-
-    List<TaskDTO> getByTaskDomainDisciplineIdAndDeleteDateIsNull(Long disciplineId);
+    List<TaskDTO> getByTaskDomainDisciplineId(Long disciplineId);
 }

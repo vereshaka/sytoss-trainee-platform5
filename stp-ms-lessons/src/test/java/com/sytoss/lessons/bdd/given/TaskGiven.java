@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
@@ -15,13 +16,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Transactional
 public class TaskGiven extends LessonsIntegrationTest {
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
 
         if (taskDTO == null) {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
@@ -38,7 +40,7 @@ public class TaskGiven extends LessonsIntegrationTest {
 
     @Given("^task with question \"(.*)\" doesnt exist$")
     public void taskNotExist(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(question, getTestExecutionContext().getDetails().getDisciplineId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
         if (taskDTO != null) {
             getTaskConnector().delete(taskDTO);
         }
@@ -53,7 +55,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     private void getListOfTasksFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineIdAndDeleteDateIsNull(columns.get("task"), disciplineDTO.getId());
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(columns.get("task"), disciplineDTO.getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
                 taskDTO.setQuestion(columns.get("task"));
@@ -103,9 +105,9 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO taskDto = getTaskConnector().getById(getTestExecutionContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
         } else {
-            TaskDTO taskDto = getTaskConnector().getByIdAndDeleteDateIsNull(12345L);
-            if (taskDto != null) {
-                getTaskConnector().delete(taskDto);
+            Optional<TaskDTO> taskDto = getTaskConnector().findById(12345L);
+            if (taskDto.get() != null) {
+                getTaskConnector().delete(taskDto.get());
             }
             getTestExecutionContext().registerId(taskId, 12345L);
         }
@@ -136,7 +138,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^task domain tasks exist")
     public void taskDomainTasksExist(List<TaskDTO> tasks) {
         for (TaskDTO task : tasks) {
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainIdAndDeleteDateIsNull(task.getQuestion(), task.getTaskDomain().getId());
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 getTaskConnector().save(task);
             }
