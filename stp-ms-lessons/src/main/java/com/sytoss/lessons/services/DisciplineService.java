@@ -2,19 +2,13 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.GroupReferenceConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +37,12 @@ public class DisciplineService extends AbstractService {
     private final UserConnector userConnector;
 
     private final TaskConnector taskConnector;
+
+    private final ExamService examService;
+
+    private final TopicConnector topicConnector;
+
+    private final TaskDomainService taskDomainService;
 
     public Discipline getById(Long id) {
         try {
@@ -180,5 +180,20 @@ public class DisciplineService extends AbstractService {
         Discipline updatedDiscipline = new Discipline();
         disciplineConvertor.fromDTO(updatedDisciplineDTO, updatedDiscipline);
         return updatedDiscipline;
+    }
+
+    public List<Exam> getExams(Long disciplineId) {
+        return examService.getExamsByDiscipline(disciplineId);
+    }
+
+    public Discipline delete(Long disciplineId) {
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+
+        topicDTOList.forEach(topicDTO -> {
+            topicConnector.deleteById(topicDTO.getId());
+        });
+
+        List<TaskDomain> taskDomains = taskDomainService.findByDiscipline(disciplineId);
+        return null;
     }
 }

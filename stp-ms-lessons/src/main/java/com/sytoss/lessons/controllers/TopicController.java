@@ -108,4 +108,17 @@ public class TopicController {
 
         return topicService.update(topic);
     }
+
+    @Operation(description = "Method that delete topic by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Topic not found")
+    })
+    @DeleteMapping(value = "/{topicId}/delete")
+    public Topic delete(
+            @Parameter(description = "Id of topic to delete")
+            @PathVariable("topicId") Long topicId
+    ) {
+        return topicService.delete(topicId);
+    }
 }

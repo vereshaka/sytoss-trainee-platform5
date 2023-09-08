@@ -36,8 +36,6 @@ public class TaskDomainService {
 
     private final TaskDomainConvertor taskDomainConvertor;
 
-    private final DisciplineService disciplineService;
-
     private final PersonalExamConnector personalExamConnector;
 
     private final CheckTaskConnector checkTaskConnector;
