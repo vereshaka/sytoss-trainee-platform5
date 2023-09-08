@@ -206,9 +206,16 @@ public class TaskService {
     }
 
     public Task deleteTask(Long id) {
-        Task task = getById(id);
-        taskConnector.deleteById(id);
-        return task;
+        try {
+            TaskDTO taskDTO = taskConnector.getReferenceById(id);
+            examService.deleteAssignTaskToExam(taskDTO);
+            taskConnector.deleteById(id);
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        } catch (EntityNotFoundException e) {
+            throw new TaskNotFoundException(id);
+        }
     }
 
     //todo: check how to update when condition with a proper value already exists in DB
