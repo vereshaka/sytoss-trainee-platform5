@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskDomainAlreadyExist;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainIsUsed;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,8 @@ public class TaskDomainService {
     private final PumlConvertor pumlConvertor;
 
     private final DisciplineConnector disciplineConnector;
+
+    private final ExamService examService;
 
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElseThrow(() -> new DisciplineNotFoundException(disciplineId));
@@ -152,5 +156,26 @@ public class TaskDomainService {
     private boolean isValid(TaskDomain taskDomain) {
         String liquibaseScript = pumlConvertor.convertToLiquibase(taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript());
         return checkTaskConnector.checkValidation(liquibaseScript);
+    }
+
+    public TaskDomain delete(Long taskDomainId) {
+        TaskDomainDTO taskDomain = taskDomainConnector.getReferenceById(taskDomainId);
+        List<Task> tasks = taskService.findByDomainId(taskDomainId);
+
+        if (Objects.nonNull(tasks)) {
+            tasks.forEach(task -> {
+                taskService.deleteTask(task.getId());
+            });
+        }
+
+        taskDomainConnector.delete(taskDomain);
+        TaskDomain taskDomainDeleted = new TaskDomain();
+        taskDomainConvertor.fromDTO(taskDomain, taskDomainDeleted);
+
+        return taskDomainDeleted;
+    }
+
+    public List<Exam> getExams(Long taskDomainId) {
+        return examService.getExamsByTaskDomainId(taskDomainId);
     }
 }

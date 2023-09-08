@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
@@ -139,6 +140,20 @@ public class ExamService extends AbstractService {
         }).toList();
     }
 
+    public List<Exam> getExamsByTaskDomainId(Long taskDomainId) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_TaskDomain_Id(taskDomainId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new TaskDomainNotFoundException(taskDomainId);
+        }
+
+        return examDTOList.stream().map(examDTO -> {
+           Exam exam = new Exam();
+           examConvertor.fromDTO(examDTO, exam);
+           return exam;
+        }).toList();
+    }
+
     public List<Exam> getExamsByDiscipline(Long disciplineId) {
         List<ExamDTO> examDTOList = examConnector.findByTopics_Discipline_Id(disciplineId);
 
@@ -153,10 +168,9 @@ public class ExamService extends AbstractService {
         }).toList();
     }
 
-    public Exam deleteById(Long examId) {
+    public void deleteById(Long examId) {
         Exam exam = getById(examId);
         examConnector.deleteById(exam.getId());
-        return exam;
     }
 
     public void deleteAssignTopicToExam(TopicDTO topicDTO) {
