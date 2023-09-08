@@ -5,7 +5,7 @@
                    logicalFilePath="data/STP-612.xml">
     <changeSet author="YehorBP" id="STP-612-1">
         <addForeignKeyConstraint baseTableName="TASK2TOPIC" baseColumnNames="TASK_ID" constraintName="FK_TASK2TOPIC_TASK" referencedTableName="TASK"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="TASK2TOPIC" constraintName="FK_TASK2TOPIC_TASK" />
         </rollback>
@@ -13,7 +13,7 @@
 
     <changeSet author="YehorBP" id="STP-612-2">
         <addForeignKeyConstraint baseTableName="TASK2TOPIC" baseColumnNames="TOPIC_ID" constraintName="FK_TASK2TOPIC_TOPIC" referencedTableName="TOPIC"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="TASK2TOPIC" constraintName="FK_TASK2TOPIC_TOPIC" />
         </rollback>
@@ -21,7 +21,7 @@
 
     <changeSet author="YehorBP" id="STP-612-3">
         <addForeignKeyConstraint baseTableName="EXAM2TOPIC" baseColumnNames="TOPIC_ID" constraintName="FK_EXAM2TOPIC_TOPIC" referencedTableName="TOPIC"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID" />
         <rollback>
             <dropForeignKeyConstraint baseTableName="EXAM2TOPIC" constraintName="FK_EXAM2TOPIC_TOPIC" />
         </rollback>
@@ -29,7 +29,7 @@
 
     <changeSet author="YehorBP" id="STP-612-4">
         <addForeignKeyConstraint baseTableName="EXAM2TOPIC" baseColumnNames="EXAM_ID" constraintName="FK_EXAM2TOPIC_EXAM" referencedTableName="EXAM"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="EXAM2TOPIC" constraintName="FK_EXAM2TOPIC_EXAM" />
         </rollback>
@@ -37,7 +37,7 @@
 
     <changeSet author="YehorBP" id="STP-612-5">
         <addForeignKeyConstraint baseTableName="EXAM2TASK" baseColumnNames="EXAM_ID" constraintName="FK_EXAM2TASK_EXAM" referencedTableName="EXAM"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="EXAM2TOPIC" constraintName="FK_EXAM2TASK_EXAM" />
         </rollback>
@@ -45,7 +45,7 @@
 
     <changeSet author="YehorBP" id="STP-612-6">
         <addForeignKeyConstraint baseTableName="EXAM2TASK" baseColumnNames="TASK_ID" constraintName="FK_EXAM2TASK_TASK" referencedTableName="TASK"
-                                 referencedColumnNames="ID" onDelete="CASCADE" />
+                                 referencedColumnNames="ID"/>
         <rollback>
             <dropForeignKeyConstraint baseTableName="EXAM2TOPIC" constraintName="FK_EXAM2TASK_TASK" />
         </rollback>

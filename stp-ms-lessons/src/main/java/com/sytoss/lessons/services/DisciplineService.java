@@ -42,7 +42,7 @@ public class DisciplineService extends AbstractService {
 
     private final TopicConnector topicConnector;
 
-    private final TaskDomainService taskDomainService;
+    private final TaskDomainConnector taskDomainConnector;
 
     public Discipline getById(Long id) {
         try {
@@ -187,13 +187,34 @@ public class DisciplineService extends AbstractService {
     }
 
     public Discipline delete(Long disciplineId) {
+        Discipline discipline = getById(disciplineId);
         List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
+        List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
 
         topicDTOList.forEach(topicDTO -> {
-            topicConnector.deleteById(topicDTO.getId());
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicDTO.getId());
+            examService.deleteAssignTopicToExam(topicDTO);
+
+            taskDTOList.forEach(taskDTO -> {
+                taskDTO.getTopics().remove(topicDTO);
+                taskConnector.save(taskDTO);
+            });
         });
 
-        List<TaskDomain> taskDomains = taskDomainService.findByDiscipline(disciplineId);
-        return null;
+        topicConnector.deleteAll(topicDTOList);
+
+        taskDomainDTOList.forEach(taskDomainDTO -> {
+            List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainDTO.getId());
+            taskDTOList.forEach(examService::deleteAssignTaskToExam);
+            taskConnector.deleteAll(taskDTOList);
+        });
+
+        taskDomainConnector.deleteAll(taskDomainDTOList);
+
+        examList.forEach(exam -> examService.deleteById(exam.getId()));
+
+        disciplineConnector.deleteById(disciplineId);
+        return discipline;
     }
 }

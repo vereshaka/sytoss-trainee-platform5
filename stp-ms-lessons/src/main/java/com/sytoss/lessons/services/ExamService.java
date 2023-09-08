@@ -17,6 +17,8 @@ import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -155,5 +157,21 @@ public class ExamService extends AbstractService {
         Exam exam = getById(examId);
         examConnector.deleteById(exam.getId());
         return exam;
+    }
+
+    public void deleteAssignTopicToExam(TopicDTO topicDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTopicsId(topicDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTopics().remove(topicDTO);
+            examConnector.save(examDTO);
+        });
+    }
+
+    public void deleteAssignTaskToExam(TaskDTO taskDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_Id(taskDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTasks().remove(taskDTO);
+            examConnector.save(examDTO);
+        });
     }
 }

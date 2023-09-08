@@ -119,6 +119,6 @@ public class TopicController {
             @Parameter(description = "Id of topic to delete")
             @PathVariable("topicId") Long topicId
     ) {
-        return topicService.delete(topicId);
+        return taskService.deleteAssignTopicToTask(topicId);
     }
 }
