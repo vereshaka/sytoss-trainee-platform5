@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
@@ -133,6 +134,20 @@ public class ExamService extends AbstractService {
             Exam exam = new Exam();
             examConvertor.fromDTO(examDTO, exam);
             return exam;
+        }).toList();
+    }
+
+    public List<Exam> getExamsByTaskDomainId(Long taskDomainId) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_TaskDomain_Id(taskDomainId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new TaskDomainNotFoundException(taskDomainId);
+        }
+
+        return examDTOList.stream().map(examDTO -> {
+           Exam exam = new Exam();
+           examConvertor.fromDTO(examDTO, exam);
+           return exam;
         }).toList();
     }
 }
