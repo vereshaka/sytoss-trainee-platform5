@@ -9,15 +9,9 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -35,8 +29,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TaskServiceTest extends StpUnitTest {
 
@@ -45,9 +38,6 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Mock
     private TaskConnector taskConnector;
-
-    @InjectMocks
-    private TaskService taskService;
 
     @Mock
     private TopicService topicService;
@@ -58,8 +48,7 @@ public class TaskServiceTest extends StpUnitTest {
     @Mock
     private DisciplineConnector disciplineConnector;
 
-    @Mock
-    private ExamService examService;
+    private final ExamConnector examConnector = mock(ExamConnector.class);
 
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
@@ -67,6 +56,23 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Spy
     private PumlConvertor pumlConvertor;
+
+    @Mock
+    private ExamConvertor examConvertor;
+
+    @Mock
+    private PersonalExamConnector personalExamConnector;
+
+    @Mock
+    private UserConnector userConnector;
+
+    @Spy
+    private ExamService examService = new ExamService(
+            examConnector, examConvertor, userConnector, personalExamConnector
+    );
+
+    @InjectMocks
+    private TaskService taskService;
 
     @Test
     public void getTaskById() {
@@ -222,6 +228,8 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Test
     public void shouldDeleteTask() {
+        ExamDTO examDTO = mock(ExamDTO.class);
+        List<TaskDTO> taskDTOList = mock(List.class);
         TaskDTO taskDTO = new TaskDTO();
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
@@ -235,14 +243,19 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setEtalonAnswer("one");
         taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
+        examDTO.setTasks(List.of(taskDTO));
 
         when(taskConnector.getReferenceById(1L)).thenReturn(taskDTO);
+        when(examConnector.findByTasks_Id(1L)).thenReturn(List.of(examDTO));
+        when(examDTO.getTasks()).thenReturn(taskDTOList);
+        when(taskDTOList.remove(any())).thenReturn(true);
         doNothing().when(taskConnector).deleteById(1L);
-        doNothing().when(examService).deleteAssignTaskToExam(any());
 
         Task task = taskService.deleteTask(1L);
 
         assertEquals(1L, task.getId());
+        verify(examConnector).findByTasks_Id(1L);
+        verify(examConnector).save(examDTO);
     }
 
     @Test
