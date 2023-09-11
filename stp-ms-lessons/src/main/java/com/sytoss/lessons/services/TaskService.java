@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
@@ -16,11 +17,13 @@ import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
 import com.sytoss.lessons.connectors.TaskConnector;
 import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,8 @@ public class TaskService {
     private final TaskConditionConvertor taskConditionConvertor;
 
     private final TopicService topicService;
+
+    private final TopicConnector topicConnector;
 
     private final CheckTaskConnector checkTaskConnector;
 
@@ -201,9 +206,16 @@ public class TaskService {
     }
 
     public Task deleteTask(Long id) {
-        Task task = getById(id);
-        taskConnector.deleteById(id);
-        return task;
+        try {
+            TaskDTO taskDTO = taskConnector.getReferenceById(id);
+            examService.deleteAssignTaskToExam(taskDTO);
+            taskConnector.deleteById(id);
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        } catch (EntityNotFoundException e) {
+            throw new TaskNotFoundException(id);
+        }
     }
 
     //todo: check how to update when condition with a proper value already exists in DB
@@ -253,5 +265,22 @@ public class TaskService {
 
     public List<Exam> getExams(Long taskId) {
         return examService.getExamsByTaskId(taskId);
+    }
+
+    public Topic deleteAssignTopicToTask(Long topicId) {
+        try {
+            TopicDTO topicDTO = topicConnector.getReferenceById(topicId);
+
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+            taskDTOList.forEach(taskDTO -> {
+                taskDTO.getTopics().remove(topicDTO);
+                taskConnector.save(taskDTO);
+            });
+            examService.deleteAssignTopicToExam(topicDTO);
+
+            return topicService.delete(topicId);
+        } catch (EntityNotFoundException e) {
+            throw new TopicNotFoundException(topicId);
+        }
     }
 }
