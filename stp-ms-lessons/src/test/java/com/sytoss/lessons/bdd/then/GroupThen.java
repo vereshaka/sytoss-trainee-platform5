@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class GroupThen extends LessonsIntegrationTest {
 
     @Then("^groups should be received$")
-    public void groupReferencesShouldBeReceived(List<GroupReferenceDTO> groups) {
+    public void groupReferencesShouldBeReceived(List<Group> groups) {
         List<GroupReferenceDTO> results = (List<GroupReferenceDTO>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
@@ -22,8 +22,8 @@ public class GroupThen extends LessonsIntegrationTest {
         int quantityOfGroups = 0;
 
         for (GroupReferenceDTO result : results) {
-            for (GroupReferenceDTO groupDTO : groups)
-                if (result.getGroupId().equals(groupDTO.getGroupId())) {
+            for (Group group : groups)
+                if (result.getGroupId().equals(group.getId())) {
                     quantityOfGroups++;
                 }
         }

@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
@@ -14,9 +15,17 @@ import java.util.Optional;
 public class GroupGiven extends LessonsIntegrationTest {
 
     @Given("^groups exist$")
-    public void groupsExist(List<GroupReferenceDTO> groups) {
+    public void groupsExist(List<Group> groups) {
         List<Long> groupId = new ArrayList<>();
-        for (GroupReferenceDTO groupReferenceDTO : groups) {
+        List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
+        for(Group group : groups){
+            DisciplineDTO disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setId(group.getDiscipline().getId());
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(),disciplineDTO);
+            groupReferenceDTOS.add(groupReferenceDTO);
+        }
+
+        for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
             Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
             DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
             if (disciplineDTO == null) {

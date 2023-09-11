@@ -3,6 +3,7 @@ package com.sytoss.lessons.bdd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.bdd.common.LessonsDetails;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
@@ -67,6 +68,9 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
 
     @Autowired
     private TaskConvertor taskConvertor;
+
+    @Autowired
+    private DisciplineConvertor disciplineConvertor;
 
     @Override
     protected LessonsDetails createDetails() {

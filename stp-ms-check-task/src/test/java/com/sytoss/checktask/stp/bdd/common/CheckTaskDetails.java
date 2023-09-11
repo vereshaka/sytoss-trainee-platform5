@@ -1,4 +1,4 @@
-package com.sytoss.checktask.stp.bdd.other;
+package com.sytoss.checktask.stp.bdd.common;
 
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;

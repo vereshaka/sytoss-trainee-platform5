@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
 import io.cucumber.datatable.DataTable;
@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Transactional
 public class TaskGiven extends LessonsIntegrationTest {
@@ -136,8 +133,24 @@ public class TaskGiven extends LessonsIntegrationTest {
     }
 
     @Given("^task domain tasks exist")
-    public void taskDomainTasksExist(List<TaskDTO> tasks) {
-        for (TaskDTO task : tasks) {
+    public void taskDomainTasksExist(List<Task> tasks, DataTable table) {
+        List<String> taskDomainIds = table.asMaps().stream().map(el -> el.get("taskDomainId")).toList();
+
+        List<TaskDTO> taskDTOList = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskDTO taskDTO = new TaskDTO();
+            getTaskConvertor().toDTO(task, taskDTO);
+            taskDTOList.add(taskDTO);
+        }
+
+        for (int i = 0; i < taskDTOList.size(); i++) {
+            String taskDomainIdString = taskDomainIds.get(i);
+            Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainIdString);
+            TaskDomainDTO taskDomain = getTestExecutionContext().getDetails().getTaskDomains().stream().filter(el -> Objects.equals(el.getId(), taskDomainId)).toList().get(0);
+            taskDTOList.get(i).setTaskDomain(taskDomain);
+        }
+
+        for (TaskDTO task : taskDTOList) {
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 getTaskConnector().save(task);
