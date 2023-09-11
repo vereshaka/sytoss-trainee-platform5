@@ -3,7 +3,10 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
@@ -26,12 +29,12 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -39,19 +42,29 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Mock
     protected CheckTaskConnector checkTaskConnector;
+
     @Mock
     private TaskConnector taskConnector;
+
     @InjectMocks
     private TaskService taskService;
+
     @Mock
     private TopicService topicService;
+
     @Mock
     private TaskDomainConnector taskDomainConnector;
+
     @Mock
     private DisciplineConnector disciplineConnector;
+
+    @Mock
+    private ExamService examService;
+
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
             new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
+
     @Spy
     private PumlConvertor pumlConvertor;
 
@@ -204,7 +217,7 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainRequestParameters.setRequest("");
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
-        assertEquals("1", result.getValue(0,"1"));
+        assertEquals("1", result.getValue(0, "1"));
     }
 
     @Test
@@ -225,6 +238,7 @@ public class TaskServiceTest extends StpUnitTest {
 
         when(taskConnector.getReferenceById(1L)).thenReturn(taskDTO);
         doNothing().when(taskConnector).deleteById(1L);
+        doNothing().when(examService).deleteAssignTaskToExam(any());
 
         Task task = taskService.deleteTask(1L);
 
