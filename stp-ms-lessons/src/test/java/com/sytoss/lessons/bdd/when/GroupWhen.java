@@ -2,7 +2,6 @@ package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -37,7 +36,7 @@ public class GroupWhen extends LessonsIntegrationTest {
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", getTestExecutionContext().getIdMapping().get(teacherKey).intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<List<GroupReferenceDTO>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }

@@ -3,7 +3,6 @@ package com.sytoss.lessons.bdd.then;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.Then;
 
 import java.util.List;
@@ -15,15 +14,15 @@ public class GroupThen extends LessonsIntegrationTest {
 
     @Then("^groups should be received$")
     public void groupReferencesShouldBeReceived(List<Group> groups) {
-        List<GroupReferenceDTO> results = (List<GroupReferenceDTO>) getTestExecutionContext().getResponse().getBody();
+        List<Group> results = (List<Group>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
         int quantityOfGroups = 0;
 
-        for (GroupReferenceDTO result : results) {
+        for (Group result : results) {
             for (Group group : groups)
-                if (result.getGroupId().equals(group.getId())) {
+                if (result.getId().equals(group.getId())) {
                     quantityOfGroups++;
                 }
         }

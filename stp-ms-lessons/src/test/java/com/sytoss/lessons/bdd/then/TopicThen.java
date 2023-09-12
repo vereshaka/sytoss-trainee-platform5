@@ -15,12 +15,12 @@ public class TopicThen extends LessonsIntegrationTest {
     private TopicService topicService;
 
     @Then("^should return$")
-    public void topicShouldBe(List<TopicDTO> topics) {
+    public void topicShouldBe(List<Topic> topics) {
         List<Topic> topicList = (List<Topic>) getTestExecutionContext().getResponse().getBody();
         int quantityOfTasks = 0;
         assertEquals(topics.size(), topicList.size());
         for (Topic topicFromResponse : topicList) {
-            for (TopicDTO topic : topics)
+            for (Topic topic : topics)
                 if (topic.getName().equals(topicFromResponse.getName())) {
                     quantityOfTasks++;
                 }

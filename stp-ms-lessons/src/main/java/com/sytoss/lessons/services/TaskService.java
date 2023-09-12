@@ -7,10 +7,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.CheckTaskConnector;
@@ -27,7 +24,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -126,7 +126,7 @@ public class TaskService {
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
         if (!result.getTaskConditions().contains(taskCondition)) {
-            result.getTaskConditions().add(taskCondition);
+            result.setRequiredCommand(taskCondition.getType().equals(ConditionType.CONTAINS) ? taskCondition.getValue() : "!" + taskCondition.getValue());
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
             taskDTO = taskConnector.save(taskDTO);

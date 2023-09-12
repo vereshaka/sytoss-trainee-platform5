@@ -91,12 +91,14 @@ public class DataTableCommon {
     @DataTableType
     public Group mapGroupsDTO(Map<String, String> entry) {
         Long groupId = Long.parseLong(entry.get("group"));
-        Long disciplineId = Long.parseLong(entry.get("discipline"));
-        Discipline discipline = new Discipline();
-        discipline.setId(disciplineId);
         Group group = new Group();
         group.setId(groupId);
-        group.setDiscipline(discipline);
+        if (entry.containsKey("discipline")) {
+            Long disciplineId = Long.parseLong(entry.get("discipline"));
+            Discipline discipline = new Discipline();
+            discipline.setId(disciplineId);
+            group.setDiscipline(discipline);
+        }
         return group;
     }
 

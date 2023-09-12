@@ -1,10 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExamWhen extends LessonsIntegrationTest {
@@ -32,8 +30,8 @@ public class ExamWhen extends LessonsIntegrationTest {
           return topic;
       }
   */
-    @When("^a teacher create \"(.*)\" exam from (.*) to (.*) with (.*) tasks for \"(.*)\" group in \"(.*)\" discipline with (.*) minutes duration")
-    public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String disciplineName, Integer duration, List<Topic> topics) throws ParseException, JOSEException {
+    @When("^a teacher create \"(.*)\" exam from (.*) to (.*) with (.*) tasks for this group in \"(.*)\" discipline with (.*) minutes duration")
+    public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String disciplineName, Integer duration, List<Topic> topics) throws ParseException {
         String url = "/api/exam/save";
 
         Teacher teacher = new Teacher();
@@ -49,6 +47,17 @@ public class ExamWhen extends LessonsIntegrationTest {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
+        for (Topic topic : topics) {
+            topic.getDiscipline().setTeacher(teacher);
+        }
+
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < numberOfTasks; i++) {
+            Task task = new Task();
+            task.setTaskDomain(new TaskDomain());
+            //  task.setTopics(topics);
+        }
+
         Exam exam = new Exam();
         exam.setName(examName);
         exam.setGroup(group);
@@ -59,7 +68,7 @@ public class ExamWhen extends LessonsIntegrationTest {
         exam.setTopics(topics);
         exam.setDiscipline(discipline);
         exam.setTeacher(teacher);
-        exam.setTasks(List.of(new Task(), new Task(), new Task(), new Task(), new Task()));
+        exam.setTasks(tasks);
 
         ExamModel examModel = new ExamModel();
         examModel.setExam(exam);
