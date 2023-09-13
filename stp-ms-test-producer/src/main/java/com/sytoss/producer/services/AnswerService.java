@@ -1,6 +1,7 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.convertors.CheckConvertor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
@@ -20,8 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -79,8 +78,8 @@ public class AnswerService extends AbstractService {
         Task task = answer.getTask();
         TaskDomain taskDomain = task.getTaskDomain();
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setRequest(formatTaskAnswer(answer.getValue()));
-        checkTaskParameters.setEtalon(formatTaskAnswer(task.getEtalonAnswer()));
+        checkTaskParameters.setRequest(CheckConvertor.formatTaskAnswer(answer.getValue()));
+        checkTaskParameters.setEtalon(CheckConvertor.formatTaskAnswer(task.getEtalonAnswer()));
         checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
         String liquibase = pumlConvertor.convertToLiquibase(script);
@@ -131,7 +130,7 @@ public class AnswerService extends AbstractService {
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-        request.setRequest(formatTaskAnswer(taskAnswer));
+        request.setRequest(CheckConvertor.formatTaskAnswer(taskAnswer));
         request.setScript(liquibaseScript);
         try {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);
@@ -142,35 +141,5 @@ public class AnswerService extends AbstractService {
                 throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
             } else throw e;
         }
-    }
-
-    private String formatTaskAnswer(String taskAnswer) {
-        if (taskAnswer.matches(".+\\[.+].+")) {
-            String newWherePart = "";
-            Pattern pattern = Pattern.compile("WHERE (\\S+) LIKE '(.+)'");
-            Matcher matcher = pattern.matcher(taskAnswer.toUpperCase());
-            while (matcher.find()) {
-                String tableName = matcher.group(1);
-                String condition = matcher.group(2).replaceAll("_", ".").replaceAll("%", ".+");
-
-                if (condition.matches(".+\\[[\\s\\d\\w]].+")) {
-                    condition = condition.replaceAll("\\[", "").replaceAll("]", "");
-                } else {
-                    Pattern patternBoundsContent = Pattern.compile("\\[.]");
-                    Matcher matcherBoundsContent = patternBoundsContent.matcher(condition);
-
-                    String content;
-                    String newContent = "";
-                    while (matcherBoundsContent.find()) {
-                        content = matcherBoundsContent.group(0);
-                        newContent = "\\" + content.substring(1, content.length() - 1);
-                    }
-                    condition = condition.replaceAll(patternBoundsContent.pattern(), "\\" + newContent);
-                }
-                newWherePart = "where REGEXP_LIKE(" + tableName + "," + condition + ")";
-            }
-            return taskAnswer.replaceAll(pattern.pattern(), newWherePart);
-        }
-        return taskAnswer;
     }
 }
