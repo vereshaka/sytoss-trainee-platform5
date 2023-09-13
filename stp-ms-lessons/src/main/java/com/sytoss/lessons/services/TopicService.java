@@ -106,4 +106,10 @@ public class TopicService {
         topicConvertor.fromDTO(topicDTO, topicToUpdate);
         return topicToUpdate;
     }
+
+    public Topic delete(Long topicId) {
+        Topic topic = getById(topicId);
+        topicConnector.deleteById(topicId);
+        return topic;
+    }
 }
