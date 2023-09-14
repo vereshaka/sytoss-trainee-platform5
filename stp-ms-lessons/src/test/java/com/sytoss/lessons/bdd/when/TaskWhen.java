@@ -15,7 +15,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -131,16 +130,17 @@ public class TaskWhen extends LessonsIntegrationTest {
     public void requestSentCheckRequest(String request) {
         String url = "/api/task/check-request-result";
 
-        List<HashMap<String, Object>> list = new ArrayList<>();
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("ID", 1);
-        hashMap.put("NAME", "SQL");
-        list.add(hashMap);
-        hashMap = new HashMap<>();
-        hashMap.put("ID", 2);
-        hashMap.put("NAME", "Mongo");
-        list.add(hashMap);
         QueryResult queryResult = new QueryResult();
+        HashMap<String, Object> hashMap = new HashMap<>();
+        queryResult.setHeader(List.of("id", "name"));
+        hashMap.put("id", 1);
+        hashMap.put("name", "SQL");
+        queryResult.addValues(hashMap);
+        hashMap = new HashMap<>();
+        hashMap.put("id", 2);
+        hashMap.put("name", "Mongo");
+        queryResult.addValues(hashMap);
+
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", 1);
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);

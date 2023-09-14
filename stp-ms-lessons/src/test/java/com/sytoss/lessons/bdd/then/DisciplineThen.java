@@ -27,7 +27,7 @@ public class DisciplineThen extends LessonsIntegrationTest {
     }
 
     @Then("^disciplines should be received$")
-    public void disciplinesShouldBeReceived(List<DisciplineDTO> disciplines) {
+    public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
         List<Discipline> disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
         assertEquals(disciplines.size(), disciplineList.size());
         for (int i = 0; i < disciplineList.size(); i++) {
@@ -43,11 +43,11 @@ public class DisciplineThen extends LessonsIntegrationTest {
     }
 
     @Then("should receive information about discipline of student")
-    public void shouldReceiveInformationAboutDisciplineOfStudent(List<DisciplineDTO> disciplines) {
+    public void shouldReceiveInformationAboutDisciplineOfStudent(List<Discipline> disciplines) {
         List<Discipline> disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(disciplineList.size());
         int count = 0;
-        for (DisciplineDTO discipline : disciplines) {
+        for (Discipline discipline : disciplines) {
             for (Discipline answer : disciplineList) {
                 if (discipline.getName().equals(answer.getName())) {
                     count++;

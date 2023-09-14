@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -40,10 +41,19 @@ public class TopicGiven extends AbstractGiven {
     }
 
     @Given("topics exist")
-    public void thisExamHasAnswers(List<TopicDTO> topics) {
+    public void thisExamHasAnswers(List<Topic> topics) {
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
+        List<TopicDTO> topicDTOS = new ArrayList<>();
+        for(Topic topic : topics){
+            TopicDTO topicDTO = new TopicDTO();
+            topicDTO.setName(topic.getName());
+            DisciplineDTO disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(topic.getDiscipline().getName());
+            topicDTO.setDiscipline(disciplineDTO);
+            topicDTOS.add(topicDTO);
+        }
         Map<Long, List<Long>> finalTopics = new HashMap<>();
-        for (TopicDTO topic : topics) {
+        for (TopicDTO topic : topicDTOS) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(topic.getDiscipline().getName(), teacherId);
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
@@ -68,8 +78,8 @@ public class TopicGiven extends AbstractGiven {
             topicIds.add(topicResult.getId());
         }
         for (Map.Entry<Long, List<Long>> entry : finalTopics.entrySet()) {
-            List<TopicDTO> topicDTOS = getTopicConnector().findByDisciplineId(entry.getKey());
-            Iterator<TopicDTO> iTopic = topicDTOS.iterator();
+            List<TopicDTO> topicDTOSFromConnector = getTopicConnector().findByDisciplineId(entry.getKey());
+            Iterator<TopicDTO> iTopic = topicDTOSFromConnector.iterator();
             while (iTopic.hasNext()) {
                 TopicDTO t = iTopic.next();
                 if (!entry.getValue().contains(t.getId())) {

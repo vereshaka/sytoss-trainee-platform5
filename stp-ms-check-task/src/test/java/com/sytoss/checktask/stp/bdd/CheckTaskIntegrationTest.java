@@ -1,6 +1,6 @@
 package com.sytoss.checktask.stp.bdd;
 
-import com.sytoss.checktask.stp.bdd.other.CheckTaskDetails;
+import com.sytoss.checktask.stp.bdd.common.CheckTaskDetails;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;

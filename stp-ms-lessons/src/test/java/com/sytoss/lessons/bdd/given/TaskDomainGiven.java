@@ -1,5 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -8,6 +10,7 @@ import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDomainGiven extends LessonsIntegrationTest {
@@ -39,8 +42,17 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
     }
 
     @Given("^task domains exist$")
-    public void taskDomainExist(List<TaskDomainDTO> taskDomains) {
-        for (TaskDomainDTO taskDomainDTO : taskDomains) {
+    public void taskDomainExist(List<TaskDomain> taskDomains) {
+        List<TaskDomainDTO> taskDomainDTOS = new ArrayList<>();
+        Teacher teacher = new Teacher();
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+        for (TaskDomain taskDomain : taskDomains) {
+            TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+            taskDomain.getDiscipline().setTeacher(teacher);
+            getTaskDomainConvertor().toDTO(taskDomain, taskDomainDTO);
+            taskDomainDTOS.add(taskDomainDTO);
+        }
+        for (TaskDomainDTO taskDomainDTO : taskDomainDTOS) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(taskDomainDTO.getDiscipline().getName(), getTestExecutionContext().getDetails().getTeacherId());
             if (disciplineDTO == null) {
                 disciplineDTO = taskDomainDTO.getDiscipline();
@@ -62,7 +74,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
                 }
             }
         }
-        getTestExecutionContext().getDetails().setTaskDomains(taskDomains);
+        getTestExecutionContext().getDetails().setTaskDomains(taskDomainDTOS);
     }
 
     @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")

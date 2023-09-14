@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
@@ -135,7 +136,7 @@ public class TaskService {
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
         if (!result.getTaskConditions().contains(taskCondition)) {
-            result.getTaskConditions().add(taskCondition);
+            result.setRequiredCommand(taskCondition.getType().equals(ConditionType.CONTAINS) ? taskCondition.getValue() : "!" + taskCondition.getValue());
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
             taskDTO = taskConnector.save(taskDTO);

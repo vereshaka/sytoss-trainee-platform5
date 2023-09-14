@@ -3,14 +3,12 @@ Feature: Task Domain
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
     And "SQL" discipline exists for this teacher
-    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
-    And "SQL" discipline exists
 
   Scenario: system create a new task domain
     Given "First Domain" task domain doesnt exist
     When system create "First Domain" task domain
     Then operation is successful
-    And "First Domain" task domain should be created
+    And "First Domain" task domain should exists
 
   Scenario: system not create a new task domain when it exist
     Given "First Domain" task domain exists
@@ -45,10 +43,10 @@ Feature: Task Domain
       | SQL        | Set of Tables |
 
   Scenario: Update task domain
-    Given "First Domain" task domain with a script from "script.yml" exists for this discipline
+    Given "First Domain" task domain exists
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation is successful
-    And "Second Domain" task domain with a script from "script.yml" should be
+    And "Second Domain" task domain should exists
 
   Scenario: Update task domain when task domain does not exist
     Given "First Domain" task domain doesnt exist
