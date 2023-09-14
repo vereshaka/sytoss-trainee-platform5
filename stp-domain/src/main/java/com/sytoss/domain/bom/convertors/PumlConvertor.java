@@ -1,5 +1,9 @@
 package com.sytoss.domain.bom.convertors;
 
+import com.sytoss.domain.bom.convertors.common.Column;
+import com.sytoss.domain.bom.convertors.common.DataRow;
+import com.sytoss.domain.bom.convertors.common.ForeignKey;
+import com.sytoss.domain.bom.convertors.common.Table;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import lombok.RequiredArgsConstructor;

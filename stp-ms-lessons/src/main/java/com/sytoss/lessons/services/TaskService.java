@@ -1,6 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.convertors.CheckConvertor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
@@ -30,7 +31,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -159,7 +163,7 @@ public class TaskService {
             String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-            checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setRequest(CheckConvertor.formatTaskAnswer(taskDomainRequestParameters.getRequest()));
             checkRequestParameters.setScript(liquibaseScript);
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
