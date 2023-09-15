@@ -49,8 +49,7 @@ public class DisciplineService extends AbstractService {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
-            List<TopicDTO> topics = topicConnector.findByDisciplineId(id);
-            discipline.setDuration(topics.stream().map(t -> t.getDuration()).reduce(0.0, (a, b) -> a + b));
+            discipline.setDuration(topicConnector.countDurationByDisciplineId(discipline.getId()));
             return discipline;
         } catch (EntityNotFoundException e) {
             throw new DisciplineNotFoundException(id);
