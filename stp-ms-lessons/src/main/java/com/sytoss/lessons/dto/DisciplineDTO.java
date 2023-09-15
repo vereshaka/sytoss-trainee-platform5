@@ -30,9 +30,6 @@ public class DisciplineDTO {
     @Column(name = "FULL_DESCRIPTION")
     private String fullDescription;
 
-    @Column(name = "DURATION")
-    private Double duration;
-
     @Column(name = "ICON")
     private byte[] icon;
 
