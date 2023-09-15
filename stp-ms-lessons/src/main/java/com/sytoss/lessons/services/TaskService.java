@@ -16,10 +16,7 @@ import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
@@ -43,6 +40,8 @@ import java.util.Optional;
 public class TaskService {
 
     private final TaskConnector taskConnector;
+
+    private final TaskConditionConnector taskConditionConnector;
 
     private final TaskConditionService conditionService;
 
@@ -215,6 +214,9 @@ public class TaskService {
             TaskDTO taskDTO = taskConnector.getReferenceById(id);
             examService.deleteAssignTaskToExam(taskDTO);
             taskConnector.deleteById(id);
+            taskDTO.getConditions().forEach(condition -> {
+                conditionService.deleteById(condition.getId());
+            });
             Task task = new Task();
             taskConvertor.fromDTO(taskDTO, task);
             return task;
@@ -227,15 +229,13 @@ public class TaskService {
     private List<TaskConditionDTO> getTaskConditionsForUpdate(Task task) {
         taskConvertor.fromRequiredCommandToTaskConditions(task);
         TaskDTO oldTaskDTO = taskConnector.getById(task.getId());
+        taskConditionConnector.deleteAll(oldTaskDTO.getConditions());
         Task oldTask = new Task();
         taskConvertor.fromDTO(oldTaskDTO, oldTask);
         List<TaskCondition> newTaskConditions = task.getTaskConditions();
         List<TaskCondition> oldTaskConditions = oldTask.getTaskConditions();
 
         List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
-
-        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
-        idForDelete.forEach(conditionService::deleteById);
 
         for (TaskCondition taskCondition : newTaskConditions) {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
