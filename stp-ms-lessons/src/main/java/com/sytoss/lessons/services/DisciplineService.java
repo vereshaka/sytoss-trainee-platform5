@@ -49,6 +49,7 @@ public class DisciplineService extends AbstractService {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            discipline.setDuration(topicConnector.countDurationByDisciplineId(discipline.getId()));
             return discipline;
         } catch (EntityNotFoundException e) {
             throw new DisciplineNotFoundException(id);
@@ -169,9 +170,6 @@ public class DisciplineService extends AbstractService {
         }
         if (!Objects.equals(discipline.getFullDescription(), null)) {
             updatedDisciplineDTO.setFullDescription(discipline.getFullDescription());
-        }
-        if (!Objects.equals(discipline.getDuration(), null)) {
-            updatedDisciplineDTO.setDuration(discipline.getDuration());
         }
         if (!Objects.equals(discipline.getIcon(), null)) {
             updatedDisciplineDTO.setIcon(discipline.getIcon());
