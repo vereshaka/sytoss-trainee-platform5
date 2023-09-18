@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
@@ -205,5 +206,32 @@ public class DisciplineController {
             discipline.setIcon(icon.getBytes());
         }
         return disciplineService.updateDiscipline(discipline);
+    }
+
+    @Operation(description = "Method that retrieve information about exams by discipline id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!")
+    })
+    @GetMapping(value = "/{disciplineId}/exams")
+    public List<Exam> getExams(
+            @Parameter(description = "Id of discipline to get exams")
+            @PathVariable("disciplineId") Long disciplineId
+    ) {
+        return disciplineService.getExams(disciplineId);
+    }
+
+
+    @Operation(description = "Method that delete discipline by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found")
+    })
+    @DeleteMapping(value = "/{disciplineId}/delete")
+    public Discipline delete(
+            @Parameter(description = "Method that delete discipline by id")
+            @PathVariable("disciplineId") Long disciplineId
+    ) {
+        return disciplineService.delete(disciplineId);
     }
 }

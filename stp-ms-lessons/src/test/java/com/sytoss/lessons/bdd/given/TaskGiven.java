@@ -1,9 +1,11 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -16,7 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 @Transactional
 public class TaskGiven extends LessonsIntegrationTest {
@@ -105,9 +107,9 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO taskDto = getTaskConnector().getById(getTestExecutionContext().getIdMapping().get(taskId));
             getTaskConnector().delete(taskDto);
         } else {
-            Optional<TaskDTO> taskDto = getTaskConnector().findById(12345L);
-            if (taskDto.get() != null) {
-                getTaskConnector().delete(taskDto.get());
+            TaskDTO taskDto = getTaskConnector().getReferenceById(12345L);
+            if (taskDto != null) {
+                getTaskConnector().delete(taskDto);
             }
             getTestExecutionContext().registerId(taskId, 12345L);
         }
@@ -136,11 +138,37 @@ public class TaskGiven extends LessonsIntegrationTest {
     }
 
     @Given("^task domain tasks exist")
-    public void taskDomainTasksExist(List<TaskDTO> tasks) {
-        for (TaskDTO task : tasks) {
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
+    public void taskDomainTasksExist(DataTable table) {
+        List<Map<String, String>> rows = table.asMaps();
+
+        List<Task> tasks = new ArrayList<>();
+        DataTableCommon dataTableCommon = new DataTableCommon();
+        for (Map<String, String> row : rows) {
+            Task task = dataTableCommon.mapTasks(row);
+            String id = row.get("taskDomainId");
+            TaskDomain taskDomain = new TaskDomain();
+            taskDomain.setId(getTestExecutionContext().getIdMapping().get(id));
+            task.setTaskDomain(taskDomain);
+            tasks.add(task);
+        }
+
+        List<String> taskDomainIds = table.asMaps().stream().map(el -> el.get("taskDomainId")).toList();
+
+        List<TaskDTO> taskDTOList = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskDTO taskDTO = new TaskDTO();
+            getTaskConvertor().toDTO(task, taskDTO);
+            taskDTOList.add(taskDTO);
+        }
+
+        for (int i = 0; i < taskDTOList.size(); i++) {
+            String taskDomainIdString = taskDomainIds.get(i);
+            Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainIdString);
+            TaskDomainDTO taskDomain = getTestExecutionContext().getDetails().getTaskDomains().stream().filter(el -> Objects.equals(el.getId(), taskDomainId)).toList().get(0);
+            taskDTOList.get(i).setTaskDomain(taskDomain);
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(taskDTOList.get(i).getQuestion(), taskDTOList.get(i).getTaskDomain().getId());
             if (taskDTO == null) {
-                getTaskConnector().save(task);
+                getTaskConnector().save(taskDTOList.get(i));
             }
         }
     }

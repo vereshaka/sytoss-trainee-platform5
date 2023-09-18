@@ -51,9 +51,17 @@ public class GroupServiceTest extends StpUnitTest {
     public void getStudents() {
        GroupDTO groupDTO = new GroupDTO();
        groupDTO.setId(1L);
-       groupDTO.setStudents(List.of(new StudentDTO(),new StudentDTO(), new StudentDTO()));
+       groupDTO.setStudents(List.of(createStudentDTO(1L), createStudentDTO(2L), createStudentDTO(3L)));
        when(groupConnector.findById(any())).thenReturn(Optional.of(groupDTO));
        List<Student> students = groupService.getStudents(1L);
        Assertions.assertEquals(groupDTO.getStudents().size(),students.size());
+    }
+
+    private StudentDTO createStudentDTO(Long id) {
+        StudentDTO studentDTO = new StudentDTO();
+        studentDTO.setId(id);
+        studentDTO.setFirstName("John");
+        studentDTO.setLastName("Doe");
+        return studentDTO;
     }
 }

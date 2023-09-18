@@ -3,18 +3,15 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -26,34 +23,56 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 public class TaskServiceTest extends StpUnitTest {
 
     @Mock
     protected CheckTaskConnector checkTaskConnector;
+
     @Mock
     private TaskConnector taskConnector;
-    @InjectMocks
-    private TaskService taskService;
+
     @Mock
     private TopicService topicService;
+
     @Mock
     private TaskDomainConnector taskDomainConnector;
+
     @Mock
     private DisciplineConnector disciplineConnector;
+
+    private final ExamConnector examConnector = mock(ExamConnector.class);
+
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
             new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
+
     @Spy
     private PumlConvertor pumlConvertor;
+
+    @Mock
+    private ExamConvertor examConvertor;
+
+    @Mock
+    private PersonalExamConnector personalExamConnector;
+
+    @Mock
+    private UserConnector userConnector;
+
+    @Spy
+    private ExamService examService = new ExamService(
+            examConnector, examConvertor, userConnector, personalExamConnector
+    );
+
+    @InjectMocks
+    private TaskService taskService;
 
     @Test
     public void getTaskById() {
@@ -204,11 +223,13 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainRequestParameters.setRequest("");
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
-        assertEquals("1", result.getValue(0,"1"));
+        assertEquals("1", result.getValue(0, "1"));
     }
 
     @Test
     public void shouldDeleteTask() {
+        ExamDTO examDTO = mock(ExamDTO.class);
+        List<TaskDTO> taskDTOList = mock(List.class);
         TaskDTO taskDTO = new TaskDTO();
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
@@ -222,13 +243,19 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setEtalonAnswer("one");
         taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
+        examDTO.setTasks(List.of(taskDTO));
 
         when(taskConnector.getReferenceById(1L)).thenReturn(taskDTO);
+        when(examConnector.findByTasks_Id(1L)).thenReturn(List.of(examDTO));
+        when(examDTO.getTasks()).thenReturn(taskDTOList);
+        when(taskDTOList.remove(any())).thenReturn(true);
         doNothing().when(taskConnector).deleteById(1L);
 
         Task task = taskService.deleteTask(1L);
 
         assertEquals(1L, task.getId());
+        verify(examConnector).findByTasks_Id(1L);
+        verify(examConnector).save(examDTO);
     }
 
     @Test

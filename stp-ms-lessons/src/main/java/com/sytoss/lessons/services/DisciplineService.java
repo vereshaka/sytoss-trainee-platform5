@@ -2,19 +2,13 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.GroupReferenceConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +38,18 @@ public class DisciplineService extends AbstractService {
 
     private final TaskConnector taskConnector;
 
+    private final ExamService examService;
+
+    private final TopicConnector topicConnector;
+
+    private final TaskDomainConnector taskDomainConnector;
+
     public Discipline getById(Long id) {
         try {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            discipline.setDuration(topicConnector.countDurationByDisciplineId(discipline.getId()));
             return discipline;
         } catch (EntityNotFoundException e) {
             throw new DisciplineNotFoundException(id);
@@ -170,9 +171,6 @@ public class DisciplineService extends AbstractService {
         if (!Objects.equals(discipline.getFullDescription(), null)) {
             updatedDisciplineDTO.setFullDescription(discipline.getFullDescription());
         }
-        if (!Objects.equals(discipline.getDuration(), null)) {
-            updatedDisciplineDTO.setDuration(discipline.getDuration());
-        }
         if (!Objects.equals(discipline.getIcon(), null)) {
             updatedDisciplineDTO.setIcon(discipline.getIcon());
         }
@@ -180,5 +178,31 @@ public class DisciplineService extends AbstractService {
         Discipline updatedDiscipline = new Discipline();
         disciplineConvertor.fromDTO(updatedDisciplineDTO, updatedDiscipline);
         return updatedDiscipline;
+    }
+
+    public List<Exam> getExams(Long disciplineId) {
+        return examService.getExamsByDiscipline(disciplineId);
+    }
+
+    public Discipline delete(Long disciplineId) {
+        Discipline discipline = getById(disciplineId);
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
+        List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
+
+        taskDomainDTOList.forEach(taskDomainDTO -> {
+            List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainDTO.getId());
+            taskDTOList.forEach(examService::deleteAssignTaskToExam);
+            taskConnector.deleteAll(taskDTOList);
+        });
+
+        taskDomainConnector.deleteAll(taskDomainDTOList);
+
+        topicConnector.deleteAll(topicDTOList);
+
+        examList.forEach(exam -> examService.deleteById(exam.getId()));
+
+        disciplineConnector.deleteById(disciplineId);
+        return discipline;
     }
 }

@@ -48,9 +48,6 @@ public class TopicService {
             topicConvertor.toDTO(topic, topicDTO);
             topicDTO = topicConnector.saveAndFlush(topicDTO);
             topicConvertor.fromDTO(topicDTO, topic);
-            double startDuration = discipline.getDuration() == null ? 0 : discipline.getDuration();
-            discipline.setDuration(startDuration + (topicDTO.getDuration() == null ? 0 : topicDTO.getDuration()));
-            disciplineService.updateDiscipline(discipline);
             return topic;
         } else {
             throw new TopicExistException(topic.getName());
@@ -105,5 +102,11 @@ public class TopicService {
         topicDTO = topicConnector.save(topicDTO);
         topicConvertor.fromDTO(topicDTO, topicToUpdate);
         return topicToUpdate;
+    }
+
+    public Topic delete(Long topicId) {
+        Topic topic = getById(topicId);
+        topicConnector.deleteById(topicId);
+        return topic;
     }
 }

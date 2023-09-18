@@ -1,6 +1,7 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
@@ -17,6 +18,8 @@ import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.ExamDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -149,5 +152,40 @@ public class ExamService extends AbstractService {
            examConvertor.fromDTO(examDTO, exam);
            return exam;
         }).toList();
+    }
+
+    public List<Exam> getExamsByDiscipline(Long disciplineId) {
+        List<ExamDTO> examDTOList = examConnector.findByTopics_Discipline_Id(disciplineId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new DisciplineNotFoundException(disciplineId);
+        }
+
+        return examDTOList.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
+    }
+
+    public void deleteById(Long examId) {
+        Exam exam = getById(examId);
+        examConnector.deleteById(exam.getId());
+    }
+
+    public void deleteAssignTopicToExam(TopicDTO topicDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTopicsId(topicDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTopics().remove(topicDTO);
+            examConnector.save(examDTO);
+        });
+    }
+
+    public void deleteAssignTaskToExam(TaskDTO taskDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_Id(taskDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTasks().remove(taskDTO);
+            examConnector.save(examDTO);
+        });
     }
 }
