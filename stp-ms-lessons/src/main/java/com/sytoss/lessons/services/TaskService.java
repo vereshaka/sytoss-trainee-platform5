@@ -27,7 +27,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -217,8 +220,20 @@ public class TaskService {
 
         List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
 
-        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
-        idForDelete.forEach(conditionService::deleteById);
+        //   List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
+
+        for (TaskCondition oldTaskCondition : oldTaskConditions) {
+            TaskConditionDTO oldTaskConditionDTO = new TaskConditionDTO();
+            taskConditionConvertor.toDTO(oldTaskCondition, oldTaskConditionDTO);
+            conditionService.delete(oldTaskConditionDTO);
+        }
+      /*
+        for(TaskCondition taskCondition : task.getTaskConditions()){
+            if(idForDelete.contains(taskCondition.getId())){
+                task.getTaskConditions().remove(taskCondition);
+            }
+        }*/
+        // idForDelete.forEach(conditionService::delete);
 
         for (TaskCondition taskCondition : newTaskConditions) {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();

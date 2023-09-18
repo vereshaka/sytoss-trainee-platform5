@@ -30,9 +30,9 @@ public class TaskConditionService {
         }
     }
 
-    public void deleteById(Long id) {
+    public void delete(TaskConditionDTO taskConditionDTO) {
         try {
-            taskConditionConnector.deleteById(id);
+            taskConditionConnector.delete(taskConditionDTO);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
