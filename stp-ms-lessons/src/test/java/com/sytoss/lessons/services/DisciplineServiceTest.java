@@ -5,10 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.GroupReferenceConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.stp.test.StpUnitTest;
@@ -64,6 +61,9 @@ public class DisciplineServiceTest extends StpUnitTest {
 
     @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private TopicConnector topicConnector;
 
     @Test
     public void shouldSaveDiscipline() {
@@ -220,6 +220,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
         when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        when(topicConnector.countDurationByDisciplineId(any())).thenReturn(1.0);
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
         verify(groupReferenceConnector, times(groupsIds.getGroupsIds().size())).save(any(GroupReferenceDTO.class));
     }
