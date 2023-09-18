@@ -97,9 +97,11 @@ public class TaskConvertor {
     }
 
     public void fromRequiredCommandToTaskConditions(Task task) {
-        if (!task.getRequiredCommand().equals("")) {
-            List<TaskCondition> taskConditions = new ArrayList<>();
-            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(), taskConditions));
+        if (task.getRequiredCommand() != null) {
+            if(!task.getRequiredCommand().equals("")){
+                List<TaskCondition> taskConditions = new ArrayList<>();
+                task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(), taskConditions));
+            }
         }
     }
 
