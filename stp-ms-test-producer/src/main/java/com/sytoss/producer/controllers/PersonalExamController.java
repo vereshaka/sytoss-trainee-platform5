@@ -190,4 +190,16 @@ public class PersonalExamController {
     public List<PersonalExam> reschedule(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.reschedule(examConfiguration);
     }
+
+    @Operation(description = "Method that retrieve personal exams by exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/exam/{examId}")
+    public List<PersonalExam> getByExamId(
+            @Parameter(description = "Id of exam to get personal exams")
+            @PathVariable("examId") Long examId
+    ) {
+        return personalExamService.getByExamId(examId);
+    }
 }
