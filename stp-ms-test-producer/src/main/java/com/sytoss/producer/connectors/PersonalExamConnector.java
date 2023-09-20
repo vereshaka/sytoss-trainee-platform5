@@ -17,4 +17,6 @@ public interface PersonalExamConnector extends MongoRepository<PersonalExam, Str
     List<PersonalExam> getAllByStudent_IdOrderByAssignedDateDesc(Long studentId);
 
     List<PersonalExam> getAllByTeacher_IdOrderByAssignedDateDesc(Long teacherId);
+
+    List<PersonalExam> getByExamId(Long examId);
 }
