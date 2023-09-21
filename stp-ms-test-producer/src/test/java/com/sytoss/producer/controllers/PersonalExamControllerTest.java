@@ -2,11 +2,14 @@ package com.sytoss.producer.controllers;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.personalexam.AnswerModule;
+import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.producer.connectors.UserConnector;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import com.sytoss.stp.test.StpApplicationTest;
-import io.cucumber.java.bs.A;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +37,9 @@ public class PersonalExamControllerTest extends StpApplicationTest {
 
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private UserConnector userConnector;
 
     @Test
     public void shouldCreateExam() {
@@ -112,8 +119,8 @@ public class PersonalExamControllerTest extends StpApplicationTest {
     public void shouldGetPersonalExamByUserId() throws ParseException, JOSEException {
         List<PersonalExam> exams = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L, "Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(2L, "SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
 
         HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -126,6 +133,22 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         ResponseEntity<List<Task>> result = doGet("/api/personal-exam/teacher/1", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    public void shouldDeletePersonalExamsByExamId() throws JOSEException {
+        LinkedHashMap<String, Object> user = new LinkedHashMap<>();
+        user.put("id", 1);
+        user.put("firstName", "John");
+        user.put("lastName", "Doe");
+        user.put("email", "john.doe@email.com");
+        when(userConnector.getMyProfile()).thenReturn(user);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<PersonalExam>> result = doDelete("/api/personal-exam/exam/1/delete", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
     }
 
     private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
