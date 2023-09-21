@@ -6,7 +6,6 @@ import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
-import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,9 +26,6 @@ public class PersonalExamController {
 
     @Autowired
     private PersonalExamService personalExamService;
-
-    @Autowired
-    private PersonalExamConnector personalExamConnector;
 
     @Autowired
     private AnswerService answerService;
@@ -80,7 +76,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswerModule answerModule
     ) {
-         Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }
@@ -110,7 +106,7 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
-            @RequestBody  String taskAnswer) {
+            @RequestBody String taskAnswer) {
         return answerService.checkByAnswerId(personalExamId, taskAnswer.replaceAll("\"", ""), answerId);
     }
 
@@ -201,5 +197,17 @@ public class PersonalExamController {
             @PathVariable("examId") Long examId
     ) {
         return personalExamService.getByExamId(examId);
+    }
+
+    @Operation(description = "Method that delete personal exam by exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @DeleteMapping(value = "/exam/{examId}/delete")
+    public List<PersonalExam> deleteByExamId(
+            @Parameter(description = "Id of exam to delete personal exams")
+            @PathVariable("examId") Long examId
+    ) {
+        return personalExamService.deleteByExamId(examId);
     }
 }

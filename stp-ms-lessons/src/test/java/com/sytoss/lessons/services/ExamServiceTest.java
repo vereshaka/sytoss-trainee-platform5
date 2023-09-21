@@ -1,9 +1,11 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
+import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
@@ -24,8 +26,9 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ExamServiceTest extends StpUnitTest {
 
@@ -35,9 +38,11 @@ public class ExamServiceTest extends StpUnitTest {
     @Mock
     private ExamConnector examConnector;
 
-
     @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private PersonalExamConnector personalExamConnector;
 
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
@@ -124,6 +129,35 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.findByTasks_Id(1L)).thenReturn(List.of(examDTO));
         List<Exam> examList = examService.getExamsByTaskId(1L);
         Assertions.assertNotEquals(0, examList.size());
+    }
+
+    @Test
+    public void shouldDeleteExam() {
+        doNothing().when(personalExamConnector).deletePersonalExamsByExamId(1L);
+        doNothing().when(examConnector).deleteById(1L);
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setDiscipline(new DisciplineDTO());
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setDiscipline(new DisciplineDTO());
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setTopics(List.of(topicDTO));
+        taskDTO.setTaskDomain(taskDomainDTO);
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setId(1L);
+        examDTO.setName("Exam 1");
+        examDTO.setTopics(List.of(topicDTO));
+        examDTO.setTasks(List.of(taskDTO));
+        when(examConnector.getReferenceById(1L)).thenReturn(examDTO);
+        Exam result = examService.delete(1L);
+        assertEquals(1L, result.getId());
+        verify(personalExamConnector).deletePersonalExamsByExamId(1L);
+        verify(examConnector).deleteById(1L);
+    }
+
+    @Test
+    public void shouldReturnExamNotFoundWhenDelete() {
+        when(examConnector.getReferenceById(1L)).thenThrow(new ExamNotFoundException(1L));
+        assertThrows(ExamNotFoundException.class, () -> examService.delete(1L));
     }
 
     private Group createGroup(String groupName, Discipline discipline) {

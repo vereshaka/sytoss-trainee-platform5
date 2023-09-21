@@ -188,4 +188,11 @@ public class ExamService extends AbstractService {
             examConnector.save(examDTO);
         });
     }
+
+    public Exam delete(Long examId) {
+        Exam exam = getById(examId);
+        examConnector.deleteById(exam.getId());
+        personalExamConnector.deletePersonalExamsByExamId(examId);
+        return exam;
+    }
 }

@@ -266,4 +266,10 @@ public class PersonalExamService extends AbstractService {
     public List<PersonalExam> getByExamId(Long examId) {
         return personalExamConnector.getByExamId(examId);
     }
+
+    public List<PersonalExam> deleteByExamId(Long examId) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByExamId(examId);
+        personalExamConnector.deleteAll(personalExams);
+        return personalExams;
+    }
 }

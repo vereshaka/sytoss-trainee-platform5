@@ -28,8 +28,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @Disabled
 public class PersonalExamServiceTest extends StpUnitTest {
@@ -216,6 +215,23 @@ public class PersonalExamServiceTest extends StpUnitTest {
         byte[] result = personalExamService.getQuestionImage("123-abc-def");
 
         assertNotNull(result);
+    }
+
+    @Test
+    public void shouldDeletePersonalExamsByExamId() {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("123-abc-def");
+        Task task = createTask("question");
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        answer.setTask(task);
+        personalExam.setAnswers(List.of(answer));
+
+        when(personalExamConnector.getAllByExamId(1L)).thenReturn(List.of(personalExam));
+        doNothing().when(personalExamConnector).deleteAll(any());
+
+        List<PersonalExam> personalExams = personalExamService.deleteByExamId(1L);
+        assertEquals(1, personalExams.size());
+        verify(personalExamConnector).deleteAll(any());
     }
 
     private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
