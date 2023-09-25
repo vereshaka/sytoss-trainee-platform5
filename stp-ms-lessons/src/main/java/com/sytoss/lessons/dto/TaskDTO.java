@@ -42,4 +42,10 @@ public class TaskDTO {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
     private List<TaskConditionDTO> conditions = new ArrayList<>();
+
+    @Column(name = "CODE")
+    private String code;
+
+    @Column(name = "CREATE_DATE")
+    private Date createDate;
 }
