@@ -146,14 +146,13 @@ public class TaskService {
     }
 
     public List<Task> findByDomainId(Long taskDomainId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainId);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
             taskConvertor.fromDTO(taskDTO, task);
             result.add(task);
         }
-        result.sort(Comparator.comparing(Task::getCode));
         return result;
     }
 

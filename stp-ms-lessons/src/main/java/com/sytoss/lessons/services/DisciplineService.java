@@ -191,7 +191,7 @@ public class DisciplineService extends AbstractService {
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
 
         taskDomainDTOList.forEach(taskDomainDTO -> {
-            List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainDTO.getId());
+            List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainDTO.getId());
             taskDTOList.forEach(examService::deleteAssignTaskToExam);
             taskConnector.deleteAll(taskDTOList);
         });
