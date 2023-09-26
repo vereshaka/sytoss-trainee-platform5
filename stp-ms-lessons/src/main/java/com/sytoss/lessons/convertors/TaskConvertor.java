@@ -27,7 +27,7 @@ public class TaskConvertor {
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
         destination.setCoef(source.getCoef());
-        destination.setCode(source.getCode());
+        destination.setCode(source.getCode() == null ? "" : source.getCode());
         destination.setCreateDate(source.getCreateDate());
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
