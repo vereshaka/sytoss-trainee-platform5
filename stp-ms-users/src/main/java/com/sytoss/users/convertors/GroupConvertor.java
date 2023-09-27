@@ -14,6 +14,8 @@ public class GroupConvertor {
         destination.setName(source.getName());
         if(source.getStudents() != null) {
             destination.setCountOfStudents(source.getStudents().size());
+        } else {
+            destination.setCountOfStudents(0);
         }
     }
 
