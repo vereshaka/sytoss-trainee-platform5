@@ -205,14 +205,15 @@ public class PersonalExamService extends AbstractService {
 
         StringBuilder questionStringBuilder = new StringBuilder();
         for (String questionPart : questionParts) {
-            if (questionStringBuilder.isEmpty() || (questionStringBuilder.append(questionPart).append(" ")).length() < 140) {
+            StringBuilder tmpStringBuilder = new StringBuilder(questionStringBuilder);
+            if (questionStringBuilder.isEmpty() || (tmpStringBuilder.append(questionPart).append(" ")).length() < 140) {
                 questionStringBuilder.append(questionPart).append(" ");
             } else {
                 unitedQuestionParts.add(questionStringBuilder.toString());
                 questionStringBuilder = new StringBuilder(questionPart).append(" ");
             }
         }
-
+        unitedQuestionParts.add(questionStringBuilder.toString());
         return convertToImage(unitedQuestionParts);
     }
 
