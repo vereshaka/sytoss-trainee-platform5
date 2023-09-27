@@ -42,7 +42,7 @@ public class ExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    public List<Exam> save(Exam exam, List<Group> groups) {
+    public List<Exam> saveExamForGroup(Exam exam, List<Group> groups) {
         List<Exam> exams = new ArrayList<>();
 
         for(Group group : groups){
@@ -194,5 +194,37 @@ public class ExamService extends AbstractService {
         examConnector.deleteById(exam.getId());
         personalExamConnector.deletePersonalExamsByExamId(examId);
         return exam;
+    }
+
+    public List<Exam> saveExamForStudents(Exam exam, List<Student> students) {
+        List<Exam> exams = new ArrayList<>();
+
+        exam.setTeacher((Teacher) getCurrentUser());
+        List<Task> distinctTasks = new ArrayList<>();
+        for(Task task : exam.getTasks()){
+            if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
+                distinctTasks.add(task);
+            }
+        }
+        if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
+            exam.setNumberOfTasks(distinctTasks.size());
+        }
+        exam.setTasks(distinctTasks);
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
+        ExamDTO examDTO = new ExamDTO();
+        for (Student student: students){
+            exam.setGroup(student.getPrimaryGroup());
+            examConvertor.toDTO(exam, examDTO);
+            examDTO = examConnector.save(examDTO);
+            examConvertor.fromDTO(examDTO, exam);
+            try {
+                personalExamConnector.create(new ExamConfiguration(exam, student));
+            } catch (Exception e) {
+                log.error("Could not create a personal exam for student", e);
+            }
+        }
+        exams.add(exam);
+
+        return exams;
     }
 }

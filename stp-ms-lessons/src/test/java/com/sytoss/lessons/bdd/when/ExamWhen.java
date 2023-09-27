@@ -1,11 +1,10 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.bom.ExamModel;
+import com.sytoss.lessons.bom.ExamModelForGroup;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
@@ -70,14 +69,14 @@ public class ExamWhen extends LessonsIntegrationTest {
         exam.setTeacher(teacher);
         exam.setTasks(tasks);
 
-        ExamModel examModel = new ExamModel();
-        examModel.setExam(exam);
-        examModel.setGroups(List.of(exam.getGroup()));
+        ExamModelForGroup examModelForGroup = new ExamModelForGroup();
+        examModelForGroup.setExam(exam);
+        examModelForGroup.setGroups(List.of(exam.getGroup()));
 
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<ExamModel> requestEntity = new HttpEntity<>(examModel, httpHeaders);
+        HttpEntity<ExamModelForGroup> requestEntity = new HttpEntity<>(examModelForGroup, httpHeaders);
 
-        ResponseEntity<ExamModel> responseEntity = doPost(url, requestEntity, ExamModel.class);
+        ResponseEntity<ExamModelForGroup> responseEntity = doPost(url, requestEntity, ExamModelForGroup.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

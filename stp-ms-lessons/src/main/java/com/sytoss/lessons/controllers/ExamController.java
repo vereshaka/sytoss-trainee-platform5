@@ -4,7 +4,8 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.lessons.bom.ExamModel;
+import com.sytoss.lessons.bom.ExamModelForGroup;
+import com.sytoss.lessons.bom.ExamModelForStudents;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,10 +30,20 @@ public class ExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/save")
-    public List<Exam> saveRequest(@RequestBody ExamModel exam) {
-        return examService.save(exam.getExam(), exam.getGroups());
+    @PostMapping("/save/group")
+    public List<Exam> saveRequest(@RequestBody ExamModelForGroup exam) {
+        return examService.saveExamForGroup(exam.getExam(), exam.getGroups());
     }
+
+    @Operation(description = "Method that save information about exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/save/students")
+    public List<Exam> saveRequest(@RequestBody ExamModelForStudents exam) {
+        return examService.saveExamForStudents(exam.getExam(), exam.getStudents());
+    }
+
 
     @Operation(description = "Method that retrieve exam")
     @ApiResponses(value = {
