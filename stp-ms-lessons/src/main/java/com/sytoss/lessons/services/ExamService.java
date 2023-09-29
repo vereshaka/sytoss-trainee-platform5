@@ -8,6 +8,8 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
@@ -42,29 +44,42 @@ public class ExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    public List<Exam> saveExamForGroup(Exam exam, List<Group> groups) {
+    public Exam saveExam(Exam exam){
+        exam.setTeacher((Teacher) getCurrentUser());
+        List<Task> distinctTasks = new ArrayList<>();
+        for(Task task : exam.getTasks()){
+            if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
+                distinctTasks.add(task);
+            }
+        }
+        if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
+            exam.setNumberOfTasks(distinctTasks.size());
+        }
+        exam.setTasks(distinctTasks);
+        //TODO: yevgenyv: re think it
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
+        ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+        examDTO = examConnector.save(examDTO);
+        examConvertor.fromDTO(examDTO, exam);
+        return exam;
+    }
+
+    public List<Exam> assigneeExamForGroup(Exam exam, ExamAssignee examAssignee, List<Group> groups) {
         List<Exam> exams = new ArrayList<>();
 
+        ExamGroupAssignee examGroupAssignee = new ExamGroupAssignee();
+        examGroupAssignee.setGroups(groups);
+        examGroupAssignee.setRelevantFrom(examGroupAssignee.getRelevantFrom());
+        examGroupAssignee.setRelevantTo(examGroupAssignee.getRelevantTo());
+        examGroupAssignee.setDuration(examAssignee.getDuration());
+
         for(Group group : groups){
-            exam.setTeacher((Teacher) getCurrentUser());
-            List<Task> distinctTasks = new ArrayList<>();
-            for(Task task : exam.getTasks()){
-                if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
-                    distinctTasks.add(task);
-                }
-            }
-            if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
-                exam.setNumberOfTasks(distinctTasks.size());
-            }
-            exam.setTasks(distinctTasks);
-            exam.setGroup(group);
-            //TODO: yevgenyv: re think it
-            exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
             ExamDTO examDTO = new ExamDTO();
             examConvertor.toDTO(exam, examDTO);
             examDTO = examConnector.save(examDTO);
             examConvertor.fromDTO(examDTO, exam);
-            List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
+            List<Student> students = userConnector.getStudentOfGroup(group.getId());
             for (Student student: students){
                 try {
                     personalExamConnector.create(new ExamConfiguration(exam, student));
@@ -196,7 +211,7 @@ public class ExamService extends AbstractService {
         return exam;
     }
 
-    public List<Exam> saveExamForStudents(Exam exam, List<Student> students) {
+    public List<Exam> assigneeExamForStudents(Exam exam, List<Student> students) {
         List<Exam> exams = new ArrayList<>();
 
         exam.setTeacher((Teacher) getCurrentUser());

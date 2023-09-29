@@ -15,14 +15,6 @@ public class Exam {
 
     private String name;
 
-    private Date relevantFrom;
-
-    private Date relevantTo;
-
-    private Integer duration;
-
-    private Group group;
-
     private Integer numberOfTasks;
 
     private Integer maxGrade;
