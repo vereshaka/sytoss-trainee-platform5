@@ -265,7 +265,6 @@ public class PumlConvertor {
 
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         String pumlConvertedScript = "@startuml\n" + pumlStringBuilder + "\n@enduml";
-        System.out.println(pumlConvertedScript);
         try {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();

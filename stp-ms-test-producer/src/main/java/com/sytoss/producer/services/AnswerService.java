@@ -136,10 +136,10 @@ public class AnswerService extends AbstractService {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);
             return queryResult;
         } catch (Exception e) {
-            log.error("Error during check request", e);
             if (e instanceof FeignException) {
                 throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
-            } else throw e;
+            }
+            throw e;
         }
     }
 }
