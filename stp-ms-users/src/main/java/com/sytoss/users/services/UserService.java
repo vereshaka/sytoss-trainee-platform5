@@ -133,11 +133,9 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
+        dto.setMiddleName(profileModel.getMiddleName());
         if (profileModel.getFirstName() != null) {
             dto.setFirstName(profileModel.getFirstName());
-        }
-        if (profileModel.getMiddleName() != null) {
-            dto.setMiddleName(profileModel.getMiddleName());
         }
         if (profileModel.getLastName() != null) {
             dto.setLastName(profileModel.getLastName());
