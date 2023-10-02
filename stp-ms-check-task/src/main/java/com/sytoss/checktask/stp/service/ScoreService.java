@@ -46,6 +46,13 @@ public class ScoreService {
             }
             Score score = grade(queryResultEtalon, queryResultAnswer);
             if (score.getValue() > 0) {
+                List<String> keyListEtalon = queryResultEtalon.getHeader();
+                List<String> keyListAnswer = queryResultAnswer.getHeader();
+
+                if (keyListAnswer.size() > keyListEtalon.size()) {
+                    score.setValue(score.getValue() - 0.3);
+                }
+
                 for (TaskCondition condition : data.getConditions()) {
                     if ((condition.getType().equals(ConditionType.CONTAINS)
                             && !StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))

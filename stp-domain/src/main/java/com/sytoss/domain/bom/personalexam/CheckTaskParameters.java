@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CheckTaskParameters extends CheckRequestParameters{
+public class CheckTaskParameters extends CheckRequestParameters {
 
     private String etalon;
 
