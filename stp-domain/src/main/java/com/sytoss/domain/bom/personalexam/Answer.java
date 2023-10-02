@@ -37,6 +37,8 @@ public class Answer {
 
     private Long timeSpent;
 
+    private Score score;
+
     public void inProgress() {
         if (this.status.equals(AnswerStatus.NOT_STARTED)) {
             status = AnswerStatus.IN_PROGRESS;
