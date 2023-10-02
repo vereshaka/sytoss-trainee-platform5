@@ -63,17 +63,18 @@ public class ExamService extends AbstractService {
             ExamDTO examDTO = new ExamDTO();
             examConvertor.toDTO(exam, examDTO);
             examDTO = examConnector.save(examDTO);
-            examConvertor.fromDTO(examDTO, exam);
-            List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
+            Exam savedExam = new Exam();
+            examConvertor.fromDTO(examDTO, savedExam);
+            List<Student> students = userConnector.getStudentOfGroup(savedExam.getGroup().getId());
             for (Student student: students){
                 try {
-                    personalExamConnector.create(new ExamConfiguration(exam, student));
+                    personalExamConnector.create(new ExamConfiguration(savedExam, student));
                 } catch (Exception e) {
                     //TODO: yevgenyv: need to re think return answer
                     log.error("Could not create a personal exam for student", e);
                 }
             }
-            exams.add(exam);
+            exams.add(savedExam);
         }
 
         return exams;
