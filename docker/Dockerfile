@@ -1,4 +1,4 @@
-FROM sytoss/graphiz:latest
+FROM sytoss/openjdk:17.0.2-slim
 
 RUN mkdir /opt/images
 
