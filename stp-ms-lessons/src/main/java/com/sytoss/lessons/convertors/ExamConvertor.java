@@ -3,13 +3,16 @@ package com.sytoss.lessons.convertors;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.exam.assignees.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -22,17 +25,11 @@ public class ExamConvertor {
 
     private final TopicConvertor topicConvertor;
     private final TaskConvertor taskConvertor;
+    private final ExamAssigneeConvertor examAssigneeConvertor;
 
     public void toDTO(Exam source, ExamDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setDuration(source.getDuration());
-        destination.setRelevantTo(source.getRelevantTo());
-        destination.setRelevantFrom(source.getRelevantFrom());
-
-        if (ObjectUtils.isNotEmpty(source.getGroup())) {
-            destination.setGroupId(source.getGroup().getId());
-        }
 
         List<TopicDTO> topicDTOList = new ArrayList<>();
 
@@ -56,20 +53,19 @@ public class ExamConvertor {
         destination.setNumberOfTasks(source.getNumberOfTasks());
         destination.setTeacherId(source.getTeacher().getId());
         destination.setMaxGrade(source.getMaxGrade());
+
+        if (!source.getExamAssignees().isEmpty()) {
+            for (ExamAssignee examAssignee : source.getExamAssignees()) {
+                ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+                examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+                destination.getExamAssigneeDTOS().add(examAssigneeDTO);
+            }
+        }
     }
 
     public void fromDTO(ExamDTO source, Exam destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setDuration(source.getDuration());
-        destination.setRelevantTo(source.getRelevantTo());
-        destination.setRelevantFrom(source.getRelevantFrom());
-
-        if (ObjectUtils.isNotEmpty(source.getGroupId())) {
-            Group group = new Group();
-            group.setId(source.getGroupId());
-            destination.setGroup(group);
-        }
 
         List<Topic> topicList = new ArrayList<>();
 
@@ -95,5 +91,27 @@ public class ExamConvertor {
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);
         destination.setMaxGrade(source.getMaxGrade());
+
+        if (!source.getExamAssigneeDTOS().isEmpty()) {
+            for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssigneeDTOS()) {
+                ExamAssignee examAssignee;
+                if (examAssigneeDTO.getExamAssigneeToDTOList().get(0) instanceof ExamToGroupAssigneeDTO) {
+                    examAssignee = new ExamGroupAssignee();
+                    for (ExamAssigneeToDTO examToGroupAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
+                        Group group = new Group();
+                        group.setId(((ExamToGroupAssigneeDTO) examToGroupAssigneeDTO).getGroupId());
+                        ((ExamGroupAssignee) examAssignee).getGroups().add(group);
+                    }
+                } else {
+                    examAssignee = new ExamStudentAssignee();
+                    for (ExamAssigneeToDTO examToStudentAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
+                        Student student = new Student();
+                        student.setId(((ExamToStudentAssigneeDTO) examToStudentAssigneeDTO).getStudentId());
+                        ((ExamStudentAssignee) examAssignee).getStudents().add(student);
+                    }
+                }
+                destination.getExamAssignees().add(examAssignee);
+            }
+        }
     }
 }

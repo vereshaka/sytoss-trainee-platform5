@@ -1,12 +1,15 @@
-package com.sytoss.lessons.dto;
+package com.sytoss.lessons.dto.exam.assignees;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,18 +25,6 @@ public class ExamDTO {
 
     @Column(name = "NAME")
     private String name;
-
-    @Column(name = "RELEVANT_FROM")
-    private Date relevantFrom;
-
-    @Column(name = "RELEVANT_TO")
-    private Date relevantTo;
-
-    @Column(name = "DURATION")
-    private Integer duration;
-
-    @Column(name = "GROUP_ID")
-    private Long groupId;
 
     @Column(name = "NUMBER_OF_TASKS")
     private Integer numberOfTasks;
@@ -54,6 +45,11 @@ public class ExamDTO {
             joinColumns = @JoinColumn(name = "EXAM_ID"),
             inverseJoinColumns = @JoinColumn(name = "TASK_ID"))
     private Collection<TaskDTO> tasks;
+
+    @OneToMany
+    @JoinTable(name = "exam_assignee",
+            joinColumns = @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID"))
+    private List<ExamAssigneeDTO> examAssigneeDTOS = new ArrayList<>();
 
     @Column(name = "MAX_GRADE")
     private Integer maxGrade;

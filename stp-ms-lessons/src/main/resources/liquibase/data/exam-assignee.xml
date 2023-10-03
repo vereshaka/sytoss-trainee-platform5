@@ -1,0 +1,37 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/exam-assignee.xml">
+
+    <changeSet author="IvanL" id="exam-assignee_1">
+        <createTable tableName="EXAM_ASSIGNEE">
+            <column name="ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EXAM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RELEVANT_FROM" type="DATE"/>
+            <column name="RELEVANT_TO" type="DATE"/>
+            <column name="DURATION" type="INT"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="EXAM_ASSIGNEE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="IvanL" author="exam-assignee_2">
+        <addPrimaryKey tableName="ASSIGNEE_ID" columnNames="ID" constraintName="PK_EXAM_ASSIGNEE"/>
+        <rollback>
+            <dropPrimaryKey tableName="ASSIGNEE_ID" constraintName="PK_EXAM_ASSIGNEE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet author="IvanL" id="exam-assignee_3">
+        <createSequence sequenceName="EXAM_ASSIGNEE_SEQ"/>
+        <rollback>
+            <dropSequence sequenceName="EXAM_ASSIGNEE_SEQ"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

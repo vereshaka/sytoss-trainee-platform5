@@ -29,7 +29,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String name;
 
-    private Long examId;
+    private Long examAssigneeId;
 
     private Discipline discipline;
 

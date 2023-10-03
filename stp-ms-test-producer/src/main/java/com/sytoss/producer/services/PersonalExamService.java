@@ -38,10 +38,10 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
         //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
-        Date relevantFrom = examConfiguration.getExam().getRelevantFrom();
-        Date relevantTo = examConfiguration.getExam().getRelevantTo();
+        Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
+        Date relevantTo = examConfiguration.getExamAssignee().getRelevantTo();
         personalExam.setName(examConfiguration.getExam().getName());
-        personalExam.setExamId(examConfiguration.getExam().getId());
+        personalExam.setExamAssigneeId(examConfiguration.getExamAssignee().getId());
         personalExam.setAssignedDate(new Date());
         personalExam.setRelevantFrom(relevantFrom);
         personalExam.setRelevantTo(relevantTo);
@@ -260,8 +260,8 @@ public class PersonalExamService extends AbstractService {
         }
 
         personalExamList.forEach(personalExam -> {
-            personalExam.setRelevantFrom(examConfiguration.getExam().getRelevantFrom());
-            personalExam.setRelevantTo(examConfiguration.getExam().getRelevantTo());
+            personalExam.setRelevantFrom(examConfiguration.getExamAssignee().getRelevantFrom());
+            personalExam.setRelevantTo(examConfiguration.getExamAssignee().getRelevantTo());
             personalExamConnector.save(personalExam);
         });
 

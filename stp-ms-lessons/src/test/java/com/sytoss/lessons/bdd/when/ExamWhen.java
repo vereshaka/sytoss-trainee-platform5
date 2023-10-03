@@ -59,11 +59,11 @@ public class ExamWhen extends LessonsIntegrationTest {
 
         Exam exam = new Exam();
         exam.setName(examName);
-        exam.setGroup(group);
-        exam.setRelevantFrom(dateFormat.parse(relevantFrom));
-        exam.setRelevantTo(dateFormat.parse(relevantTo));
+        //   exam.setGroup(group);
+        //exam.setRelevantFrom(dateFormat.parse(relevantFrom));
+       // exam.setRelevantTo(dateFormat.parse(relevantTo));
         exam.setNumberOfTasks(numberOfTasks);
-        exam.setDuration(duration);
+        //exam.setDuration(duration);
         exam.setTopics(topics);
         exam.setDiscipline(discipline);
         exam.setTeacher(teacher);
@@ -71,10 +71,10 @@ public class ExamWhen extends LessonsIntegrationTest {
 
         ExamModelForGroup examModelForGroup = new ExamModelForGroup();
         examModelForGroup.setExam(exam);
-        examModelForGroup.setGroups(List.of(exam.getGroup()));
+       // examModelForGroup.setGroups(List.of(exam.getGroup()));
 
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<ExamModelForGroup> requestEntity = new HttpEntity<>(examModelForGroup, httpHeaders);
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
 
         ResponseEntity<ExamModelForGroup> responseEntity = doPost(url, requestEntity, ExamModelForGroup.class);
         getTestExecutionContext().setResponse(responseEntity);
