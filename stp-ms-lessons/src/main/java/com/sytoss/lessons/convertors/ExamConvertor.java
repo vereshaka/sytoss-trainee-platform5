@@ -97,6 +97,7 @@ public class ExamConvertor {
                 ExamAssignee examAssignee;
                 if (examAssigneeDTO.getExamAssigneeToDTOList().get(0) instanceof ExamToGroupAssigneeDTO) {
                     examAssignee = new ExamGroupAssignee();
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
                     for (ExamAssigneeToDTO examToGroupAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
                         Group group = new Group();
                         group.setId(((ExamToGroupAssigneeDTO) examToGroupAssigneeDTO).getGroupId());
@@ -104,12 +105,14 @@ public class ExamConvertor {
                     }
                 } else {
                     examAssignee = new ExamStudentAssignee();
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
                     for (ExamAssigneeToDTO examToStudentAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
                         Student student = new Student();
                         student.setId(((ExamToStudentAssigneeDTO) examToStudentAssigneeDTO).getStudentId());
                         ((ExamStudentAssignee) examAssignee).getStudents().add(student);
                     }
                 }
+
                 destination.getExamAssignees().add(examAssignee);
             }
         }

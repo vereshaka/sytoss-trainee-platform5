@@ -57,6 +57,12 @@ public class LessonsControllerTest extends StpApplicationTest {
     @MockBean
     protected ExamConnector examConnector;
 
+    @MockBean
+    protected ExamAssigneeService examAssigneeService;
+
+    @InjectMocks
+    protected ExamAssigneeController examAssigneeController;
+
     @Override
     protected String getToken() {
         return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "teacher");

@@ -222,26 +222,4 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
         assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
-
-
-    private Group createGroup(String groupName, Discipline discipline) {
-        Group group = new Group();
-        group.setName(groupName);
-        group.setDiscipline(discipline);
-        return group;
-    }
-
-    private Discipline createDiscipline(String disciplineName, Teacher teacher) {
-        Discipline discipline = new Discipline();
-        discipline.setName(disciplineName);
-        discipline.setTeacher(teacher);
-        return discipline;
-    }
-
-    private Teacher createTeacher(String firstName, String lastName) {
-        Teacher teacher = new Teacher();
-        teacher.setFirstName(firstName);
-        teacher.setLastName(lastName);
-        return teacher;
-    }
 }

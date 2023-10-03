@@ -71,19 +71,6 @@ public class ExamController {
         return ListUtils.emptyIfNull(exam.getTasks());
     }
 
-    @Operation(description = "Method that reschedule exam by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK")
-    })
-    @PostMapping(value = "/{examId}/reschedule")
-    public ExamAssignee reschedule(
-            @Parameter(description = "id of exam to update")
-            @PathVariable("examId") Long examId,
-            @RequestBody ScheduleModel scheduleModel
-    ) {
-        return examService.reschedule(scheduleModel, examId);
-    }
-
     @Operation(description = "Method that delete exam by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -114,23 +101,5 @@ public class ExamController {
     @PostMapping("/assign/{examId}/students")
     public Exam assignStudentToExam(@PathVariable Long examId, @RequestBody ExamStudentAssignee examAssignee) {
         return examService.assignExamForStudents(examId, examAssignee);
-    }
-
-    @Operation(description = "Method that returns all exam assignees")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/{examId}/assignees")
-    public List<ExamAssignee> getListOfExamAssignee(@PathVariable Long examId) {
-        return examService.returnExamAssignees(examId);
-    }
-
-    @Operation(description = "Method that returns exam assignee by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/assignee/{examAssigneeId}")
-    public ExamAssignee getExamAssigneeById(@PathVariable Long examAssigneeId) {
-        return examService.returnExamAssigneeById(examAssigneeId);
     }
 }
