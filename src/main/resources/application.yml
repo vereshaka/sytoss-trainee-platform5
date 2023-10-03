@@ -1,0 +1,10 @@
+server:
+  port: ${APP_PORT:9204}
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
+image-provider:
+  image-folder: ${IMAGE_FOLDER:D:/temp}
