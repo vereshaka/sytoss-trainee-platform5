@@ -80,4 +80,18 @@ public class ExamController {
     ) {
         return examService.reschedule(scheduleModel, examId);
     }
+
+    @Operation(description = "Method that delete exam by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam not found!")
+
+    })
+    @DeleteMapping(value = "/{examId}/delete")
+    public Exam deleteById(
+            @Parameter(description = "Id of exam to delete")
+            @PathVariable("examId") Long examId
+    ) {
+        return examService.delete(examId);
+    }
 }

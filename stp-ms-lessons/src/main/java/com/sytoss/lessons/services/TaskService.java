@@ -32,10 +32,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +72,7 @@ public class TaskService {
 
 
     public Task create(Task task) {
+        task.setCreateDate(new Date());
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
@@ -148,7 +146,7 @@ public class TaskService {
     }
 
     public List<Task> findByDomainId(Long taskDomainId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainId);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -200,6 +198,10 @@ public class TaskService {
 
         if (Objects.nonNull(task.getCoef())) {
             updateTaskDTO.setCoef(task.getCoef());
+        }
+
+        if (Objects.nonNull(task.getCode())) {
+            updateTaskDTO.setCode(task.getCode());
         }
 
         updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));

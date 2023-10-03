@@ -12,7 +12,11 @@ public class GroupConvertor {
     public void fromDTO(GroupDTO source, Group destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setCountOfStudents(source.getStudents().size());
+        if(source.getStudents() != null) {
+            destination.setCountOfStudents(source.getStudents().size());
+        } else {
+            destination.setCountOfStudents(0);
+        }
     }
 
     public void toDTO(Group source, GroupDTO destination) {

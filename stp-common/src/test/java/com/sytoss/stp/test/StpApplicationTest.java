@@ -178,6 +178,10 @@ public abstract class StpApplicationTest extends StpUnitTest {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
 
+    public <T> ResponseEntity<T> doDelete(String uri, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) {
+        return perform(uri, HttpMethod.DELETE, requestEntity, responseType);
+    }
+
     public <T> ResponseEntity<T> doPut(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.PUT, requestEntity, responseType);
     }
@@ -189,6 +193,11 @@ public abstract class StpApplicationTest extends StpUnitTest {
     public <T> ResponseEntity<T> doGet(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
         return perform(uri, HttpMethod.GET, requestEntity, responseType);
     }
+
+    public <T> ResponseEntity<T> doDelete(String uri, HttpEntity<?> requestEntity, Class<T> responseType) {
+        return perform(uri, HttpMethod.DELETE, requestEntity, responseType);
+    }
+
 
     protected HttpHeaders getDefaultHttpHeaders() {
         HttpHeaders result = new HttpHeaders();

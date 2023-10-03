@@ -91,6 +91,7 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam summary(String id) {
         PersonalExam personalExam = personalExamConnector.getById(id);
         personalExam.summary();
+        personalExam.setAnswers(personalExam.getAnswers().stream().sorted(Comparator.comparing(a -> a.getTask().getCode(),Comparator.nullsLast(Comparator.naturalOrder()))).toList());
         return personalExam;
     }
 
@@ -179,6 +180,9 @@ public class PersonalExamService extends AbstractService {
         personalExamToChange.getAnswers().forEach(
                 answerToChange -> {
                     Answer answer = personalExam.getAnswerById(answerToChange.getId());
+                    if (answer.getTeacherGrade() == null) {
+                        answer.setTeacherGrade(new Grade());
+                    }
                     answer.getTeacherGrade().setValue(answerToChange.getTeacherGrade().getValue());
                 }
         );
@@ -196,19 +200,34 @@ public class PersonalExamService extends AbstractService {
         }
 
         Answer answer = personalExam.getCurrentAnswer();
-        return convertToImage(answer.getTask().getQuestion());
+
+        List<String> questionParts = Arrays.stream(answer.getTask().getQuestion().split(" ")).toList();
+        List<String> unitedQuestionParts = new ArrayList<>();
+
+        StringBuilder questionStringBuilder = new StringBuilder();
+        for (String questionPart : questionParts) {
+            StringBuilder tmpStringBuilder = new StringBuilder(questionStringBuilder);
+            if (questionStringBuilder.isEmpty() || (tmpStringBuilder.append(questionPart).append(" ")).length() < 140) {
+                questionStringBuilder.append(questionPart).append(" ");
+            } else {
+                unitedQuestionParts.add(questionStringBuilder.toString());
+                questionStringBuilder = new StringBuilder(questionPart).append(" ");
+            }
+        }
+        unitedQuestionParts.add(questionStringBuilder.toString());
+        return convertToImage(unitedQuestionParts);
     }
 
-    private byte[] convertToImage(String question) {
+    private byte[] convertToImage(List<String> questionParts) {
         BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = tempImage.createGraphics();
 
-        Font font = new Font("Arial", Font.BOLD, 20);
+        Font font = new Font("TimesRoman", Font.PLAIN, 20);
         graphics2D.setFont(font);
         FontMetrics fontMetrics = graphics2D.getFontMetrics();
 
-        int width = fontMetrics.stringWidth(question) + 30;
-        int height = fontMetrics.getHeight();
+        int width = fontMetrics.stringWidth(longestString(questionParts)) + 30;
+        int height = fontMetrics.getHeight() * questionParts.size();
 
         graphics2D.dispose();
 
@@ -219,7 +238,9 @@ public class PersonalExamService extends AbstractService {
         graphics.fillRect(0, 0, width, height);
         graphics.setColor(Color.BLACK);
         graphics.setFont(font);
-        graphics.drawString(question, 10, fontMetrics.getAscent());
+        for(int i=0;i<questionParts.size(); i++){
+            graphics.drawString(questionParts.get(i), 10, fontMetrics.getAscent()*(i+1));
+        }
         graphics.dispose();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -258,12 +279,28 @@ public class PersonalExamService extends AbstractService {
                             || personalExam.getStatus().equals(PersonalExamStatus.IN_PROGRESS))) {
                 personalExam.finish();
                 personalExamConnector.save(personalExam);
-                log.info("Personal exam with id="+personalExam.getId()+"is finished");
+                log.info("Personal exam with id=" + personalExam.getId() + "is finished");
             }
         }
     }
 
+    private String longestString(List<String> questionParts){
+        String maxString = questionParts.get(0);
+        for(String questionPart :questionParts){
+            if(questionPart.length()>maxString.length()){
+                maxString = questionPart;
+            }
+        }
+        return maxString;
+    }
+
     public List<PersonalExam> getByExamId(Long examId) {
         return personalExamConnector.getByExamId(examId);
+    }
+
+    public List<PersonalExam> deleteByExamId(Long examId) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByExamId(examId);
+        personalExamConnector.deleteAll(personalExams);
+        return personalExams;
     }
 }
