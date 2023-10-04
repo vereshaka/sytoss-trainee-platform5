@@ -40,4 +40,4 @@ logging:
 #    config:
 #      default:
 #        loggerLevel: FULL
-image-provider-url: ${IMAGE_PROVIDER_URI:http://localhost:9204}
+image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9204/api}

@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 @FeignClient(url = "${image-provider-url}", name = "imageProviderConnector")
 public interface ImageProviderConnector {
 
-    @PostMapping("api/save-image")
+    @PostMapping("save-image")
     String saveImage(@RequestBody byte[] image);
 
-    @PostMapping(value = "public/api/image/{name}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "image/{name}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     void saveImage(@PathVariable("name") String name, @RequestPart("image") MultipartFile image);
 }
