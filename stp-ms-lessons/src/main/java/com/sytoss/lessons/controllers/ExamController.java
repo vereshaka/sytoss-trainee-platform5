@@ -4,7 +4,9 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.lessons.bom.ExamModel;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,9 +32,10 @@ public class ExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/save")
-    public List<Exam> saveRequest(@RequestBody ExamModel exam) {
-        return examService.save(exam.getExam(), exam.getGroups());
+    public Exam save(@RequestBody Exam exam) {
+        return examService.save(exam);
     }
+
 
     @Operation(description = "Method that retrieve exam")
     @ApiResponses(value = {
@@ -68,19 +71,6 @@ public class ExamController {
         return ListUtils.emptyIfNull(exam.getTasks());
     }
 
-    @Operation(description = "Method that update exam by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK")
-    })
-    @PostMapping(value = "/{examId}/reschedule")
-    public Exam reschedule(
-            @Parameter(description = "id of exam to update")
-            @PathVariable("examId") Long examId,
-            @RequestBody ScheduleModel scheduleModel
-    ) {
-        return examService.reschedule(scheduleModel, examId);
-    }
-
     @Operation(description = "Method that delete exam by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -93,5 +83,23 @@ public class ExamController {
             @PathVariable("examId") Long examId
     ) {
         return examService.delete(examId);
+    }
+
+    @Operation(description = "Method that assign exam to group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/assign/{examId}/groups")
+    public Exam assignGroupsToExam(@PathVariable Long examId, @RequestBody ExamGroupAssignee examAssignee) {
+        return examService.assignExamForGroup(examId, examAssignee);
+    }
+
+    @Operation(description = "Method that assign exam to group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/assign/{examId}/students")
+    public Exam assignStudentToExam(@PathVariable Long examId, @RequestBody ExamStudentAssignee examAssignee) {
+        return examService.assignExamForStudents(examId, examAssignee);
     }
 }

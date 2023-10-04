@@ -22,7 +22,7 @@ class PumlConvertorTest {
         String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script_v1.yml");
-        System.out.println(pumlConvertedScript);
+        log.debug(pumlConvertedScript);
         List<String> pumlScriptStrings = Arrays.stream(pumlConvertedScript.split("\n")).toList();
         List<String> liquibaseScriptStrings = Arrays.stream(liquibaseScript.split("\n")).toList();
         int quantityOfStrings = 0;
@@ -42,7 +42,7 @@ class PumlConvertorTest {
         String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script_v1.yml");
-        System.out.println(pumlConvertedScript);
+        log.debug(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
 /*

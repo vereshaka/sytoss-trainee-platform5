@@ -1,2 +1,18 @@
 server:
   port: ${APP_PORT:9010}
+logging:
+  level:
+    root: ${APP_LOG:INFO}
+    de:
+      flapdoodle: WARN
+    sun:
+      rmi: WARN
+    org:
+      springframework: WARN
+      mongodb: WARN
+    liquibase: WARN
+#feign:
+#  client:
+#    config:
+#      default:
+#        loggerLevel: FULL

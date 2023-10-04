@@ -22,9 +22,21 @@ feign:
   client:
     config:
       default:
+        #        loggerLevel: FULL
         connectTimeout: 5000
         readTimeout: 5000
         request-interceptors[0]: com.sytoss.lessons.controllers.TokenRequestInterceptor
 users-url: ${USER_URI:http://localhost:9102/api}
 test-producer-url: ${TEST_PRODUCER_URI:http://localhost:9103/api}
 check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api}
+logging:
+  level:
+    root: ${APP_LOG:INFO}
+    de:
+      flapdoodle: WARN
+    sun:
+      rmi: WARN
+    org:
+      springframework: WARN
+      mongodb: WARN
+    liquibase: WARN

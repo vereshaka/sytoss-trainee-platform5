@@ -1,11 +1,10 @@
 package com.sytoss.lessons.bdd.when;
 
-import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.bom.ExamModel;
+import com.sytoss.lessons.bom.ExamModelForGroup;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
 import org.springframework.http.HttpEntity;
@@ -60,24 +59,24 @@ public class ExamWhen extends LessonsIntegrationTest {
 
         Exam exam = new Exam();
         exam.setName(examName);
-        exam.setGroup(group);
-        exam.setRelevantFrom(dateFormat.parse(relevantFrom));
-        exam.setRelevantTo(dateFormat.parse(relevantTo));
+        //   exam.setGroup(group);
+        //exam.setRelevantFrom(dateFormat.parse(relevantFrom));
+       // exam.setRelevantTo(dateFormat.parse(relevantTo));
         exam.setNumberOfTasks(numberOfTasks);
-        exam.setDuration(duration);
+        //exam.setDuration(duration);
         exam.setTopics(topics);
         exam.setDiscipline(discipline);
         exam.setTeacher(teacher);
         exam.setTasks(tasks);
 
-        ExamModel examModel = new ExamModel();
-        examModel.setExam(exam);
-        examModel.setGroups(List.of(exam.getGroup()));
+        ExamModelForGroup examModelForGroup = new ExamModelForGroup();
+        examModelForGroup.setExam(exam);
+       // examModelForGroup.setGroups(List.of(exam.getGroup()));
 
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<ExamModel> requestEntity = new HttpEntity<>(examModel, httpHeaders);
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
 
-        ResponseEntity<ExamModel> responseEntity = doPost(url, requestEntity, ExamModel.class);
+        ResponseEntity<ExamModelForGroup> responseEntity = doPost(url, requestEntity, ExamModelForGroup.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }
