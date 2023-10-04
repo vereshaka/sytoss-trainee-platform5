@@ -52,4 +52,15 @@ public class ImageController {
     ) throws IOException {
         return imageService.getImageByName(name);
     }
+
+    @Deprecated
+    @Operation(description = "Save image")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
+    })
+    @PostMapping("/public/api/image")
+    public void saveImage(@RequestParam(required = false) MultipartFile image) throws IOException {
+        imageService.saveImageWithName(image, image.getOriginalFilename());
+    }
 }
