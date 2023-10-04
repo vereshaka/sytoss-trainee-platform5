@@ -21,7 +21,7 @@ public abstract class AbstractUser {
 
     private String email;
 
-    private byte[] photo;
+    private String imageName;
 
     private boolean isModerated;
 
@@ -29,8 +29,10 @@ public abstract class AbstractUser {
     private String uid;
 
     public boolean isValid() {
-        return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && ObjectUtils.isNotEmpty(photo);
+        return StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && ObjectUtils.isNotEmpty(imageName);
     }
 
     public abstract String getType();
+
+    public static class Public {}
 }
