@@ -60,6 +60,7 @@ public class ExamServiceTest extends StpUnitTest {
             final Object[] args = invocation.getArguments();
             ExamDTO result = (ExamDTO) args[0];
             result.setId(1L);
+            result.setGroupId(1L);
             return result;
         }).when(examConnector).save(any());
 

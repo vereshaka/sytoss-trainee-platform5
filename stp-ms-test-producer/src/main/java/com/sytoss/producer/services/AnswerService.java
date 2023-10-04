@@ -85,12 +85,12 @@ public class AnswerService extends AbstractService {
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        //TODO:BodenchukY Max grade is always 0, need to set it when create exam
         double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();
         grade.setValue(gradeValue);
         grade.setComment(score.getComment());
         answer.grade(grade);
+        answer.setScore(score);
         personalExamConnector.save(personalExam);
     }
 
@@ -136,10 +136,10 @@ public class AnswerService extends AbstractService {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);
             return queryResult;
         } catch (Exception e) {
-            log.error("Error during check request", e);
             if (e instanceof FeignException) {
                 throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
-            } else throw e;
+            }
+            throw e;
         }
     }
 }

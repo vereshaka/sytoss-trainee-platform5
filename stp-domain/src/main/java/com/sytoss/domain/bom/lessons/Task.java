@@ -34,6 +34,7 @@ public class Task {
 
     private String requiredCommand;
 
+    @JsonView({PersonalExam.TeacherOnly.class})
     private String code;
 
     private Date createDate;

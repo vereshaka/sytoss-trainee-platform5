@@ -91,6 +91,7 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam summary(String id) {
         PersonalExam personalExam = personalExamConnector.getById(id);
         personalExam.summary();
+        personalExam.setAnswers(personalExam.getAnswers().stream().sorted(Comparator.comparing(a -> a.getTask().getCode(),Comparator.nullsLast(Comparator.naturalOrder()))).toList());
         return personalExam;
     }
 
