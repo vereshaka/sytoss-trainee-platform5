@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.*;
@@ -30,6 +31,10 @@ public class PersonalExam {
     private String name;
 
     private Long examAssigneeId;
+
+    //TODO: yevgenyv: SHOULD BE DELETED AFTER MIGRATION
+    @Deprecated
+    private Long examAId;
 
     private Discipline discipline;
 

@@ -146,14 +146,14 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<PersonalExam>> result = doDelete("/api/personal-exam/exam/1/delete", httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<PersonalExam>> result = doDelete("/api/personal-exam/exam/assignee/1", httpEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
 
-    private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
+    private PersonalExam createPersonalExam(Long examAssigneeId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setExamId(examId);
+        personalExam.setExamAssigneeId(examAssigneeId);
         personalExam.setName(name);
         personalExam.finish();
         personalExam.setAmountOfTasks(amountOfTasks);

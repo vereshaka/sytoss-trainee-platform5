@@ -193,7 +193,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         assertEquals(exams.size(), result.size());
         for (int i = 0; i < result.size(); i++) {
-            assertEquals(exams.get(1).getExamId(), result.get(1).getExamId());
+            assertEquals(exams.get(1).getExamAssigneeId(), result.get(1).getExamAssigneeId());
             assertEquals(exams.get(1).getAmountOfTasks(), result.get(1).getAmountOfTasks());
             assertEquals(exams.get(1).getStatus(), result.get(1).getStatus());
             assertEquals(exams.get(1).getAssignedDate(), result.get(1).getAssignedDate());
@@ -218,7 +218,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
     }
 
     @Test
-    public void shouldDeletePersonalExamsByExamId() {
+    public void shouldDeletePersonalExamsByExamAssigneeId() {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId("123-abc-def");
         Task task = createTask("question");
@@ -226,17 +226,17 @@ public class PersonalExamServiceTest extends StpUnitTest {
         answer.setTask(task);
         personalExam.setAnswers(List.of(answer));
 
-        when(personalExamConnector.getAllByExamId(1L)).thenReturn(List.of(personalExam));
+        when(personalExamConnector.getAllByExamAssigneeId(1L)).thenReturn(List.of(personalExam));
         doNothing().when(personalExamConnector).deleteAll(any());
 
-        List<PersonalExam> personalExams = personalExamService.deleteByExamId(1L);
+        List<PersonalExam> personalExams = personalExamService.deleteByExamAssigneeId(1L);
         assertEquals(1, personalExams.size());
         verify(personalExamConnector).deleteAll(any());
     }
 
-    private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
+    private PersonalExam createPersonalExam(Long examAssigneeId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setExamId(examId);
+        personalExam.setExamAssigneeId(examAssigneeId);
         personalExam.setName(name);
         personalExam.finish();
         personalExam.setAmountOfTasks(amountOfTasks);

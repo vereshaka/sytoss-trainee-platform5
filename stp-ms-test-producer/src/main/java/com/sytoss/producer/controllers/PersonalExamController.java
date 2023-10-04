@@ -191,23 +191,23 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @GetMapping("/exam/{examId}")
-    public List<PersonalExam> getByExamId(
+    @GetMapping("/exam/assignee/{examAssigneeId}")
+    public List<PersonalExam> getByExamAssigneeId(
             @Parameter(description = "Id of exam to get personal exams")
-            @PathVariable("examId") Long examId
+            @PathVariable("examAssigneeId") Long examAssigneeId
     ) {
-        return personalExamService.getByExamId(examId);
+        return personalExamService.getByExamAssigneeId(examAssigneeId);
     }
 
     @Operation(description = "Method that delete personal exam by exam id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
-    @DeleteMapping(value = "/exam/{examId}/delete")
+    @DeleteMapping(value = "/exam/assignee/{examAssigneeId}")
     public List<PersonalExam> deleteByExamId(
             @Parameter(description = "Id of exam to delete personal exams")
-            @PathVariable("examId") Long examId
+            @PathVariable("examAssigneeId") Long examAssigneeId
     ) {
-        return personalExamService.deleteByExamId(examId);
+        return personalExamService.deleteByExamAssigneeId(examAssigneeId);
     }
 }

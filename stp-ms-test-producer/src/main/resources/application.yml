@@ -13,3 +13,19 @@ check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api/}
 lessons-url: ${LESSONS_URI:http://localhost:9101/api/}
 image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9104/api/}
 users-url: ${USER_URI:http://localhost:9102/api}
+logging:
+  level:
+    root: ${APP_LOG:INFO}
+    de:
+      flapdoodle: WARN
+    sun:
+      rmi: WARN
+    org:
+      springframework: WARN
+      mongodb: WARN
+    liquibase: WARN
+#feign:
+#  client:
+#    config:
+#      default:
+#        loggerLevel: FULL

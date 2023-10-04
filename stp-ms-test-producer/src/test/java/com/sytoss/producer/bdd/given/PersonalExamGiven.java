@@ -53,7 +53,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
     }
 
     @Given("^personal \"(.*)\" exam(?: with examId (.*)|) for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
-    public void personalExamExist(String examName, String examId, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
+    public void personalExamExist(String examName, String examAssigneeId, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         if (personalExam != null) {
             personalExam.getAnswers().clear();
@@ -68,8 +68,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.start();
-            if(StringUtils.isNotEmpty(examId)) {
-                personalExam.setExamId(Long.valueOf(examId));
+            if(StringUtils.isNotEmpty(examAssigneeId)) {
+                personalExam.setExamAssigneeId(Long.valueOf(examAssigneeId));
             }
         }
         personalExam.setAnswers(answers);

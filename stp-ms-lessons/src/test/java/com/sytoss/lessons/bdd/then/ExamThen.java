@@ -16,7 +16,7 @@ public class ExamThen extends LessonsIntegrationTest {
 
     @Then("^\"(.*)\" exam should be from (.*) to (.*) with (.*) tasks for this group with (.*) minutes duration$")
     public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, Integer duration) throws ParseException {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, getTestExecutionContext().getDetails().getGroupReferenceId());
+        ExamDTO examDTO = getExamConnector().getByName(examName);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         Date relevantFrom = dateFormat.parse(relevantFromString);
@@ -31,7 +31,7 @@ public class ExamThen extends LessonsIntegrationTest {
 
     @Then("^\"(.*)\" exam for this group should have topics$")
     public void examShouldHaveTopic(String examName, List<TopicDTO> topicDTOList) {
-        ExamDTO examDTO = getExamConnector().getByNameAndGroupId(examName, getTestExecutionContext().getDetails().getGroupReferenceId());
+        ExamDTO examDTO = getExamConnector().getByName(examName);
 
         Assertions.assertTrue(topicDTOList.stream()
                 .allMatch(expectedTopic -> examDTO.getTopics().stream()

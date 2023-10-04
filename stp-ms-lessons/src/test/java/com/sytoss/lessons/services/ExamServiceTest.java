@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.connectors.ExamAssigneeConnector;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
@@ -47,6 +48,10 @@ public class ExamServiceTest extends StpUnitTest {
     @Mock
     private PersonalExamConnector personalExamConnector;
 
+    @Mock
+    private ExamAssigneeConnector examAssigneeConnector;
+
+
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
@@ -60,7 +65,6 @@ public class ExamServiceTest extends StpUnitTest {
             final Object[] args = invocation.getArguments();
             ExamDTO result = (ExamDTO) args[0];
             result.setId(1L);
-            result.setGroupId(1L);
             return result;
         }).when(examConnector).save(any());
 
@@ -183,6 +187,7 @@ public class ExamServiceTest extends StpUnitTest {
         examConvertor.toDTO(exam, examDTO);
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examGroupAssignee, examAssigneeDTO);
+        when(examAssigneeConnector.save(any())).thenReturn(examAssigneeDTO);
         when(examConnector.save(any())).thenReturn(examDTO);
         exam = examService.assignExamForGroup(examDTO.getId(), examGroupAssignee);
         assertEquals(examDTO.getId(), exam.getId());
@@ -217,6 +222,7 @@ public class ExamServiceTest extends StpUnitTest {
         examConvertor.toDTO(exam, examDTO);
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examStudentAssignee, examAssigneeDTO);
+        when(examAssigneeConnector.save(any())).thenReturn(examAssigneeDTO);
         when(examConnector.save(any())).thenReturn(examDTO);
         exam = examService.assignExamForStudents(examDTO.getId(), examStudentAssignee);
         assertEquals(examDTO.getId(), exam.getId());

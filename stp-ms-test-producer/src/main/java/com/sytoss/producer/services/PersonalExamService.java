@@ -144,8 +144,8 @@ public class PersonalExamService extends AbstractService {
         return personalExamConnector.getById(personalExamId);
     }
 
-    public List<PersonalExam> getAllByExamId(Long examId) {
-        return personalExamConnector.getAllByExamId(examId);
+    public List<PersonalExam> getAllByExamId(Long examAssigneeId) {
+        return personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
     }
 
     public List<PersonalExam> getByStudentId(Long userId) {
@@ -254,7 +254,7 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> reschedule(ExamConfiguration examConfiguration) {
-        List<PersonalExam> personalExamList = personalExamConnector.getAllByExamId(examConfiguration.getExam().getId());
+        List<PersonalExam> personalExamList = personalExamConnector.getAllByExamAssigneeId(examConfiguration.getExamAssignee().getId());
 
         if (ObjectUtils.isEmpty(personalExamList)) {
             throw new ExamNotFoundException(examConfiguration.getExam().getId());
@@ -294,12 +294,12 @@ public class PersonalExamService extends AbstractService {
         return maxString;
     }
 
-    public List<PersonalExam> getByExamId(Long examId) {
-        return personalExamConnector.getByExamId(examId);
+    public List<PersonalExam> getByExamAssigneeId(Long examAssigneeId) {
+        return personalExamConnector.getByExamAssigneeId(examAssigneeId);
     }
 
-    public List<PersonalExam> deleteByExamId(Long examId) {
-        List<PersonalExam> personalExams = personalExamConnector.getAllByExamId(examId);
+    public List<PersonalExam> deleteByExamAssigneeId(Long examAssigneeId) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
         personalExamConnector.deleteAll(personalExams);
         return personalExams;
     }
