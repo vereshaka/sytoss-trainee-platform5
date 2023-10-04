@@ -54,9 +54,7 @@ public class UserService extends AbstractStpService {
         UserDTO foundUser = getDTOById(userId);
 
         if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
-            String imageName = imageProviderConnector.saveImage(foundUser.getPhoto());
-            foundUser.setImageName(imageName);
-            foundUser = userConnector.save(foundUser);
+            foundUser = saveUserPhoto(foundUser);
         }
 
         return instantiateUser(foundUser);
@@ -87,11 +85,28 @@ public class UserService extends AbstractStpService {
             userDto = userConnector.getByEmail(email);
         }
         if (Objects.isNull(userDto.getImageName()) && Objects.nonNull(userDto.getPhoto())) {
-            String imageName = imageProviderConnector.saveImage(userDto.getPhoto());
-            userDto.setImageName(imageName);
-            userDto = userConnector.save(userDto);
+            userDto = saveUserPhoto(userDto);
         }
         return instantiateUser(userDto);
+    }
+
+    private UserDTO saveUserPhoto(UserDTO userDto) {
+        try {
+            String imageName = imageProviderConnector.saveImage(userDto.getPhoto());
+            userDto.setImageName(imageName);
+            return userConnector.save(userDto);
+        } catch (Exception e) {
+            log.warn("Could not save user photo!");
+            return userDto;
+        }
+    }
+
+    private void updateUserPhoto(String imageName, MultipartFile photo) {
+        try {
+            imageProviderConnector.saveImage(imageName, photo);
+        } catch (Exception e) {
+            log.warn("Could not update user photo!");
+        }
     }
 
     private AbstractUser instantiateUser(UserDTO userDto) {
@@ -158,7 +173,7 @@ public class UserService extends AbstractStpService {
         }
         if (profileModel.getPhoto() != null) {
             if (Objects.nonNull(dto.getImageName())) {
-                imageProviderConnector.saveImage(dto.getImageName(), profileModel.getPhoto());
+                updateUserPhoto(dto.getImageName(), profileModel.getPhoto());
             }
 
             updatePhoto(profileModel.getPhoto());
