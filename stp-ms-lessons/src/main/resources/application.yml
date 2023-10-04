@@ -39,4 +39,5 @@ logging:
     org:
       springframework: WARN
       mongodb: WARN
+      hibernate: WARN
     liquibase: WARN

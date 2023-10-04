@@ -22,9 +22,9 @@
     </changeSet>
 
     <changeSet id="IvanL" author="exam-assignee_2">
-        <addPrimaryKey tableName="ASSIGNEE_ID" columnNames="ID" constraintName="PK_EXAM_ASSIGNEE"/>
+        <addPrimaryKey tableName="EXAM_ASSIGNEE" columnNames="ID" constraintName="PK_EXAM_ASSIGNEE"/>
         <rollback>
-            <dropPrimaryKey tableName="ASSIGNEE_ID" constraintName="PK_EXAM_ASSIGNEE"/>
+            <dropPrimaryKey tableName="EXAM_ASSIGNEE" constraintName="PK_EXAM_ASSIGNEE"/>
         </rollback>
     </changeSet>
 
