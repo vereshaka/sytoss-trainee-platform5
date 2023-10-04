@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.GroupConnector;
+import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +45,18 @@ public class UserService extends AbstractStpService {
 
     private final GroupConnector groupConnector;
 
+    private final ImageProviderConnector imageProviderConnector;
+
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            foundUser = saveUserPhoto(foundUser);
+        }
+
         return instantiateUser(foundUser);
     }
 
@@ -75,7 +84,29 @@ public class UserService extends AbstractStpService {
             registerUser(email);
             userDto = userConnector.getByEmail(email);
         }
+        if (Objects.isNull(userDto.getImageName()) && Objects.nonNull(userDto.getPhoto())) {
+            userDto = saveUserPhoto(userDto);
+        }
         return instantiateUser(userDto);
+    }
+
+    private UserDTO saveUserPhoto(UserDTO userDto) {
+        try {
+            String imageName = imageProviderConnector.saveImage(userDto.getPhoto());
+            userDto.setImageName(imageName);
+            return userConnector.save(userDto);
+        } catch (Exception e) {
+            log.warn("Could not save user photo!");
+            return userDto;
+        }
+    }
+
+    private void updateUserPhoto(String imageName, MultipartFile photo) {
+        try {
+            imageProviderConnector.saveImage(imageName, photo);
+        } catch (Exception e) {
+            log.warn("Could not update user photo!");
+        }
     }
 
     private AbstractUser instantiateUser(UserDTO userDto) {
@@ -141,6 +172,10 @@ public class UserService extends AbstractStpService {
             dto.setLastName(profileModel.getLastName());
         }
         if (profileModel.getPhoto() != null) {
+            if (Objects.nonNull(dto.getImageName())) {
+                updateUserPhoto(dto.getImageName(), profileModel.getPhoto());
+            }
+
             updatePhoto(profileModel.getPhoto());
         }
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {

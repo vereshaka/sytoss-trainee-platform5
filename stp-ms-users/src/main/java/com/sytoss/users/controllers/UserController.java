@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.users.model.ProfileModel;
