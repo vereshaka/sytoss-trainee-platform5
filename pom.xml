@@ -4,7 +4,7 @@
 
     <groupId>com.sytoss.provider</groupId>
     <artifactId>imageprovider</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -25,7 +25,7 @@
     <scm>
         <connection>scm:git:https://${USERNAME}:${PASSWORD}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</connection>
         <url>https://${USERNAME}@bitbucket.org/sytoss-trainee-platform/sytoss-trainee-platform.git</url>
-        <tag></tag>
+        <tag>0.0.1</tag>
     </scm>
 
     <dependencies>
