@@ -1,6 +1,6 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.lessons.dto.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

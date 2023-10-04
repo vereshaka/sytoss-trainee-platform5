@@ -11,7 +11,11 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -33,23 +37,17 @@ import static org.mockito.Mockito.*;
 
 public class TaskServiceTest extends StpUnitTest {
 
+    private final ExamConnector examConnector = mock(ExamConnector.class);
     @Mock
     protected CheckTaskConnector checkTaskConnector;
-
     @Mock
     private TaskConnector taskConnector;
-
     @Mock
     private TopicService topicService;
-
     @Mock
     private TaskDomainConnector taskDomainConnector;
-
     @Mock
     private DisciplineConnector disciplineConnector;
-
-    private final ExamConnector examConnector = mock(ExamConnector.class);
-
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
             new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
@@ -64,11 +62,17 @@ public class TaskServiceTest extends StpUnitTest {
     private PersonalExamConnector personalExamConnector;
 
     @Mock
+    private ExamAssigneeConvertor examAssigneeConvertor;
+
+    @Mock
+    private ExamAssigneeConnector examAssigneeConnector;
+
+    @Mock
     private UserConnector userConnector;
 
     @Spy
     private ExamService examService = new ExamService(
-            examConnector, examConvertor, userConnector, personalExamConnector
+            examConnector, examConvertor, userConnector, personalExamConnector, examAssigneeConvertor, examAssigneeConnector
     );
 
     @InjectMocks

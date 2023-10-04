@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ExamModel {
+public class ExamModelForGroup {
 
     private Exam exam;
 

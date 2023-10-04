@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.services.*;
@@ -52,6 +53,15 @@ public class LessonsControllerTest extends StpApplicationTest {
 
     @MockBean
     protected TopicConnector topicConnector;
+
+    @MockBean
+    protected ExamConnector examConnector;
+
+    @MockBean
+    protected ExamAssigneeService examAssigneeService;
+
+    @InjectMocks
+    protected ExamAssigneeController examAssigneeController;
 
     @Override
     protected String getToken() {

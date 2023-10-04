@@ -2,16 +2,20 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,7 +25,6 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +49,10 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
-            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())));
+            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
+
+    @Spy
+    private ExamAssigneeConvertor examAssigneeConvertor = new ExamAssigneeConvertor();
 
     @Test
     public void shouldSaveExam() {
@@ -65,24 +71,16 @@ public class ExamServiceTest extends StpUnitTest {
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Discipline discipline = createDiscipline("SQL", teacher);
-        Group group = createGroup("AT-21-2", discipline);
-
         Exam exam = new Exam();
         exam.setName("Exam");
-        exam.setRelevantFrom(new Date());
-        exam.setRelevantTo(new Date());
-        exam.setGroup(group);
-        exam.setDuration(15);
         exam.setNumberOfTasks(10);
         exam.setTopics(List.of(new Topic(), new Topic()));
         Task task = new Task();
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));
 
-        List<Exam> result = examService.save(exam, List.of(group));
-        assertEquals(1, result.size());
-        assertEquals(1L, result.get(0).getId());
+        Exam result = examService.save(exam);
+        assertEquals(1L, result.getId());
     }
 
     @Test
@@ -100,10 +98,7 @@ public class ExamServiceTest extends StpUnitTest {
 
         ExamDTO exam = new ExamDTO();
         exam.setName("Exam");
-        exam.setRelevantFrom(new Date());
-        exam.setRelevantTo(new Date());
-        exam.setGroupId(1L);
-        exam.setDuration(15);
+
         exam.setNumberOfTasks(10);
         exam.setTopics(List.of(topicDTO));
         exam.setTeacherId(1L);
@@ -161,24 +156,71 @@ public class ExamServiceTest extends StpUnitTest {
         assertThrows(ExamNotFoundException.class, () -> examService.delete(1L));
     }
 
-    private Group createGroup(String groupName, Discipline discipline) {
-        Group group = new Group();
-        group.setName(groupName);
-        group.setDiscipline(discipline);
-        return group;
+    @Test
+    public void shouldAssignExamToGroup() {
+        Teacher teacher = createTeacher("Teacher", "1");
+        Discipline discipline = createDiscipline("SQL", teacher);
+        Group group = createGroup("AT-18", discipline);
+
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("Exam");
+        exam.setNumberOfTasks(10);
+        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTeacher(teacher);
+        Task task = new Task();
+        task.setTaskDomain(new TaskDomain());
+        exam.setTasks(List.of(task));
+        ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+
+        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
+        ExamGroupAssignee examGroupAssignee = new ExamGroupAssignee();
+        examGroupAssignee.setRelevantFrom(new Date());
+        examGroupAssignee.setRelevantTo(new Date());
+        examGroupAssignee.getGroups().add(group);
+        exam.getExamAssignees().add(examGroupAssignee);
+        examConvertor.toDTO(exam, examDTO);
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examGroupAssignee, examAssigneeDTO);
+        when(examConnector.save(any())).thenReturn(examDTO);
+        exam = examService.assignExamForGroup(examDTO.getId(), examGroupAssignee);
+        assertEquals(examDTO.getId(), exam.getId());
+        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 
-    private Discipline createDiscipline(String disciplineName, Teacher teacher) {
-        Discipline discipline = new Discipline();
-        discipline.setName(disciplineName);
-        discipline.setTeacher(teacher);
-        return discipline;
-    }
+    @Test
+    public void shouldAssignExamToStudents() {
+        Teacher teacher = createTeacher("Teacher", "1");
+        Student student = new Student();
+        student.setId(1L);
 
-    private Teacher createTeacher(String firstName, String lastName) {
-        Teacher teacher = new Teacher();
-        teacher.setFirstName(firstName);
-        teacher.setLastName(lastName);
-        return teacher;
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("Exam");
+        exam.setNumberOfTasks(10);
+        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTeacher(teacher);
+        Task task = new Task();
+        task.setTaskDomain(new TaskDomain());
+        exam.setTasks(List.of(task));
+        ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+
+        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
+        ExamStudentAssignee examStudentAssignee = new ExamStudentAssignee();
+        examStudentAssignee.setRelevantFrom(new Date());
+        examStudentAssignee.setRelevantTo(new Date());
+        examStudentAssignee.getStudents().add(student);
+        exam.getExamAssignees().add(examStudentAssignee);
+        examConvertor.toDTO(exam, examDTO);
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examStudentAssignee, examAssigneeDTO);
+        when(examConnector.save(any())).thenReturn(examDTO);
+        exam = examService.assignExamForStudents(examDTO.getId(), examStudentAssignee);
+        assertEquals(examDTO.getId(), exam.getId());
+        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 }
