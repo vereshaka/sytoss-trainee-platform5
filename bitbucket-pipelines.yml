@@ -15,3 +15,74 @@ pipelines:
             - docker system prune -a -f
           services:
             - docker
+    release(SNAPSHOT removing):
+      - step:
+          name: Build and push
+          script:
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export VERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/image-provider:$(echo $VERSION) -f ./docker/Dockerfile .
+            - docker push sytoss/image-provider:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
+    path:
+      - step:
+          name: Build and push
+          script:
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - export VERSION=$(./version.sh -p ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/image-provider:$(echo $VERSION) -f ./docker/Dockerfile .
+            - docker push sytoss/image-provider:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
+    minor:
+      - step:
+          name: Build and push
+          script:
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - export VERSION=$(./version.sh -m ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/image-provider:$(echo $VERSION) -f ./docker/Dockerfile .
+            - docker push sytoss/image-provider:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
+    major:
+      - step:
+          name: Build and push
+          script:
+            - git config --global user.email $EMAIL
+            - mvn clean install -DskipTests -Darguments=-DskipTests
+            - echo $(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | tr -d '\n\r' )
+            - export OLDVERSION=$(cat pom.xml | grep "<version>" | sed -e '1!d' | sed -e '1!d' | sed 's/.*<version>//g' | sed 's/<.*//g' | sed 's/-SNAPSHOT//g' | tr -d '\n\r' )
+            - export VERSION=$(./version.sh -M ${OLDVERSION} | tr -d '\r\n')
+            - export NEWVERS=$(./version.sh -p ${VERSION} | tr -d '\r\n')
+            - mvn --batch-mode -DskipTests -Darguments=-DskipTests release:prepare -DscmCommentPrefix="[skip ci]" -Dtag="${VERSION}"  -DreleaseVersion="${VERSION}" -DdevelopmentVersion="${NEWVERS}-SNAPSHOT"
+            - mvn release:perform -Darguments="-Dmaven.deploy.skip=true" -DscmCommentPrefix="[skip ci]"
+            - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD docker.io
+            - docker build -t sytoss/image-provider:$(echo $VERSION) -f ./docker/Dockerfile .
+            - docker push sytoss/image-provider:$(echo $VERSION)
+            - docker system prune -a -f
+          services:
+            - docker
