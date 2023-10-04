@@ -33,4 +33,6 @@
     <changeSet id="version_0.0.1" author="KornienkoD">
         <tagDatabase tag="0.0.1" />
     </changeSet>
+    <include file="data/exam-assignee.xml" relativeToChangelogFile="true" />
+    <include file="data/exam-assignee-to.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
