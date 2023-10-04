@@ -32,6 +32,9 @@ public abstract class UserDTO {
     @Column(name = "PHOTO")
     private byte[] photo;
 
+    @Column(name = "IMAGE_NAME")
+    private String imageName;
+
     @Column(name = "IS_MODERATED")
     private boolean isModerated;
 

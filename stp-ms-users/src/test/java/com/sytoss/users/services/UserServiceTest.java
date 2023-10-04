@@ -3,6 +3,7 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
+import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
@@ -36,6 +37,9 @@ public class UserServiceTest extends StpUnitTest {
 
     @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private ImageProviderConnector imageProviderConnector;
 
     @Spy
     private UserConverter userConverter;
@@ -163,6 +167,7 @@ public class UserServiceTest extends StpUnitTest {
         studentDTO.setEmail("test@test.com");
         studentDTO.setPrimaryGroup(groupDTO);
         studentDTO.setGroups(List.of(groupDTO));
+        studentDTO.setImageName("Image Name");
         byte[] photoBytes = {0x01, 0x02, 0x03};
         studentDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
@@ -184,6 +189,7 @@ public class UserServiceTest extends StpUnitTest {
         teacherDTO.setMiddleName("Mock");
         teacherDTO.setLastName("Do");
         teacherDTO.setEmail("test@test.com");
+        teacherDTO.setImageName("Image Name");
         byte[] photoBytes = {0x01, 0x02, 0x03};
         teacherDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);

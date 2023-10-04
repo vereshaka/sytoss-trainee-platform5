@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.connectors.GroupConnector;
+import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,11 +45,20 @@ public class UserService extends AbstractStpService {
 
     private final GroupConnector groupConnector;
 
+    private final ImageProviderConnector imageProviderConnector;
+
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
 
     public AbstractUser getById(String userId) {
         UserDTO foundUser = getDTOById(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            String imageName = imageProviderConnector.saveImage(foundUser.getPhoto());
+            foundUser.setImageName(imageName);
+            foundUser = userConnector.save(foundUser);
+        }
+
         return instantiateUser(foundUser);
     }
 
@@ -74,6 +85,11 @@ public class UserService extends AbstractStpService {
         if (userDto == null) {
             registerUser(email);
             userDto = userConnector.getByEmail(email);
+        }
+        if (Objects.isNull(userDto.getImageName()) && Objects.nonNull(userDto.getPhoto())) {
+            String imageName = imageProviderConnector.saveImage(userDto.getPhoto());
+            userDto.setImageName(imageName);
+            userDto = userConnector.save(userDto);
         }
         return instantiateUser(userDto);
     }
@@ -141,6 +157,10 @@ public class UserService extends AbstractStpService {
             dto.setLastName(profileModel.getLastName());
         }
         if (profileModel.getPhoto() != null) {
+            if (Objects.nonNull(dto.getImageName())) {
+                imageProviderConnector.saveImage(dto.getImageName(), profileModel.getPhoto());
+            }
+
             updatePhoto(profileModel.getPhoto());
         }
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {

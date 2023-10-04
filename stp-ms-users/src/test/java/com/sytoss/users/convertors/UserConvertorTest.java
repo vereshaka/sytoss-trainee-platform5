@@ -28,11 +28,10 @@ public class UserConvertorTest extends StpUnitTest {
         student.setModerated(false);
         student.setEmail("test@gmail.com");
         student.setUid("thisIsNotLongId");
+        student.setImageName("Image name");
         Group group = new Group();
         group.setId(1L);
         student.setPrimaryGroup(group);
-        byte[] photoBytes = {1, 2, 3, 4, 5};
-        student.setPhoto(photoBytes);
         StudentDTO studentDTO = new StudentDTO();
         userConverter.toDTO(student, studentDTO);
         assertEquals(student.getId(), studentDTO.getId());
@@ -40,8 +39,8 @@ public class UserConvertorTest extends StpUnitTest {
         assertEquals(student.getLastName(), studentDTO.getLastName());
         assertEquals(student.getEmail(), studentDTO.getEmail());
         assertEquals(student.isModerated(), studentDTO.isModerated());
-        assertEquals(student.getPhoto(), studentDTO.getPhoto());
         assertEquals(student.getUid(), studentDTO.getUid());
+        assertEquals(student.getImageName(), studentDTO.getImageName());
     }
 
     @Test
