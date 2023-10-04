@@ -1,6 +1,5 @@
 package com.sytoss.domain.bom.users;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
