@@ -11,16 +11,16 @@ import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.FileUtils;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
-import io.micrometer.core.instrument.util.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Transactional
 public class TaskDomainGiven extends LessonsIntegrationTest {
@@ -90,7 +90,12 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
     @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")
     public void taskDomainForDiscipline(String taskDomainName, String path) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
-        String scriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + path), StandardCharsets.UTF_8);
+        String scriptFromFile = null;
+        try {
+            scriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + path), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
         }
@@ -109,8 +114,18 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
 
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
-        String dbScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dbScript), StandardCharsets.UTF_8);
-        String dataScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dataScript), StandardCharsets.UTF_8);
+        String dbScriptFromFile = null;
+        try {
+            dbScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dbScript), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String dataScriptFromFile = null;
+        try {
+            dataScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dataScript), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
         }

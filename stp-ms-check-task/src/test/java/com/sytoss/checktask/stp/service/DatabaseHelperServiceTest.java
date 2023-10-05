@@ -19,13 +19,13 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void generateDatabase() {
-        databaseHelperService.generateDatabase(FileUtils.readFromFile("script_v1.yml"));
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script_v1.yml"));
         Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from Client"));
     }
 
     @Test
     void getExecuteQueryResult() throws SQLException {
-        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         HashMap<String, Object> map = new HashMap<>();
         map.put("ID", 1L);
         map.put("NAME", "SQL");
@@ -53,7 +53,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void dropDatabase() {
-        databaseHelperService.generateDatabase(FileUtils.readFromFile("script1.yml"));
+        databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         databaseHelperService.dropDatabase();
         Assertions.assertThrows(CreateDbConnectionException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
     }
