@@ -62,7 +62,6 @@ public class DatabaseHelperService {
         try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
-            log.info(url);
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();

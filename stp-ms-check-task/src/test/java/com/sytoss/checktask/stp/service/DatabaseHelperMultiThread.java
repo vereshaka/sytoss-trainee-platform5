@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.LogManager;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class DatabaseHelperMultiThread extends StpUnitTest {
 
     private static final int threadCount = 100;
@@ -18,6 +20,11 @@ public class DatabaseHelperMultiThread extends StpUnitTest {
 
     private static final String script = new PumlConvertor().convertToLiquibase(dbScript + "\n\n" + dataScript);
 
+    private static int cnt = 0;
+
+    synchronized static void done(){
+        cnt++;
+    }
     @Test
     public void runDBCreation() {
         LogManager.getLogManager().reset();
@@ -33,7 +40,10 @@ public class DatabaseHelperMultiThread extends StpUnitTest {
                 throw new RuntimeException(e);
             }
         });
+        assertEquals(threadCount, cnt);
     }
+
+
 
     class DBCreater implements Runnable {
 
@@ -42,6 +52,7 @@ public class DatabaseHelperMultiThread extends StpUnitTest {
         @Override
         public void run() {
             service.generateDatabase(script);
+            done();
         }
     }
 }
