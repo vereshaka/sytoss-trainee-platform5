@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.LogManager;
 
 public class DatabaseHelperMultiThread extends StpUnitTest {
 
@@ -19,6 +20,7 @@ public class DatabaseHelperMultiThread extends StpUnitTest {
 
     @Test
     public void runDBCreation() {
+        LogManager.getLogManager().reset();
         List<Thread> creaters = new ArrayList<>();
         for (int i = 0; i < threadCount; i++) {
             creaters.add(new Thread(new DBCreater()));
