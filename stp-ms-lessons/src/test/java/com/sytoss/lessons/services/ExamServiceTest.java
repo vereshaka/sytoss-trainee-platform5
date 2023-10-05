@@ -191,8 +191,8 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.save(any())).thenReturn(examDTO);
         exam = examService.assignExamForGroup(examDTO.getId(), examGroupAssignee);
         assertEquals(examDTO.getId(), exam.getId());
-        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
-        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
+        assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 
     @Test
@@ -226,7 +226,7 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.save(any())).thenReturn(examDTO);
         exam = examService.assignExamForStudents(examDTO.getId(), examStudentAssignee);
         assertEquals(examDTO.getId(), exam.getId());
-        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
-        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
+        assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 }

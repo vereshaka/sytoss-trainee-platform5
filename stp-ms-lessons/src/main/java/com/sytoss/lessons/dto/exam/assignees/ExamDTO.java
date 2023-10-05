@@ -47,9 +47,8 @@ public class ExamDTO {
     private Collection<TaskDTO> tasks;
 
     @OneToMany
-    @JoinTable(name = "exam_assignee",
-            joinColumns = @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID"))
-    private List<ExamAssigneeDTO> examAssigneeDTOS = new ArrayList<>();
+    @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID")
+    private List<ExamAssigneeDTO> examAssignees = new ArrayList<>();
 
     @Column(name = "MAX_GRADE")
     private Integer maxGrade;

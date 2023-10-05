@@ -9,6 +9,7 @@ import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bom.ExamModelForGroup;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,17 @@ import java.util.List;
 
 public class ExamWhen extends LessonsIntegrationTest {
 
+
+
+    @When("^a teacher request exam list")
+    public void teacherRequestExamList()  {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity requestEntity = new HttpEntity<>(null, httpHeaders);
+
+        ResponseEntity<List<Exam>> responseEntity = doGet("/api/teacher/my/exams", requestEntity, new ParameterizedTypeReference<>() {
+        });
+        getTestExecutionContext().setResponse(responseEntity);
+    }
 
     @When("^a teacher create exam by request (.*)")
     public void teacherCreateExamByRequest(String requestFileName) throws IOException {

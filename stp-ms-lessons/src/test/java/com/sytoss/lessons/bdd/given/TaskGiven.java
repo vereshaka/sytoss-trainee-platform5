@@ -119,6 +119,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     public void taskWithQuestionExistsForThisTaskDomain(String question) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setQuestion(question);
+        taskDTO.setEtalonAnswer("select * from dual");
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
         taskDTO.setTaskDomain(taskDomain);
         getTaskConnector().save(taskDTO);

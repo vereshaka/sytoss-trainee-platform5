@@ -58,7 +58,7 @@ public class ExamConvertor {
             for (ExamAssignee examAssignee : source.getExamAssignees()) {
                 ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
                 examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
-                destination.getExamAssigneeDTOS().add(examAssigneeDTO);
+                destination.getExamAssignees().add(examAssigneeDTO);
             }
         }
     }
@@ -92,8 +92,8 @@ public class ExamConvertor {
         destination.setTeacher(teacher);
         destination.setMaxGrade(source.getMaxGrade());
 
-        if (!source.getExamAssigneeDTOS().isEmpty()) {
-            for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssigneeDTOS()) {
+        if (!source.getExamAssignees().isEmpty()) {
+            for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
                 ExamAssignee examAssignee;
                 if (examAssigneeDTO.getExamAssigneeToDTOList().get(0) instanceof ExamToGroupAssigneeDTO) {
                     examAssignee = new ExamGroupAssignee();

@@ -5,12 +5,15 @@ import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.Given;
+import io.micrometer.core.instrument.util.IOUtils;
+
+import java.nio.charset.StandardCharsets;
 
 public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("^Request contains database script as in \"(.*)\"$")
     public void givenDatabaseScript(String script) {
-        String data = FileUtils.readFromFile(script);
+        String data = IOUtils.toString(getClass().getResourceAsStream("/data/" + script), StandardCharsets.UTF_8);
         getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(data);
     }
 
