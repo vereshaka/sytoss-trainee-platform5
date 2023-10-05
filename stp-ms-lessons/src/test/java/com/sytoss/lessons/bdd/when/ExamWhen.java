@@ -1,5 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,17 +21,25 @@ import java.util.List;
 
 public class ExamWhen extends LessonsIntegrationTest {
 
-    /*  @DataTableType
-      public Topic mapTopic(Map<String, String> entry) {
-          DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(entry.get("discipline"), getTestExecutionContext().getDetails().getTeacherId());
-          TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(entry.get("topic"), disciplineDTO.getId());
 
-          Topic topic = new Topic();
-          getTopicConvertor().fromDTO(topicDTO, topic);
+    @When("^a teacher create exam by request (.*)")
+    public void teacherCreateExamByRequest(String requestFileName) throws IOException {
+        String url = "/api/exam/save";
 
-          return topic;
-      }
-  */
+        Teacher teacher = new Teacher();
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Exam request = objectMapper.readValue(getClass().getResourceAsStream("/data/" + requestFileName), Exam.class);
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(request, httpHeaders);
+
+        ResponseEntity<ExamModelForGroup> responseEntity = doPost(url, requestEntity, ExamModelForGroup.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
     @When("^a teacher create \"(.*)\" exam from (.*) to (.*) with (.*) tasks for this group in \"(.*)\" discipline with (.*) minutes duration")
     public void teacherCreateExamWithParams(String examName, String relevantFrom, String relevantTo, Integer numberOfTasks, String disciplineName, Integer duration, List<Topic> topics) throws ParseException {
         String url = "/api/exam/save";

@@ -1,0 +1,196 @@
+{
+  "name": "Exam Without Group",
+  "numberOfTasks": "1",
+  "maxGrade": "100",
+  "topics": [
+    {
+      "id": 6,
+      "name": "Create Topic",
+      "shortDescription": "short",
+      "fullDescription": "desc",
+      "duration": 2,
+      "icon": null,
+      "discipline": {
+        "id": 1,
+        "name": "discipline",
+        "teacher": {
+          "id": 4,
+          "firstName": null,
+          "middleName": null,
+          "lastName": null,
+          "email": null,
+          "imageName": null,
+          "uid": null,
+          "type": "teacher",
+          "valid": false,
+          "moderated": false
+        },
+        "shortDescription": "short",
+        "fullDescription": "full",
+        "duration": null,
+        "icon": null,
+        "creationDate": "2023-08-28T07:03:39.655+00:00"
+      },
+      "tasks": [
+        {
+          "id": 3,
+          "question": "select count",
+          "etalonAnswer": "select count (*) from Topic",
+          "taskDomain": {
+            "id": 5,
+            "name": "task domain 2",
+            "databaseScript": "table Discipline {\nid: long <<PK>>\nname: string\n}\n\ntable Topic {\nid: long <<PK>>\nname: string\ndiscipline_id: long <<FK Discipline(id)>>\n}\n\ntable Task {\nid: long <<PK>>\nquestion: string\nanswer: string\ndiscipline_id: long <<FK Discipline(id)>>\n}\n\ntable TopicToTask {\ntask_id: long <<PK>>\ntopic_id: long <<PK>>\n}",
+            "dataScript": "data Discipline {\n   |= id |= name |\n   | 1   | SQL   |\n   | 2   | Mongo  |\n}\n\ndata Topic {\n   |= id |= name    |= discipline_id |\n   | 1   | Insert   |        1       |\n   | 2   | Select   |        2       |\n   | 3   | Join     |        1       |\n}\n\ndata Task {\n   |= id |= question                |= discipline_id |\n   | 1   | What is Join?            |        1       |\n   | 2   | What is Inner Join?      |        1       |\n   | 3   | What is Join?            |        1       |\n   | 4   | What is Select?          |        2       |\n}\n\ndata TopicToTask {\n   |= task_id |= topic_id |\n   | 1        | 1         |\n   | 2        | 3         |\n   | 3        | 2         |\n   | 4        | 1         |\n}",
+            "discipline": {
+              "id": 1,
+              "name": "discipline",
+              "teacher": {
+                "id": 4,
+                "firstName": null,
+                "middleName": null,
+                "lastName": null,
+                "email": null,
+                "imageName": null,
+                "uid": null,
+                "type": "teacher",
+                "valid": false,
+                "moderated": false
+              },
+              "shortDescription": "short",
+              "fullDescription": "full",
+              "duration": null,
+              "icon": null,
+              "creationDate": "2023-08-28T07:03:39.655+00:00"
+            },
+            "shortDescription": "desc",
+            "fullDescription": null
+          },
+          "topics": [
+            {
+              "id": 6,
+              "name": "Create Topic",
+              "shortDescription": "short",
+              "fullDescription": "desc",
+              "duration": 2,
+              "icon": null,
+              "discipline": {
+                "id": 1,
+                "name": "discipline",
+                "teacher": {
+                  "id": 4,
+                  "firstName": null,
+                  "middleName": null,
+                  "lastName": null,
+                  "email": null,
+                  "imageName": null,
+                  "uid": null,
+                  "type": "teacher",
+                  "valid": false,
+                  "moderated": false
+                },
+                "shortDescription": "short",
+                "fullDescription": "full",
+                "duration": null,
+                "icon": null,
+                "creationDate": "2023-08-28T07:03:39.655+00:00"
+              }
+            }
+          ],
+          "taskConditions": [
+            {
+              "id": 5,
+              "value": "select",
+              "type": "CONTAINS"
+            }
+          ],
+          "imageId": null,
+          "coef": 1,
+          "requiredCommand": "select",
+          "code": "",
+          "createDate": null,
+          "isSelected": true
+        }
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": 3,
+      "question": "select count",
+      "etalonAnswer": "select count (*) from Topic",
+      "taskDomain": {
+        "id": 5,
+        "name": "task domain 2",
+        "databaseScript": "table Discipline {\nid: long <<PK>>\nname: string\n}\n\ntable Topic {\nid: long <<PK>>\nname: string\ndiscipline_id: long <<FK Discipline(id)>>\n}\n\ntable Task {\nid: long <<PK>>\nquestion: string\nanswer: string\ndiscipline_id: long <<FK Discipline(id)>>\n}\n\ntable TopicToTask {\ntask_id: long <<PK>>\ntopic_id: long <<PK>>\n}",
+        "dataScript": "data Discipline {\n   |= id |= name |\n   | 1   | SQL   |\n   | 2   | Mongo  |\n}\n\ndata Topic {\n   |= id |= name    |= discipline_id |\n   | 1   | Insert   |        1       |\n   | 2   | Select   |        2       |\n   | 3   | Join     |        1       |\n}\n\ndata Task {\n   |= id |= question                |= discipline_id |\n   | 1   | What is Join?            |        1       |\n   | 2   | What is Inner Join?      |        1       |\n   | 3   | What is Join?            |        1       |\n   | 4   | What is Select?          |        2       |\n}\n\ndata TopicToTask {\n   |= task_id |= topic_id |\n   | 1        | 1         |\n   | 2        | 3         |\n   | 3        | 2         |\n   | 4        | 1         |\n}",
+        "discipline": {
+          "id": 1,
+          "name": "discipline",
+          "teacher": {
+            "id": 4,
+            "firstName": null,
+            "middleName": null,
+            "lastName": null,
+            "email": null,
+            "imageName": null,
+            "uid": null,
+            "type": "teacher",
+            "valid": false,
+            "moderated": false
+          },
+          "shortDescription": "short",
+          "fullDescription": "full",
+          "duration": null,
+          "icon": null,
+          "creationDate": "2023-08-28T07:03:39.655+00:00"
+        },
+        "shortDescription": "desc",
+        "fullDescription": null
+      },
+      "topics": [
+        {
+          "id": 6,
+          "name": "Create Topic",
+          "shortDescription": "short",
+          "fullDescription": "desc",
+          "duration": 2,
+          "icon": null,
+          "discipline": {
+            "id": 1,
+            "name": "discipline",
+            "teacher": {
+              "id": 4,
+              "firstName": null,
+              "middleName": null,
+              "lastName": null,
+              "email": null,
+              "imageName": null,
+              "uid": null,
+              "type": "teacher",
+              "valid": false,
+              "moderated": false
+            },
+            "shortDescription": "short",
+            "fullDescription": "full",
+            "duration": null,
+            "icon": null,
+            "creationDate": "2023-08-28T07:03:39.655+00:00"
+          }
+        }
+      ],
+      "taskConditions": [
+        {
+          "id": 5,
+          "value": "select",
+          "type": "CONTAINS"
+        }
+      ],
+      "imageId": null,
+      "coef": 1,
+      "requiredCommand": "select",
+      "code": "",
+      "createDate": null,
+      "isSelected": true
+    }
+  ]
+}

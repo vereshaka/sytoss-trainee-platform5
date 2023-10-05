@@ -35,4 +35,5 @@
     </changeSet>
     <include file="data/exam-assignee.xml" relativeToChangelogFile="true" />
     <include file="data/exam-assignee-to.xml" relativeToChangelogFile="true" />
+    <include file="data/STP-695.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

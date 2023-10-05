@@ -21,3 +21,7 @@ Feature: Exam
       | discipline | topic         |
       | SQL        | Set of Tables |
       | SQL        | Join          |
+
+  Scenario: STP-695 Error occurs during exam creation
+    When a teacher create exam by request STP-695.json
+    Then operation is successful

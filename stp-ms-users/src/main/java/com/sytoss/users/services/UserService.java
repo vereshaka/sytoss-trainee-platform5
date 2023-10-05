@@ -96,7 +96,7 @@ public class UserService extends AbstractStpService {
             userDto.setImageName(imageName);
             return userConnector.save(userDto);
         } catch (Exception e) {
-            log.warn("Could not save user photo!");
+            log.warn("Could not save user photo!", e);
             return userDto;
         }
     }
