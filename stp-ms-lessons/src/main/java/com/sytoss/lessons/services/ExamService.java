@@ -78,7 +78,7 @@ public class ExamService extends AbstractService {
         AbstractUser abstractUser = getCurrentUser();
 
         if (abstractUser instanceof Teacher) {
-            List<ExamDTO> examDTOList = examConnector.findByTeacherId(abstractUser.getId());
+            List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByExamAssignees_RelevantFrom(abstractUser.getId());
 
             return examDTOList.stream().map((examDTO) -> {
                 Exam exam = new Exam();

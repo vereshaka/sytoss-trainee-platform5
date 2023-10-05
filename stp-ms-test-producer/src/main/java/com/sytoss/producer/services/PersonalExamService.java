@@ -149,7 +149,7 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByStudentId(Long userId) {
-        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_IdOrderByAssignedDateAsc(userId);
 
         personalExams.forEach(personalExam -> {
             if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
@@ -161,7 +161,7 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByTeacherId(Long userId) {
-        List<PersonalExam> personalExams = personalExamConnector.getAllByTeacher_IdOrderByAssignedDateDesc(userId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByTeacher_IdOrderByAssignedDateAsc(userId);
         personalExams.forEach(personalExam -> {
             if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
                 personalExam.summary();
