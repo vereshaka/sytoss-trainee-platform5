@@ -3,6 +3,7 @@ package com.sytoss.checktask.stp.service;
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.Liquibase;
+import liquibase.ThreadLocalScopeManager;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
@@ -25,6 +26,10 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Scope(value = "prototype")
 public class DatabaseHelperService {
+
+    static {
+        liquibase.Scope.setScopeManager(new ThreadLocalScopeManager());
+    }
 
     private static final String username = "SA";
 
@@ -57,6 +62,7 @@ public class DatabaseHelperService {
         try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
+            log.info(url);
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();

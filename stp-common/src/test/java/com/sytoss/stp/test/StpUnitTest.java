@@ -11,6 +11,7 @@ import java.util.List;
 
 @ExtendWith({MockitoExtension.class})
 public abstract class StpUnitTest {
+
     protected Group createGroup(String groupName, Discipline discipline) {
         Group group = new Group();
         group.setName(groupName);
