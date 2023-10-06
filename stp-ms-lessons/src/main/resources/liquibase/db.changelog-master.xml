@@ -37,6 +37,7 @@
     <include file="data/exam-assignee-to.xml" relativeToChangelogFile="true" />
     <include file="data/STP-695.xml" relativeToChangelogFile="true" />
     <include file="data/migration-to-v1.2.xml" relativeToChangelogFile="true" />
+    <include file="data/STP-YV1.xml" relativeToChangelogFile="true" />
     <changeSet id="version_0.2.0" author="YevgenyV">
         <tagDatabase tag="0.2.0" />
     </changeSet>

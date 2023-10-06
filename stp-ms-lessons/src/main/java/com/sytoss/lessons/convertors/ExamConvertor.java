@@ -1,5 +1,6 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -66,6 +67,10 @@ public class ExamConvertor {
     public void fromDTO(ExamDTO source, Exam destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
+        destination.setDiscipline(new Discipline());
+        if (source.getDiscipline() != null) {
+            destination.getDiscipline().setId(source.getDiscipline().getId());
+        }
 
         List<Topic> topicList = new ArrayList<>();
 

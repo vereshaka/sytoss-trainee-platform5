@@ -72,7 +72,7 @@ public class TaskServiceTest extends StpUnitTest {
 
     @Spy
     private ExamService examService = new ExamService(
-            examConnector, examConvertor, userConnector, personalExamConnector, examAssigneeConvertor, examAssigneeConnector
+            examConnector, examConvertor, userConnector, personalExamConnector, examAssigneeConvertor, examAssigneeConnector, disciplineConnector
     );
 
     @InjectMocks

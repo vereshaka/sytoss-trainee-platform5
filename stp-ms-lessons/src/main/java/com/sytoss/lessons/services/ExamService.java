@@ -16,10 +16,7 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.ExamAssigneeConnector;
-import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
@@ -53,6 +50,8 @@ public class ExamService extends AbstractService {
 
     private final ExamAssigneeConnector examAssigneeConnector;
 
+    private final DisciplineConnector disciplineConnector;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
@@ -69,6 +68,9 @@ public class ExamService extends AbstractService {
         exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
+        if (exam.getDiscipline() != null) {
+            examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
+        }
         examDTO = examConnector.save(examDTO);
         examConvertor.fromDTO(examDTO, exam);
         return exam;
