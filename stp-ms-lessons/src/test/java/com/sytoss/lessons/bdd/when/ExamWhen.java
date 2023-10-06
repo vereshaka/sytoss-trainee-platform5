@@ -3,6 +3,7 @@ package com.sytoss.lessons.bdd.when;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class ExamWhen extends LessonsIntegrationTest {
@@ -100,6 +103,25 @@ public class ExamWhen extends LessonsIntegrationTest {
         HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
 
         ResponseEntity<ExamModelForGroup> responseEntity = doPost(url, requestEntity, ExamModelForGroup.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^a teacher assign (.*) exam to groups: (.*)")
+    public void teacherAssignExamToGroup(String examId, String groupIds){
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        ExamGroupAssignee assignee = new ExamGroupAssignee();
+        assignee.setRelevantFrom(new Date());
+        assignee.setRelevantTo(new Date());
+        assignee.setGroups(Arrays.stream(groupIds.split(",")).map(item -> {
+            Group group = new Group();
+            group.setId(Long.valueOf(item.trim()));
+            return group;
+        }).toList());
+        HttpEntity<ExamGroupAssignee> requestEntity = new HttpEntity<>(assignee, httpHeaders);
+
+        ResponseEntity<ExamModelForGroup> responseEntity = doPost("/api/exam/assign/" +
+                getTestExecutionContext().replaceId(examId) + "/groups",
+                requestEntity, ExamModelForGroup.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

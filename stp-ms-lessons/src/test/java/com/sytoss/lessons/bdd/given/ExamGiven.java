@@ -40,4 +40,13 @@ public class ExamGiven extends LessonsIntegrationTest {
             getTestExecutionContext().registerId(item.getId(), dto.getId());
         }
     }
+
+    @Given("^this discipline has assigned groups: (.*)")
+    public void disciplineHasAssigneedGroups(String groupIds) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
+        Arrays.stream(groupIds.split(",")).forEach(item -> {
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO);
+            getGroupReferenceConnector().save(groupReferenceDTO);
+        });
+    }
 }

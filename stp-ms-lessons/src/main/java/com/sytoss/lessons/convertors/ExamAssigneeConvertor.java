@@ -24,22 +24,6 @@ public class ExamAssigneeConvertor {
         destination.setDuration(source.getDuration());
         destination.setRelevantTo(source.getRelevantTo());
         destination.setRelevantFrom(source.getRelevantFrom());
-        List<ExamAssigneeToDTO> examAssigneeToDTOS = new ArrayList<>();
-        if (source instanceof ExamGroupAssignee) {
-            for (Group group : ((ExamGroupAssignee) source).getGroups()) {
-                ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
-                examToGroupAssigneeDTO.setGroupId(group.getId());
-                examAssigneeToDTOS.add(examToGroupAssigneeDTO);
-            }
-            destination.setExamAssigneeToDTOList(examAssigneeToDTOS);
-        } else {
-            for (Student student : ((ExamStudentAssignee) source).getStudents()) {
-                ExamToStudentAssigneeDTO examToStudentAssigneeDTO = new ExamToStudentAssigneeDTO();
-                examToStudentAssigneeDTO.setStudentId(student.getId());
-                examAssigneeToDTOS.add(examToStudentAssigneeDTO);
-            }
-            destination.setExamAssigneeToDTOList(examAssigneeToDTOS);
-        }
     }
 
     public void fromDTO(ExamAssigneeDTO source, ExamAssignee destination) {
