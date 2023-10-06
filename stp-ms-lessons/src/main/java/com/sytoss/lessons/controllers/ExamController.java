@@ -1,9 +1,6 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
 import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
@@ -47,6 +44,17 @@ public class ExamController {
                         @PathVariable("examId")
                         Long examId) {
         return examService.getById(examId);
+    }
+
+    @Operation(description = "Method that retrieve information about discipline of exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suceess|OK"),
+    })
+    @GetMapping("/{examId}/discipline")
+    public Discipline getDisciplineByExamId(
+            @PathVariable(value = "examId") Long examId) {
+        Exam exam = examService.getById(examId);
+        return exam.getTopics().get(0).getDiscipline();
     }
 
     @Operation(description = "Method that retrieve information about topic")
