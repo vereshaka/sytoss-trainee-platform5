@@ -97,12 +97,12 @@ public class ExamConvertor {
         destination.setTeacher(teacher);
         destination.setMaxGrade(source.getMaxGrade());
 
-        if (!source.getExamAssignees().isEmpty()) {
-            for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
+        for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
+            for (ExamAssigneeToDTO item : examAssigneeDTO.getExamAssigneeToDTOList()) {
                 ExamAssignee examAssignee;
-                if (examAssigneeDTO.getExamAssigneeToDTOList().get(0) instanceof ExamToGroupAssigneeDTO) {
+                if (item instanceof ExamToGroupAssigneeDTO) {
                     examAssignee = new ExamGroupAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
                     for (ExamAssigneeToDTO examToGroupAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
                         Group group = new Group();
                         group.setId(((ExamToGroupAssigneeDTO) examToGroupAssigneeDTO).getGroupId());
@@ -110,16 +110,16 @@ public class ExamConvertor {
                     }
                 } else {
                     examAssignee = new ExamStudentAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
                     for (ExamAssigneeToDTO examToStudentAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
                         Student student = new Student();
                         student.setId(((ExamToStudentAssigneeDTO) examToStudentAssigneeDTO).getStudentId());
                         ((ExamStudentAssignee) examAssignee).getStudents().add(student);
                     }
                 }
-
                 destination.getExamAssignees().add(examAssignee);
             }
+
         }
     }
 }
