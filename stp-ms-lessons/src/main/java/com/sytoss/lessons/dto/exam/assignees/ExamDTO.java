@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -57,4 +58,7 @@ public class ExamDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
+
+    @Column(name = "CREATION_DATE")
+    private Date creationDate = new Date();
 }

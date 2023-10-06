@@ -107,7 +107,7 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setTopics(List.of(topicDTO));
         exam.setTeacherId(1L);
 
-        when(examConnector.findByTeacherIdOrderByExamAssignees_RelevantFrom(1L)).thenReturn(List.of(exam));
+        when(examConnector.findByTeacherIdOrderByCreationDateDesc(1L)).thenReturn(List.of(exam));
 
         List<Exam> result = examService.findExams();
         assertEquals(1, result.size());
