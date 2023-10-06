@@ -32,4 +32,8 @@ public class ExamAssigneeDTO {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
     private List<ExamAssigneeToDTO> examAssigneeToDTOList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID")
+    private ExamDTO exam;
 }

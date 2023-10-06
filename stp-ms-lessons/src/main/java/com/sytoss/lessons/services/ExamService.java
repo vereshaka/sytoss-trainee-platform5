@@ -52,6 +52,8 @@ public class ExamService extends AbstractService {
 
     private final DisciplineConnector disciplineConnector;
 
+    private final ExamAssigneeToConnector examAssigneeToConnector;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
@@ -200,20 +202,22 @@ public class ExamService extends AbstractService {
     public Exam assignExamForGroup(Long examId, ExamGroupAssignee examAssignee) {
         ExamDTO examDTO = examConnector.getReferenceById(examId);
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeDTO.setExam(examDTO);
         examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
-//        examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
-        examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-        examDTO.getExamAssignees().add(examAssigneeDTO);
-        examDTO = examConnector.save(examDTO);
+        examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
 
         Exam exam = new Exam();
         examConvertor.fromDTO(examDTO, exam);
 
         for (Group group : examAssignee.getGroups()) {
+            ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
+            examToGroupAssigneeDTO.setGroupId(group.getId());
+            examToGroupAssigneeDTO.setParent(examAssigneeDTO);
+            examAssigneeToConnector.save(examToGroupAssigneeDTO);
             List<Student> students = userConnector.getStudentOfGroup(group.getId());
-
             for (Student student : students) {
                 try {
+                    //TODO: yevgenyv: fix me ASAP
                     personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
                 } catch (Exception e) {
                     //TODO: yevgenyv: need to re think return answer
@@ -221,7 +225,6 @@ public class ExamService extends AbstractService {
                 }
             }
         }
-
         return exam;
     }
 
