@@ -18,6 +18,6 @@ public abstract class ExamAssigneeToDTO {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "EXAM_ASSIGNEE_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
     private ExamAssigneeDTO parent;
 }
