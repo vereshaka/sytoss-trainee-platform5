@@ -1,7 +1,5 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
@@ -9,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 

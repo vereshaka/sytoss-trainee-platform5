@@ -1,19 +1,13 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
