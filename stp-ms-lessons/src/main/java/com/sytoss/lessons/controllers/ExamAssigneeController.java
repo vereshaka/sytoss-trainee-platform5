@@ -38,7 +38,7 @@ public class ExamAssigneeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/{examId}/all")
+    @GetMapping("/{examId}/all")
     public List<ExamAssignee> getListOfExamAssignee(@PathVariable Long examId) {
         return examService.returnExamAssignees(examId);
     }
