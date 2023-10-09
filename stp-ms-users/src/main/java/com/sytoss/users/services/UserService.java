@@ -241,7 +241,7 @@ public class UserService extends AbstractStpService {
 
     private UserDTO getDTOById(Long userId) {
         try {
-            return userConnector.getReferenceById(userId);
+            return userConnector.getById(userId);
         } catch (EntityNotFoundException e) {
             throw new RuntimeException("User not found", e);
         }
