@@ -97,23 +97,7 @@ public class ExamConvertor {
 
         for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
             ExamAssignee examAssignee = new ExamAssignee();
-            for (ExamAssigneeToDTO item : examAssigneeDTO.getExamAssigneeToDTOList()) {
-                if (item instanceof ExamToGroupAssigneeDTO) {
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                    for (ExamAssigneeToDTO examToGroupAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
-                        Group group = new Group();
-                        group.setId(((ExamToGroupAssigneeDTO) examToGroupAssigneeDTO).getGroupId());
-                        examAssignee.getGroups().add(group);
-                    }
-                } else {
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                    for (ExamAssigneeToDTO examToStudentAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
-                        Student student = new Student();
-                        student.setId(((ExamToStudentAssigneeDTO) examToStudentAssigneeDTO).getStudentId());
-                        examAssignee.getStudents().add(student);
-                    }
-                }
-            }
+            examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
             destination.getExamAssignees().add(examAssignee);
         }
     }
