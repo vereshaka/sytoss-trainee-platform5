@@ -21,6 +21,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,13 +115,17 @@ public class UserService extends AbstractStpService {
 
     private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result;
-        if (userDto instanceof TeacherDTO) {
+        UserDTO source = userDto;
+        if (userDto instanceof HibernateProxy) {
+            source = (UserDTO) ((HibernateProxy) userDto).getHibernateLazyInitializer().getImplementation();
+        }
+        if (source instanceof TeacherDTO) {
             Teacher teacher = new Teacher();
-            userConverter.fromDTO(userDto, teacher);
+            userConverter.fromDTO(source, teacher);
             result = teacher;
-        } else if (userDto instanceof StudentDTO) {
+        } else if (source instanceof StudentDTO) {
             Student student = new Student();
-            userConverter.fromDTO((StudentDTO) userDto, student);
+            userConverter.fromDTO((StudentDTO) source, student);
             result = student;
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
@@ -241,7 +248,7 @@ public class UserService extends AbstractStpService {
 
     private UserDTO getDTOById(Long userId) {
         try {
-            return userConnector.getById(userId);
+            return userConnector.getReferenceById(userId);
         } catch (EntityNotFoundException e) {
             throw new RuntimeException("User not found", e);
         }
