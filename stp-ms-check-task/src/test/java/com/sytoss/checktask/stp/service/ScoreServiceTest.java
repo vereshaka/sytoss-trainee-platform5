@@ -30,7 +30,7 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select * from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
@@ -45,7 +45,7 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select id,name from Authors");
         checkTaskParameters.setEtalon("select name,id from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
@@ -60,7 +60,7 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Books");
         checkTaskParameters.setEtalon("select * from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         ScoreService scoreService = new ScoreService(objectProvider);
 

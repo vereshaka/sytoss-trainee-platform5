@@ -1,0 +1,35 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/migration-to-v1.2.xml">
+
+    <changeSet author="yevgenyv" id="migration-v1.2-a">
+        <sql>
+            delete from exam_assignee;
+
+            insert into exam_assignee
+            select
+                nextval('exam_assignee_seq') id,
+                id exam_id,
+                relevant_from,
+                relevant_to,
+                duration
+            from exam;
+
+            delete from exam_assignee_to;
+
+            insert into exam_assignee_to
+            select
+                nextval('exam_assignee_to_seq') id,
+                ea.id assignee_id,
+                null student_id,
+                e.group_id group_id,
+                'G' assignee_type
+            from exam_assignee ea, exam e
+            where e.id = ea.exam_id;
+        </sql>
+    </changeSet>
+
+
+</databaseChangeLog>

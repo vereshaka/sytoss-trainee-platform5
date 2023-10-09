@@ -68,11 +68,17 @@ public class TaskServiceTest extends StpUnitTest {
     private ExamAssigneeConnector examAssigneeConnector;
 
     @Mock
+    private ExamAssigneeToConnector examAssigneeConnectorTo;
+
+    @Mock
     private UserConnector userConnector;
 
     @Spy
     private ExamService examService = new ExamService(
-            examConnector, examConvertor, userConnector, personalExamConnector, examAssigneeConvertor, examAssigneeConnector
+            examConnector, examConvertor, userConnector,
+            personalExamConnector, examAssigneeConvertor,
+            examAssigneeConnector, disciplineConnector,
+            examAssigneeConnectorTo
     );
 
     @InjectMocks

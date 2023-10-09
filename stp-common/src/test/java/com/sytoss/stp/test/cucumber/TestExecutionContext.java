@@ -36,4 +36,12 @@ public class TestExecutionContext<T> {
         }
         idMapping.put(key, id);
     }
+
+    public Long replaceId(String key) {
+       Long result = idMapping.get(key);
+       if (result == null) {
+           result = Long.valueOf(key);
+       }
+       return result;
+    }
 }

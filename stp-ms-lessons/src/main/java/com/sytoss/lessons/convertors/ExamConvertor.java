@@ -1,11 +1,10 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
@@ -58,7 +57,7 @@ public class ExamConvertor {
             for (ExamAssignee examAssignee : source.getExamAssignees()) {
                 ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
                 examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
-                destination.getExamAssigneeDTOS().add(examAssigneeDTO);
+                destination.getExamAssignees().add(examAssigneeDTO);
             }
         }
     }
@@ -66,6 +65,10 @@ public class ExamConvertor {
     public void fromDTO(ExamDTO source, Exam destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
+        if (source.getDiscipline() != null) {
+            destination.setDiscipline(new Discipline());
+            destination.getDiscipline().setId(source.getDiscipline().getId());
+        }
 
         List<Topic> topicList = new ArrayList<>();
 
@@ -92,29 +95,10 @@ public class ExamConvertor {
         destination.setTeacher(teacher);
         destination.setMaxGrade(source.getMaxGrade());
 
-        if (!source.getExamAssigneeDTOS().isEmpty()) {
-            for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssigneeDTOS()) {
-                ExamAssignee examAssignee;
-                if (examAssigneeDTO.getExamAssigneeToDTOList().get(0) instanceof ExamToGroupAssigneeDTO) {
-                    examAssignee = new ExamGroupAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
-                    for (ExamAssigneeToDTO examToGroupAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
-                        Group group = new Group();
-                        group.setId(((ExamToGroupAssigneeDTO) examToGroupAssigneeDTO).getGroupId());
-                        ((ExamGroupAssignee) examAssignee).getGroups().add(group);
-                    }
-                } else {
-                    examAssignee = new ExamStudentAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO,examAssignee);
-                    for (ExamAssigneeToDTO examToStudentAssigneeDTO : examAssigneeDTO.getExamAssigneeToDTOList()) {
-                        Student student = new Student();
-                        student.setId(((ExamToStudentAssigneeDTO) examToStudentAssigneeDTO).getStudentId());
-                        ((ExamStudentAssignee) examAssignee).getStudents().add(student);
-                    }
-                }
-
-                destination.getExamAssignees().add(examAssignee);
-            }
+        for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
+            ExamAssignee examAssignee = new ExamAssignee();
+            examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+            destination.getExamAssignees().add(examAssignee);
         }
     }
 }

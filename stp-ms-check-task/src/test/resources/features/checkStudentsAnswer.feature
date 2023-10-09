@@ -69,7 +69,7 @@ Feature: check answer
       | Mongo | 2  |
 
   Scenario: Check student's answer if result columns more than in teacher's answer result
-    Given Request contains database script as in "product_sale_script.yml"
+    Given Request contains database script as in "task-domain/product_sale_script.yml"
     And etalon SQL is "SELECT Company, LName from Client ORDER BY Company DESC, LName"
     And check SQL is "SELECT * from Client ORDER BY Company DESC, LName"
     When request coming to process

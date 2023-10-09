@@ -3,16 +3,26 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bdd.common.TaskView;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.stp.test.FileUtils;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import org.apache.commons.io.IOUtils;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@Transactional
 public class TaskDomainGiven extends LessonsIntegrationTest {
 
     @Given("^\"(.*)\" task domain exists$")
@@ -80,14 +90,67 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
     @Given("^\"(.*)\" task domain with a script from \"(.*)\" exists for this discipline$")
     public void taskDomainForDiscipline(String taskDomainName, String path) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
-        String scriptFromFile = FileUtils.readFromFile("liquibase/" + path);
+        String scriptFromFile = null;
+        try {
+            scriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + path), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if (taskDomainDTO == null) {
             taskDomainDTO = new TaskDomainDTO();
-            taskDomainDTO.setName(taskDomainName);
-            taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId()));
-            taskDomainDTO.setDatabaseScript(scriptFromFile);
-            taskDomainDTO.setDataScript(scriptFromFile);
-            taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
+        }
+        taskDomainDTO.setName(taskDomainName);
+        taskDomainDTO.setDiscipline(getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId()));
+        taskDomainDTO.setDatabaseScript(scriptFromFile);
+        taskDomainDTO.setDataScript(scriptFromFile);
+        taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
+
+        getTestExecutionContext().getDetails().setTaskDomainId(taskDomainDTO.getId());
+    }
+
+
+    @Given("^\"(.*)\" task domain with \"(.*)\" db and \"(.*)\" data scripts exists for this discipline$")
+    public void taskDomainForDiscipline(String taskDomainName, String dbScript, String dataScript, DataTable tasks) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
+
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
+        String dbScriptFromFile = null;
+        try {
+            dbScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dbScript), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String dataScriptFromFile = null;
+        try {
+            dataScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dataScript), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (taskDomainDTO == null) {
+            taskDomainDTO = new TaskDomainDTO();
+        }
+        taskDomainDTO.setName(taskDomainName);
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        taskDomainDTO.setDatabaseScript(dbScriptFromFile);
+        taskDomainDTO.setDataScript(dataScriptFromFile);
+        taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
+
+        List<TaskView> tasksList= tasks.asMaps(String.class, String.class).stream().toList().stream().map(el -> new TaskView(el)).toList();
+
+        for (TaskView item : tasksList){
+            TaskDTO dto = new TaskDTO();
+            dto.setTaskDomain(taskDomainDTO);
+            dto.setQuestion(item.getQuestion());
+            dto.setEtalonAnswer(item.getAnswer());
+            dto.setCoef(1.0);
+            dto.setTopics(new ArrayList<>());
+            List<String> topicNames = Arrays.stream(item.getTopics().split(",")).map(el -> el.trim()).toList();
+            for (String topicName: topicNames){
+                TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
+                dto.getTopics().add(topicDTO);
+            }
+            dto = getTaskConnector().save(dto);
+            getTestExecutionContext().registerId(item.getId(), dto.getId());
         }
         getTestExecutionContext().getDetails().setTaskDomainId(taskDomainDTO.getId());
     }

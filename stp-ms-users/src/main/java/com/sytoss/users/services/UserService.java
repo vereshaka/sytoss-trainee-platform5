@@ -87,6 +87,11 @@ public class UserService extends AbstractStpService {
         if (userDto == null) {
             registerUser(email);
             userDto = userConnector.getByEmail(email);
+        } else {
+            if (StringUtils.isNoneEmpty(getMyUid()) && !Objects.equals(getMyUid(), userDto.getUid())) {
+                userDto.setUid(getMyUid());
+                userConnector.save(userDto);
+            }
         }
         if (Objects.isNull(userDto.getImageName()) && Objects.nonNull(userDto.getPhoto())) {
             userDto = saveUserPhoto(userDto);

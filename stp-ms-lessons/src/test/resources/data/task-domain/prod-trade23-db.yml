@@ -1,0 +1,28 @@
+table Client {
+IdClient: long <<PK>>
+LName: string
+FName: string
+MName: string
+Company: string
+CityClient: string
+phone: string
+}
+
+  table Product {
+IdProduct: long <<PK>>
+NameProduct: string
+Type: string
+Sort: string
+Price: long
+Stock: string
+CityProduct: string
+}
+
+  table Sale {
+IdSale: long <<PK>>
+IdClient: long <<FK Client(IdClient)>>
+IdProduct: long <<FK Product(IdProduct)>>
+Quantity: long
+DateSale: date
+}
+

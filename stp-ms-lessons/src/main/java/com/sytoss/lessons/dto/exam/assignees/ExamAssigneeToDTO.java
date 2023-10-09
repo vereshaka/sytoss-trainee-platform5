@@ -16,4 +16,8 @@ public abstract class ExamAssigneeToDTO {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exam_assignee_to_id_generator")
     @SequenceGenerator(name = "exam_assignee_to_id_generator", sequenceName = "EXAM_ASSIGNEE_TO_SEQ", allocationSize = 1)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
+    private ExamAssigneeDTO parent;
 }

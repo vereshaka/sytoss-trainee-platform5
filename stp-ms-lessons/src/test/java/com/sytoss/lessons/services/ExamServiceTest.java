@@ -2,15 +2,11 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.ExamAssigneeConnector;
-import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
@@ -50,6 +46,9 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Mock
     private ExamAssigneeConnector examAssigneeConnector;
+
+    @Mock
+    private ExamAssigneeToConnector examAssigneeToConnector;
 
 
     @Spy
@@ -107,7 +106,7 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setTopics(List.of(topicDTO));
         exam.setTeacherId(1L);
 
-        when(examConnector.findByTeacherId(1L)).thenReturn(List.of(exam));
+        when(examConnector.findByTeacherIdOrderByCreationDateDesc(1L)).thenReturn(List.of(exam));
 
         List<Exam> result = examService.findExams();
         assertEquals(1, result.size());
@@ -179,7 +178,7 @@ public class ExamServiceTest extends StpUnitTest {
         examConvertor.toDTO(exam, examDTO);
 
         when(examConnector.getReferenceById(any())).thenReturn(examDTO);
-        ExamGroupAssignee examGroupAssignee = new ExamGroupAssignee();
+        ExamAssignee examGroupAssignee = new ExamAssignee();
         examGroupAssignee.setRelevantFrom(new Date());
         examGroupAssignee.setRelevantTo(new Date());
         examGroupAssignee.getGroups().add(group);
@@ -188,11 +187,10 @@ public class ExamServiceTest extends StpUnitTest {
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examGroupAssignee, examAssigneeDTO);
         when(examAssigneeConnector.save(any())).thenReturn(examAssigneeDTO);
-        when(examConnector.save(any())).thenReturn(examDTO);
-        exam = examService.assignExamForGroup(examDTO.getId(), examGroupAssignee);
+        exam = examService.assign(examDTO.getId(), examGroupAssignee);
         assertEquals(examDTO.getId(), exam.getId());
-        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
-        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
+        assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 
     @Test
@@ -214,7 +212,7 @@ public class ExamServiceTest extends StpUnitTest {
         examConvertor.toDTO(exam, examDTO);
 
         when(examConnector.getReferenceById(any())).thenReturn(examDTO);
-        ExamStudentAssignee examStudentAssignee = new ExamStudentAssignee();
+        ExamAssignee examStudentAssignee = new ExamAssignee();
         examStudentAssignee.setRelevantFrom(new Date());
         examStudentAssignee.setRelevantTo(new Date());
         examStudentAssignee.getStudents().add(student);
@@ -223,10 +221,9 @@ public class ExamServiceTest extends StpUnitTest {
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examStudentAssignee, examAssigneeDTO);
         when(examAssigneeConnector.save(any())).thenReturn(examAssigneeDTO);
-        when(examConnector.save(any())).thenReturn(examDTO);
-        exam = examService.assignExamForStudents(examDTO.getId(), examStudentAssignee);
+        exam = examService.assign(examDTO.getId(), examStudentAssignee);
         assertEquals(examDTO.getId(), exam.getId());
-        assertEquals(examDTO.getExamAssigneeDTOS().size(), exam.getExamAssignees().size());
-        assertEquals(examDTO.getExamAssigneeDTOS().get(0).getId(), exam.getExamAssignees().get(0).getId());
+        assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
+        assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
 }

@@ -28,6 +28,14 @@ public abstract class AbstractStpService {
         return id;
     }
 
+    protected String getMyUid() {
+        String id = getJwt().getClaim("sub");
+        if (StringUtils.isEmpty(id)) {
+            throw new UserNotIdentifiedException("Could not identify user");
+        }
+        return id;
+    }
+
     protected AbstractUser getCurrentUser() {
         return getJwt().getClaim("user");
     }

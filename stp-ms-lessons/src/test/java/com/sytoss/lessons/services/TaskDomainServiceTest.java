@@ -35,6 +35,7 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +97,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertEquals(taskDomain.getDatabaseScript(), result.getDatabaseScript());
         assertEquals(taskDomain.getShortDescription(), result.getShortDescription());
         assertEquals(taskDomain.getFullDescription(), result.getFullDescription());
-        assertEquals(FileUtils.readFromFile("puml/script.puml"), taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript());
+        List<String> expected = Arrays.stream(FileUtils.readFromFile("puml/script.puml").split("\n")).map(el -> el.trim()).toList();
+        List<String> actual = Arrays.stream((taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript()).trim().split("\n")).map(el -> el.trim()).toList();
+        assertEquals(expected, actual);
     }
 
     @Test
