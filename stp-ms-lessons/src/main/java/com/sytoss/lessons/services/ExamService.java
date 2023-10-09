@@ -199,7 +199,7 @@ public class ExamService extends AbstractService {
         examAssigneeDTO.setExam(examDTO);
         examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
         examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
-
+        examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
         Exam exam = new Exam();
         examConvertor.fromDTO(examDTO, exam);
 
