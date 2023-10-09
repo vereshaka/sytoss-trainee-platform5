@@ -50,8 +50,8 @@ public class UserService extends AbstractStpService {
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
 
-    public AbstractUser getById(String userId) {
-        UserDTO foundUser = getDTOById(userId);
+    public AbstractUser getByUid(String userId) {
+        UserDTO foundUser = getDTOByUid(userId);
 
         if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
             foundUser = saveUserPhoto(foundUser);
@@ -60,7 +60,8 @@ public class UserService extends AbstractStpService {
         return instantiateUser(foundUser);
     }
 
-    private UserDTO getDTOById(String userId) {
+
+    private UserDTO getDTOByUid(String userId) {
         try {
             return userConnector.getByUid(userId);
         } catch (EntityNotFoundException e) {
@@ -207,7 +208,7 @@ public class UserService extends AbstractStpService {
     }
 
     public byte[] getUserPhoto(String userId) {
-        UserDTO userDTO = getDTOById(userId);
+        UserDTO userDTO = getDTOByUid(userId);
         return userDTO.getPhoto();
     }
 
@@ -226,4 +227,24 @@ public class UserService extends AbstractStpService {
         }
         return groupsId;
     }
+
+    public AbstractUser getById(Long userId) {
+        UserDTO foundUser = getDTOById(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            foundUser = saveUserPhoto(foundUser);
+        }
+
+        return instantiateUser(foundUser);
+    }
+
+
+    private UserDTO getDTOById(Long userId) {
+        try {
+            return userConnector.getReferenceById(userId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException("User not found", e);
+        }
+    }
+
 }
