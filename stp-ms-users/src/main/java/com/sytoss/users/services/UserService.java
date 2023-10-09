@@ -22,6 +22,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,8 +53,8 @@ public class UserService extends AbstractStpService {
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
 
-    public AbstractUser getById(String userId) {
-        UserDTO foundUser = getDTOById(userId);
+    public AbstractUser getByUid(String userId) {
+        UserDTO foundUser = getDTOByUid(userId);
 
         if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
             foundUser = saveUserPhoto(foundUser);
@@ -61,7 +63,8 @@ public class UserService extends AbstractStpService {
         return instantiateUser(foundUser);
     }
 
-    private UserDTO getDTOById(String userId) {
+
+    private UserDTO getDTOByUid(String userId) {
         try {
             return userConnector.getByUid(userId);
         } catch (EntityNotFoundException e) {
@@ -117,13 +120,17 @@ public class UserService extends AbstractStpService {
 
     private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result;
-        if (userDto instanceof TeacherDTO) {
+        UserDTO source = userDto;
+        if (userDto instanceof HibernateProxy) {
+            source = (UserDTO) ((HibernateProxy) userDto).getHibernateLazyInitializer().getImplementation();
+        }
+        if (source instanceof TeacherDTO) {
             Teacher teacher = new Teacher();
-            userConverter.fromDTO(userDto, teacher);
+            userConverter.fromDTO(source, teacher);
             result = teacher;
-        } else if (userDto instanceof StudentDTO) {
+        } else if (source instanceof StudentDTO) {
             Student student = new Student();
-            userConverter.fromDTO((StudentDTO) userDto, student);
+            userConverter.fromDTO((StudentDTO) source, student);
             result = student;
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
@@ -213,7 +220,7 @@ public class UserService extends AbstractStpService {
     }
 
     public byte[] getUserPhoto(String userId) {
-        UserDTO userDTO = getDTOById(userId);
+        UserDTO userDTO = getDTOByUid(userId);
         return userDTO.getPhoto();
     }
 
@@ -232,4 +239,24 @@ public class UserService extends AbstractStpService {
         }
         return groupsId;
     }
+
+    public AbstractUser getById(Long userId) {
+        UserDTO foundUser = getDTOById(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            foundUser = saveUserPhoto(foundUser);
+        }
+
+        return instantiateUser(foundUser);
+    }
+
+
+    private UserDTO getDTOById(Long userId) {
+        try {
+            return userConnector.getReferenceById(userId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException("User not found", e);
+        }
+    }
+
 }

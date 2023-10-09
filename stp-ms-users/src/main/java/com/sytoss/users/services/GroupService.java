@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +63,7 @@ public class GroupService {
     }
 
     public void assignStudentToGroup(Long groupId, String studentId) {
-        AbstractUser user = userService.getById(studentId);
+        AbstractUser user = userService.getByUid(studentId);
         if (!(user instanceof Student)) {
             throw new UserTypeNotIdentifiedException("User is not student");
         }

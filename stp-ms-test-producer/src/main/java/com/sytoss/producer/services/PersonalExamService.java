@@ -37,7 +37,6 @@ public class PersonalExamService extends AbstractService {
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
-        //TODO: yevgeyv: fix it personalExam.setDiscipline(getDiscipline(examConfiguration.getExam().get);
         Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
         Date relevantTo = examConfiguration.getExamAssignee().getRelevantTo();
         personalExam.setName(examConfiguration.getExam().getName());
