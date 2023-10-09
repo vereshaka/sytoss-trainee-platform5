@@ -187,7 +187,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
         exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        when(personalExamConnector.getAllByStudent_IdOrderByAssignedDateAsc(1L)).thenReturn(exams);
+        when(personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(1L)).thenReturn(exams);
 
         List<PersonalExam> result = personalExamService.getByStudentId(1L);
 
