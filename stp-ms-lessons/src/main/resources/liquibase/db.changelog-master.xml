@@ -42,4 +42,5 @@
     <changeSet id="version_0.2.0" author="YevgenyV">
         <tagDatabase tag="0.2.0" />
     </changeSet>
+    <include file="data/STP-719.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
