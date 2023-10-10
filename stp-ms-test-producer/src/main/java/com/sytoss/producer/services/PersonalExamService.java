@@ -302,4 +302,12 @@ public class PersonalExamService extends AbstractService {
         personalExamConnector.deleteAll(personalExams);
         return personalExams;
     }
+
+    public List<PersonalExam> deleteByExamAssigneeIds(List<Long> assigneeIds) {
+        List<PersonalExam> personalExams = new ArrayList<>();
+        for (Long assigneeId : assigneeIds) {
+            personalExams.addAll(deleteByExamAssigneeId(assigneeId));
+        }
+        return personalExams;
+    }
 }
