@@ -3,10 +3,12 @@ package com.sytoss.users.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.users.connectors.ExamAssigneeConnector;
 import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
@@ -49,6 +51,8 @@ public class UserService extends AbstractStpService {
     private final GroupConnector groupConnector;
 
     private final ImageProviderConnector imageProviderConnector;
+
+    private final ExamAssigneeConnector examAssigneeConnector;
 
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
@@ -177,6 +181,12 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
+        boolean isStudentFirstUpdate = false;
+
+        if (dto instanceof StudentDTO && ((StudentDTO) dto).getPrimaryGroup() == null) {
+            isStudentFirstUpdate = true;
+        }
+
         dto.setMiddleName(profileModel.getMiddleName());
         if (profileModel.getFirstName() != null) {
             dto.setFirstName(profileModel.getFirstName());
@@ -205,7 +215,19 @@ public class UserService extends AbstractStpService {
             groupReferenceDTO.setStudent((StudentDTO) dto);
             groupReferenceConnector.save(groupReferenceDTO);
         }
-        userConnector.save(dto);
+
+        UserDTO userDTO = userConnector.save(dto);
+
+        if (isStudentFirstUpdate) {
+            updateStudentPersonalExam(userDTO);
+        }
+    }
+
+    private void updateStudentPersonalExam(UserDTO userDTO) {
+        StudentDTO studentDTO = (StudentDTO) userDTO;
+        Student student = new Student();
+        userConverter.fromDTO(studentDTO, student);
+        examAssigneeConnector.createGroupExamsOnStudent(student.getPrimaryGroup().getId(), student);
     }
 
     public List<Group> findByStudent() {

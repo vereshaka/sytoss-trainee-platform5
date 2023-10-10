@@ -23,4 +23,6 @@ public class ExamAssignee {
     private List<Student> students = new ArrayList<>();
 
     private List<Group> groups = new ArrayList<>();
+
+    private Long examId;
 }
