@@ -294,7 +294,9 @@ public class PersonalExamService extends AbstractService {
     }
 
     public List<PersonalExam> getByExamAssigneeId(Long examAssigneeId) {
-        return personalExamConnector.getByExamAssigneeId(examAssigneeId);
+        List<PersonalExam> personalExams = personalExamConnector.getByExamAssigneeId(examAssigneeId);
+        personalExams.forEach(PersonalExam::summary);
+        return personalExams;
     }
 
     public List<PersonalExam> deleteByExamAssigneeId(Long examAssigneeId) {

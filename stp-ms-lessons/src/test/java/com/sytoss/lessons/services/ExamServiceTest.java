@@ -42,6 +42,9 @@ public class ExamServiceTest extends StpUnitTest {
     private UserConnector userConnector;
 
     @Mock
+    private ExamAssigneeService examAssigneeService;
+
+    @Mock
     private PersonalExamConnector personalExamConnector;
 
     @Mock
