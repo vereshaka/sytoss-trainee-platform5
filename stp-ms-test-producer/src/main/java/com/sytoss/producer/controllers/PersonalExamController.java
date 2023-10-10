@@ -210,4 +210,16 @@ public class PersonalExamController {
     ) {
         return personalExamService.deleteByExamAssigneeId(examAssigneeId);
     }
+
+    @Operation(description = "Method that delete personal exams by exam assignee ids")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @DeleteMapping(value = "/exam/delete")
+    public List<PersonalExam> deleteByExamAssigneeIds(
+            @Parameter(description = "Exam assignee ids to delete personal exams")
+            @RequestBody List<Long> examAssigneeIds
+    ) {
+        return personalExamService.deleteByExamAssigneeIds(examAssigneeIds);
+    }
 }

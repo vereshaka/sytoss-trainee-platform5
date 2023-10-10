@@ -19,14 +19,13 @@ import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +51,9 @@ public class ExamService extends AbstractService {
     private final DisciplineConnector disciplineConnector;
 
     private final ExamAssigneeToConnector examAssigneeToConnector;
+
+    @Autowired
+    private ExamAssigneeService examAssigneeService;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -188,8 +190,13 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
+        List <ExamAssigneeDTO> examAssigneeDTOS =  examAssigneeConnector.getAllByExam_Id(examId);
+        examAssigneeService.deleteAllByExamId(examId);
+        personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
+
+
+
         examConnector.deleteById(exam.getId());
-        personalExamConnector.deletePersonalExamsByExamId(examId);
         return exam;
     }
 

@@ -132,7 +132,7 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Test
     public void shouldDeleteExam() {
-        doNothing().when(personalExamConnector).deletePersonalExamsByExamId(1L);
+        doNothing().when(personalExamConnector).deletePersonalExamsByExamAssigneeId(any(List.class));
         doNothing().when(examConnector).deleteById(1L);
         TopicDTO topicDTO = new TopicDTO();
         topicDTO.setDiscipline(new DisciplineDTO());
@@ -149,7 +149,7 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.getReferenceById(1L)).thenReturn(examDTO);
         Exam result = examService.delete(1L);
         assertEquals(1L, result.getId());
-        verify(personalExamConnector).deletePersonalExamsByExamId(1L);
+        verify(personalExamConnector).deletePersonalExamsByExamAssigneeId(any(List.class));
         verify(examConnector).deleteById(1L);
     }
 
