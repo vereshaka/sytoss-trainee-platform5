@@ -115,7 +115,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbStructure")
-    public byte[] getDbStructureImage(
+    public String getDbStructureImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDbImage(personalExamId);
@@ -126,7 +126,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbData")
-    public byte[] getDbDataImage(
+    public String getDbDataImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDataImage(personalExamId);

@@ -28,6 +28,12 @@ public class TaskDomainDTO {
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
 
+    @Column(name = "DATA_IMAGE_NAME")
+    private String dataImageName;
+
+    @Column(name = "DB_IMAGE_NAME")
+    private String dbImageName;
+
     @Column(name = "IMAGE")
     private byte[] image;
 

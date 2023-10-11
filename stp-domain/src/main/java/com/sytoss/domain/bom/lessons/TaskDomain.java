@@ -20,4 +20,8 @@ public class TaskDomain {
     private String shortDescription;
 
     private String fullDescription;
+
+    private String dataImageName;
+
+    private String dbImageName;
 }

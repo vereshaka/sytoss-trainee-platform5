@@ -94,21 +94,23 @@ public class AnswerService extends AbstractService {
         personalExamConnector.save(personalExam);
     }
 
-    public byte[] getDbImage(String personalExamId) {
+    public String getDbImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DB);
     }
 
-    public byte[] getDataImage(String personalExamId) {
+    public String getDataImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DATA);
     }
 
 
-    private byte[] getImage(String personalExamId, ConvertToPumlParameters type) {
+    private String getImage(String personalExamId, ConvertToPumlParameters type) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
-        String dataScript = answer.getTask().getTaskDomain().getDataScript();
-        return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
+        if (type == ConvertToPumlParameters.DB) {
+            return answer.getTask().getTaskDomain().getDbImageName();
+        } else {
+            return answer.getTask().getTaskDomain().getDataImageName();
+        }
     }
 
     public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
