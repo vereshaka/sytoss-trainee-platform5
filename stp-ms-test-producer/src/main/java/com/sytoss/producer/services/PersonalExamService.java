@@ -255,10 +255,6 @@ public class PersonalExamService extends AbstractService {
     public List<PersonalExam> reschedule(ExamConfiguration examConfiguration) {
         List<PersonalExam> personalExamList = personalExamConnector.getAllByExamAssigneeId(examConfiguration.getExamAssignee().getId());
 
-        if (ObjectUtils.isEmpty(personalExamList)) {
-            throw new ExamNotFoundException(examConfiguration.getExam().getId());
-        }
-
         personalExamList.forEach(personalExam -> {
             personalExam.setRelevantFrom(examConfiguration.getExamAssignee().getRelevantFrom());
             personalExam.setRelevantTo(examConfiguration.getExamAssignee().getRelevantTo());
