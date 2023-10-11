@@ -306,7 +306,7 @@ public class PumlConvertor {
 
     public String createObject(Table table) {
         StringBuilder initTableStringBuilder = new StringBuilder();
-        initTableStringBuilder.append("object \"Data:").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
+        initTableStringBuilder.append("object \"").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
         List<String> columnsName = table.getColumns().stream().map(Column::getName).toList();
         String delimiter = "|= ";
         String header = delimiter + String.join(" " + delimiter, columnsName) + " |";
