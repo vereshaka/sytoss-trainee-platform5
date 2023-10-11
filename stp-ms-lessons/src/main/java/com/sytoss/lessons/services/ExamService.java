@@ -19,7 +19,10 @@ import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.*;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -248,16 +251,12 @@ public class ExamService extends AbstractService {
 
     public void createGroupExamsOnStudent(Long groupId, Student student) {
         List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupId(groupId);
-        List<ExamAssignee> examAssignees = examToGroupAssigneeDTOList.stream().map(examToGroupAssigneeDTO -> {
+        examToGroupAssigneeDTOList.forEach(examToGroupAssigneeDTO -> {
             ExamAssignee examAssignee = new ExamAssignee();
             examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
-            return examAssignee;
-        }).toList();
-
-        examAssignees.forEach(examAssignee -> {
             if (new Date().before(examAssignee.getRelevantFrom())) {
                 try {
-                    ExamDTO examDTO = examConnector.getReferenceById(examAssignee.getExamId());
+                    ExamDTO examDTO = examConnector.getReferenceById(examToGroupAssigneeDTO.getParent().getExam().getId());
                     Exam exam = new Exam();
                     examConvertor.fromDTO(examDTO, exam);
                     personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));

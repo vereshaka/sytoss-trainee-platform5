@@ -181,10 +181,10 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
-        boolean isStudentFirstUpdate = false;
+        GroupDTO group = null;
 
-        if (dto instanceof StudentDTO && ((StudentDTO) dto).getPrimaryGroup() == null) {
-            isStudentFirstUpdate = true;
+        if (dto instanceof StudentDTO) {
+            group = ((StudentDTO) dto).getPrimaryGroup();
         }
 
         dto.setMiddleName(profileModel.getMiddleName());
@@ -218,16 +218,22 @@ public class UserService extends AbstractStpService {
 
         UserDTO userDTO = userConnector.save(dto);
 
-        if (isStudentFirstUpdate) {
-            updateStudentPersonalExam(userDTO);
+        if (userDTO instanceof StudentDTO) {
+            if ((group == null && ((StudentDTO) userDTO).getPrimaryGroup() != null) || !Objects.requireNonNull(group).getId().equals(((StudentDTO) userDTO).getPrimaryGroup().getId())) {
+                updateStudentPersonalExam(userDTO);
+            }
         }
     }
 
     private void updateStudentPersonalExam(UserDTO userDTO) {
-        StudentDTO studentDTO = (StudentDTO) userDTO;
-        Student student = new Student();
-        userConverter.fromDTO(studentDTO, student);
-        examAssigneeConnector.createGroupExamsOnStudent(student.getPrimaryGroup().getId(), student);
+        try {
+            StudentDTO studentDTO = (StudentDTO) userDTO;
+            Student student = new Student();
+            userConverter.fromDTO(studentDTO, student);
+            examAssigneeConnector.createGroupExamsOnStudent(student.getPrimaryGroup().getId(), student);
+        } catch (Exception exception) {
+            log.warn("Could not create personal exams on student: {}", exception.getMessage());
+        }
     }
 
     public List<Group> findByStudent() {

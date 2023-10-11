@@ -26,7 +26,6 @@ public class ExamAssigneeConvertor {
         destination.setDuration(source.getDuration());
         destination.setRelevantTo(source.getRelevantTo());
         destination.setRelevantFrom(source.getRelevantFrom());
-        destination.setExamId(source.getExam().getId());
 
         for (ExamAssigneeToDTO examAssigneeToDTO : source.getExamAssigneeToDTOList()) {
             if (examAssigneeToDTO instanceof ExamToGroupAssigneeDTO) {

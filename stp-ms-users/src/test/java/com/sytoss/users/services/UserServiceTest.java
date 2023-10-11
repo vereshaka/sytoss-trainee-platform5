@@ -3,6 +3,7 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
+import com.sytoss.users.connectors.ExamAssigneeConnector;
 import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
@@ -40,6 +41,9 @@ public class UserServiceTest extends StpUnitTest {
 
     @Mock
     private ImageProviderConnector imageProviderConnector;
+
+    @Mock
+    private ExamAssigneeConnector examAssigneeConnector;
 
     @Spy
     private UserConverter userConverter;
