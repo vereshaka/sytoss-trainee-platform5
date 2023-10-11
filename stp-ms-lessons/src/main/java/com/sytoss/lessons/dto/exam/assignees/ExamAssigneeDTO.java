@@ -29,7 +29,7 @@ public class ExamAssigneeDTO {
     @Column(name = "DURATION")
     private Integer duration;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany
     @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
     private List<ExamAssigneeToDTO> examAssigneeToDTOList = new ArrayList<>();
 

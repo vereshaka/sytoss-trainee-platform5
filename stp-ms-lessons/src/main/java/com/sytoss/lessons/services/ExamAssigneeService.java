@@ -5,16 +5,20 @@ import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.lessons.connectors.ExamAssigneeConnector;
+import com.sytoss.lessons.connectors.ExamAssigneeToConnector;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeToDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,6 +35,8 @@ public class ExamAssigneeService extends AbstractService {
     private final ExamAssigneeConvertor examAssigneeConvertor;
 
     private final ExamAssigneeConnector examAssigneeConnector;
+
+    private final ExamAssigneeToConnector examAssigneeToConnector;
 
     public ExamAssignee reschedule(ScheduleModel scheduleModel, Long examAssigneeId) {
         ExamAssigneeDTO examToUpdateAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
@@ -62,5 +68,22 @@ public class ExamAssigneeService extends AbstractService {
         ExamAssignee examAssignee = new ExamAssignee();
         examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
         return examAssignee;
+    }
+
+    public void deleteAllByExamId(Long examId) {
+        List <ExamAssigneeDTO> examAssigneeDTOS =  examAssigneeConnector.getAllByExam_Id(examId);
+        for (ExamAssigneeDTO examAssignee :
+                examAssigneeDTOS) {
+            deleteAllExamAssigneeToByExamAssignee(examAssignee.getId());
+            examAssigneeConnector.delete(examAssignee);
+        }
+    }
+
+    private void deleteAllExamAssigneeToByExamAssignee(Long examAssigneeId) {
+        List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeToConnector.getAllByParent_Id(examAssigneeId);
+        for (ExamAssigneeToDTO examAssigneeToDTO :
+                examAssigneeToDTOS) {
+            examAssigneeToConnector.delete(examAssigneeToDTO);
+        }
     }
 }
