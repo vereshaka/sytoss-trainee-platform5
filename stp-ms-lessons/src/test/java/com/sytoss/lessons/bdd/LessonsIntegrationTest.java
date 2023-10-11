@@ -60,6 +60,10 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @MockBean
     private CheckTaskConnector checkTaskConnector;
 
+    @Autowired
+    @MockBean
+    private ImageProviderConnector imageProviderConnector;
+
     @LocalServerPort
     private int applicationPort;
 

@@ -26,6 +26,8 @@ public class TaskDomainConvertor {
         destination.setDiscipline(discipline);
         destination.setShortDescription(source.getShortDescription());
         destination.setFullDescription(source.getFullDescription());
+        destination.setDataImageName(source.getDataImageName());
+        destination.setDbImageName(source.getDbImageName());
     }
 
     public void toDTO(TaskDomain source, TaskDomainDTO destination) {
@@ -38,5 +40,7 @@ public class TaskDomainConvertor {
         destination.setDiscipline(discipline);
         destination.setShortDescription(source.getShortDescription());
         destination.setFullDescription(source.getFullDescription());
+        destination.setDataImageName(source.getDataImageName());
+        destination.setDbImageName(source.getDbImageName());
     }
 }
