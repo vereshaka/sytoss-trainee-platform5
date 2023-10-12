@@ -10,4 +10,8 @@ public class ForeignKey {
     private String targetTable;
 
     private String targetColumn;
+
+    private ForeignKeyType source;
+
+    private ForeignKeyType target;
 }
