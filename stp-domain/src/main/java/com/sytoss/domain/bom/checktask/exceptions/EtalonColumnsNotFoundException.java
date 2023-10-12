@@ -10,7 +10,7 @@ public class EtalonColumnsNotFoundException extends RuntimeException {
     private final List<String> absentColumns;
 
     public EtalonColumnsNotFoundException(List<String> absentColumns) {
-        super();
+        super(String.join(";",absentColumns)+" columns are absent in the answer");
         this.absentColumns = absentColumns;
     }
 }

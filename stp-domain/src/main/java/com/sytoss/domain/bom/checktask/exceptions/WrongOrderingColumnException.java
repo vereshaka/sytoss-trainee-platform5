@@ -10,7 +10,7 @@ public class WrongOrderingColumnException extends RuntimeException {
     private final List<String> wrongOrderingColumns;
 
     public WrongOrderingColumnException(List<String> wrongOrderingColumns) {
-        super();
+        super(String.join(";",wrongOrderingColumns)+" columns are in the wrong order");
         this.wrongOrderingColumns = wrongOrderingColumns;
     }
 }

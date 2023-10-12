@@ -3,6 +3,9 @@ package com.sytoss.checktask.stp.service;
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.checktask.exceptions.CompareConditionException;
+import com.sytoss.domain.bom.checktask.exceptions.DifferentRowsAmountException;
+import com.sytoss.domain.bom.checktask.exceptions.EtalonColumnsNotFoundException;
+import com.sytoss.domain.bom.checktask.exceptions.WrongDataException;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
@@ -55,7 +58,7 @@ public class ScoreService {
                     failedCondition.add(condition);
                 }
             }
-            if (failedCondition.size() > 0){
+            if (failedCondition.size() > 0) {
                 result.add(new CompareConditionException(failedCondition)); // case #1
             }
             return grade(result);
@@ -66,9 +69,18 @@ public class ScoreService {
 
     private Score grade(List<Exception> failedChecks) {
         double grade = 1;
-        String comment = "OK";
-        if (failedChecks.size() > 0){
-            //TODO: yevgenyv: make a grade and fill comment
+        String comment = "";
+        if (failedChecks.size() > 0) {
+            for (Exception failedCheck : failedChecks) {
+                if (failedCheck instanceof CompareConditionException) {
+                    grade -= 0.3;
+                } else if (failedCheck instanceof DifferentRowsAmountException || failedCheck instanceof WrongDataException
+                        || failedCheck instanceof EtalonColumnsNotFoundException) {
+                    grade = 0;
+                    break;
+                }
+            }
+            comment = String.join(";", failedChecks.stream().map(Throwable::getMessage).toList());
         }
         return new Score(grade, comment);
     }

@@ -8,10 +8,10 @@ import java.util.List;
 @Getter
 public class CompareConditionException extends RuntimeException {
 
-    private List<TaskCondition> failedCondition;
+    private final List<TaskCondition> failedCondition;
 
     public CompareConditionException(List<TaskCondition> failedCondition) {
-        super();
+        super(String.join(";", failedCondition.stream().map(TaskCondition::getCondition).toList()) + " condition are failed to check");
         this.failedCondition = failedCondition;
     }
 }
