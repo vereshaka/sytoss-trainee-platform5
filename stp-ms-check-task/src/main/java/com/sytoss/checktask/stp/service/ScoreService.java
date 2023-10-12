@@ -80,7 +80,7 @@ public class ScoreService {
                     break;
                 }
             }
-            comment = String.join(";", failedChecks.stream().map(Throwable::getMessage).toList());
+            comment = String.join("\n", failedChecks.stream().map(Throwable::getMessage).toList());
         }
         return new Score(grade, comment);
     }
