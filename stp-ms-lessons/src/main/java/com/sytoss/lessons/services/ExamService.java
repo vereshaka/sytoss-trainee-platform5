@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -253,5 +254,23 @@ public class ExamService extends AbstractService {
         ExamAssignee examAssignee = new ExamAssignee();
         examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
         return examAssignee;
+    }
+
+    public void createGroupExamsOnStudent(Long groupId, Student student) {
+        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupId(groupId);
+        examToGroupAssigneeDTOList.forEach(examToGroupAssigneeDTO -> {
+            ExamAssignee examAssignee = new ExamAssignee();
+            examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
+            if (new Date().before(examAssignee.getRelevantFrom())) {
+                try {
+                    ExamDTO examDTO = examConnector.getReferenceById(examToGroupAssigneeDTO.getParent().getExam().getId());
+                    Exam exam = new Exam();
+                    examConvertor.fromDTO(examDTO, exam);
+                    personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
+                } catch (Exception exception) {
+                    log.warn("Could not create group exam on student: {}", exception.getMessage());
+                }
+            }
+        });
     }
 }

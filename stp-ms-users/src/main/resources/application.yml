@@ -41,3 +41,4 @@ logging:
 #      default:
 #        loggerLevel: FULL
 image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9204/api}
+lessons-url: ${LESSONS_URI:http://localhost:9101/api}
