@@ -2,6 +2,7 @@ package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.checktask.exceptions.CompareConditionException;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
@@ -16,9 +17,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -44,63 +44,33 @@ public class ScoreService {
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
-            Score score = grade(queryResultEtalon, queryResultAnswer);
-            if (score.getValue() > 0) {
-                List<String> keyListEtalon = queryResultEtalon.getHeader();
-                List<String> keyListAnswer = queryResultAnswer.getHeader();
-
-                if (keyListAnswer.size() > keyListEtalon.size()) {
-                    score.setValue(score.getValue() - 0.3);
-                }
-
-                for (TaskCondition condition : data.getConditions()) {
-                    if ((condition.getType().equals(ConditionType.CONTAINS)
-                            && !StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
-                            || (condition.getType().equals(ConditionType.NOT_CONTAINS)
-                            && StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
-                    ) {
-                        score.setValue(score.getValue() - 0.3);
-                        break;
-                    }
+            List<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon);
+            List<TaskCondition> failedCondition = new ArrayList<>();
+            for (TaskCondition condition : data.getConditions()) {
+                if ((condition.getType().equals(ConditionType.CONTAINS)
+                        && !StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
+                        || (condition.getType().equals(ConditionType.NOT_CONTAINS)
+                        && StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
+                ) {
+                    failedCondition.add(condition);
                 }
             }
-            return score;
+            if (failedCondition.size() > 0){
+                result.add(new CompareConditionException(failedCondition)); // case #1
+            }
+            return grade(result);
         } finally {
             helperServiceProviderObject.dropDatabase();
         }
     }
 
-    private Score grade(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if (!checkQueryResults(queryResultEtalon, queryResultAnswer)) {
-            return new Score(0, "not ok");
+    private Score grade(List<Exception> failedChecks) {
+        double grade = 1;
+        String comment = "OK";
+        if (failedChecks.size() > 0){
+            //TODO: yevgenyv: make a grade and fill comment
         }
-        return new Score(1, "ok");
-    }
-
-    private boolean checkQueryResults(QueryResult queryResultEtalon, QueryResult queryResultAnswer) {
-        if (queryResultEtalon.getResultMapList().size() != queryResultAnswer.getResultMapList().size()) {
-            return false;
-        }
-        for (int i = 0; i < queryResultEtalon.getResultMapList().size(); i++) {
-            List<String> keyListEtalon = queryResultEtalon.getHeader();
-            List<String> keyListAnswer = queryResultAnswer.getHeader();
-            if (keyListAnswer.size() < keyListEtalon.size()) {
-                return false;
-            }
-            boolean allColumnsExists = new HashSet<>(keyListAnswer).containsAll(keyListEtalon);
-
-            if (!allColumnsExists) {
-                return false;
-            }
-            for (String columnName : keyListEtalon) {
-                Object etalonFieldValue = queryResultEtalon.getValue(i, columnName);
-                Object answerFieldValue = queryResultAnswer.getValue(i, columnName);
-                if (!Objects.equals(etalonFieldValue, answerFieldValue)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return new Score(grade, comment);
     }
 
     public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
