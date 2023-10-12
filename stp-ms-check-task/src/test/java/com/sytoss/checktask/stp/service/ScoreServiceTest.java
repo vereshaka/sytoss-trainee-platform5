@@ -85,7 +85,7 @@ class ScoreServiceTest extends StpUnitTest {
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
         Assertions.assertEquals(0.7, score.getValue());
-        Assertions.assertEquals("ORDER BY condition are failed to check", score.getComment());
+        Assertions.assertEquals("\"ORDER BY\" condition are failed to check", score.getComment());
     }
 
     @Test

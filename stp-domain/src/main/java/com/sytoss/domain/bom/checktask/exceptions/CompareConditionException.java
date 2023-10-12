@@ -11,7 +11,7 @@ public class CompareConditionException extends RuntimeException {
     private final List<TaskCondition> failedCondition;
 
     public CompareConditionException(List<TaskCondition> failedCondition) {
-        super("\n"+String.join(";", failedCondition.stream().map(TaskCondition::getCondition).toList()) + "\n condition are failed to check");
+        super("\""+String.join(";", failedCondition.stream().map(TaskCondition::getCondition).toList()) + "\" condition are failed to check");
         this.failedCondition = failedCondition;
     }
 }
