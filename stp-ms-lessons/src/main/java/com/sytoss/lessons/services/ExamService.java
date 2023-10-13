@@ -19,13 +19,15 @@ import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.*;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -191,10 +193,9 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
-        List <ExamAssigneeDTO> examAssigneeDTOS =  examAssigneeConnector.getAllByExam_Id(examId);
+        List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
         examAssigneeService.deleteAllByExamId(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-
 
 
         examConnector.deleteById(exam.getId());
@@ -272,5 +273,26 @@ public class ExamService extends AbstractService {
                 }
             }
         });
+    }
+
+    public List<ExamAssignee> findExamAssignees() {
+        AbstractUser abstractUser = getCurrentUser();
+
+        if (abstractUser instanceof Teacher) {
+            List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
+            List<ExamAssignee> examAssignees = new ArrayList<>();
+            for (Long examId : examDTOList.stream().map(ExamDTO::getId).toList()) {
+                List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
+                examAssignees.addAll(examAssigneeDTOS.stream().map(examAssigneeDTO -> {
+                    ExamAssignee examAssignee = new ExamAssignee();
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                    return examAssignee;
+                }).toList());
+            }
+            return examAssignees;
+        } else {
+            log.warn("User type was not valid when try to get exams by teacher id!");
+            throw new UserNotIdentifiedException("User type not teacher!");
+        }
     }
 }
