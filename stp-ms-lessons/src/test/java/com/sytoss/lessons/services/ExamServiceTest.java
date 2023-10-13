@@ -22,6 +22,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -228,5 +229,36 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals(examDTO.getId(), exam.getId());
         assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
         assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
+    }
+
+    @Test
+    public void shouldReturnExamReportModel() {
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeDTO.setId(1L);
+        examAssigneeDTO.setExamAssigneeToDTOList(new ArrayList<>());
+        examAssigneeDTO.setRelevantTo(new Date());
+        examAssigneeDTO.setRelevantFrom(new Date());
+
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(1L);
+        taskDTO.setQuestion("Question");
+
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setName("Exam");
+        examDTO.setMaxGrade(1);
+        examDTO.setNumberOfTasks(1);
+        examDTO.setTasks(List.of(taskDTO));
+
+        when(examAssigneeConnector.getReferenceById(1L)).thenReturn(examAssigneeDTO);
+        when(examConnector.findByExamAssignees_Id(1L)).thenReturn(examDTO);
+
+        ExamReportModel result = examService.getReportInfo(1L);
+        assertEquals("Exam", result.getExamName());
+        assertEquals(1, result.getMaxGrade());
+        assertEquals(1, result.getAmountOfTasks());
+        assertEquals(1L, result.getTasks().get(0).getId());
+        assertEquals("Question", result.getTasks().get(0).getQuestion());
+        assertEquals(examAssigneeDTO.getRelevantFrom(), result.getRelevantFrom());
+        assertEquals(examAssigneeDTO.getRelevantTo(), result.getRelevantTo());
     }
 }
