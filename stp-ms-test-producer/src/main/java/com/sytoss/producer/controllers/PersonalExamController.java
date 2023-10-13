@@ -2,10 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.personalexam.AnswerModule;
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -222,4 +219,14 @@ public class PersonalExamController {
     ) {
         return personalExamService.deleteByExamAssigneeIds(examAssigneeIds);
     }
+
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/review/answers")
+    public ExamAssigneeAnswersModel reviewAnswers(@RequestBody ExamAssigneeAnswersModel answers) {
+        return personalExamService.reviewByAnswers(answers);
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.business.*;
-import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -90,7 +89,7 @@ public class PersonalExamService extends AbstractService {
     public PersonalExam summary(String id) {
         PersonalExam personalExam = personalExamConnector.getById(id);
         personalExam.summary();
-        personalExam.setAnswers(personalExam.getAnswers().stream().sorted(Comparator.comparing(a -> a.getTask().getCode(),Comparator.nullsLast(Comparator.naturalOrder()))).toList());
+        personalExam.setAnswers(personalExam.getAnswers().stream().sorted(Comparator.comparing(a -> a.getTask().getCode(), Comparator.nullsLast(Comparator.naturalOrder()))).toList());
         return personalExam;
     }
 
@@ -237,8 +236,8 @@ public class PersonalExamService extends AbstractService {
         graphics.fillRect(0, 0, width, height);
         graphics.setColor(Color.BLACK);
         graphics.setFont(font);
-        for(int i=0;i<questionParts.size(); i++){
-            graphics.drawString(questionParts.get(i), 10, fontMetrics.getAscent()*(i+1));
+        for (int i = 0; i < questionParts.size(); i++) {
+            graphics.drawString(questionParts.get(i), 10, fontMetrics.getAscent() * (i + 1));
         }
         graphics.dispose();
 
@@ -279,10 +278,10 @@ public class PersonalExamService extends AbstractService {
         }
     }
 
-    private String longestString(List<String> questionParts){
+    private String longestString(List<String> questionParts) {
         String maxString = questionParts.get(0);
-        for(String questionPart :questionParts){
-            if(questionPart.length()>maxString.length()){
+        for (String questionPart : questionParts) {
+            if (questionPart.length() > maxString.length()) {
                 maxString = questionPart;
             }
         }
@@ -307,5 +306,26 @@ public class PersonalExamService extends AbstractService {
             personalExams.addAll(deleteByExamAssigneeId(assigneeId));
         }
         return personalExams;
+    }
+
+    public ExamAssigneeAnswersModel reviewByAnswers(ExamAssigneeAnswersModel examAssigneeAnswersModel) {
+        for (ReviewGradeModel grade : examAssigneeAnswersModel.getGrades()) {
+            PersonalExam personalExam = getById(grade.getPersonalExamId());
+
+            if (ObjectUtils.isEmpty(personalExam)) {
+                throw new PersonalExamNotFoundException(grade.getPersonalExamId());
+            }
+
+            Answer answer = personalExam.getAnswerById(grade.getAnswer().getId());
+
+            if (grade.getAnswer().getTeacherGrade() == null) {
+                grade.getAnswer().setTeacherGrade(new Grade());
+            }
+            answer.getTeacherGrade().setValue(grade.getAnswer().getTeacherGrade().getValue());
+            personalExam.review();
+            personalExamConnector.save(personalExam);
+            grade.setAnswer(answer);
+        }
+        return examAssigneeAnswersModel;
     }
 }
