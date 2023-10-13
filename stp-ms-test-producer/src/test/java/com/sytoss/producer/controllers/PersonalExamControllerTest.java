@@ -2,10 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.personalexam.AnswerModule;
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.UserConnector;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
@@ -178,5 +175,60 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         personalExam.setStartedDate(startedDate);
 
         return personalExam;
+    }
+
+    @Test
+    public void shouldReviewByAnswers() throws JOSEException {
+        LinkedHashMap<String, Object> user = new LinkedHashMap<>();
+        user.put("id", 1);
+        user.put("firstName", "John");
+        user.put("lastName", "Doe");
+        user.put("email", "john.doe@email.com");
+        when(userConnector.getMyProfile()).thenReturn(user);
+
+        Answer answer1 = new Answer();
+        answer1.setValue("select * from products");
+        answer1.setGrade(new Grade(1, "answer correct"));
+        answer1.setStatus(AnswerStatus.GRADED);
+        Answer answer2 = new Answer();
+        answer2.setValue("select * from products");
+        answer2.setGrade(new Grade(1, "answer correct"));
+        answer2.setStatus(AnswerStatus.GRADED);
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamService.getById("1")).thenReturn(personalExam);
+        when(personalExamService.getById("2")).thenReturn(personalExam2);
+
+        answer1.setTeacherGrade(new Grade(20, "ok"));
+        answer2.setTeacherGrade(new Grade(10, "ok"));
+
+        ExamAssigneeAnswersModel examAssigneeAnswersModel = new ExamAssigneeAnswersModel();
+        ReviewGradeModel gradeModel1 = new ReviewGradeModel();
+        gradeModel1.setPersonalExamId(personalExam.getId());
+        gradeModel1.setAnswer(answer1);
+        ReviewGradeModel gradeModel2 = new ReviewGradeModel();
+        gradeModel2.setPersonalExamId(personalExam2.getId());
+        gradeModel2.setAnswer(answer2);
+        examAssigneeAnswersModel.setGrades(List.of(gradeModel1, gradeModel2));
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        HttpEntity<ExamAssigneeAnswersModel> httpEntity = new HttpEntity<>(examAssigneeAnswersModel, httpHeaders);
+
+        ResponseEntity<ExamAssigneeAnswersModel> result = doPost("/api/personal-exam/review/answers", httpEntity, ExamAssigneeAnswersModel.class);
+        assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }

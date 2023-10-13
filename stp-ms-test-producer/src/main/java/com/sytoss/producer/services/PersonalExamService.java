@@ -315,6 +315,27 @@ public class PersonalExamService extends AbstractService {
         return personalExams;
     }
 
+    public ExamAssigneeAnswersModel reviewByAnswers(ExamAssigneeAnswersModel examAssigneeAnswersModel) {
+        for (ReviewGradeModel grade : examAssigneeAnswersModel.getGrades()) {
+            PersonalExam personalExam = getById(grade.getPersonalExamId());
+
+            if (ObjectUtils.isEmpty(personalExam)) {
+                throw new PersonalExamNotFoundException(grade.getPersonalExamId());
+            }
+
+            Answer answer = personalExam.getAnswerById(grade.getAnswer().getId());
+
+            if (grade.getAnswer().getTeacherGrade() == null) {
+                grade.getAnswer().setTeacherGrade(new Grade());
+            }
+            answer.getTeacherGrade().setValue(grade.getAnswer().getTeacherGrade().getValue());
+            personalExam.review();
+            personalExamConnector.save(personalExam);
+            grade.setAnswer(answer);
+        }
+        return examAssigneeAnswersModel;
+    }
+
     public byte[] getExcelReport(Long examAssigneeId) throws IOException {
         ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
         ExamReportModel examReportModel = examAssigneeConnector.getReportInfo(examAssigneeId);

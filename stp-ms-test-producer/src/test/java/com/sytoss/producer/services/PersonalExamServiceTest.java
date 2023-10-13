@@ -268,7 +268,48 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Grade score = new Grade();
         score.setValue(gradeValue);
         score.setComment(comment);
-
         return score;
+    }
+
+    @Test
+    public void shouldReviewTestByAnswers() {
+        Answer answer1 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
+        Answer answer2 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
+
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamConnector.getById("1")).thenReturn(personalExam);
+        when(personalExamConnector.getById("2")).thenReturn(personalExam2);
+
+        answer1.setTeacherGrade(new Grade(20, "ok"));
+        answer2.setTeacherGrade(new Grade(10, "ok"));
+
+        ExamAssigneeAnswersModel examAssigneeAnswersModel = new ExamAssigneeAnswersModel();
+        ReviewGradeModel gradeModel1 = new ReviewGradeModel();
+        gradeModel1.setPersonalExamId(personalExam.getId());
+        gradeModel1.setAnswer(answer1);
+        ReviewGradeModel gradeModel2 = new ReviewGradeModel();
+        gradeModel2.setPersonalExamId(personalExam2.getId());
+        gradeModel2.setAnswer(answer2);
+        examAssigneeAnswersModel.setGrades(List.of(gradeModel1, gradeModel2));
+
+        ExamAssigneeAnswersModel answers = personalExamService.reviewByAnswers(examAssigneeAnswersModel);
+
+        Assertions.assertEquals(answers.getGrades().size(), 2);
+        Assertions.assertEquals("1", answers.getGrades().get(0).getPersonalExamId());
+        Assertions.assertEquals(20, answers.getGrades().get(0).getAnswer().getTeacherGrade().getValue());
+        Assertions.assertEquals("2", answers.getGrades().get(1).getPersonalExamId());
+        Assertions.assertEquals(10, answers.getGrades().get(1).getAnswer().getTeacherGrade().getValue());
     }
 }
