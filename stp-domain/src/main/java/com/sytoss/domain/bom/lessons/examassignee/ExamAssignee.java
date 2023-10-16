@@ -1,5 +1,6 @@
 package com.sytoss.domain.bom.lessons.examassignee;
 
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import lombok.Getter;
@@ -23,4 +24,6 @@ public class ExamAssignee {
     private List<Student> students = new ArrayList<>();
 
     private List<Group> groups = new ArrayList<>();
+
+    private Exam exam = new Exam();
 }
