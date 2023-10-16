@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -229,4 +230,16 @@ public class PersonalExamController {
         return personalExamService.reviewByAnswers(answers);
     }
 
+
+    @Operation(description = "Method that return excel file of personal exams by exam assignee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/assignee/{examAssigneeId}")
+    public byte[] getExcelReport(
+            @Parameter(description = "Id of exam assignee to get excel report about personal exams")
+            @PathVariable Long examAssigneeId
+    ) throws IOException {
+        return personalExamService.getExcelReport(examAssigneeId);
+    }
 }

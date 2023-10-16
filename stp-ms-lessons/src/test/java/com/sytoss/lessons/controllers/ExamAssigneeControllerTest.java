@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.ExamReportModel;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
@@ -61,6 +62,21 @@ class ExamAssigneeControllerTest extends LessonsControllerTest {
         Student student = new Student();
         HttpEntity<Student> httpEntity = new HttpEntity<>(student, httpHeaders);
         ResponseEntity<String> response = doPost("/api/assignee/group/1", httpEntity, String.class);
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
+    void shouldReturnExamReportModel() {
+        LinkedHashMap<String, Object> user = new LinkedHashMap<>();
+        user.put("id", 1);
+        user.put("firstName", "John");
+        user.put("lastName", "Doe");
+        user.put("email", "john.doe@email.com");
+        when(userConnector.getMyProfile()).thenReturn(user);
+        when(examService.getReportInfo(1L)).thenReturn(new ExamReportModel());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<ExamReportModel> response = doGet("/api/assignee/1/report", httpEntity, ExamReportModel.class);
         assertEquals(200, response.getStatusCode().value());
     }
 }
