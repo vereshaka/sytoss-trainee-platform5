@@ -135,7 +135,11 @@ public class ExcelBuilder extends BaseExcelWriter {
                 if (findAnswer.isPresent() && findAnswer.get().getAnswerStatus() == AnswerStatus.GRADED) {
                     writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
-                    createComment(cell, contentRow, findAnswer.get().getSystemGrade().getComment(), sheet);
+
+                    if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "")) {
+                        createComment(cell, contentRow, findAnswer.get().getSystemGrade().getComment(), sheet);
+                    }
+
                     writeCell(contentRow, tableValueStartIndex + 2, getValue(), findAnswer.get().getTeacherGrade().getValue());
                 } else {
                     writeCell(contentRow, tableValueStartIndex, getNotFill(), "");
