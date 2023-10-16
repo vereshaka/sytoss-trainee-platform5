@@ -42,7 +42,6 @@ class PumlConvertorTest {
         String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script_v1.yml");
-        log.debug(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
 /*
