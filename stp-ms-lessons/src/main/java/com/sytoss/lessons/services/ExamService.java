@@ -251,7 +251,7 @@ public class ExamService extends AbstractService {
     }
 
     public void createGroupExamsOnStudent(Long groupId, Student student) {
-        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupId(groupId);
+        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupIdOrderByParent_RelevantFromDesc(groupId);
         examToGroupAssigneeDTOList.forEach(examToGroupAssigneeDTO -> {
             ExamAssignee examAssignee = new ExamAssignee();
             examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
