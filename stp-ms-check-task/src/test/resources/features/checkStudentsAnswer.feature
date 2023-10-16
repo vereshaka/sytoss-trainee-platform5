@@ -7,7 +7,7 @@ Feature: check answer
     When request coming to process
     Then request should be processed successfully
     And Grade value is 1
-    And Grade message is "ok"
+    And Grade message is ""
 
   Scenario: Check wrong student's answer
     Given Request contains database script as in "task-domain/script1.yml"
@@ -16,7 +16,7 @@ Feature: check answer
     When request coming to process
     Then request should be processed successfully
     And Grade value is 0
-    And Grade message is "not ok"
+    And Grade message is "Amount of data is different"
 
   Scenario: Check student's answer with condition
     Given Request contains database script as in "task-domain/script1.yml"
@@ -26,7 +26,7 @@ Feature: check answer
     When request coming to process
     Then request should be processed successfully
     And Grade value is 0.7
-    And Grade message is "ok"
+    And Grade message is ""ORDER BY" condition are failed to check"
 
   Scenario: Check etalon's answer
     Given Request contains database script as in "task-domain/script1.yml"
@@ -48,7 +48,7 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | id | name  |
+      | ID | NAME  |
       | 1  | SQL   |
       | 2  | Mongo |
 
@@ -59,12 +59,12 @@ Feature: check answer
     Then operation should be finished with "406" error
 
   Scenario: Check correct sequence of columns
-    Given Request contains database script as in "script1.yml"
+    Given Request contains database script as in "task-domain/script1.yml"
     And check SQL is "select name,id from Discipline"
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | name  | id |
+      | NAME  | ID |
       | SQL   | 1  |
       | Mongo | 2  |
 
@@ -74,8 +74,8 @@ Feature: check answer
     And check SQL is "SELECT * from Client ORDER BY Company DESC, LName"
     When request coming to process
     Then request should be processed successfully
-    And Grade value is 0.7
-    And Grade message is "ok"
+    And Grade value is 1.0
+    And Grade message is "There are more columns in the answer than in the etalon"
 
   Scenario: STP-XX Specify custom name for columns without name
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
