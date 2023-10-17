@@ -53,7 +53,6 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "409", description = "Exam is already started!")
     })
     @GetMapping("/{personalExamId}/start")
-    @JsonView({PersonalExam.PublicWithAnswers.class})
     public ResponseEntity<Question> start(
             @PathVariable("personalExamId")
             String personalExamId) {
