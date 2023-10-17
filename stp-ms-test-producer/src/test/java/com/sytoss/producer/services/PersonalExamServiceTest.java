@@ -312,4 +312,23 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Assertions.assertEquals("2", answers.getGrades().get(1).getPersonalExamId());
         Assertions.assertEquals(10, answers.getGrades().get(1).getAnswer().getTeacherGrade().getValue());
     }
+
+    @Test
+    public void shouldReturnPersonalExam() {
+        PersonalExam personalExam = new PersonalExam();
+
+        personalExam.setId("12345");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED)
+        ));
+
+        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
+
+        PersonalExam returnPersonalExam = personalExamService.getById(personalExam.getId());
+        Assertions.assertEquals("12345", returnPersonalExam.getId());
+    }
+
 }
