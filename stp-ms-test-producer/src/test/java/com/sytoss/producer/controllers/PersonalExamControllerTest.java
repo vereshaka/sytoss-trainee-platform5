@@ -165,6 +165,22 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         assertEquals(200, result.getStatusCode().value());
     }
 
+    @Test
+    public void shouldReturnExcelReportByGroup() throws JOSEException, IOException {
+        LinkedHashMap<String, Object> user = new LinkedHashMap<>();
+        user.put("id", 1);
+        user.put("firstName", "John");
+        user.put("lastName", "Doe");
+        user.put("email", "john.doe@email.com");
+        when(userConnector.getMyProfile()).thenReturn(user);
+        when(personalExamService.getExcelReportByGroup(1L)).thenReturn(new byte[]{});
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> result = doGet("/api/personal-exam/excel/group/1", httpEntity, String.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
     private PersonalExam createPersonalExam(Long examAssigneeId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setExamAssigneeId(examAssigneeId);
