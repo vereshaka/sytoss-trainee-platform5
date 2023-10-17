@@ -195,7 +195,7 @@ public class PumlConvertor {
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);
                 } else {
-                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : rows.getValue()).append(StringUtils.LF);
+                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : "\"" + rows.getValue() + "\"").append(StringUtils.LF);
                 }
 
             }

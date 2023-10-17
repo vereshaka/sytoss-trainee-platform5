@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.bdd.given;
 
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import io.cucumber.java.en.Given;
@@ -16,6 +17,17 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
         String data = null;
         try {
             data = IOUtils.toString(getClass().getResourceAsStream("/data/" + script), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(data);
+    }
+
+    @Given("^Request contains database script from \"(.*)\" puml$")
+    public void givenDatabaseScriptFromPuml(String script) {
+        String data = null;
+        try {
+            data = new PumlConvertor().convertToLiquibase(IOUtils.toString(getClass().getResourceAsStream("/data/" + script), StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
