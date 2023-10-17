@@ -40,12 +40,18 @@ public class PersonalExamControllerTest extends StpApplicationTest {
 
     @Test
     public void shouldCreateExam() {
-        when(personalExamService.create(any())).thenReturn(new PersonalExam());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        PersonalExam personalExam = new PersonalExam();
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.ANSWERED);
+        personalExam.setAnswers(List.of(answer));
+        when(personalExamService.create(any())).thenReturn(personalExam);
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), httpHeaders);
         ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
+        personalExam = result.getBody();
+        assertEquals(0, personalExam.getAnswers().size());
     }
 
     @Test
@@ -60,11 +66,18 @@ public class PersonalExamControllerTest extends StpApplicationTest {
 
     @Test
     public void shouldSummaryExam() {
+        PersonalExam personalExam = new PersonalExam();
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.ANSWERED);
+        personalExam.setAnswers(List.of(answer));
+        when(personalExamService.summary(any())).thenReturn(personalExam);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> result = doGet("/api/personal-exam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
+        personalExam = result.getBody();
+        assertEquals(1, personalExam.getAnswers().size());
     }
 
     @Test
