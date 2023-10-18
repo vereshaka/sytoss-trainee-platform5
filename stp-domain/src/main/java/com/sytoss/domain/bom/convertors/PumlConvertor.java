@@ -300,21 +300,19 @@ public class PumlConvertor {
     public String createObject(Table table) {
         StringBuilder initTableStringBuilder = new StringBuilder();
         initTableStringBuilder.append("object \"").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
-        List<String> columnsName = table.getColumns().stream().map(Column::getName).toList();
+        Set<String> columnsName = table.getRows().get(0).getValues().keySet();
         String delimiter = "|= ";
         String header = delimiter + String.join(" " + delimiter, columnsName) + " |";
         initTableStringBuilder.append(header).append(StringUtils.LF);
 
         for (DataRow dataRow : table.getRows()) {
-            if (dataRow.getValues().size() < table.getColumns().size()) {
-                StringBuilder rawBuilder = new StringBuilder("| ");
-                for (Column column : table.getColumns()) {
-                    String value = dataRow.getValues().get(column.getName());
-                    value = value != null ? value : "null";
-                    rawBuilder.append(value).append(" | ");
-                }
-                dataRow.setRaw(rawBuilder.toString());
+            StringBuilder rawBuilder = new StringBuilder("| ");
+            for (String column : columnsName) {
+                String value = dataRow.getValues().get(column);
+                value = value != null ? value : "null";
+                rawBuilder.append(value).append(" | ");
             }
+            dataRow.setRaw(rawBuilder.toString());
             initTableStringBuilder.append(dataRow.getRaw()).append(StringUtils.LF);
         }
 
