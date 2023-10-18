@@ -1,8 +1,10 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bom.TaskIds;
+import com.sytoss.lessons.services.ExamService;
 import com.sytoss.lessons.services.TaskService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,8 @@ public class TopicController {
     private final TopicService topicService;
 
     private final TaskService taskService;
+
+    private final ExamService examService;
 
     @Operation(description = "Method that return topic by id")
     @ApiResponses(value = {
@@ -120,5 +124,17 @@ public class TopicController {
             @PathVariable("topicId") Long topicId
     ) {
         return taskService.deleteAssignTopicToTask(topicId);
+    }
+
+    @Operation(description = "Method that assigns tasks to topic")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Topic not found!")
+    })
+    @GetMapping("/{topicId}/exams")
+    public List<Exam> getExamsByTopic(@Parameter(description = "id of the topic to be searched by")
+                                        @PathVariable("topicId") Long topicId) {
+        return examService.getExamsByTopic(topicId);
     }
 }
