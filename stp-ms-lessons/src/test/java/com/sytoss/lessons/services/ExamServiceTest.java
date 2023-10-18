@@ -22,6 +22,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -228,5 +229,67 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals(examDTO.getId(), exam.getId());
         assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
         assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
+    }
+
+    @Test
+    public void shouldReturnExamReportModel() {
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeDTO.setId(1L);
+        examAssigneeDTO.setExamAssigneeToDTOList(new ArrayList<>());
+        examAssigneeDTO.setRelevantTo(new Date());
+        examAssigneeDTO.setRelevantFrom(new Date());
+
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setId(1L);
+        taskDTO.setQuestion("Question");
+
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setName("Exam");
+        examDTO.setMaxGrade(1);
+        examDTO.setNumberOfTasks(1);
+        examDTO.setTasks(List.of(taskDTO));
+
+        when(examAssigneeConnector.getReferenceById(1L)).thenReturn(examAssigneeDTO);
+        when(examConnector.findByExamAssignees_Id(1L)).thenReturn(examDTO);
+
+        ExamReportModel result = examService.getReportInfo(1L);
+        assertEquals("Exam", result.getExamName());
+        assertEquals(1, result.getMaxGrade());
+        assertEquals(1, result.getAmountOfTasks());
+        assertEquals(1L, result.getTasks().get(0).getId());
+        assertEquals("Question", result.getTasks().get(0).getQuestion());
+        assertEquals(examAssigneeDTO.getRelevantFrom(), result.getRelevantFrom());
+        assertEquals(examAssigneeDTO.getRelevantTo(), result.getRelevantTo());
+    }
+
+    @Test
+    public void shouldReturnListOfExamsByTopicId() {
+        Teacher user = new Teacher();
+        user.setId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setGroupReferences(List.of(new GroupReferenceDTO()));
+        topicDTO.setDiscipline(disciplineDTO);
+
+        ExamDTO exam1 = createExam(1L, "Exam1", topicDTO);
+        ExamDTO exam2 = createExam(2L, "Exam2", topicDTO);
+
+        when(examConnector.getAllByTopicsContaining(any(TopicDTO.class))).thenReturn(List.of(exam1, exam2));
+
+        List<Exam> result = examService.getExamsByTopic(topicDTO.getId());
+        assertEquals(2, result.size());
+    }
+
+    private ExamDTO createExam(Long id, String name, TopicDTO topicDTO) {
+        ExamDTO exam = new ExamDTO();
+        exam.setId(id);
+        exam.setName(name);
+        exam.setTopics(List.of(topicDTO));
+        return exam;
     }
 }

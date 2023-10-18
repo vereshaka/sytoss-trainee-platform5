@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -145,6 +146,22 @@ public class PersonalExamControllerTest extends StpApplicationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<PersonalExam>> result = doDelete("/api/personal-exam/exam/assignee/1", httpEntity, new ParameterizedTypeReference<>() {
         });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnExcelReport() throws JOSEException, IOException {
+        LinkedHashMap<String, Object> user = new LinkedHashMap<>();
+        user.put("id", 1);
+        user.put("firstName", "John");
+        user.put("lastName", "Doe");
+        user.put("email", "john.doe@email.com");
+        when(userConnector.getMyProfile()).thenReturn(user);
+        when(personalExamService.getExcelReport(1L)).thenReturn(new byte[]{});
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "1"));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<String> result = doGet("/api/personal-exam/excel/assignee/1", httpEntity, String.class);
         assertEquals(200, result.getStatusCode().value());
     }
 

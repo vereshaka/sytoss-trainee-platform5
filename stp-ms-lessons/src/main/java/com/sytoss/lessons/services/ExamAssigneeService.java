@@ -16,9 +16,7 @@ import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -80,7 +78,7 @@ public class ExamAssigneeService extends AbstractService {
     }
 
     private void deleteAllExamAssigneeToByExamAssignee(Long examAssigneeId) {
-        List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeToConnector.getAllByParent_Id(examAssigneeId);
+        List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeToConnector.getAllByParent_IdOrderByParent_RelevantFromDesc(examAssigneeId);
         for (ExamAssigneeToDTO examAssigneeToDTO :
                 examAssigneeToDTOS) {
             examAssigneeToConnector.delete(examAssigneeToDTO);

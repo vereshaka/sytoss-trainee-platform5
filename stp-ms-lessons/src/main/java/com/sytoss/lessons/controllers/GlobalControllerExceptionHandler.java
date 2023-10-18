@@ -111,4 +111,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(TaskDomainScriptIsNotValidException taskDomainScriptIsNotValidException) {
         return ResponseEntity.status(400).body(new ApplicationError(taskDomainScriptIsNotValidException));
     }
+
+    @ExceptionHandler({ExamAssigneeNotFoundException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(ExamAssigneeNotFoundException examAssigneeNotFoundException) {
+        return ResponseEntity.status(404).body(new ApplicationError((examAssigneeNotFoundException)));
+    }
 }

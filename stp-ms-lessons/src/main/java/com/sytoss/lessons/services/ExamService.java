@@ -1,13 +1,8 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
-import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.exceptions.business.notfound.*;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -19,13 +14,14 @@ import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.*;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,8 +49,7 @@ public class ExamService extends AbstractService {
 
     private final ExamAssigneeToConnector examAssigneeToConnector;
 
-    @Autowired
-    private ExamAssigneeService examAssigneeService;
+    private final ExamAssigneeService examAssigneeService;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -191,10 +186,9 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
-        List <ExamAssigneeDTO> examAssigneeDTOS =  examAssigneeConnector.getAllByExam_Id(examId);
+        List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
         examAssigneeService.deleteAllByExamId(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-
 
 
         examConnector.deleteById(exam.getId());
@@ -257,7 +251,7 @@ public class ExamService extends AbstractService {
     }
 
     public void createGroupExamsOnStudent(Long groupId, Student student) {
-        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupId(groupId);
+        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupIdOrderByParent_RelevantFromDesc(groupId);
         examToGroupAssigneeDTOList.forEach(examToGroupAssigneeDTO -> {
             ExamAssignee examAssignee = new ExamAssignee();
             examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
@@ -272,5 +266,42 @@ public class ExamService extends AbstractService {
                 }
             }
         });
+    }
+
+    public ExamReportModel getReportInfo(Long examAssigneeId) {
+        try {
+            ExamReportModel examReportModel = new ExamReportModel();
+            ExamAssigneeDTO examAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
+            examReportModel.setRelevantFrom(examAssigneeDTO.getRelevantFrom());
+            examReportModel.setRelevantTo(examAssigneeDTO.getRelevantTo());
+
+            ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
+            List<TaskReportModel> tasks = examDTO.getTasks().stream().map(taskDTO -> {
+                TaskReportModel task = new TaskReportModel();
+                task.setId(taskDTO.getId());
+                task.setQuestion(taskDTO.getQuestion());
+                return task;
+            }).toList();
+
+            examReportModel.setExamName(examDTO.getName());
+            examReportModel.setTasks(tasks);
+            examReportModel.setAmountOfTasks(examDTO.getNumberOfTasks());
+            examReportModel.setMaxGrade(examDTO.getMaxGrade());
+            return examReportModel;
+        } catch (EntityNotFoundException exception) {
+            log.warn("Exam assignee not found: {}", exception.getMessage());
+            throw new ExamAssigneeNotFoundException(examAssigneeId);
+        }
+    }
+
+    public List<Exam> getExamsByTopic(Long topicId) {
+        TopicDTO topic = new TopicDTO();
+        topic.setId(topicId);
+        List<ExamDTO> examDTOS = examConnector.getAllByTopicsContaining(topic);
+        return examDTOS.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
     }
 }

@@ -3,14 +3,19 @@ package com.sytoss.producer.services;
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskReportModel;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.connectors.ImageConnector;
+import com.sytoss.producer.connectors.ExamAssigneeConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.writers.ExcelBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +37,9 @@ public class PersonalExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    private final ImageConnector imageConnector;
+    private final ExamAssigneeConnector examAssigneeConnector;
+
+    private final ObjectProvider<ExcelBuilder> excelBuilderFactory;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -327,5 +334,48 @@ public class PersonalExamService extends AbstractService {
             grade.setAnswer(answer);
         }
         return examAssigneeAnswersModel;
+    }
+
+    public byte[] getExcelReport(Long examAssigneeId) throws IOException {
+        ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
+        ExamReportModel examReportModel = examAssigneeConnector.getReportInfo(examAssigneeId);
+        List<PersonalExam> personalExams = personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
+        List<PersonalExamReportModel> personalExamReportModels = convertToReportModel(personalExams);
+        Workbook wb = excelBuilder.createExcelReportByExamAssignee(examReportModel, personalExamReportModels);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        wb.write(bos);
+        byte[] byteArray = bos.toByteArray();
+        bos.close();
+        return byteArray;
+    }
+
+    private List<PersonalExamReportModel> convertToReportModel(List<PersonalExam> personalExams) {
+        return personalExams.stream().map(personalExam -> {
+            personalExam.summary();
+
+            List<AnswerReportModel> answerReportModels = personalExam.getAnswers().stream().map(answer -> {
+                TaskReportModel taskReportModel = new TaskReportModel();
+                taskReportModel.setId(answer.getTask().getId());
+                taskReportModel.setQuestion(answer.getTask().getQuestion());
+
+                AnswerReportModel answerReportModel = new AnswerReportModel();
+                answerReportModel.setAnswerStatus(answer.getStatus());
+                answerReportModel.setTeacherGrade(answer.getTeacherGrade());
+                answerReportModel.setTask(taskReportModel);
+                answerReportModel.setTimeSpent(answer.getTimeSpent());
+                answerReportModel.setSystemGrade(answer.getGrade());
+                return answerReportModel;
+            }).toList();
+
+            PersonalExamReportModel personalExamReportModel = new PersonalExamReportModel();
+            personalExamReportModel.setExamName(personalExam.getName());
+            personalExamReportModel.setEmail(personalExam.getStudent().getEmail());
+            personalExamReportModel.setStudentName(personalExam.getStudent().getFirstName() + " " + personalExam.getStudent().getLastName());
+            personalExamReportModel.setSummary(personalExam.getSummaryGrade());
+            personalExamReportModel.setAnswers(answerReportModels);
+            personalExamReportModel.setGroupName(personalExam.getStudent().getPrimaryGroup().getName());
+            personalExamReportModel.setPersonalExamStatus(personalExam.getStatus());
+            return personalExamReportModel;
+        }).toList();
     }
 }
