@@ -88,22 +88,22 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: FName
-                  value: Грищенко
+                  value: "Грищенко"
               - column:
                   name: MName
-                  value: Петро
+                  value: "Петро"
               - column:
                   name: LName
-                  value: Васильович
+                  value: "Васильович"
               - column:
                   name: Company
-                  value: ТОВ Затишок
+                  value: "ТОВ Затишок"
               - column:
                   name: CityClient
-                  value: Харків
+                  value: "Харків"
               - column:
                   name: phone
-                  value: +380502087543
+                  value: "+380502087543"
             tableName: Client
         - insert:
             columns:
@@ -112,22 +112,22 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: FName
-                  value: Кузич
+                  value: "Кузич"
               - column:
                   name: MName
-                  value: Микола
+                  value: "Микола"
               - column:
                   name: LName
-                  value: Петрович
+                  value: "Петрович"
               - column:
                   name: Company
-                  value: ТОВ Дом
+                  value: "ТОВ Дом"
               - column:
                   name: CityClient
-                  value: Київ
+                  value: "Київ"
               - column:
                   name: phone
-                  value: +380672837500
+                  value: "+380672837500"
             tableName: Client
         - insert:
             columns:
@@ -136,19 +136,19 @@ databaseChangeLog:
                   valueNumeric: 3
               - column:
                   name: FName
-                  value: Василенко
+                  value: "Василенко"
               - column:
                   name: MName
-                  value: Михайло
+                  value: "Михайло"
               - column:
                   name: LName
-                  value: Володимирович
+                  value: "Володимирович"
               - column:
                   name: Company
-                  value: Харків
+                  value: "Харків"
               - column:
                   name: CityClient
-                  value: +380666722565
+                  value: "+380666722565"
             tableName: Client
         - insert:
             columns:
@@ -157,19 +157,19 @@ databaseChangeLog:
                   valueNumeric: 4
               - column:
                   name: FName
-                  value: Азаренко
+                  value: "Азаренко"
               - column:
                   name: MName
-                  value: Тетяна
+                  value: "Тетяна"
               - column:
                   name: LName
-                  value: Петрівна
+                  value: "Петрівна"
               - column:
                   name: Company
-                  value: Львів
+                  value: "Львів"
               - column:
                   name: CityClient
-                  value: +380505723577
+                  value: "+380505723577"
               - column:
                   name: phone
                   value: null
@@ -181,16 +181,16 @@ databaseChangeLog:
                   valueNumeric: 5
               - column:
                   name: FName
-                  value: Петренко
+                  value: "Петренко"
               - column:
                   name: MName
-                  value: Олена
+                  value: "Олена"
               - column:
                   name: LName
-                  value: Миколаївна
+                  value: "Миколаївна"
               - column:
                   name: Company
-                  value: Львів
+                  value: "Львів"
               - column:
                   name: CityClient
                   value: null
@@ -205,19 +205,19 @@ databaseChangeLog:
                   valueNumeric: 6
               - column:
                   name: FName
-                  value: Бобир
+                  value: "Бобир"
               - column:
                   name: MName
-                  value: Олексій
+                  value: "Олексій"
               - column:
                   name: LName
-                  value: Іванович
+                  value: "Іванович"
               - column:
                   name: Company
-                  value: Ужгород
+                  value: "Ужгород"
               - column:
                   name: CityClient
-                  value: +380676757755
+                  value: "+380676757755"
               - column:
                   name: phone
                   value: null
@@ -229,16 +229,16 @@ databaseChangeLog:
                   valueNumeric: 7
               - column:
                   name: FName
-                  value: Хрущ
+                  value: "Хрущ"
               - column:
                   name: MName
-                  value: Єгор
+                  value: "Єгор"
               - column:
                   name: LName
-                  value: Петрович
+                  value: "Петрович"
               - column:
                   name: Company
-                  value: Чернівці
+                  value: "Чернівці"
               - column:
                   name: CityClient
                   value: null
@@ -253,13 +253,13 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: NameProduct
-                  value: Стіл
+                  value: "Стіл"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: вищий
+                  value: "вищий"
               - column:
                   name: Price
                   valueNumeric: 1800
@@ -268,7 +268,7 @@ databaseChangeLog:
                   valueNumeric: 5
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -277,13 +277,13 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: NameProduct
-                  value: Стілець
+                  value: "Стілець"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: перший
+                  value: "перший"
               - column:
                   name: Price
                   valueNumeric: 300
@@ -292,7 +292,7 @@ databaseChangeLog:
                   valueNumeric: 10
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -301,13 +301,13 @@ databaseChangeLog:
                   valueNumeric: 3
               - column:
                   name: NameProduct
-                  value: Стіл
+                  value: "Стіл"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: другий
+                  value: "другий"
               - column:
                   name: Price
                   valueNumeric: 800
@@ -316,7 +316,7 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: CityProduct
-                  value: Київ
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
@@ -325,13 +325,13 @@ databaseChangeLog:
                   valueNumeric: 4
               - column:
                   name: NameProduct
-                  value: Диван
+                  value: "Диван"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: другий
+                  value: "другий"
               - column:
                   name: Price
                   valueNumeric: 1500
@@ -340,7 +340,7 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: CityProduct
-                  value: Київ
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
@@ -349,13 +349,13 @@ databaseChangeLog:
                   valueNumeric: 5
               - column:
                   name: NameProduct
-                  value: Підсвічник
+                  value: "Підсвічник"
               - column:
                   name: Type
-                  value: інтер'єр
+                  value: "інтер'єр"
               - column:
                   name: Sort
-                  value: другий
+                  value: "другий"
               - column:
                   name: Price
                   valueNumeric: 200
@@ -364,7 +364,7 @@ databaseChangeLog:
                   valueNumeric: 20
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -373,13 +373,13 @@ databaseChangeLog:
                   valueNumeric: 6
               - column:
                   name: NameProduct
-                  value: Диван
+                  value: "Диван"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: вищий
+                  value: "вищий"
               - column:
                   name: Price
                   valueNumeric: 2800
@@ -388,7 +388,7 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -397,13 +397,13 @@ databaseChangeLog:
                   valueNumeric: 7
               - column:
                   name: NameProduct
-                  value: Рамка для фото
+                  value: "Рамка для фото"
               - column:
                   name: Type
-                  value: інтер'єр
+                  value: "інтер'єр"
               - column:
                   name: Sort
-                  value: вищий
+                  value: "вищий"
               - column:
                   name: Price
                   valueNumeric: 80
@@ -412,7 +412,7 @@ databaseChangeLog:
                   valueNumeric: 0
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -421,13 +421,13 @@ databaseChangeLog:
                   valueNumeric: 8
               - column:
                   name: NameProduct
-                  value: Шафа
+                  value: "Шафа"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: вищий
+                  value: "вищий"
               - column:
                   name: Price
                   valueNumeric: 15000
@@ -436,7 +436,7 @@ databaseChangeLog:
                   valueNumeric: 3
               - column:
                   name: CityProduct
-                  value: Харків
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
@@ -445,13 +445,13 @@ databaseChangeLog:
                   valueNumeric: 9
               - column:
                   name: NameProduct
-                  value: Стілець
+                  value: "Стілець"
               - column:
                   name: Type
-                  value: меблі
+                  value: "меблі"
               - column:
                   name: Sort
-                  value: перший
+                  value: "перший"
               - column:
                   name: Price
                   valueNumeric: 250
@@ -460,7 +460,7 @@ databaseChangeLog:
                   valueNumeric: 10
               - column:
                   name: CityProduct
-                  value: Київ
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
