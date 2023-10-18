@@ -89,7 +89,7 @@ public class ExcelBuilder extends BaseExcelWriter {
 
         for (TaskReportModel task : report.getTasks()) {
             CellRangeAddress cellAddresses = new CellRangeAddress(tableStartIndex, tableStartIndex, cellIndex, cellIndex + 2);
-            writeCell(tableRow, cellIndex, getValue(), task.getQuestion());
+            writeCell(tableRow, cellIndex, getValue(), task.getCode() + " " + task.getQuestion());
             sheet.addMergedRegion(cellAddresses);
 
             writeCell(tableSubRow, cellIndex, getTableHeader(), "Answer Time");
