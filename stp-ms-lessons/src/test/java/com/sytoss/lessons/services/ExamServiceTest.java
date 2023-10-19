@@ -229,4 +229,53 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals(examDTO.getExamAssignees().size(), exam.getExamAssignees().size());
         assertEquals(examDTO.getExamAssignees().get(0).getId(), exam.getExamAssignees().get(0).getId());
     }
+
+    @Test
+    public void shouldReturnListOfExamAssigneesInOrder() {
+        Teacher teacher = createTeacher("John", "Johns");
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", teacher).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("Exam");
+        exam.setNumberOfTasks(10);
+        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTeacher(teacher);
+        Task task = new Task();
+        task.setTaskDomain(new TaskDomain());
+        exam.setTasks(List.of(task));
+        ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+
+        Date date = new Date(222222222);
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setExam(exam);
+        examAssignee.setId(2L);
+        examAssignee.setRelevantTo(date);
+        date = new Date(33333333);
+        ExamAssignee examAssignee2 = new ExamAssignee();
+        examAssignee2.setExam(exam);
+        examAssignee2.setId(1L);
+        examAssignee2.setRelevantTo(date);
+        ExamAssignee examAssignee3 = new ExamAssignee();
+        examAssignee3.setExam(exam);
+        examAssignee3.setId(3L);
+        examAssignee3.setRelevantTo(new Date());
+
+        when(examConnector.findByTeacherIdOrderByCreationDateDesc(any())).thenReturn(List.of(examDTO));
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+        ExamAssigneeDTO examAssigneeDTO2 = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee2, examAssigneeDTO2);
+        ExamAssigneeDTO examAssigneeDTO3 = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee3, examAssigneeDTO3);
+        when(examAssigneeConnector.getAllByExam_Id(examDTO.getId())).thenReturn(List.of(examAssigneeDTO, examAssigneeDTO2, examAssigneeDTO3));
+        List<ExamAssignee> examAssignees = examService.findExamAssignees();
+        assertEquals(3L, examAssignees.get(0).getId());
+        assertEquals(2L, examAssignees.get(1).getId());
+        assertEquals(1L, examAssignees.get(2).getId());
+    }
 }

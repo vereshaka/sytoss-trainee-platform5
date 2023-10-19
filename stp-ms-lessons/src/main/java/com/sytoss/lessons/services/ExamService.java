@@ -29,10 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -289,6 +286,8 @@ public class ExamService extends AbstractService {
                     return examAssignee;
                 }).toList());
             }
+            Comparator<ExamAssignee> dateComparator = (obj1, obj2) -> obj2.getRelevantTo().compareTo(obj1.getRelevantTo());
+            examAssignees.sort(dateComparator);
             return examAssignees;
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
