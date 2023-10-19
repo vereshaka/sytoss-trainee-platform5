@@ -370,12 +370,26 @@ public class PersonalExamService extends AbstractService {
             PersonalExamReportModel personalExamReportModel = new PersonalExamReportModel();
             personalExamReportModel.setExamName(personalExam.getName());
             personalExamReportModel.setEmail(personalExam.getStudent().getEmail());
+            personalExamReportModel.setStudentId(personalExam.getStudent().getId());
             personalExamReportModel.setStudentName(personalExam.getStudent().getLastName() + " " + personalExam.getStudent().getFirstName());
             personalExamReportModel.setSummary(personalExam.getSummaryGrade());
             personalExamReportModel.setAnswers(answerReportModels);
             personalExamReportModel.setGroupName(personalExam.getStudent().getPrimaryGroup().getName());
             personalExamReportModel.setPersonalExamStatus(personalExam.getStatus());
+            personalExamReportModel.setStartDate(personalExam.getStartedDate());
             return personalExamReportModel;
         }).toList();
+    }
+
+    public byte[] getExcelReportByGroup(Long groupId) throws IOException {
+        ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
+        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_PrimaryGroup_Id(groupId);
+        List<PersonalExamReportModel> reportModels = convertToReportModel(personalExams);
+        Workbook wb = excelBuilder.createExcelReportByGroup(reportModels);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        wb.write(bos);
+        byte[] byteArray = bos.toByteArray();
+        bos.close();
+        return byteArray;
     }
 }

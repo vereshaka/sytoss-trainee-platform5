@@ -242,4 +242,16 @@ public class PersonalExamController {
     ) throws IOException {
         return personalExamService.getExcelReport(examAssigneeId);
     }
+
+    @Operation(description = "Method that return excel file of personal exam by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/group/{groupId}")
+    public byte[] getExcelReportByGroup(
+            @Parameter(description = "Id of group to get excel report about personal exams")
+            @PathVariable Long groupId
+    ) throws IOException {
+        return personalExamService.getExcelReportByGroup(groupId);
+    }
 }
