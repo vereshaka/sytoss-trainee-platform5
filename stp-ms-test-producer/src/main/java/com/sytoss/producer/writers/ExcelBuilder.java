@@ -175,7 +175,7 @@ public class ExcelBuilder extends BaseExcelWriter {
 
         for (TaskReportModel task : report.getTasks()) {
             CellRangeAddress cellAddresses = new CellRangeAddress(tableStartIndex, tableStartIndex, cellIndex, cellIndex + 2);
-            writeCell(tableRow, cellIndex, getValue(), task.getQuestion());
+            writeCell(tableRow, cellIndex, getValue(), task.getCode() + " " + task.getQuestion());
             sheet.addMergedRegion(cellAddresses);
 
             writeCell(tableSubRow, cellIndex, getTableHeader(), "Answer Time");
@@ -222,7 +222,7 @@ public class ExcelBuilder extends BaseExcelWriter {
                     writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
 
-                    if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "")) {
+                    if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "") && !Objects.equals(findAnswer.get().getSystemGrade().getComment(), "ok")) {
                         createComment(cell, contentRow, findAnswer.get().getSystemGrade().getComment(), sheet);
                     }
 

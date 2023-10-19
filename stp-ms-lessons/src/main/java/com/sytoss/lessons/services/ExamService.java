@@ -280,6 +280,7 @@ public class ExamService extends AbstractService {
                 TaskReportModel task = new TaskReportModel();
                 task.setId(taskDTO.getId());
                 task.setQuestion(taskDTO.getQuestion());
+                task.setCode(taskDTO.getCode());
                 return task;
             }).toList();
 

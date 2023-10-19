@@ -10,4 +10,6 @@ public class TaskReportModel {
     private Long id;
 
     private String question;
+
+    private String code;
 }
