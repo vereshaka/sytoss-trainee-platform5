@@ -13,11 +13,13 @@ import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeToDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +77,15 @@ public class ExamAssigneeService extends AbstractService {
             deleteAllExamAssigneeToByExamAssignee(examAssignee.getId());
             examAssigneeConnector.delete(examAssignee);
         }
+    }
+
+    public List<ExamAssignee> findExamAssigneesByGroup(Long groupId) {
+        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupIdOrderByParent_RelevantFromDesc(groupId);
+        return examToGroupAssigneeDTOList.stream().map(examToGroupAssigneeDTO -> {
+            ExamAssignee examAssignee = new ExamAssignee();
+            examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
+            return examAssignee;
+        }).collect(Collectors.toList());
     }
 
     private void deleteAllExamAssigneeToByExamAssignee(Long examAssigneeId) {
