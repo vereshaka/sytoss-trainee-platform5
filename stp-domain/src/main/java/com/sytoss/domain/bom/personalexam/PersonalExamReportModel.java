@@ -22,7 +22,7 @@ public class PersonalExamReportModel {
 
     private String email;
 
-    private Float summary;
+    private Double summary;
 
     private PersonalExamStatus personalExamStatus;
 
