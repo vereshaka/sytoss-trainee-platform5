@@ -136,7 +136,7 @@ public class ExcelBuilder extends BaseExcelWriter {
                     writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
 
-                    if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "")) {
+                    if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "") && !Objects.equals(findAnswer.get().getSystemGrade().getComment(), "ok")) {
                         createComment(cell, contentRow, findAnswer.get().getSystemGrade().getComment(), sheet);
                     }
 
