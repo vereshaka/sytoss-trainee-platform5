@@ -217,7 +217,7 @@ public class ExcelBuilder extends BaseExcelWriter {
             || personalExam.getPersonalExamStatus() == PersonalExamStatus.REVIEWED
         ) {
             for (TaskReportModel task : tasksInExam) {
-                Optional<AnswerReportModel> findAnswer = personalExam.getAnswers().stream().filter(answer -> Objects.equals(answer.getTask().getQuestion(), task.getQuestion())).findFirst();
+                Optional<AnswerReportModel> findAnswer = personalExam.getAnswers().stream().filter(answer -> Objects.equals(answer.getTask().getId(), task.getId())).findFirst();
                 if (findAnswer.isPresent() && findAnswer.get().getAnswerStatus() == AnswerStatus.GRADED) {
                     writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
