@@ -293,4 +293,15 @@ public class ExamService extends AbstractService {
             throw new ExamAssigneeNotFoundException(examAssigneeId);
         }
     }
+
+    public List<Exam> getExamsByTopic(Long topicId) {
+        TopicDTO topic = new TopicDTO();
+        topic.setId(topicId);
+        List<ExamDTO> examDTOS = examConnector.getAllByTopicsContaining(topic);
+        return examDTOS.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
+    }
 }

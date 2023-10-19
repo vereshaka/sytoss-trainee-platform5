@@ -261,4 +261,35 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals(examAssigneeDTO.getRelevantFrom(), result.getRelevantFrom());
         assertEquals(examAssigneeDTO.getRelevantTo(), result.getRelevantTo());
     }
+
+    @Test
+    public void shouldReturnListOfExamsByTopicId() {
+        Teacher user = new Teacher();
+        user.setId(1L);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setId(1L);
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setGroupReferences(List.of(new GroupReferenceDTO()));
+        topicDTO.setDiscipline(disciplineDTO);
+
+        ExamDTO exam1 = createExam(1L, "Exam1", topicDTO);
+        ExamDTO exam2 = createExam(2L, "Exam2", topicDTO);
+
+        when(examConnector.getAllByTopicsContaining(any(TopicDTO.class))).thenReturn(List.of(exam1, exam2));
+
+        List<Exam> result = examService.getExamsByTopic(topicDTO.getId());
+        assertEquals(2, result.size());
+    }
+
+    private ExamDTO createExam(Long id, String name, TopicDTO topicDTO) {
+        ExamDTO exam = new ExamDTO();
+        exam.setId(id);
+        exam.setName(name);
+        exam.setTopics(List.of(topicDTO));
+        return exam;
+    }
 }

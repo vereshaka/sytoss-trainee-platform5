@@ -84,581 +84,581 @@ databaseChangeLog:
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "ТОВ Затишок"
-              - column:
-                  name: LName
-                  value: "Васильович"
-              - column:
-                  name: phone
-                  value: "+380502087543"
-              - column:
                   name: IdClient
                   valueNumeric: 1
+              - column:
+                  name: FName
+                  value: "Грищенко"
               - column:
                   name: MName
                   value: "Петро"
               - column:
+                  name: LName
+                  value: "Васильович"
+              - column:
+                  name: Company
+                  value: "ТОВ Затишок"
+              - column:
                   name: CityClient
                   value: "Харків"
               - column:
-                  name: FName
-                  value: "Грищенко"
+                  name: phone
+                  value: "+380502087543"
             tableName: Client
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "ТОВ Дом"
-              - column:
-                  name: LName
-                  value: "Петрович"
-              - column:
-                  name: phone
-                  value: "+380672837500"
-              - column:
                   name: IdClient
                   valueNumeric: 2
+              - column:
+                  name: FName
+                  value: "Кузич"
               - column:
                   name: MName
                   value: "Микола"
               - column:
+                  name: LName
+                  value: "Петрович"
+              - column:
+                  name: Company
+                  value: "ТОВ Дом"
+              - column:
                   name: CityClient
                   value: "Київ"
               - column:
-                  name: FName
-                  value: "Кузич"
+                  name: phone
+                  value: "+380672837500"
             tableName: Client
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "Харків"
-              - column:
-                  name: LName
-                  value: "Володимирович"
-              - column:
                   name: IdClient
                   valueNumeric: 3
+              - column:
+                  name: FName
+                  value: "Василенко"
               - column:
                   name: MName
                   value: "Михайло"
               - column:
+                  name: LName
+                  value: "Володимирович"
+              - column:
+                  name: Company
+                  value: "Харків"
+              - column:
                   name: CityClient
                   value: "+380666722565"
-              - column:
-                  name: FName
-                  value: "Василенко"
             tableName: Client
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "Львів"
-              - column:
-                  name: LName
-                  value: "Петрівна"
-              - column:
-                  name: phone
-                  value: null
-              - column:
                   name: IdClient
                   valueNumeric: 4
+              - column:
+                  name: FName
+                  value: "Азаренко"
               - column:
                   name: MName
                   value: "Тетяна"
               - column:
-                  name: CityClient
-                  value: "+380505723577"
-              - column:
-                  name: FName
-                  value: "Азаренко"
-            tableName: Client
-        - insert:
-            columns:
+                  name: LName
+                  value: "Петрівна"
               - column:
                   name: Company
                   value: "Львів"
               - column:
-                  name: LName
-                  value: "Миколаївна"
+                  name: CityClient
+                  value: "+380505723577"
               - column:
                   name: phone
                   value: null
+            tableName: Client
+        - insert:
+            columns:
               - column:
                   name: IdClient
                   valueNumeric: 5
+              - column:
+                  name: FName
+                  value: "Петренко"
               - column:
                   name: MName
                   value: "Олена"
               - column:
+                  name: LName
+                  value: "Миколаївна"
+              - column:
+                  name: Company
+                  value: "Львів"
+              - column:
                   name: CityClient
                   value: null
               - column:
-                  name: FName
-                  value: "Петренко"
+                  name: phone
+                  value: null
             tableName: Client
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "Ужгород"
-              - column:
-                  name: LName
-                  value: "Іванович"
-              - column:
-                  name: phone
-                  value: null
-              - column:
                   name: IdClient
                   valueNumeric: 6
+              - column:
+                  name: FName
+                  value: "Бобир"
               - column:
                   name: MName
                   value: "Олексій"
               - column:
+                  name: LName
+                  value: "Іванович"
+              - column:
+                  name: Company
+                  value: "Ужгород"
+              - column:
                   name: CityClient
                   value: "+380676757755"
               - column:
-                  name: FName
-                  value: "Бобир"
+                  name: phone
+                  value: null
             tableName: Client
         - insert:
             columns:
               - column:
-                  name: Company
-                  value: "Чернівці"
-              - column:
-                  name: LName
-                  value: "Петрович"
-              - column:
-                  name: phone
-                  value: null
-              - column:
                   name: IdClient
                   valueNumeric: 7
+              - column:
+                  name: FName
+                  value: "Хрущ"
               - column:
                   name: MName
                   value: "Єгор"
               - column:
+                  name: LName
+                  value: "Петрович"
+              - column:
+                  name: Company
+                  value: "Чернівці"
+              - column:
                   name: CityClient
                   value: null
               - column:
-                  name: FName
-                  value: "Хрущ"
+                  name: phone
+                  value: null
             tableName: Client
         - insert:
             columns:
               - column:
+                  name: IdProduct
+                  valueNumeric: 1
+              - column:
+                  name: NameProduct
+                  value: "Стіл"
+              - column:
                   name: Type
                   value: "меблі"
+              - column:
+                  name: Sort
+                  value: "вищий"
               - column:
                   name: Price
                   valueNumeric: 1800
               - column:
-                  name: CityProduct
-                  value: "Харків"
-              - column:
-                  name: NameProduct
-                  value: "Стіл"
-              - column:
-                  name: Sort
-                  value: "вищий"
-              - column:
-                  name: IdProduct
-                  valueNumeric: 1
-              - column:
                   name: Stock
                   valueNumeric: 5
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
+                  name: IdProduct
+                  valueNumeric: 2
+              - column:
+                  name: NameProduct
+                  value: "Стілець"
+              - column:
                   name: Type
                   value: "меблі"
+              - column:
+                  name: Sort
+                  value: "перший"
               - column:
                   name: Price
                   valueNumeric: 300
               - column:
-                  name: CityProduct
-                  value: "Харків"
-              - column:
-                  name: NameProduct
-                  value: "Стілець"
-              - column:
-                  name: Sort
-                  value: "перший"
-              - column:
-                  name: IdProduct
-                  valueNumeric: 2
-              - column:
                   name: Stock
                   valueNumeric: 10
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "меблі"
-              - column:
-                  name: Price
-                  valueNumeric: 800
-              - column:
-                  name: CityProduct
-                  value: "Київ"
+                  name: IdProduct
+                  valueNumeric: 3
               - column:
                   name: NameProduct
                   value: "Стіл"
               - column:
+                  name: Type
+                  value: "меблі"
+              - column:
                   name: Sort
                   value: "другий"
               - column:
-                  name: IdProduct
-                  valueNumeric: 3
+                  name: Price
+                  valueNumeric: 800
               - column:
                   name: Stock
                   valueNumeric: 2
+              - column:
+                  name: CityProduct
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
               - column:
+                  name: IdProduct
+                  valueNumeric: 4
+              - column:
+                  name: NameProduct
+                  value: "Диван"
+              - column:
                   name: Type
                   value: "меблі"
+              - column:
+                  name: Sort
+                  value: "другий"
               - column:
                   name: Price
                   valueNumeric: 1500
               - column:
-                  name: CityProduct
-                  value: "Київ"
-              - column:
-                  name: NameProduct
-                  value: "Диван"
-              - column:
-                  name: Sort
-                  value: "другий"
-              - column:
-                  name: IdProduct
-                  valueNumeric: 4
-              - column:
                   name: Stock
                   valueNumeric: 1
+              - column:
+                  name: CityProduct
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "інтер'єр"
-              - column:
-                  name: Price
-                  valueNumeric: 200
-              - column:
-                  name: CityProduct
-                  value: "Харків"
+                  name: IdProduct
+                  valueNumeric: 5
               - column:
                   name: NameProduct
                   value: "Підсвічник"
               - column:
+                  name: Type
+                  value: "інтер'єр"
+              - column:
                   name: Sort
                   value: "другий"
               - column:
-                  name: IdProduct
-                  valueNumeric: 5
+                  name: Price
+                  valueNumeric: 200
               - column:
                   name: Stock
                   valueNumeric: 20
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "меблі"
-              - column:
-                  name: Price
-                  valueNumeric: 2800
-              - column:
-                  name: CityProduct
-                  value: "Харків"
+                  name: IdProduct
+                  valueNumeric: 6
               - column:
                   name: NameProduct
                   value: "Диван"
               - column:
+                  name: Type
+                  value: "меблі"
+              - column:
                   name: Sort
                   value: "вищий"
               - column:
-                  name: IdProduct
-                  valueNumeric: 6
+                  name: Price
+                  valueNumeric: 2800
               - column:
                   name: Stock
                   valueNumeric: 1
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "інтер'єр"
-              - column:
-                  name: Price
-                  valueNumeric: 80
-              - column:
-                  name: CityProduct
-                  value: "Харків"
+                  name: IdProduct
+                  valueNumeric: 7
               - column:
                   name: NameProduct
                   value: "Рамка для фото"
               - column:
+                  name: Type
+                  value: "інтер'єр"
+              - column:
                   name: Sort
                   value: "вищий"
               - column:
-                  name: IdProduct
-                  valueNumeric: 7
+                  name: Price
+                  valueNumeric: 80
               - column:
                   name: Stock
                   valueNumeric: 0
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "меблі"
-              - column:
-                  name: Price
-                  valueNumeric: 15000
-              - column:
-                  name: CityProduct
-                  value: "Харків"
+                  name: IdProduct
+                  valueNumeric: 8
               - column:
                   name: NameProduct
                   value: "Шафа"
               - column:
+                  name: Type
+                  value: "меблі"
+              - column:
                   name: Sort
                   value: "вищий"
               - column:
-                  name: IdProduct
-                  valueNumeric: 8
+                  name: Price
+                  valueNumeric: 15000
               - column:
                   name: Stock
                   valueNumeric: 3
+              - column:
+                  name: CityProduct
+                  value: "Харків"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: Type
-                  value: "меблі"
-              - column:
-                  name: Price
-                  valueNumeric: 250
-              - column:
-                  name: CityProduct
-                  value: "Київ"
+                  name: IdProduct
+                  valueNumeric: 9
               - column:
                   name: NameProduct
                   value: "Стілець"
               - column:
+                  name: Type
+                  value: "меблі"
+              - column:
                   name: Sort
                   value: "перший"
               - column:
-                  name: IdProduct
-                  valueNumeric: 9
+                  name: Price
+                  valueNumeric: 250
               - column:
                   name: Stock
                   valueNumeric: 10
+              - column:
+                  name: CityProduct
+                  value: "Київ"
             tableName: Product
         - insert:
             columns:
               - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-11' as DateTime)
-              - column:
                   name: IdSale
+                  valueNumeric: 1
+              - column:
+                  name: IdProduct
+                  valueNumeric: 1
+              - column:
+                  name: IdClient
                   valueNumeric: 1
               - column:
                   name: Quantity
                   valueNumeric: 10
               - column:
-                  name: IdClient
-                  valueNumeric: 1
-              - column:
-                  name: IdProduct
-                  valueNumeric: 1
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-11' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-13' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 2
               - column:
-                  name: Quantity
+                  name: IdProduct
                   valueNumeric: 2
               - column:
                   name: IdClient
                   valueNumeric: 1
               - column:
-                  name: IdProduct
+                  name: Quantity
                   valueNumeric: 2
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-13' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-23' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 3
               - column:
-                  name: Quantity
+                  name: IdProduct
                   valueNumeric: 1
               - column:
                   name: IdClient
                   valueNumeric: 2
               - column:
-                  name: IdProduct
+                  name: Quantity
                   valueNumeric: 1
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-23' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-29' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 4
               - column:
-                  name: Quantity
-                  valueNumeric: 1
+                  name: IdProduct
+                  valueNumeric: 2
               - column:
                   name: IdClient
                   valueNumeric: 2
               - column:
-                  name: IdProduct
-                  valueNumeric: 2
+                  name: Quantity
+                  valueNumeric: 1
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-29' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-08-30' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 5
               - column:
-                  name: Quantity
-                  valueNumeric: 2
+                  name: IdProduct
+                  valueNumeric: 1
               - column:
                   name: IdClient
                   valueNumeric: 1
               - column:
-                  name: IdProduct
-                  valueNumeric: 1
+                  name: Quantity
+                  valueNumeric: 2
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-08-30' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2022-09-15' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 6
               - column:
-                  name: Quantity
-                  valueNumeric: 5
+                  name: IdProduct
+                  valueNumeric: 3
               - column:
                   name: IdClient
                   valueNumeric: 4
               - column:
-                  name: IdProduct
-                  valueNumeric: 3
-            tableName: Sale
-        - insert:
-            columns:
+                  name: Quantity
+                  valueNumeric: 5
               - column:
                   name: DateSale
                   valueComputed: CAST(N'2022-09-15' as DateTime)
+            tableName: Sale
+        - insert:
+            columns:
               - column:
                   name: IdSale
                   valueNumeric: 7
               - column:
-                  name: Quantity
-                  valueNumeric: 1
+                  name: IdProduct
+                  valueNumeric: 4
               - column:
                   name: IdClient
                   valueNumeric: 3
               - column:
-                  name: IdProduct
-                  valueNumeric: 4
+                  name: Quantity
+                  valueNumeric: 1
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2022-09-15' as DateTime)
             tableName: Sale
         - insert:
             columns:
               - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2023-09-16' as DateTime)
-              - column:
                   name: IdSale
                   valueNumeric: 8
+              - column:
+                  name: IdProduct
+                  valueNumeric: 5
+              - column:
+                  name: IdClient
+                  valueNumeric: 5
               - column:
                   name: Quantity
                   valueNumeric: 2
               - column:
-                  name: IdClient
-                  valueNumeric: 5
-              - column:
-                  name: IdProduct
-                  valueNumeric: 5
+                  name: DateSale
+                  valueComputed: CAST(N'2023-09-16' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2023-09-16' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 9
               - column:
-                  name: Quantity
-                  valueNumeric: 3
+                  name: IdProduct
+                  valueNumeric: 6
               - column:
                   name: IdClient
                   valueNumeric: 5
               - column:
-                  name: IdProduct
-                  valueNumeric: 6
+                  name: Quantity
+                  valueNumeric: 3
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2023-09-16' as DateTime)
             tableName: Sale
         - insert:
             columns:
-              - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2023-10-17' as DateTime)
               - column:
                   name: IdSale
                   valueNumeric: 10
               - column:
-                  name: Quantity
-                  valueNumeric: 4
+                  name: IdProduct
+                  valueNumeric: 8
               - column:
                   name: IdClient
                   valueNumeric: 6
               - column:
-                  name: IdProduct
-                  valueNumeric: 8
+                  name: Quantity
+                  valueNumeric: 4
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2023-10-17' as DateTime)
             tableName: Sale
         - insert:
             columns:
               - column:
-                  name: DateSale
-                  valueComputed: CAST(N'2023-10-18' as DateTime)
-              - column:
                   name: IdSale
                   valueNumeric: 11
               - column:
-                  name: Quantity
+                  name: IdProduct
                   valueNumeric: 5
               - column:
                   name: IdClient
                   valueNumeric: 5
               - column:
-                  name: IdProduct
+                  name: Quantity
                   valueNumeric: 5
+              - column:
+                  name: DateSale
+                  valueComputed: CAST(N'2023-10-18' as DateTime)
             tableName: Sale
   - changeSet:
       id: init-foreign-keys
