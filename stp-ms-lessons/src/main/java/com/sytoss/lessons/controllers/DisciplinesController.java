@@ -56,4 +56,13 @@ public class DisciplinesController {
         return disciplineService.findTasksByDisciplineId(id);
     }
 
+    @Operation(description = "Method that retrieve list of disciplines by group id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/byGroup/{groupId}")
+    public List<Discipline> findDisciplinesByGroupId(@PathVariable Long groupId) {
+        return disciplineService.findDisciplinesByGroupId(groupId);
+    }
+
 }

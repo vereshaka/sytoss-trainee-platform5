@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bom.TaskIds;
@@ -52,6 +53,17 @@ public class TopicControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> result = doGet("/api/topic/4/icon", httpEntity, byte[].class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnTopicExams() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        when(examService.getExamsByTopic(anyLong())).thenReturn(List.of(new Exam()));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Exam>> result = doGet("/api/topic/1/exams", httpEntity, new ParameterizedTypeReference<>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }

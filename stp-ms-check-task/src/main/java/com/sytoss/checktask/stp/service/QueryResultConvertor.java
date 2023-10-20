@@ -18,7 +18,21 @@ public class QueryResultConvertor {
         int columns = source.getMetaData().getColumnCount();
         List<String> header = new ArrayList<>();
         for (int i = 1; i <= columns; i++) {
-            header.add(metaData.getColumnName(i));
+            String columnName = metaData.getColumnName(i);
+
+            if (header.contains(columnName) || columnName.isEmpty()) {
+                if (columnName.isEmpty()) {
+                    columnName = "COLUMN";
+                }
+                for (int j = 1; j <= columns; j++) {
+                    if (!header.contains(columnName + "_" + j)) {
+                        columnName = columnName + "_" + j;
+                        break;
+                    }
+                }
+            }
+            header.add(columnName);
+
         }
 
         destination.setHeader(header);
@@ -27,8 +41,8 @@ public class QueryResultConvertor {
         while (source.next()) {
             HashMap<String, Object> row = new HashMap<>();
             for(int i = 1; i<=columns; i++){
-                String columnName = metaData.getColumnName(i);
-                row.put(columnName,source.getObject(columnName));
+                String columnName = header.get(i-1);
+                row.put(columnName,source.getObject(i));
             }
             destination.addValues(row);
         }

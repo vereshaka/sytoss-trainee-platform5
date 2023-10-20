@@ -67,7 +67,7 @@ public class PersonalExam {
     private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private float summaryGrade;
+    private double summaryGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;

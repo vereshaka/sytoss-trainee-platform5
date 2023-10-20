@@ -12,14 +12,14 @@ public class PersonalExamTest {
     @Test
     public void shouldSetSummaryGrade() {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setAnswers(List.of(createNewAnswerWithGrade(1f), createNewAnswerWithGrade(2f), createNewAnswerWithGrade(0.7f)));
+        personalExam.setAnswers(List.of(createNewAnswerWithGrade(1), createNewAnswerWithGrade(2), createNewAnswerWithGrade(0.7)));
 
         personalExam.summary();
 
-        assertEquals(personalExam.getSummaryGrade(), 3.7f);
+        assertEquals(personalExam.getSummaryGrade(), 3.7);
     }
 
-    private Answer createNewAnswerWithGrade(float value) {
+    private Answer createNewAnswerWithGrade(double value) {
         Grade grade = new Grade();
         grade.setValue(value);
 

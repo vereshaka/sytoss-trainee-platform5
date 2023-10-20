@@ -30,7 +30,7 @@ public class DataTableCommon {
         for (Map<String, String> tableMap : tableMaps) {
             Map<String, Object> resultMap = new HashMap<>();
             for (String key : tableMap.keySet().stream().toList()) {
-                resultMap.put(key, StringUtil.isNumeric(tableMap.get(key)) ? Integer.parseInt(tableMap.get(key)) : tableMap.get(key));
+                resultMap.put(key, StringUtil.isNumeric(tableMap.get(key)) && tableMap.get(key).length() < 10 ? Integer.parseInt(tableMap.get(key)) : tableMap.get(key));
             }
             resultMaps.add(resultMap);
         }

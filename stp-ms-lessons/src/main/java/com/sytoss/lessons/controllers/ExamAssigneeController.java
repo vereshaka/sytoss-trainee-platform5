@@ -3,6 +3,8 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.lessons.services.ExamAssigneeService;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +23,8 @@ import java.util.List;
 public class ExamAssigneeController {
 
     private final ExamService examService;
+
+    private final ExamAssigneeService examAssigneeService;
 
     @Operation(description = "Method that reschedule exam by id")
     @ApiResponses(value = {
@@ -64,5 +68,23 @@ public class ExamAssigneeController {
             @RequestBody Student student
     ) {
         examService.createGroupExamsOnStudent(groupId, student);
+    }
+
+    @Operation(description = "Method that return exam info for excel report")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam assignee not found")
+    })
+    @GetMapping(value = "/{examAssigneeId}/report")
+    public ExamReportModel getReportInfo(
+            @Parameter(description = "Id of exam assignee to get info by")
+            @PathVariable Long examAssigneeId
+    ) {
+        return examService.getReportInfo(examAssigneeId);
+    }
+
+    @GetMapping("/findByGroup/{groupId}")
+    public List<ExamAssignee> getListOfExamAssigneeByGroup(@PathVariable Long groupId) {
+        return examAssigneeService.findExamAssigneesByGroup(groupId);
     }
 }
