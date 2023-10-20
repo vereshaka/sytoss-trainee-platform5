@@ -267,6 +267,8 @@ public class ExcelBuilder extends BaseExcelWriter {
             cell.setCellValue((Float) value);
         } else if (value instanceof Date) {
             cell.setCellValue((Date) value);
+        } else if (Objects.isNull(value)) {
+            cell.setCellValue("Empty");
         } else {
             cell.setCellValue(value.toString());
         }
