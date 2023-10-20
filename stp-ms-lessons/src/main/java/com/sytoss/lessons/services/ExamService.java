@@ -23,10 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -189,8 +186,6 @@ public class ExamService extends AbstractService {
         List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
         examAssigneeService.deleteAllByExamId(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-
-
         examConnector.deleteById(exam.getId());
         return exam;
     }
@@ -266,6 +261,29 @@ public class ExamService extends AbstractService {
                 }
             }
         });
+    }
+
+    public List<ExamAssignee> findExamAssignees() {
+        AbstractUser abstractUser = getCurrentUser();
+
+        if (abstractUser instanceof Teacher) {
+            List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
+            List<ExamAssignee> examAssignees = new ArrayList<>();
+            for (Long examId : examDTOList.stream().map(ExamDTO::getId).toList()) {
+                List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
+                examAssignees.addAll(examAssigneeDTOS.stream().map(examAssigneeDTO -> {
+                    ExamAssignee examAssignee = new ExamAssignee();
+                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                    return examAssignee;
+                }).toList());
+            }
+            Comparator<ExamAssignee> dateComparator = (obj1, obj2) -> obj2.getRelevantTo().compareTo(obj1.getRelevantTo());
+            examAssignees.sort(dateComparator);
+            return examAssignees;
+        } else {
+            log.warn("User type was not valid when try to get exams by teacher id!");
+            throw new UserNotIdentifiedException("User type not teacher!");
+        }
     }
 
     public ExamReportModel getReportInfo(Long examAssigneeId) {
