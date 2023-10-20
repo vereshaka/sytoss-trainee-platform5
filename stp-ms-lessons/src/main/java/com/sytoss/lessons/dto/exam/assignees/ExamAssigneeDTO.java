@@ -35,5 +35,5 @@ public class ExamAssigneeDTO {
 
     @ManyToOne
     @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID")
-    private ExamDTO exam;
+    private ExamDTO exam = new ExamDTO();
 }
