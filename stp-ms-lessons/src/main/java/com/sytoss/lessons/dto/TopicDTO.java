@@ -3,20 +3,12 @@ package com.sytoss.lessons.dto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.Date;
 
 
 @Getter
 @Setter
 @Entity(name = "TOPIC")
-@EntityListeners(AuditingEntityListener.class)
-public class TopicDTO {
+public class TopicDTO extends Auditable{
 
     @Id
     @Column(name = "ID")
@@ -42,17 +34,5 @@ public class TopicDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
-
-    @CreatedBy
-    private String createdBy;
-
-    @CreatedDate
-    private Date createdDate;
-
-    @LastModifiedBy
-    private String lastModifiedBy;
-
-    @LastModifiedDate
-    private Date lastModifiedDate;
 
 }

@@ -7,10 +7,29 @@
     <changeSet author="IgorI" id="STP-751">
         <addColumn tableName="DISCIPLINE">
             <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
-            <column name="CREATED_DATE" type="DATE" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
             <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
-            <column name="LAST_MODIFIED_DATE" type="DATE" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
         </addColumn>
+
+        <addColumn tableName="TOPIC">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="DISCIPLINE" columnName="CREATED_BY" />
+            <dropColumn tableName="DISCIPLINE" columnName="CREATED_DATE" />
+            <dropColumn tableName="DISCIPLINE" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="DISCIPLINE" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="TOPIC" columnName="CREATED_BY" />
+            <dropColumn tableName="TOPIC" columnName="CREATED_DATE" />
+            <dropColumn tableName="TOPIC" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="TOPIC" columnName="LAST_MODIFIED_DATE" />
+        </rollback>
     </changeSet>
 
 </databaseChangeLog>
