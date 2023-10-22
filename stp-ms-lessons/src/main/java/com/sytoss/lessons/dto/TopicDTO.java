@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "TOPIC")
-public class TopicDTO extends Auditable{
+public class TopicDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -34,5 +34,4 @@ public class TopicDTO extends Auditable{
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
-
 }

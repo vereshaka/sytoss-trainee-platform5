@@ -41,5 +41,4 @@ public class DisciplineDTO extends Auditable {
             joinColumns = @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "GROUP_ID", referencedColumnName = "GROUP_ID"))
     private List<GroupReferenceDTO> groupReferences;
-
 }

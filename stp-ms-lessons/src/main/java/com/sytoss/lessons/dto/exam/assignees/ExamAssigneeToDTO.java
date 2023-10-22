@@ -1,5 +1,6 @@
 package com.sytoss.lessons.dto.exam.assignees;
 
+import com.sytoss.lessons.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Entity(name = "EXAM_ASSIGNEE_TO")
 @DiscriminatorColumn(name = "ASSIGNEE_TYPE")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class ExamAssigneeToDTO {
+public abstract class ExamAssigneeToDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

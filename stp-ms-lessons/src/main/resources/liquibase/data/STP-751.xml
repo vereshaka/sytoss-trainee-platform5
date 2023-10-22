@@ -19,7 +19,81 @@
             <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
         </addColumn>
 
+        <addColumn tableName="EXAM_ASSIGNEE">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="EXAM_ASSIGNEE_TO">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="EXAM">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="group2discipline">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="TASK_CONDITION">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="TASK_DOMAIN">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="TASK">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
         <rollback>
+            <dropColumn tableName="TASK" columnName="CREATED_BY" />
+            <dropColumn tableName="TASK" columnName="CREATED_DATE" />
+            <dropColumn tableName="TASK" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="TASK" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="TASK_DOMAIN" columnName="CREATED_BY" />
+            <dropColumn tableName="TASK_DOMAIN" columnName="CREATED_DATE" />
+            <dropColumn tableName="TASK_DOMAIN" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="TASK_DOMAIN" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="TASK_CONDITION" columnName="CREATED_BY" />
+            <dropColumn tableName="TASK_CONDITION" columnName="CREATED_DATE" />
+            <dropColumn tableName="TASK_CONDITION" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="TASK_CONDITION" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="group2discipline" columnName="CREATED_BY" />
+            <dropColumn tableName="group2discipline" columnName="CREATED_DATE" />
+            <dropColumn tableName="group2discipline" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="group2discipline" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="EXAM" columnName="CREATED_BY" />
+            <dropColumn tableName="EXAM" columnName="CREATED_DATE" />
+            <dropColumn tableName="EXAM" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="EXAM" columnName="LAST_MODIFIED_DATE" />
+
             <dropColumn tableName="DISCIPLINE" columnName="CREATED_BY" />
             <dropColumn tableName="DISCIPLINE" columnName="CREATED_DATE" />
             <dropColumn tableName="DISCIPLINE" columnName="LAST_MODIFIED_BY" />
@@ -29,6 +103,16 @@
             <dropColumn tableName="TOPIC" columnName="CREATED_DATE" />
             <dropColumn tableName="TOPIC" columnName="LAST_MODIFIED_BY" />
             <dropColumn tableName="TOPIC" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="EXAM_ASSIGNEE" columnName="CREATED_BY" />
+            <dropColumn tableName="EXAM_ASSIGNEE" columnName="CREATED_DATE" />
+            <dropColumn tableName="EXAM_ASSIGNEE" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="EXAM_ASSIGNEE" columnName="LAST_MODIFIED_DATE" />
+
+            <dropColumn tableName="EXAM_ASSIGNEE_TO" columnName="CREATED_BY" />
+            <dropColumn tableName="EXAM_ASSIGNEE_TO" columnName="CREATED_DATE" />
+            <dropColumn tableName="EXAM_ASSIGNEE_TO" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="EXAM_ASSIGNEE_TO" columnName="LAST_MODIFIED_DATE" />
         </rollback>
     </changeSet>
 
