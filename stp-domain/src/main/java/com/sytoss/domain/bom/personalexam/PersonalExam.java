@@ -148,7 +148,11 @@ public class PersonalExam {
 
     @JsonIgnore
     private boolean isTimeOut() {
-        return new Date().compareTo(relevantTo) >= 0;
+        if (relevantTo != null) {
+            return new Date().compareTo(relevantTo) >= 0;
+        } else {
+            return false;
+        }
     }
 
     public static class Public {

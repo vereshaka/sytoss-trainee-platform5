@@ -1,5 +1,7 @@
 package com.sytoss.domain.bom.lessons;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.*;
 
@@ -12,8 +14,10 @@ import java.sql.Timestamp;
 @Builder
 public class Discipline {
 
+    @JsonView({Group.TeacherGroups.class})
     private Long id;
 
+    @JsonView({Group.TeacherGroups.class})
     private String name;
 
     private Teacher teacher;

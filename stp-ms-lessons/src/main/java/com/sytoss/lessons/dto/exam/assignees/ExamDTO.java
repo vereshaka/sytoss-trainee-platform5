@@ -1,6 +1,7 @@
 package com.sytoss.lessons.dto.exam.assignees;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sytoss.lessons.dto.Auditable;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
@@ -17,7 +18,7 @@ import java.util.List;
 @Setter
 @Entity(name = "EXAM")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-public class ExamDTO {
+public class ExamDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

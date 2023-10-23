@@ -6,21 +6,24 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Given;
 
+import java.util.Date;
 import java.util.List;
 
 public class AnswerGiven extends TestProducerIntegrationTest {
 
-    @Given("^personal exam with id (.*) and student (.*) and (.*) max grade and sum of coef (.*) exist$")
-    public void personalExamWithIdExistsAndAnswersExist(String examId, String studentId, String max_grade, String sumOfCoef, List<Answer> answers) {
+    @Given("^this student has personal exam with id (.*) with (.*) max grade and sum of coef (.*) exist$")
+    public void personalExamWithIdExistsAndAnswersExist(String examId, String max_grade, String sumOfCoef, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setId(examId);
         Student student = new Student();
-        student.setUid(studentId);
+        student.setId(getTestExecutionContext().getDetails().getStudentId());
         personalExam.setStudent(student);
         personalExam.setAnswers(answers);
         personalExam.setMaxGrade(Double.parseDouble(max_grade));
         personalExam.setSumOfCoef(Double.parseDouble(sumOfCoef));
-        getPersonalExamConnector().save(personalExam);
-        getTestExecutionContext().getDetails().setStudentId(personalExam.getStudent().getUid());
+        personalExam.setRelevantFrom(new Date());
+        personalExam.setRelevantTo(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        personalExam = getPersonalExamConnector().save(personalExam);
+        getTestExecutionContext().registerId(examId, personalExam.getId());
+        //getTestExecutionContext().getDetails().setStudentUid(personalExam.getStudent().getUid());
     }
 }

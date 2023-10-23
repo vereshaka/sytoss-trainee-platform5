@@ -33,7 +33,7 @@ public class ExamGiven extends LessonsIntegrationTest {
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(el -> el.trim()).toList();
             for (String taskId : taskIds) {
-                Long id = getTestExecutionContext().replaceId(taskId);
+                Long id = (Long)getTestExecutionContext().replaceId(taskId);
                 dto.getTasks().add(getTaskConnector().getReferenceById(id));
             }
             dto = getExamConnector().save(dto);
