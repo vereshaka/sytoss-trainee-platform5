@@ -160,11 +160,6 @@ public class ExamService extends AbstractService {
         }).toList();
     }
 
-    public void deleteById(Long examId) {
-        Exam exam = getById(examId);
-        examConnector.deleteById(exam.getId());
-    }
-
     public void deleteAssignTopicToExam(TopicDTO topicDTO) {
         List<ExamDTO> examDTOList = examConnector.findByTopicsId(topicDTO.getId());
         examDTOList.forEach(examDTO -> {
