@@ -26,6 +26,7 @@ public class ExamAssigneeController {
 
     private final ExamAssigneeService examAssigneeService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that reschedule exam by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -39,6 +40,7 @@ public class ExamAssigneeController {
         return examService.reschedule(scheduleModel, examAssigneeId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that returns all exam assignees")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -48,6 +50,7 @@ public class ExamAssigneeController {
         return examService.returnExamAssignees(examId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that returns exam assignee by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -70,6 +73,7 @@ public class ExamAssigneeController {
         examService.createGroupExamsOnStudent(groupId, student);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that return exam info for excel report")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -83,6 +87,7 @@ public class ExamAssigneeController {
         return examService.getReportInfo(examAssigneeId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @GetMapping("/findByGroup/{groupId}")
     public List<ExamAssignee> getListOfExamAssigneeByGroup(@PathVariable Long groupId) {
         return examAssigneeService.findExamAssigneesByGroup(groupId);

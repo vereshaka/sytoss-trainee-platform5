@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/topic")

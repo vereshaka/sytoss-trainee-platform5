@@ -169,7 +169,6 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         GroupsIds groupsIds = new GroupsIds();
         groupsIds.setGroupsIds(List.of(1L, 2L));
         HttpEntity<?> httpEntity = new HttpEntity<>(groupsIds, httpHeaders);
