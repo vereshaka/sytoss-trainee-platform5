@@ -203,7 +203,7 @@ public class DisciplineService extends AbstractService {
 
         topicConnector.deleteAll(topicDTOList);
 
-        examList.forEach(exam -> examService.deleteById(exam.getId()));
+        examList.forEach(exam -> examService.delete(exam.getId()));
 
         disciplineConnector.deleteById(disciplineId);
         return discipline;
