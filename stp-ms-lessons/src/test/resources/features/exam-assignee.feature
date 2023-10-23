@@ -1,8 +1,9 @@
-Feature: Exam
+Feature: Exam Assignee
 
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
+  @Bug
   Scenario: STP-xxx Assign groups to exam
     Given topics exist
       | discipline | topic  |

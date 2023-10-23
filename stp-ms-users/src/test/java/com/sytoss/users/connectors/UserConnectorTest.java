@@ -7,6 +7,9 @@ import com.sytoss.users.dto.TeacherDTO;
 import com.sytoss.users.dto.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 
@@ -23,6 +26,9 @@ public class UserConnectorTest extends StpApplicationTest {
 
     @Test
     public void shouldSaveStudentDTO() {
+
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+
         StudentDTO input = new StudentDTO();
         input.setEmail("student@domain.com");
         input.setFirstName("FirstName");
@@ -38,6 +44,9 @@ public class UserConnectorTest extends StpApplicationTest {
 
     @Test
     public void shouldSaveTeacherDTO() {
+
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+
         TeacherDTO input = new TeacherDTO();
         input.setEmail("teacher@domain.com");
         input.setFirstName("FirstName");
@@ -49,6 +58,9 @@ public class UserConnectorTest extends StpApplicationTest {
 
     @Test
     public void shouldReturnTeacherDTOById() {
+
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+
         TeacherDTO input = new TeacherDTO();
         input.setEmail("teacher@domain.com");
         input.setFirstName("FirstName");
@@ -64,6 +76,9 @@ public class UserConnectorTest extends StpApplicationTest {
 
     @Test
     public void shouldReturnList() {
+
+        SecurityContextHolder.getContext().setAuthentication(getAuthentication());
+
         TeacherDTO tInput = new TeacherDTO();
         tInput.setEmail("teacher@domain.com");
         tInput.setFirstName("FirstName");
@@ -86,5 +101,12 @@ public class UserConnectorTest extends StpApplicationTest {
         boolean containsStudent = result.stream().anyMatch(user -> user instanceof StudentDTO);
         assertTrue(containsTeacher);
         assertTrue(containsStudent);
+    }
+
+    private TestingAuthenticationToken getAuthentication(){
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("email", "test").build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        return authentication;
     }
 }

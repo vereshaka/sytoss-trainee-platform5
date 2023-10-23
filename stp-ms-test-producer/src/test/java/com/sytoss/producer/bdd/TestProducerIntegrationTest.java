@@ -6,6 +6,7 @@ import com.sytoss.producer.common.connectors.PersonalExamConnectorTest;
 import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
+import com.sytoss.producer.connectors.UserConnector;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class TestProducerIntegrationTest extends StpIntegrationTest<TestProducer
     @MockBean
     @Autowired
     private CheckTaskConnector checkTaskConnector;
+
+    @MockBean
+    @Autowired
+    private UserConnector userConnector;
 
     @Autowired
     private PersonalExamConnectorTest personalExamConnector;

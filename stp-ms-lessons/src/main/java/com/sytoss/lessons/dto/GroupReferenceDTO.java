@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity(name = "group2discipline")
 @IdClass(GroupReferencePK.class)
-public class GroupReferenceDTO {
+public class GroupReferenceDTO extends Auditable {
 
     @Id
     @Column(name = "GROUP_ID")

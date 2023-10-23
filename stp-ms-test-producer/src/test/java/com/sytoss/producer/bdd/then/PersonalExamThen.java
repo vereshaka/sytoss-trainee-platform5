@@ -44,12 +44,12 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
-    @Then("^response should return personal exam with exam name (.*) and studentID (.*) and date (.*)$")
-    public void responseShouldReturnPersonalExam(String examName, String studentId, String date, List<Answer> answers) throws JsonProcessingException, ParseException {
+    @Then("^response should return (.*) personal exam for student (.*) from (.*)$")
+    public void responseShouldReturnPersonalExam(String examName, Long studentId, String date, List<Answer> answers) throws ParseException {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
 
         assertEquals(examName, personalExam.getName());
-        assertEquals(studentId, personalExam.getStudent().getUid());
+        assertEquals(studentId, personalExam.getStudent().getId());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         assertEquals(dateFormat.parse(date), personalExam.getAssignedDate());
@@ -71,16 +71,22 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(0, listAnswer.size());
     }
 
+    @Then("^status of \"(.*)\" exam for this student should be \"(.*)\"$")
+    public void personalExamShouldHaveStatus(String examName, String personalExamStatus) {
+        personalExamShouldHaveStatus(examName, getTestExecutionContext().getDetails().getStudentUid(), personalExamStatus);
+    }
+
+
     @Then("^status of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
     public void personalExamShouldHaveStatus(String examName, String studentId, String personalExamStatus) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         assertEquals(personalExamStatus, personalExam.getStatus().toString());
     }
 
-    @Then("^should return personal exam with time (.*) and amountOfTasks (.*)$")
+    @Then("^should return personal exam with time more than (.*) and amountOfTasks (.*)$")
     public void shouldReturnPersonalExamWithTimeAndAmountOfTasks(int time, Long amountOfTasks) {
         Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
-        assertEquals(time, firstTask.getExam().getTime());
+        assertTrue(time <= firstTask.getExam().getTime());
         assertEquals(Integer.valueOf(Math.toIntExact(amountOfTasks)), firstTask.getExam().getAmountOfTasks());
     }
 

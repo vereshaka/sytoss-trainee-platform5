@@ -54,6 +54,11 @@ public class ExamServiceTest extends StpUnitTest {
     @Mock
     private ExamAssigneeToConnector examAssigneeToConnector;
 
+    @Mock
+    private TopicConnector topicConnector;
+
+    @Mock
+    private TaskConnector taskConnector;
 
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
@@ -71,6 +76,25 @@ public class ExamServiceTest extends StpUnitTest {
             return result;
         }).when(examConnector).save(any());
 
+        Mockito.doAnswer((org.mockito.stubbing.Answer<TopicDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            Long id = (Long) args[0];
+            TopicDTO result = new TopicDTO();
+            result.setId(id);
+            result.setDiscipline(new DisciplineDTO());
+            return result;
+        }).when(topicConnector).getReferenceById(anyLong());
+
+        Mockito.doAnswer((org.mockito.stubbing.Answer<TaskDTO>) invocation -> {
+            final Object[] args = invocation.getArguments();
+            Long id = (Long) args[0];
+            TaskDTO result = new TaskDTO();
+            result.setId(id);
+            result.setTaskDomain(new TaskDomainDTO());
+            result.getTaskDomain().setDiscipline(new DisciplineDTO());
+            return result;
+        }).when(taskConnector).getReferenceById(anyLong());
+
         Teacher teacher = createTeacher("John", "Johns");
 
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", teacher).build();
@@ -81,8 +105,13 @@ public class ExamServiceTest extends StpUnitTest {
         Exam exam = new Exam();
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
-        exam.setTopics(List.of(new Topic(), new Topic()));
+        Topic t1 = new Topic();
+        t1.setId(1L);
+        Topic t2 = new Topic();
+        t2.setId(2L);
+        exam.setTopics(List.of(t1, t2));
         Task task = new Task();
+        task.setId(1L);
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));
 

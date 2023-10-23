@@ -20,7 +20,9 @@ public class TestProducerDetails {
 
     private ResponseEntity<PersonalExam> personalExamResponse;
 
-    private String studentId;
+    private Long studentId;
+
+    private String studentUid;
 
     @Getter
     @Setter
