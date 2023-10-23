@@ -17,7 +17,6 @@ public class CommonThen extends TestProducerIntegrationTest {
     public void raiseError(Integer status, String error) {
         assertNotNull(getTestExecutionContext().getDetails().getResponse());
         assertEquals(status, getTestExecutionContext().getDetails().getResponse().getStatusCode().value());
-        //assertEquals(error, getTestExecutionContext()getTestExecutionContext().getDetails()().getResponse().getBody());
-        // TODO: 05.07.2023 LarinI: Find a way to check an error message
+        assertEquals(error, getTestExecutionContext().getDetails().getResponse().getBody());
     }
 }

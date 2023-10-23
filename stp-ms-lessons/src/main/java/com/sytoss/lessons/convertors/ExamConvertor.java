@@ -30,25 +30,6 @@ public class ExamConvertor {
         destination.setId(source.getId());
         destination.setName(source.getName());
 
-        List<TopicDTO> topicDTOList = new ArrayList<>();
-
-        source.getTopics().forEach(topic -> {
-            TopicDTO topicDTO = new TopicDTO();
-            topicConvertor.toDTO(topic, topicDTO);
-            topicDTOList.add(topicDTO);
-        });
-
-        destination.setTopics(topicDTOList);
-
-        List<TaskDTO> taskDTOList = new ArrayList<>();
-
-        source.getTasks().forEach(task -> {
-            TaskDTO taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task, taskDTO);
-            taskDTOList.add(taskDTO);
-        });
-
-        destination.setTasks(taskDTOList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
         destination.setTeacherId(source.getTeacher().getId());
         destination.setMaxGrade(source.getMaxGrade());
@@ -70,25 +51,28 @@ public class ExamConvertor {
             destination.getDiscipline().setId(source.getDiscipline().getId());
         }
 
-        List<Topic> topicList = new ArrayList<>();
-
-        source.getTopics().forEach(topicDTO -> {
-            Topic topic = new Topic();
-            topicConvertor.fromDTO(topicDTO, topic);
-            topicList.add(topic);
-        });
-        List<Task> tasksList = new ArrayList<>();
-
-        if (!CollectionUtils.isEmpty(source.getTasks())) {
-            source.getTasks().forEach(taskDTO -> {
-                Task task = new Task();
-                taskConvertor.fromDTO(taskDTO, task);
-                tasksList.add(task);
+        if (source.getTopics() != null) {
+            List<Topic> topicList = new ArrayList<>();
+            source.getTopics().forEach(topicDTO -> {
+                Topic topic = new Topic();
+                topicConvertor.fromDTO(topicDTO, topic);
+                topicList.add(topic);
             });
+            destination.setTopics(topicList);
         }
 
-        destination.setTopics(topicList);
-        destination.setTasks(tasksList);
+        if (source.getTasks() != null) {
+            List<Task> tasksList = new ArrayList<>();
+
+            if (!CollectionUtils.isEmpty(source.getTasks())) {
+                source.getTasks().forEach(taskDTO -> {
+                    Task task = new Task();
+                    taskConvertor.fromDTO(taskDTO, task);
+                    tasksList.add(task);
+                });
+            }
+            destination.setTasks(tasksList);
+        }
         destination.setNumberOfTasks(source.getNumberOfTasks());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());

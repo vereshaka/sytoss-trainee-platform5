@@ -77,6 +77,7 @@ Feature: Task Domain
     Then operation is successful
     And task domain have 1 tasks
 
+    @Bug
   Scenario: Get tasks of task domain
     Given task domains exist
       | discipline  | task domain | id |

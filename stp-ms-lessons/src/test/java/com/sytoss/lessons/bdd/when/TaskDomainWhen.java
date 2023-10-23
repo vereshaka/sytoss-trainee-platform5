@@ -151,7 +151,7 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
 
     @When("^system retrieve information about (.*) task domain tasks$")
     public void systemRetrieveInformationAboutTaskDomainTasks(String taskDomainStringId) {
-        Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainStringId);
+        Long taskDomainId = (Long) getTestExecutionContext().getIdMapping().get(taskDomainStringId);
         String url = "/api/task-domain/" + taskDomainId + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);

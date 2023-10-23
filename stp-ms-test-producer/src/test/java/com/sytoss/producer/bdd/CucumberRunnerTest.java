@@ -1,6 +1,5 @@
-package com.sytoss.checktask.stp.bdd;
+package com.sytoss.producer.bdd;
 
-import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;

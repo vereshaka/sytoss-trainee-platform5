@@ -82,11 +82,6 @@ public class AppConfig {
     }
 
     @Bean
-    public AuditorAware<String> auditorProvider() {
-        return new AuditorAwareImpl();
-    }
-
-    @Bean
     public PumlConvertor pumlConvertor(){
         return new PumlConvertor();
     }

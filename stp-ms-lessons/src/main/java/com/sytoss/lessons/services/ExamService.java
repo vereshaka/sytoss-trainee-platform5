@@ -22,12 +22,14 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ExamService extends AbstractService {
 
     private final ExamConnector examConnector;
@@ -48,6 +50,10 @@ public class ExamService extends AbstractService {
 
     private final ExamAssigneeService examAssigneeService;
 
+    private final TopicConnector topicConnector;
+
+    private final TaskConnector taskConnector;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
@@ -62,13 +68,24 @@ public class ExamService extends AbstractService {
         exam.setTasks(distinctTasks);
         //TODO: yevgenyv: re think it
         exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
-        ExamDTO examDTO = new ExamDTO();
+        final ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
+
+        examDTO.setTopics(new ArrayList<>());
+        exam.getTopics().forEach(topic -> {
+            examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId()));
+        });
+
+        examDTO.setTasks(new ArrayList<>());
+        exam.getTasks().forEach(task -> {
+            examDTO.getTasks().add(taskConnector.getReferenceById(task.getId()));
+        });
+
         if (exam.getDiscipline() != null) {
             examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
         }
-        examDTO = examConnector.save(examDTO);
-        examConvertor.fromDTO(examDTO, exam);
+        ExamDTO result = examConnector.save(examDTO);
+        examConvertor.fromDTO(result, exam);
         return exam;
     }
 
