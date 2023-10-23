@@ -17,8 +17,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -33,7 +31,6 @@ import static com.sytoss.common.SSLUtil.disableSSL;
 
 @Configuration
 @Slf4j
-@EnableJpaAuditing
 public class AppConfig {
 
     static {
@@ -82,7 +79,7 @@ public class AppConfig {
     }
 
     @Bean
-    public PumlConvertor pumlConvertor(){
+    public PumlConvertor pumlConvertor() {
         return new PumlConvertor();
     }
 }
