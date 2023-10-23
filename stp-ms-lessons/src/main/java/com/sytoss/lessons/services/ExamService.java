@@ -193,8 +193,9 @@ public class ExamService extends AbstractService {
     public Exam assign(Long examId, ExamAssignee examAssignee) {
         ExamDTO examDTO = examConnector.getReferenceById(examId);
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
-        examAssigneeDTO.setExam(examDTO);
+        examAssignee.getExam().setId(examId);
         examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+        examAssigneeDTO.setExam(examDTO);
         examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
         examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
         Exam exam = new Exam();
