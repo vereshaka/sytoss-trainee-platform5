@@ -10,4 +10,12 @@ public class CheckRequestParameters {
     private String request;
 
     private String script;
+
+    public boolean isQueryForUpdate(){
+        if(request != null){
+            return !request.toUpperCase().startsWith("SELECT");
+        }else{
+            return false;
+        }
+    }
 }

@@ -36,14 +36,17 @@ public class ScoreService {
             helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult queryResultAnswer;
             try {
-                queryResultAnswer = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+                queryResultAnswer = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest()) :
+                        helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
                 return new Score(0, e.getMessage());
             }
-
+            helperServiceProviderObject = databaseHelperServiceProvider.getObject();
+            helperServiceProviderObject.generateDatabase(data.getScript());
             QueryResult queryResultEtalon;
             try {
-                queryResultEtalon = helperServiceProviderObject.getExecuteQueryResult(data.getEtalon());
+                queryResultEtalon = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getEtalon()) :
+                        helperServiceProviderObject.getExecuteQueryResult(data.getEtalon());
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
@@ -92,7 +95,11 @@ public class ScoreService {
             IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
 
             try {
-                helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+                if(data.isQueryForUpdate()){
+                    helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest());
+                }else{
+                    helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+                }
             } catch (SQLException e) {
                 isCheckEtalon.setChecked(false);
                 isCheckEtalon.setException(e.getMessage());
@@ -112,7 +119,8 @@ public class ScoreService {
             QueryResult result;
 
             try {
-                result = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+                result = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest()) :
+                        helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
                 throw new RequestIsNotValidException(e.getMessage());
             }

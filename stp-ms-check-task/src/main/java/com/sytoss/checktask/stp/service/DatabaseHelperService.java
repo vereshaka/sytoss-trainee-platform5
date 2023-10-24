@@ -120,4 +120,15 @@ public class DatabaseHelperService {
             return queryResult;
         }
     }
+
+    public QueryResult getExecuteQueryUpdate(String query) throws SQLException {
+        try (Statement statement = getConnection().createStatement()) {
+            int result = statement.executeUpdate(query);
+            QueryResult queryResult = new QueryResult();
+            queryResult.setAffectedRowsCount(result);
+            queryResult.setRowsAffected(true);
+            log.info("query result was got. Result: "+result);
+            return queryResult;
+        }
+    }
 }
