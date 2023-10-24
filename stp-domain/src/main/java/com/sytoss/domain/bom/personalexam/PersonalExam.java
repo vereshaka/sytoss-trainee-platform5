@@ -67,7 +67,7 @@ public class PersonalExam {
     private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private float summaryGrade;
+    private double summaryGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
@@ -148,7 +148,11 @@ public class PersonalExam {
 
     @JsonIgnore
     private boolean isTimeOut() {
-        return new Date().compareTo(relevantTo) >= 0;
+        if (relevantTo != null) {
+            return new Date().compareTo(relevantTo) >= 0;
+        } else {
+            return false;
+        }
     }
 
     public static class Public {

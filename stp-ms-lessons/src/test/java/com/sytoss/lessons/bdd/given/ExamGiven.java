@@ -33,11 +33,20 @@ public class ExamGiven extends LessonsIntegrationTest {
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(el -> el.trim()).toList();
             for (String taskId : taskIds) {
-                Long id = getTestExecutionContext().replaceId(taskId);
+                Long id = (Long)getTestExecutionContext().replaceId(taskId);
                 dto.getTasks().add(getTaskConnector().getReferenceById(id));
             }
             dto = getExamConnector().save(dto);
             getTestExecutionContext().registerId(item.getId(), dto.getId());
         }
+    }
+
+    @Given("^this discipline has assigned groups: (.*)")
+    public void disciplineHasAssigneedGroups(String groupIds) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
+        Arrays.stream(groupIds.split(",")).forEach(item -> {
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO);
+            getGroupReferenceConnector().save(groupReferenceDTO);
+        });
     }
 }

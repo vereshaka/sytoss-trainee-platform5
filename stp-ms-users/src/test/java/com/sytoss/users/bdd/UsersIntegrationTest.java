@@ -2,6 +2,7 @@ package com.sytoss.users.bdd;
 
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import com.sytoss.users.bdd.common.UsersDetails;
+import com.sytoss.users.connectors.ExamAssigneeConnector;
 import com.sytoss.users.connectors.GroupConnector;
 import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
@@ -34,6 +35,9 @@ public class UsersIntegrationTest extends StpIntegrationTest<UsersDetails> {
 
     @MockBean
     private ImageProviderConnector imageProviderConnector;
+
+    @MockBean
+    private ExamAssigneeConnector examAssigneeConnector;
 
     @Override
     protected UsersDetails createDetails() {

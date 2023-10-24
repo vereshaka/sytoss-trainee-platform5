@@ -5,10 +5,16 @@ import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import io.cucumber.java.en.Then;
+import org.apache.commons.collections4.CollectionUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ThenStepTest extends CheckTaskIntegrationTest {
+
+    @Then("^request should be processed with error (.*)")
+    public void requestShouldBeProcessedWithError(Integer code) {
+        assertEquals(code, getTestExecutionContext().getResponse().getStatusCode().value());
+    }
 
     @Then("request should be processed successfully")
     public void requestShouldBeProcessedSuccessfully() {
@@ -42,10 +48,11 @@ public class ThenStepTest extends CheckTaskIntegrationTest {
     @Then("^query result should be$")
     public void shouldReturnQueryIsValid(QueryResult queryResult) {
         QueryResult response = (QueryResult) getTestExecutionContext().getResponse().getBody();
-        for (int i = 1; i < queryResult.getResultMapList().size(); i++) {
+        assertTrue(CollectionUtils.isEqualCollection(queryResult.getHeader(), response.getHeader()), "Headers is equals");
+        for (int i = 0; i < queryResult.getResultMapList().size(); i++) {
             for (String columnName: queryResult.getHeader()) {
                 Object columnValue = queryResult.getValue(i,columnName);
-                assertEquals(columnValue, response.getValue(i,columnName.toUpperCase()));
+                assertEquals(columnValue.toString(), response.getValue(i,columnName.toUpperCase()).toString());
             }
         }
     }

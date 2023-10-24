@@ -2,10 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.personalexam.AnswerModule;
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -115,7 +113,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbStructure")
-    public byte[] getDbStructureImage(
+    public String getDbStructureImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDbImage(personalExamId);
@@ -126,7 +124,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbData")
-    public byte[] getDbDataImage(
+    public String getDbDataImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDataImage(personalExamId);
@@ -209,5 +207,51 @@ public class PersonalExamController {
             @PathVariable("examAssigneeId") Long examAssigneeId
     ) {
         return personalExamService.deleteByExamAssigneeId(examAssigneeId);
+    }
+
+    @Operation(description = "Method that delete personal exams by exam assignee ids")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @DeleteMapping(value = "/exam/delete")
+    public List<PersonalExam> deleteByExamAssigneeIds(
+            @Parameter(description = "Exam assignee ids to delete personal exams")
+            @RequestBody List<Long> examAssigneeIds
+    ) {
+        return personalExamService.deleteByExamAssigneeIds(examAssigneeIds);
+    }
+
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/review/answers")
+    public ExamAssigneeAnswersModel reviewAnswers(@RequestBody ExamAssigneeAnswersModel answers) {
+        return personalExamService.reviewByAnswers(answers);
+    }
+
+
+    @Operation(description = "Method that return excel file of personal exams by exam assignee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/assignee/{examAssigneeId}")
+    public byte[] getExcelReport(
+            @Parameter(description = "Id of exam assignee to get excel report about personal exams")
+            @PathVariable Long examAssigneeId
+    ) throws IOException {
+        return personalExamService.getExcelReport(examAssigneeId);
+    }
+
+    @Operation(description = "Method that return excel file of personal exam by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/group/{groupId}")
+    public byte[] getExcelReportByGroup(
+            @Parameter(description = "Id of group to get excel report about personal exams")
+            @PathVariable Long groupId
+    ) throws IOException {
+        return personalExamService.getExcelReportByGroup(groupId);
     }
 }

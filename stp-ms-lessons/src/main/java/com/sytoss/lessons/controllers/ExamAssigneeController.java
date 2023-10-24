@@ -1,19 +1,16 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
+import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.lessons.services.ExamAssigneeService;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.ListUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +23,8 @@ import java.util.List;
 public class ExamAssigneeController {
 
     private final ExamService examService;
+
+    private final ExamAssigneeService examAssigneeService;
 
     @Operation(description = "Method that reschedule exam by id")
     @ApiResponses(value = {
@@ -44,7 +43,7 @@ public class ExamAssigneeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/{examId}/all")
+    @GetMapping("/{examId}/all")
     public List<ExamAssignee> getListOfExamAssignee(@PathVariable Long examId) {
         return examService.returnExamAssignees(examId);
     }
@@ -53,8 +52,39 @@ public class ExamAssigneeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/{examAssigneeId}")
+    @GetMapping("/{examAssigneeId}")
     public ExamAssignee getExamAssigneeById(@PathVariable Long examAssigneeId) {
         return examService.returnExamAssigneeById(examAssigneeId);
+    }
+
+    @Operation(description = "Method that create personal exams of group on student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @PostMapping("/group/{groupId}")
+    public void createGroupExamsOnStudent(
+            @Parameter(description = "Id of group to get exam assignees")
+            @PathVariable("groupId") Long groupId,
+            @RequestBody Student student
+    ) {
+        examService.createGroupExamsOnStudent(groupId, student);
+    }
+
+    @Operation(description = "Method that return exam info for excel report")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam assignee not found")
+    })
+    @GetMapping(value = "/{examAssigneeId}/report")
+    public ExamReportModel getReportInfo(
+            @Parameter(description = "Id of exam assignee to get info by")
+            @PathVariable Long examAssigneeId
+    ) {
+        return examService.getReportInfo(examAssigneeId);
+    }
+
+    @GetMapping("/findByGroup/{groupId}")
+    public List<ExamAssignee> getListOfExamAssigneeByGroup(@PathVariable Long groupId) {
+        return examAssigneeService.findExamAssigneesByGroup(groupId);
     }
 }

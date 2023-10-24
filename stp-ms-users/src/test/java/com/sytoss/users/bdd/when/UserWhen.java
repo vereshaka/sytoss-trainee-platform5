@@ -99,11 +99,4 @@ public class UserWhen extends UsersIntegrationTest {
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         getTestExecutionContext().setResponse(responseEntity);
     }
-
-    @DataTableType
-    public Discipline mapDiscipline(Map<String, String> row) {
-        Discipline discipline = new Discipline();
-        discipline.setName(row.get("discipline"));
-        return discipline;
-    }
 }

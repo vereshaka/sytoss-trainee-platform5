@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -58,7 +59,7 @@ public class AnswerService extends AbstractService {
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());
-        examModel.setTime(personalExam.getTime());
+        examModel.setTime((int) TimeUnit.MILLISECONDS.toSeconds(personalExam.getRelevantTo().getTime() - new Date().getTime()));
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
@@ -94,21 +95,23 @@ public class AnswerService extends AbstractService {
         personalExamConnector.save(personalExam);
     }
 
-    public byte[] getDbImage(String personalExamId) {
+    public String getDbImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DB);
     }
 
-    public byte[] getDataImage(String personalExamId) {
+    public String getDataImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DATA);
     }
 
 
-    private byte[] getImage(String personalExamId, ConvertToPumlParameters type) {
+    private String getImage(String personalExamId, ConvertToPumlParameters type) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
-        String dataScript = answer.getTask().getTaskDomain().getDataScript();
-        return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
+        if (type == ConvertToPumlParameters.DB) {
+            return answer.getTask().getTaskDomain().getDbImageName();
+        } else {
+            return answer.getTask().getTaskDomain().getDataImageName();
+        }
     }
 
     public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {

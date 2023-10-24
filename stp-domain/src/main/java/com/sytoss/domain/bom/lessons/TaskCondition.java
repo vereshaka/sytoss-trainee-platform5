@@ -5,6 +5,8 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class TaskCondition {
@@ -21,8 +23,14 @@ public class TaskCondition {
         if (object == null) return false;
         if (!(object instanceof TaskCondition)) return false;
         TaskCondition taskCondition = (TaskCondition) object;
-        return taskCondition.getId() == id && (value == taskCondition.getValue()
-                || value != null && value.equals(taskCondition.getValue()))
-                && type == taskCondition.getType();
+        return Objects.equals(taskCondition.getId(), id) && Objects.equals(value, taskCondition.getValue()) && type == taskCondition.getType();
+    }
+
+    public String getCondition(){
+        StringBuilder conditionBuilder = new StringBuilder();
+        if(type.equals(ConditionType.NOT_CONTAINS)){
+            conditionBuilder.append("!");
+        }
+        return conditionBuilder.append(value).toString();
     }
 }

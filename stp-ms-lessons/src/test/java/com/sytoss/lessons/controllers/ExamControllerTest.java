@@ -1,8 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
@@ -79,7 +78,7 @@ public class ExamControllerTest extends LessonsControllerTest {
         student.setId(1L);
         student.setPrimaryGroup(group);
 
-        ExamGroupAssignee examGroupAssignee = new ExamGroupAssignee();
+        ExamAssignee examGroupAssignee = new ExamAssignee();
         examGroupAssignee.setRelevantFrom(new Date());
         examGroupAssignee.setRelevantTo(new Date());
         examGroupAssignee.getGroups().add(group);
@@ -87,7 +86,7 @@ public class ExamControllerTest extends LessonsControllerTest {
         when(userConnector.getMyProfile()).thenReturn(user);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(examGroupAssignee, httpHeaders);
-        ResponseEntity<Exam> response = doPost("/api/exam/assign/" + exam.getId() + "/students", httpEntity, Exam.class);
+        ResponseEntity<Exam> response = doPost("/api/exam/" + exam.getId() + "/assign", httpEntity, Exam.class);
         assertEquals(200, response.getStatusCode().value());
     }
 
@@ -118,7 +117,7 @@ public class ExamControllerTest extends LessonsControllerTest {
         Student student = new Student();
         student.setId(1L);
 
-        ExamStudentAssignee examStudentAssignee = new ExamStudentAssignee();
+        ExamAssignee examStudentAssignee = new ExamAssignee();
         examStudentAssignee.setRelevantFrom(new Date());
         examStudentAssignee.setRelevantTo(new Date());
         examStudentAssignee.getStudents().add(student);
@@ -126,7 +125,7 @@ public class ExamControllerTest extends LessonsControllerTest {
         when(userConnector.getMyProfile()).thenReturn(user);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(examStudentAssignee, httpHeaders);
-        ResponseEntity<Exam> response = doPost("/api/exam/assign/" + exam.getId() + "/students", httpEntity, Exam.class);
+        ResponseEntity<Exam> response = doPost("/api/exam/" + exam.getId() + "/assign", httpEntity, Exam.class);
         assertEquals(200, response.getStatusCode().value());
     }
 }

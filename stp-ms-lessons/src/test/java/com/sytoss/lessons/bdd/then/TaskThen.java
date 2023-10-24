@@ -47,7 +47,7 @@ public class TaskThen extends LessonsIntegrationTest {
             if (foundTasks.size() == 0) {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " not found");
             }
-            TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
+            TopicDTO topic = getTopicConnector().getReferenceById((Long)getTestExecutionContext().getIdMapping().get(topicKey));
             List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsId(topic.getId());
             for (TaskDTO taskDTO : taskDTOS) {
                 getTaskConnector().delete(taskDTO);

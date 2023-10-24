@@ -2,7 +2,9 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -200,9 +203,18 @@ public class DisciplineService extends AbstractService {
 
         topicConnector.deleteAll(topicDTOList);
 
-        examList.forEach(exam -> examService.deleteById(exam.getId()));
+        examList.forEach(exam -> examService.delete(exam.getId()));
 
         disciplineConnector.deleteById(disciplineId);
         return discipline;
+    }
+
+    public List<Discipline> findDisciplinesByGroupId(Long groupId) {
+        List<DisciplineDTO> disciplineDTOS = disciplineConnector.findByGroupReferencesGroupId(groupId);
+        return disciplineDTOS.stream().map(disciplineDTO -> {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            return discipline;
+        }).collect(Collectors.toList());
     }
 }

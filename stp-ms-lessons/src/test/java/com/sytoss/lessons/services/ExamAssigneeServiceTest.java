@@ -1,7 +1,6 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.lessons.connectors.ExamAssigneeConnector;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.*;
@@ -54,7 +53,7 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
     void getExamAssigneeById() {
         ExamDTO exam = createExamDTO();
         ExamAssigneeDTO expectedExamAssigneeDTO = exam.getExamAssignees().get(0);
-        ExamAssignee expectedExamAssignee = new ExamStudentAssignee();
+        ExamAssignee expectedExamAssignee = new ExamAssignee();
         examAssigneeConvertor.fromDTO(expectedExamAssigneeDTO,expectedExamAssignee);
         when(examAssigneeConnector.getReferenceById(any())).thenReturn(exam.getExamAssignees().get(0));
         ExamAssignee examAssigneeActual = examAssigneeService.returnExamAssigneeById(1L);

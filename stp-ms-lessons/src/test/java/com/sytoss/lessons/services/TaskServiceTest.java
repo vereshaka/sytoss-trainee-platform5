@@ -38,16 +38,22 @@ import static org.mockito.Mockito.*;
 public class TaskServiceTest extends StpUnitTest {
 
     private final ExamConnector examConnector = mock(ExamConnector.class);
+
     @Mock
     protected CheckTaskConnector checkTaskConnector;
+
     @Mock
     private TaskConnector taskConnector;
+
     @Mock
     private TopicService topicService;
+
     @Mock
     private TaskDomainConnector taskDomainConnector;
+
     @Mock
     private DisciplineConnector disciplineConnector;
+
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
             new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
@@ -68,11 +74,25 @@ public class TaskServiceTest extends StpUnitTest {
     private ExamAssigneeConnector examAssigneeConnector;
 
     @Mock
+    private ExamAssigneeToConnector examAssigneeConnectorTo;
+
+    @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private ExamAssigneeService examAssigneeService;
+
+    @Mock
+    private TopicConnector topicConnector;
+
 
     @Spy
     private ExamService examService = new ExamService(
-            examConnector, examConvertor, userConnector, personalExamConnector, examAssigneeConvertor, examAssigneeConnector
+            examConnector, examConvertor, userConnector,
+            personalExamConnector, examAssigneeConvertor,
+            examAssigneeConnector, disciplineConnector,
+            examAssigneeConnectorTo, examAssigneeService,
+            topicConnector, taskConnector
     );
 
     @InjectMocks

@@ -1,12 +1,7 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamGroupAssignee;
-import com.sytoss.domain.bom.lessons.examassignee.ExamStudentAssignee;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,6 +44,17 @@ public class ExamController {
         return examService.getById(examId);
     }
 
+    @Operation(description = "Method that retrieve information about discipline of exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suceess|OK"),
+    })
+    @GetMapping("/{examId}/discipline")
+    public Discipline getDisciplineByExamId(
+            @PathVariable(value = "examId") Long examId) {
+        Exam exam = examService.getById(examId);
+        return exam.getTopics().get(0).getDiscipline();
+    }
+
     @Operation(description = "Method that retrieve information about topic")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
@@ -89,17 +95,8 @@ public class ExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/assign/{examId}/groups")
-    public Exam assignGroupsToExam(@PathVariable Long examId, @RequestBody ExamGroupAssignee examAssignee) {
-        return examService.assignExamForGroup(examId, examAssignee);
-    }
-
-    @Operation(description = "Method that assign exam to group")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/assign/{examId}/students")
-    public Exam assignStudentToExam(@PathVariable Long examId, @RequestBody ExamStudentAssignee examAssignee) {
-        return examService.assignExamForStudents(examId, examAssignee);
+    @PostMapping("/{examId}/assign")
+    public Exam assignGroupsToExam(@PathVariable Long examId, @RequestBody ExamAssignee examAssignee) {
+        return examService.assign(examId, examAssignee);
     }
 }

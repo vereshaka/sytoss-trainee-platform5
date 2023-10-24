@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "TASK_DOMAIN")
-public class TaskDomainDTO {
+public class TaskDomainDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -27,6 +27,12 @@ public class TaskDomainDTO {
     @ManyToOne
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
+
+    @Column(name = "DATA_IMAGE_NAME")
+    private String dataImageName;
+
+    @Column(name = "DB_IMAGE_NAME")
+    private String dbImageName;
 
     @Column(name = "IMAGE")
     private byte[] image;

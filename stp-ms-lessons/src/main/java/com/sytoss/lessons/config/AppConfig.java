@@ -79,7 +79,7 @@ public class AppConfig {
     }
 
     @Bean
-    public PumlConvertor pumlConvertor(){
+    public PumlConvertor pumlConvertor() {
         return new PumlConvertor();
     }
 }

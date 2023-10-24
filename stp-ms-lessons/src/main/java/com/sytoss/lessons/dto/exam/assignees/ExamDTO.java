@@ -1,6 +1,8 @@
 package com.sytoss.lessons.dto.exam.assignees;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sytoss.lessons.dto.Auditable;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.*;
@@ -9,13 +11,14 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Entity(name = "EXAM")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-public class ExamDTO {
+public class ExamDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -52,4 +55,11 @@ public class ExamDTO {
 
     @Column(name = "MAX_GRADE")
     private Integer maxGrade;
+
+    @ManyToOne
+    @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
+    private DisciplineDTO discipline;
+
+    @Column(name = "CREATION_DATE")
+    private Date creationDate = new Date();
 }

@@ -1,7 +1,9 @@
 package com.sytoss.lessons.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.ExamService;
@@ -39,6 +41,7 @@ public class TeacherController {
         return disciplineService.findDisciplines();
     }
 
+    @JsonView({Group.TeacherGroups.class})
     @Operation(description = "Method that retrieve disciplines by teacher")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -49,12 +52,21 @@ public class TeacherController {
         return groupService.findGroups();
     }
 
-    @Operation(description = "Method that retriew list of exams by teacher")
+    @Operation(description = "Method that retrieve list of exams by teacher")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/my/exams")
     public List<Exam> getMyExams() {
         return examService.findExams();
+    }
+
+    @Operation(description = "Method that retrieve list of exams by teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/my/exam/assignees")
+    public List<ExamAssignee> getMyExamAssignees() {
+        return examService.findExamAssignees();
     }
 }

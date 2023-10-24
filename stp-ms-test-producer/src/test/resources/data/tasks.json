@@ -1,0 +1,339 @@
+[
+  {
+    "_id": new
+    NumberLong(
+    "1"
+    ),
+    "task": {
+      "_id": new
+      NumberLong(
+      "36"
+      ),
+      "question": "Скільки операцій (угод) було у 2022р.",
+      "etalonAnswer": "SELECT count(*) as NumberDeals2022\nFROM Sale\nWHERE Year(DateSale)=2022;",
+      "taskDomain": {
+        "_id": new
+        NumberLong(
+        "10"
+        ),
+        "name": "Trade23",
+        "databaseScript": "table Client {\n  IdClient: long <<PK>>\n  LName: string\n  FName: string\n  MName: string\n  Company: string\n  CityClient: string\n  phone: string\n}\n\ntable Product {\n  IdProduct: long <<PK>>\n  NameProduct: string\n  Type: string\n  Sort: string\n  Price: long\n  Stock: string\n  CityProduct: string\n}\n\ntable Sale {\n  IdSale: long <<PK>>\n  IdClient: long <<FK Client(IdClient)>>\n  IdProduct: long <<FK Product(IdProduct)>>\n  Quantity: long\n  DateSale: date\n}\n",
+        "dataScript": "data Client {\n|=IdClient |=LName |=FName |=MName |=Company |=CityClient |=phone |\n| 1 | Грищенко | Петро | Васильович | ТОВ Затишок | Харків | +380502087543 |\n| 2 | Кузич    | Микола | Петрович | ТОВ Будинок | Київ | +380672837500 |\n| 3 | Василенко | Михайло | Володимирович | ТОВ Будинок | Харків | +380666722565        |\n| 4 | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів | +380505723577|               \n| 5 | Петренко | Олена | Миколаївна | ТОВ Будинок | Львів |                      |\n| 6 | Бобир | Олексій  | Іванович | ТОВ Відпустка | Ужгород | +380676757755 |\n| 7 | Хрущ | Єгор | Петрович | ТОВ Будиночок | Чернівці |  |                              \n}\n\ndata Product {\n|=IdProduct |=NameProduct |=Type |=Sort |=Price |=Stock |=CityProduct  |\n| 1 | Стіл | меблі | вищий | 1800| 5 | Харків                               |\n| 2 | Стілець | меблі | перший | 300| 10 | Харків                           |\n| 3 | Стіл | меблі | другий | 800| 2 | Київ                                 |\n| 4 | Диван | меблі | другий | 1500| 1 | Київ                               |\n| 5 | Підсвічник | інтер'єр | другий | 200 | 20 | Харків                    |\n| 6 | Диван | меблі  | вищий | 2800 | 1 | Харків |\n| 7 | Рамка для фото | інтер'єр | вищий | 80 | 0 | Харків                   |\n| 8 | Шафа | меблі | вищий | 15000 | 3 | Харків                             |\n| 9 | Стілець | меблі  | перший | 250 | 10 | Київ |\n}\n\ndata Sale {\n|=IdSale |=IdProduct |=IdClient |=Quantity |=DateSale  |\n| 1 | 1 | 1 | 10 | 2022-08-11                             |\n| 2 | 2 | 1 | 2 | 2022-08-13                             |\n| 3 | 1 | 2 | 1 | 2022-08-23                              |\n| 4 | 2 | 2 | 1 | 2022-08-29                              |\n| 5 | 1 | 1 | 2 | 2022-08-30                              |\n| 6 | 3 | 4 | 5 | 2022-09-15                              |\n| 7 | 4 | 3 | 1 | 2022-09-15                              |\n| 8 | 5 | 5 | 2 | 2023-09-16                              |\n| 9 | 6 | 5 | 3 | 2023-09-16                              |\n| 10 | 8 | 6 | 4 | 2023-10-17                             |\n| 11 | 5 | 5 | 5 | 2023-10-18 |\n}\n\n",
+        "discipline": {
+          "_id": new
+          NumberLong(
+          "1"
+          ),
+          "name": "Бази даних та інформаційні системи (БДІС)",
+          "teacher": {
+            "_id": new
+            NumberLong(
+            "2"
+            ),
+            "isModerated": false
+          },
+          "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+          "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+          "creationDate": new
+          ISODate(
+          "2023-08-23T18:23:51.629Z"
+          )
+        },
+        "shortDescription": "Trade23{Product, Client, Sale}"
+      },
+      "topics": [
+        {
+          "_id": new
+          NumberLong(
+          "12"
+          ),
+          "name": "Тема4! Мова DQL (агрегат без group by)",
+          "shortDescription": "Прості запити (запити до однієї таблиці), sum, min, max, avg, count, оператор HAVING без GROUP BY",
+          "fullDescription": "",
+          "duration": 1,
+          "discipline": {
+            "_id": new
+            NumberLong(
+            "1"
+            ),
+            "name": "Бази даних та інформаційні системи (БДІС)",
+            "teacher": {
+              "_id": new
+              NumberLong(
+              "2"
+              ),
+              "isModerated": false
+            },
+            "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+            "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+            "creationDate": new
+            ISODate(
+            "2023-08-23T18:23:51.629Z"
+            )
+          }
+        }
+      ],
+      "taskConditions": [],
+      "coef": 1,
+      "requiredCommand": "",
+      "code": "4_1",
+      "createDate": new
+      ISODate(
+      "2023-10-04T00:00:00.000Z"
+      )
+    },
+    "status": "GRADED",
+    "grade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "teacherGrade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "answerDate": new
+    ISODate(
+    "2023-10-11T08:40:53.024Z"
+    ),
+    "timeSpent": new
+    NumberLong(
+    "0"
+    )
+  },
+  {
+    "_id": new
+    NumberLong(
+    "2"
+    ),
+    "task": {
+      "_id": new
+      NumberLong(
+      "35"
+      ),
+      "question": "Вивести інформацію про клієнтів, що мають телефонний (номер заповнений), а по батькові (MName) містить буквосполучення 'ови' (MS SQL Server). Відсортувати результат за ім'ям (FName) за спаданням, за прізвищем (LName) за зростанням.\nДодаткова інформація:\n- виводити всі атрибути;\n- використати потрібні оператори з переліку: IN, BETWEEN, LIKE, IS NULL;\n- використовувати систаксис Transact-SQL (MS SQL Server)",
+      "etalonAnswer": "SELECT *\nFROM Client\nWHERE  Phone is not NULL and MName LIKE '%ови%'\nORDER BY FName DESC,  LName;",
+      "taskDomain": {
+        "_id": new
+        NumberLong(
+        "10"
+        ),
+        "name": "Trade23",
+        "databaseScript": "table Client {\n  IdClient: long <<PK>>\n  LName: string\n  FName: string\n  MName: string\n  Company: string\n  CityClient: string\n  phone: string\n}\n\ntable Product {\n  IdProduct: long <<PK>>\n  NameProduct: string\n  Type: string\n  Sort: string\n  Price: long\n  Stock: string\n  CityProduct: string\n}\n\ntable Sale {\n  IdSale: long <<PK>>\n  IdClient: long <<FK Client(IdClient)>>\n  IdProduct: long <<FK Product(IdProduct)>>\n  Quantity: long\n  DateSale: date\n}\n",
+        "dataScript": "data Client {\n|=IdClient |=LName |=FName |=MName |=Company |=CityClient |=phone |\n| 1 | Грищенко | Петро | Васильович | ТОВ Затишок | Харків | +380502087543 |\n| 2 | Кузич    | Микола | Петрович | ТОВ Будинок | Київ | +380672837500 |\n| 3 | Василенко | Михайло | Володимирович | ТОВ Будинок | Харків | +380666722565        |\n| 4 | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів | +380505723577|               \n| 5 | Петренко | Олена | Миколаївна | ТОВ Будинок | Львів |                      |\n| 6 | Бобир | Олексій  | Іванович | ТОВ Відпустка | Ужгород | +380676757755 |\n| 7 | Хрущ | Єгор | Петрович | ТОВ Будиночок | Чернівці |  |                              \n}\n\ndata Product {\n|=IdProduct |=NameProduct |=Type |=Sort |=Price |=Stock |=CityProduct  |\n| 1 | Стіл | меблі | вищий | 1800| 5 | Харків                               |\n| 2 | Стілець | меблі | перший | 300| 10 | Харків                           |\n| 3 | Стіл | меблі | другий | 800| 2 | Київ                                 |\n| 4 | Диван | меблі | другий | 1500| 1 | Київ                               |\n| 5 | Підсвічник | інтер'єр | другий | 200 | 20 | Харків                    |\n| 6 | Диван | меблі  | вищий | 2800 | 1 | Харків |\n| 7 | Рамка для фото | інтер'єр | вищий | 80 | 0 | Харків                   |\n| 8 | Шафа | меблі | вищий | 15000 | 3 | Харків                             |\n| 9 | Стілець | меблі  | перший | 250 | 10 | Київ |\n}\n\ndata Sale {\n|=IdSale |=IdProduct |=IdClient |=Quantity |=DateSale  |\n| 1 | 1 | 1 | 10 | 2022-08-11                             |\n| 2 | 2 | 1 | 2 | 2022-08-13                             |\n| 3 | 1 | 2 | 1 | 2022-08-23                              |\n| 4 | 2 | 2 | 1 | 2022-08-29                              |\n| 5 | 1 | 1 | 2 | 2022-08-30                              |\n| 6 | 3 | 4 | 5 | 2022-09-15                              |\n| 7 | 4 | 3 | 1 | 2022-09-15                              |\n| 8 | 5 | 5 | 2 | 2023-09-16                              |\n| 9 | 6 | 5 | 3 | 2023-09-16                              |\n| 10 | 8 | 6 | 4 | 2023-10-17                             |\n| 11 | 5 | 5 | 5 | 2023-10-18 |\n}\n\n",
+        "discipline": {
+          "_id": new
+          NumberLong(
+          "1"
+          ),
+          "name": "Бази даних та інформаційні системи (БДІС)",
+          "teacher": {
+            "_id": new
+            NumberLong(
+            "2"
+            ),
+            "isModerated": false
+          },
+          "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+          "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+          "creationDate": new
+          ISODate(
+          "2023-08-23T18:23:51.629Z"
+          )
+        },
+        "shortDescription": "Trade23{Product, Client, Sale}"
+      },
+      "topics": [
+        {
+          "_id": new
+          NumberLong(
+          "10"
+          ),
+          "name": "Тема 2! Мова DQL (WHERE)",
+          "shortDescription": "Прості запити (запити до однієї таблиці), оператор WHERE",
+          "fullDescription": ".",
+          "duration": 1,
+          "discipline": {
+            "_id": new
+            NumberLong(
+            "1"
+            ),
+            "name": "Бази даних та інформаційні системи (БДІС)",
+            "teacher": {
+              "_id": new
+              NumberLong(
+              "2"
+              ),
+              "isModerated": false
+            },
+            "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+            "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+            "creationDate": new
+            ISODate(
+            "2023-08-23T18:23:51.629Z"
+            )
+          }
+        }
+      ],
+      "taskConditions": [
+        {
+          "_id": new
+          NumberLong(
+          "118"
+          ),
+          "value": "LIKE",
+          "type": "CONTAINS"
+        },
+        {
+          "_id": new
+          NumberLong(
+          "119"
+          ),
+          "value": "IS",
+          "type": "CONTAINS"
+        },
+        {
+          "_id": new
+          NumberLong(
+          "120"
+          ),
+          "value": "DESC",
+          "type": "CONTAINS"
+        }
+      ],
+      "coef": 1,
+      "requiredCommand": "LIKE,IS,DESC",
+      "code": "2_08",
+      "createDate": new
+      ISODate(
+      "2023-10-03T00:00:00.000Z"
+      )
+    },
+    "status": "GRADED",
+    "grade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "teacherGrade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "answerDate": new
+    ISODate(
+    "2023-10-11T08:40:53.024Z"
+    ),
+    "timeSpent": new
+    NumberLong(
+    "0"
+    )
+  },
+  {
+    "_id": new
+    NumberLong(
+    "3"
+    ),
+    "task": {
+      "_id": new
+      NumberLong(
+      "37"
+      ),
+      "question": "Яку загальну кількість товарів купив клієнт із кодом 5.",
+      "etalonAnswer": "SELECT Sum(Quantity) AS SumOfQuantityClient5\nFROM Sale\nwhere IdClient=5;",
+      "taskDomain": {
+        "_id": new
+        NumberLong(
+        "10"
+        ),
+        "name": "Trade23",
+        "databaseScript": "table Client {\n  IdClient: long <<PK>>\n  LName: string\n  FName: string\n  MName: string\n  Company: string\n  CityClient: string\n  phone: string\n}\n\ntable Product {\n  IdProduct: long <<PK>>\n  NameProduct: string\n  Type: string\n  Sort: string\n  Price: long\n  Stock: string\n  CityProduct: string\n}\n\ntable Sale {\n  IdSale: long <<PK>>\n  IdClient: long <<FK Client(IdClient)>>\n  IdProduct: long <<FK Product(IdProduct)>>\n  Quantity: long\n  DateSale: date\n}\n",
+        "dataScript": "data Client {\n|=IdClient |=LName |=FName |=MName |=Company |=CityClient |=phone |\n| 1 | Грищенко | Петро | Васильович | ТОВ Затишок | Харків | +380502087543 |\n| 2 | Кузич    | Микола | Петрович | ТОВ Будинок | Київ | +380672837500 |\n| 3 | Василенко | Михайло | Володимирович | ТОВ Будинок | Харків | +380666722565        |\n| 4 | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів | +380505723577|               \n| 5 | Петренко | Олена | Миколаївна | ТОВ Будинок | Львів |                      |\n| 6 | Бобир | Олексій  | Іванович | ТОВ Відпустка | Ужгород | +380676757755 |\n| 7 | Хрущ | Єгор | Петрович | ТОВ Будиночок | Чернівці |  |                              \n}\n\ndata Product {\n|=IdProduct |=NameProduct |=Type |=Sort |=Price |=Stock |=CityProduct  |\n| 1 | Стіл | меблі | вищий | 1800| 5 | Харків                               |\n| 2 | Стілець | меблі | перший | 300| 10 | Харків                           |\n| 3 | Стіл | меблі | другий | 800| 2 | Київ                                 |\n| 4 | Диван | меблі | другий | 1500| 1 | Київ                               |\n| 5 | Підсвічник | інтер'єр | другий | 200 | 20 | Харків                    |\n| 6 | Диван | меблі  | вищий | 2800 | 1 | Харків |\n| 7 | Рамка для фото | інтер'єр | вищий | 80 | 0 | Харків                   |\n| 8 | Шафа | меблі | вищий | 15000 | 3 | Харків                             |\n| 9 | Стілець | меблі  | перший | 250 | 10 | Київ |\n}\n\ndata Sale {\n|=IdSale |=IdProduct |=IdClient |=Quantity |=DateSale  |\n| 1 | 1 | 1 | 10 | 2022-08-11                             |\n| 2 | 2 | 1 | 2 | 2022-08-13                             |\n| 3 | 1 | 2 | 1 | 2022-08-23                              |\n| 4 | 2 | 2 | 1 | 2022-08-29                              |\n| 5 | 1 | 1 | 2 | 2022-08-30                              |\n| 6 | 3 | 4 | 5 | 2022-09-15                              |\n| 7 | 4 | 3 | 1 | 2022-09-15                              |\n| 8 | 5 | 5 | 2 | 2023-09-16                              |\n| 9 | 6 | 5 | 3 | 2023-09-16                              |\n| 10 | 8 | 6 | 4 | 2023-10-17                             |\n| 11 | 5 | 5 | 5 | 2023-10-18 |\n}\n\n",
+        "discipline": {
+          "_id": new
+          NumberLong(
+          "1"
+          ),
+          "name": "Бази даних та інформаційні системи (БДІС)",
+          "teacher": {
+            "_id": new
+            NumberLong(
+            "2"
+            ),
+            "isModerated": false
+          },
+          "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+          "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+          "creationDate": new
+          ISODate(
+          "2023-08-23T18:23:51.629Z"
+          )
+        },
+        "shortDescription": "Trade23{Product, Client, Sale}"
+      },
+      "topics": [
+        {
+          "_id": new
+          NumberLong(
+          "12"
+          ),
+          "name": "Тема4! Мова DQL (агрегат без group by)",
+          "shortDescription": "Прості запити (запити до однієї таблиці), sum, min, max, avg, count, оператор HAVING без GROUP BY",
+          "fullDescription": "",
+          "duration": 1,
+          "discipline": {
+            "_id": new
+            NumberLong(
+            "1"
+            ),
+            "name": "Бази даних та інформаційні системи (БДІС)",
+            "teacher": {
+              "_id": new
+              NumberLong(
+              "2"
+              ),
+              "isModerated": false
+            },
+            "shortDescription": "Обсяг дисципліни 5 кредитів ЄКТС: лекцій 30 год., лабораторних занять 20 год., практичних занять 10 год., консультацій 10 год., самостійна робота 80 год., форма контролю – залік",
+            "fullDescription": "Обов’язкова дисципліна професійної та практичної підготовки містить такі теми:\r\n1. Загальна характеристика РМД.\r\n2. Реляційна цілісність\r\n3. Маніпуляційна частина РМ. Реляційна алгебра.\r\n4. Загальна характеристика мови SQL,\r\n5. Загальна характеристика оператору SELECT\r\n6. Використання агрегатних функцій, групування даних.\r\n7. З’єднання таблиць\r\n8. Підзапити. Оптимізація SQL запитів.\r\n9. Мова SQL DML для зміни даних.",
+            "creationDate": new
+            ISODate(
+            "2023-08-23T18:23:51.629Z"
+            )
+          }
+        }
+      ],
+      "taskConditions": [
+        {
+          "_id": new
+          NumberLong(
+          "112"
+          ),
+          "value": "where",
+          "type": "CONTAINS"
+        }
+      ],
+      "coef": 1,
+      "requiredCommand": "where",
+      "code": "4_2",
+      "createDate": new
+      ISODate(
+      "2023-10-04T00:00:00.000Z"
+      )
+    },
+    "status": "GRADED",
+    "grade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "teacherGrade": {
+      "value": 0,
+      "comment": "Not answered"
+    },
+    "answerDate": new
+    ISODate(
+    "2023-10-11T08:40:53.024Z"
+    ),
+    "timeSpent": new
+    NumberLong(
+    "0"
+    )
+  }
+]
