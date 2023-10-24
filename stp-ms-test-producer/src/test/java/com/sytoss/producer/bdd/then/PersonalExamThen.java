@@ -44,7 +44,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
-    @Then("^operation should be finished with (.*) error$")
+    @Then("^operation should finish with (.*) error$")
     public void operationShouldBeFinishWithError(Integer statusCode) {
         assertEquals(statusCode, getTestExecutionContext().getDetails().getStatusCode());
     }

@@ -32,4 +32,4 @@ Feature: Summary
       | DDl            | 4      | get all from houses table   | SELECT * FROM trees       | GRADED      | 0     | answer uncorrect |
       | DML            | 5      | get all from orders table   | SELECT * FROM orders      | GRADED      | 0     | answer uncorrect |
     When student path to summary to exam with id 123abc123
-    Then operation should be finished with 403 error
+    Then operation should finish with 403 error
