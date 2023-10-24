@@ -44,6 +44,11 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
+    @Then("^operation should be finished with (.*) error$")
+    public void operationShouldBeFinishWithError(Integer statusCode) {
+        assertEquals(statusCode, getTestExecutionContext().getDetails().getStatusCode());
+    }
+
     @Then("^response should return (.*) personal exam for student (.*) from (.*)$")
     public void responseShouldReturnPersonalExam(String examName, Long studentId, String date, List<Answer> answers) throws ParseException {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();

@@ -94,6 +94,17 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 
+    @When("^student path to summary to exam with id (.*)$")
+    public void studentPathToSummary(String personalExamId) {
+        String url = URI + "personal-exam/" + personalExamId + "/summary";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Student"));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
+        getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
     private Long getTopicId(String name) {
         if ("Join".equals(name)) {
             return 1L;
