@@ -105,7 +105,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void getDisciplineIcon() {
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/icon";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         getTestExecutionContext().setResponse(responseEntity);

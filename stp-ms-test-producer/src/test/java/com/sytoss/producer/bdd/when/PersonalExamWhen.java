@@ -73,7 +73,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
 
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, httpHeaders);
         String url = getBaseUrl() + URI + "personal-exam/create";
@@ -87,7 +87,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
     public void theExamIsDoneOnTask(String examId) {
         String url = URI + "personal-exam/" + examId + "/summary";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "teacher"));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);

@@ -3,7 +3,7 @@ Feature: Summary
   Background:
     Given teacher "John" "Do" with "teacher@domain.com" email exists
 
-  Scenario: student path to summary when all tasks are graded
+  Scenario: teacher path to summary when all tasks are graded
     Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023
       | listOfSubjects | taskId | question                    | answer                    | task status | grade | comment          |
       | DML            | 1      | get all from tasks table    | SELECT * FROM tasks       | GRADED      | 1     | answer correct   |
@@ -23,7 +23,7 @@ Feature: Summary
       | get all from orders table   | SELECT * FROM orders      | GRADED      | 1     | answer correct   |
 
 
-  Scenario: student path to summary when not all tasks are graded
+  Scenario: teacher path to summary when not all tasks are graded
     Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023
       | listOfSubjects | taskId | question                    | answer                    | task status | grade | comment          |
       | DML            | 1      | get all from tasks table    | SELECT * FROM tasks       | GRADED      | 1     | answer correct   |
