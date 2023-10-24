@@ -75,6 +75,7 @@ Feature: Task
     Then operation is successful
     And "Select" condition with CONTAINS type should be in task with question "What are the different subsets of SQL?"
 
+    @Bug
   Scenario: Check current correct student's answer
     Given "First Domain" task domain exists
     When request is "select * from Discipline" sent to check this request for this task domain

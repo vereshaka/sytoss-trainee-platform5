@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "TASK_DOMAIN")
-public class TaskDomainDTO {
+public class TaskDomainDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

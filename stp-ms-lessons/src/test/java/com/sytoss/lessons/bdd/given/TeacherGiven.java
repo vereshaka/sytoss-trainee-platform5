@@ -27,22 +27,8 @@ public class TeacherGiven extends LessonsIntegrationTest {
     @Given("^teachers have groups")
     public void teachersHaveGroups(DataTable dataTable) {
         List<Map<String, String>> rows = dataTable.asMaps();
-        getListOfGroupsFromDataTable(rows);
-    }
-
-    private void getListOfGroupsFromDataTable(List<Map<String, String>> rows) {
         for (Map<String, String> columns : rows) {
-            String index = columns.get("teacherId");
-            Long teacherId = getTestExecutionContext().getIdMapping().get(index);
-            if (teacherId == null) {
-                teacherId = 10L;
-                if (!getTestExecutionContext().getIdMapping().isEmpty()) {
-                    Long maxId = Collections.max(getTestExecutionContext().getIdMapping().entrySet(),
-                            Map.Entry.comparingByValue()).getValue();
-                    teacherId = maxId + 1;
-                }
-                getTestExecutionContext().getIdMapping().put(index, teacherId);
-            }
+            Long teacherId = Long.valueOf(columns.get("teacherId"));
 
             String disciplineName = columns.get("discipline");
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, teacherId);

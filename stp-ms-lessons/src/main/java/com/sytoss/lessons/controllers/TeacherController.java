@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
@@ -40,6 +41,7 @@ public class TeacherController {
         return disciplineService.findDisciplines();
     }
 
+    @JsonView({Group.TeacherGroups.class})
     @Operation(description = "Method that retrieve disciplines by teacher")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

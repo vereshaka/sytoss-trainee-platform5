@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "TASK")
-public class TaskDTO {
+public class TaskDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

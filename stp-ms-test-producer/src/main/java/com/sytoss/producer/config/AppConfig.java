@@ -62,7 +62,7 @@ public class AppConfig {
             public Map<String, Object> convert(Map<String, Object> claims) {
                 Map<String, Object> convertedClaims = this.delegate.convert(claims);
                 try {
-                    LinkedHashMap<String, Object> user = (LinkedHashMap<String, Object>) userConnector.getMyProfile();
+                    Map<String, Object> user = (Map<String, Object>) userConnector.getMyProfile();
                     if (!user.containsKey("primaryGroup")) {
                         Teacher teacher = new Teacher();
                         userConvertor.toTeacher(user, teacher);

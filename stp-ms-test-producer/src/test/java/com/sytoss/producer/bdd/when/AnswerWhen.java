@@ -3,6 +3,7 @@ package com.sytoss.producer.bdd.when;
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -38,8 +40,14 @@ public class AnswerWhen extends TestProducerIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), String.valueOf(getTestExecutionContext().getDetails().getStudentId())));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        String url = "/api/personal-exam/" + personalExamId + "/task/answer";
-        HttpEntity<String> request = new HttpEntity<>(answer, httpHeaders);
+
+        String url = "/api/personal-exam/" + getTestExecutionContext().replaceId(personalExamId) + "/task/answer";
+
+        AnswerModule body = new AnswerModule();
+        body.setAnswer(answer);
+        body.setAnswerUIDate(new Date());
+        body.setTimeSpent(1000L);
+        HttpEntity<AnswerModule> request = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
         getTestExecutionContext().getDetails().setResponse(responseEntity);

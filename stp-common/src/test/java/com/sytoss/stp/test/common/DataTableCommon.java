@@ -89,7 +89,7 @@ public class DataTableCommon {
     }
 
     @DataTableType
-    public Group mapGroupsDTO(Map<String, String> entry) {
+    public Group mapGroups(Map<String, String> entry) {
         Long groupId = Long.parseLong(entry.get("group"));
         Group group = new Group();
         group.setId(groupId);
