@@ -170,7 +170,7 @@ public class TaskDomainService {
             if (Objects.isNull(taskDomainDTO.getDataImageName())) {
                 taskDomainDTO.setDataImageName(imageProviderConnector.saveImage(dataImage));
             } else {
-                imageProviderConnector.saveImageByteWithName(taskDomainDTO.getDataImageName(), dbImage);
+                imageProviderConnector.saveImageByteWithName(taskDomainDTO.getDataImageName(), dataImage);
             }
         } catch (Exception exception) {
             log.warn("Could not update or generate image for task domain: {}", exception.getMessage());
