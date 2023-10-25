@@ -4,12 +4,12 @@ import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.ExamReportModel;
-import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskReportModel;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ExamAssigneeConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,8 @@ public class PersonalExamService extends AbstractService {
 
     private final ObjectProvider<ExcelBuilder> excelBuilderFactory;
 
+    private final AnswerGenerator answerGenerator;
+
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
         Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
@@ -55,7 +57,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
-        List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
+        List<Answer> answers = answerGenerator.generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
         double sumOfCoef = 0;
         for (Answer answer : answers) {
@@ -66,22 +68,6 @@ public class PersonalExamService extends AbstractService {
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
-    }
-
-    private List<Answer> generateAnswers(int numberOfTasks, List<Task> tasks) {
-        List<Answer> answers = new ArrayList<>();
-        for (int i = 0; i <= numberOfTasks - 1; i++) {
-            Random random = new Random();
-            int numTask = random.nextInt(tasks.size());
-            Task task = tasks.get(numTask);
-            Answer answer = new Answer();
-            answer.setId((long) (i + 1));
-            answer.setStatus(AnswerStatus.NOT_STARTED);
-            answer.setTask(task);
-            answers.add(answer);
-            tasks.remove(task);
-        }
-        return answers;
     }
 
     public boolean taskDomainIsUsed(Long taskDomainId) {
