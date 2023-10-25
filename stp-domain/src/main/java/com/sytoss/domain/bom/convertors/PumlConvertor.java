@@ -22,7 +22,7 @@ import java.util.*;
 public class PumlConvertor {
 
     public List<Table> parse(String pumlScript) {
-        String boundary = UUID.randomUUID().toString();
+        String boundary = UUID.randomUUID().toString() + "-";
         String workedScript = pumlScript
                 .replaceAll("table", boundary + "table")
                 .replaceAll("data", boundary + "data");
@@ -87,8 +87,13 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
+        if (tableName.startsWith("ble")) {
+            log.error("Im here!!");
+        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
+
         if (result == null) {
+            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();

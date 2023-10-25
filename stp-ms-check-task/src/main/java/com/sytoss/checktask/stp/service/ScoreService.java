@@ -114,7 +114,7 @@ public class ScoreService {
             try {
                 result = helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
-                throw new RequestIsNotValidException(e.getMessage());
+                throw new RequestIsNotValidException(e.getMessage(), e);
             }
             return result;
         } finally {

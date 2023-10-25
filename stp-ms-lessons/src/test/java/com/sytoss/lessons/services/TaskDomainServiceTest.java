@@ -23,7 +23,9 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,6 +43,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 public class TaskDomainServiceTest extends StpUnitTest {
 
     @InjectMocks
@@ -267,6 +270,37 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
     }
+
+
+   @Test
+   @Disabled
+   public void multithreadPumlConvertor(){
+       List<Thread> threads = new ArrayList<>();
+       final String pumlScript = FileUtils.readFromFile("puml/script_v1.puml");
+       for (int i=0;i<500;i++){
+           final int index = i;
+           threads.add(new Thread(new Runnable() {
+               @Override
+               public void run() {
+                   log.info("Start thread#" + index);
+                   //  assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
+                   //assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
+                   assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
+                   log.info("Stop thread#" + index);
+               }
+           }));
+       }
+       for (Thread th: threads){
+           th.start();
+       }
+       for (Thread th: threads){
+           try {
+               th.join();
+           } catch (InterruptedException e) {
+               //throw new RuntimeException(e);
+           }
+       }
+   }
 
     @Test
     void getCountOfTasks() {
