@@ -14,6 +14,8 @@ import com.sytoss.lessons.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -76,15 +78,17 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public List<Discipline> findDisciplines() {
-        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
-        List<Discipline> result = new ArrayList<>();
-        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
-            Discipline discipline = new Discipline();
-            disciplineConvertor.fromDTO(disciplineDTO, discipline);
-            result.add(discipline);
-        }
-        return result;
+    public Page<Discipline> findDisciplines(int pageNo, int pageSize) {
+        Page<Discipline> page = disciplineConnector
+                .findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId(), PageRequest.of(pageNo, pageSize))
+                .map(this::convert);
+        return page;
+    }
+
+    private Discipline convert(DisciplineDTO disciplineDTO){
+        Discipline discipline = new Discipline();
+        disciplineConvertor.fromDTO(disciplineDTO, discipline);
+        return discipline;
     }
 
     public List<Task> findTasksByDisciplineId(Long id) {

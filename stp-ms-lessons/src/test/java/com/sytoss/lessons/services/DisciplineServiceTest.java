@@ -16,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -133,15 +136,15 @@ public class DisciplineServiceTest extends StpUnitTest {
         Object credential = null;
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        List<DisciplineDTO> input = new ArrayList<>();
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(1L);
         disciplineDTO.setName("SQL");
         disciplineDTO.setTeacherId(1L);
-        input.add(disciplineDTO);
-        when(disciplineConnector.findByTeacherIdOrderByCreationDateDesc(1L)).thenReturn(input);
-        List<Discipline> result = disciplineService.findDisciplines();
-        assertEquals(1, result.size());
+        List<DisciplineDTO> disciplines = List.of(disciplineDTO);
+        Page<DisciplineDTO> input = new PageImpl<>(disciplines);
+        when(disciplineConnector.findByTeacherIdOrderByCreationDateDesc(1L, PageRequest.of(1,1))).thenReturn(input);
+        Page<Discipline> result = disciplineService.findDisciplines(1,1);
+        assertEquals(1, result.getContent().size());
     }
 
     @Test
