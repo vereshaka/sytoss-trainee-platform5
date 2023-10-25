@@ -3,6 +3,7 @@ Feature: PersonalExam
   Background:
     Given student "John" "Do" with "student@domain.com" email exists
 
+  @Bug
   Scenario: system create personal exam
     Given tasks exist
       | discipline | topic           | task       |
@@ -53,6 +54,7 @@ Feature: PersonalExam
     Then operation is successful
     And should return "true"
 
+  @Bug
   Scenario: system create personal exam with a photo retrieve
     Given tasks exist
       | discipline | topic           | task       |

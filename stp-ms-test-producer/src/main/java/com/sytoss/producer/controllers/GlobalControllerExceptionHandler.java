@@ -52,4 +52,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(ExamNotFoundException examNotFoundException) {
         return ResponseEntity.status(404).body(new ApplicationError(examNotFoundException));
     }
+
+    @ExceptionHandler({TaskCountNotValidException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(TaskCountNotValidException taskCountNotValidException) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskCountNotValidException));
+    }
 }
