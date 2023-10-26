@@ -169,7 +169,6 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         GroupsIds groupsIds = new GroupsIds();
         groupsIds.setGroupsIds(List.of(1L, 2L));
         HttpEntity<?> httpEntity = new HttpEntity<>(groupsIds, httpHeaders);
@@ -190,5 +189,14 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
         ResponseEntity<Discipline> result = doDelete("/api/discipline/1/delete", requestEntity, Discipline.class);
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldLinkGroupToDisciplineAndGetIt() {
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Void> result = doPost("/api/discipline/2/group/5", httpEntity, Void.class);
+        assertEquals(200, result.getStatusCode().value());
+
     }
 }

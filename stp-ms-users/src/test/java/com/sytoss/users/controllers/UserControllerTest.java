@@ -1,5 +1,6 @@
 package com.sytoss.users.controllers;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
@@ -82,7 +83,10 @@ public class UserControllerTest extends StpApplicationTest {
 
     @Test
     public void shouldReturnStudentGroups() {
-        when(userService.findByStudent()).thenReturn(List.of(new Group()));
+        Teacher teacher = createTeacher("Teacher","1");
+        Discipline discipline = createDiscipline("SQL",teacher);
+        Group group = createGroup("AT-18",discipline);
+        when(userService.findByStudent()).thenReturn(List.of(group));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);

@@ -1,7 +1,6 @@
 package com.sytoss.stp.test;
 
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,7 @@ public abstract class StpUnitTest {
     protected Group createGroup(String groupName, Discipline discipline) {
         Group group = new Group();
         group.setName(groupName);
-        group.setDiscipline(discipline);
+        group.setDisciplines(List.of(discipline));
         return group;
     }
 

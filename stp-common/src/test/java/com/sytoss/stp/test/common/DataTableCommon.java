@@ -97,7 +97,7 @@ public class DataTableCommon {
             Long disciplineId = Long.parseLong(entry.get("discipline"));
             Discipline discipline = new Discipline();
             discipline.setId(disciplineId);
-            group.setDiscipline(discipline);
+            group.setDisciplines(List.of(discipline));
         }
         return group;
     }

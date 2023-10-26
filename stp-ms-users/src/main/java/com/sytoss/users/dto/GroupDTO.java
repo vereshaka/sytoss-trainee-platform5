@@ -26,6 +26,4 @@ public class GroupDTO extends Auditable {
             joinColumns = @JoinColumn(name = "GROUP_ID"),
             inverseJoinColumns = @JoinColumn(name = "STUDENT_ID"))
     private List<StudentDTO> students;
-
-
 }

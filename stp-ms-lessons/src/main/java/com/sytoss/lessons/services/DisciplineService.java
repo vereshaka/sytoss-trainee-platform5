@@ -125,7 +125,7 @@ public class DisciplineService extends AbstractService {
         for (GroupReferenceDTO item : groups) {
             Group group = new Group();
             group.setId(item.getGroupId());
-            group.setDiscipline(discipline);
+            group.setDisciplines(List.of(discipline));
             result.add(group);
         }
         return result;

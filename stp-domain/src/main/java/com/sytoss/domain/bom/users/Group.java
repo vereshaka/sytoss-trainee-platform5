@@ -5,6 +5,8 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class Group {
@@ -15,7 +17,7 @@ public class Group {
     private String name;
 
     @JsonView({Group.TeacherGroups.class})
-    private Discipline discipline;
+    private List<Discipline> disciplines;
 
     private int countOfStudents;
 

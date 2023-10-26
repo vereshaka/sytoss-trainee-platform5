@@ -3,15 +3,12 @@ package com.sytoss.users.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.users.connectors.ExamAssigneeConnector;
-import com.sytoss.users.connectors.GroupConnector;
-import com.sytoss.users.connectors.ImageProviderConnector;
-import com.sytoss.users.connectors.UserConnector;
+import com.sytoss.users.connectors.*;
 import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
@@ -24,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,6 +49,8 @@ public class UserService extends AbstractStpService {
     private final ImageProviderConnector imageProviderConnector;
 
     private final ExamAssigneeConnector examAssigneeConnector;
+
+    private final DisciplineConnector disciplineConnector;
 
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
@@ -240,8 +238,10 @@ public class UserService extends AbstractStpService {
         StudentDTO studentDTO = (StudentDTO) getMeAsDto();
         List<Group> groups = new ArrayList<>();
         studentDTO.getGroups().forEach((groupDTO) -> {
+            List<Discipline> disciplines = disciplineConnector.getDisciplinesByGroupId(groupDTO.getId());
             Group group = new Group();
             groupConvertor.fromDTO(groupDTO, group);
+            group.setDisciplines(disciplines);
             groups.add(group);
         });
         return groups;

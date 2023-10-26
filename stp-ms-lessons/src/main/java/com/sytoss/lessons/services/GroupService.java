@@ -30,7 +30,7 @@ public class GroupService extends AbstractService {
                 disciplineConvertor.fromDTO(referenceDTO.getDiscipline(), discipline);
                 Group group = new Group();
                 group.setId(referenceDTO.getGroupId());
-                group.setDiscipline(discipline);
+                group.setDisciplines(List.of(discipline));
                 if (groups.stream().filter(item -> item.getId().equals(referenceDTO.getGroupId())).toList().size() == 0) {
                     groups.add(group);
                 }

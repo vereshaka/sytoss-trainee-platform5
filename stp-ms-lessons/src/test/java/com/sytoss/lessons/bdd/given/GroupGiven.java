@@ -1,5 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
@@ -19,10 +20,12 @@ public class GroupGiven extends LessonsIntegrationTest {
         List<Long> groupId = new ArrayList<>();
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
         for(Group group : groups){
-            DisciplineDTO disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setId(group.getDiscipline().getId());
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(),disciplineDTO);
-            groupReferenceDTOS.add(groupReferenceDTO);
+            for(Discipline discipline : group.getDisciplines()){
+                DisciplineDTO disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setId(discipline.getId());
+                GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(),disciplineDTO);
+                groupReferenceDTOS.add(groupReferenceDTO);
+            }
         }
 
         for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {

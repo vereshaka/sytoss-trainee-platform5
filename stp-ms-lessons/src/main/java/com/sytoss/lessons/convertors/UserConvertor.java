@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -35,7 +36,7 @@ public class UserConvertor {
         if (source.get("discipline") != null) {
             toDiscipline((LinkedHashMap<String, Object>) source.get("discipline"), discipline);
         }
-        destination.setDiscipline(discipline);
+        destination.setDisciplines(List.of(discipline));
         destination.setId(Long.valueOf((Integer) source.get("id")));
         destination.setName((String) source.get("name"));
     }
