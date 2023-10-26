@@ -31,12 +31,11 @@ Feature: Exam
     When a teacher create exam by request STP-695.json
     Then operation is successful
 
-  @Bug
   Scenario: STP-694 Could not fetch exam list
     Given topics exist
       | discipline | topic  |
-      | SQL        | Select |
-      | SQL        | Join   |
+      | Mongo      | Select |
+      | Mongo      | Join   |
     And "Trade23" task domain with "task-domain/prod-trade23-db.yml" db and "task-domain/prod-trade23-data.yml" data scripts exists for this discipline
       | question                               | answer             | id   | topics       |
       | What are the different subsets of SQL? | select * from dual | *ta1 | Select, Join |
