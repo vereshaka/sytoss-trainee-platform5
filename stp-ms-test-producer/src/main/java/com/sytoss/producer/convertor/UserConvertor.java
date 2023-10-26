@@ -7,7 +7,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class UserConvertor {
         Discipline discipline = new Discipline();
         if (source.get("discipline") != null) {
             toDiscipline((Map<String, Object>) source.get("discipline"), discipline);
-            destination.setDiscipline(discipline);
+            destination.setDisciplines(List.of(discipline));
         }
         destination.setId(Long.valueOf((Integer) source.get("id")));
         destination.setName((String) source.get("name"));

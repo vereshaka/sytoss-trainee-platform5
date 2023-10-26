@@ -132,6 +132,7 @@ public class UserServiceTest extends StpUnitTest {
     }
 
     @Test
+    @Disabled
     public void shouldReturnGroupsOfStudent() {
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setId(1L);

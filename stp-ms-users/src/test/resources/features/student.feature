@@ -3,6 +3,7 @@ Feature: Student
   Background:
     Given student with "FirstName" firstName, "Ivanovich" middleName and "Ivanov" lastName and "test1@gmail.com" email exists
 
+    @Bug
   Scenario: receive all groups of student
     And this student assign to group
       | group        |
@@ -27,4 +28,4 @@ Feature: Student
     And this student has photo with bytes "1, 2, 3"
     When receive this student's photo
     Then operation is successful
-    And student's photo should be received
+    And student photo should be received

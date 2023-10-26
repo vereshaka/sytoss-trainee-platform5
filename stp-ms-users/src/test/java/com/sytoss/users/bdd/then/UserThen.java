@@ -5,7 +5,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.UserDTO;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
@@ -56,7 +55,7 @@ public class UserThen extends UsersIntegrationTest {
         assertArrayEquals(photo, userPhoto);
     }
 
-    @Then("^student's photo should be received$")
+    @Then("^student photo should be received$")
     public void userPhotoShouldBeReceived() {
         UserDTO studentDTO = getUserConnector().getByUid(getTestExecutionContext().getDetails().getUser().getUid());
         byte[] photo = (byte[]) getTestExecutionContext().getResponse().getBody();
