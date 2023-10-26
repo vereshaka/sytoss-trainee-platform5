@@ -3,6 +3,7 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
+import com.sytoss.users.connectors.DisciplineConnector;
 import com.sytoss.users.connectors.ExamAssigneeConnector;
 import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
@@ -53,6 +54,9 @@ public class UserServiceTest extends StpUnitTest {
 
     @InjectMocks
     private UserService userService;
+
+    @Mock
+    private DisciplineConnector disciplineConnector;
 
     @BeforeEach
     protected void initSecurityContext() {
@@ -132,7 +136,6 @@ public class UserServiceTest extends StpUnitTest {
     }
 
     @Test
-    @Disabled
     public void shouldReturnGroupsOfStudent() {
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setId(1L);
