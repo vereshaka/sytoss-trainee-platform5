@@ -10,7 +10,7 @@ import java.util.List;
 public class ResponseObject<T> {
 
     private List<T> data;
-    private List<FilterField> filter;
+    private List<FilterItem> filters;
     private PagingInfo paging;
 
 }

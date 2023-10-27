@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FilterField {
+public class FilterItem {
 
     private String fieldName;
     private String value;

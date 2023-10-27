@@ -8,14 +8,21 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -78,17 +85,25 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public Page<Discipline> findDisciplines(int pageNo, int pageSize) {
-        Page<Discipline> page = disciplineConnector
-                .findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId(), PageRequest.of(pageNo, pageSize))
-                .map(this::convert);
-        return page;
-    }
+    public Page<Discipline> findDisciplines(int pageNo, int pageSize, List<FilterItem> filters) {
+        Specification<DisciplineDTO> teacherSpec = (root, query, builder) ->
+                builder.equal(root.get("teacherId"), getCurrentUser().getId());
 
-    private Discipline convert(DisciplineDTO disciplineDTO){
-        Discipline discipline = new Discipline();
-        disciplineConvertor.fromDTO(disciplineDTO, discipline);
-        return discipline;
+        FilterItem nameFilterItem = filters.stream()
+                .filter(filter -> filter.getFieldName().equals("name"))
+                .findFirst().get();
+
+        if (StringUtils.isNotEmpty(nameFilterItem.getValue())) {
+            Specification<DisciplineDTO> disciplineNameSpec = (root, query, builder) ->
+                    builder.like(root.get("name"), "%" + nameFilterItem.getValue() + "%");
+            teacherSpec = teacherSpec.and(disciplineNameSpec);
+        }
+
+        Page<Discipline> page = disciplineConnector
+                .findAll(teacherSpec, PageRequest.of(pageNo, pageSize))
+                .map(this::convert);
+
+        return page;
     }
 
     public List<Task> findTasksByDisciplineId(Long id) {
@@ -221,4 +236,11 @@ public class DisciplineService extends AbstractService {
             return discipline;
         }).collect(Collectors.toList());
     }
+
+    private Discipline convert(DisciplineDTO disciplineDTO){
+        Discipline discipline = new Discipline();
+        disciplineConvertor.fromDTO(disciplineDTO, discipline);
+        return discipline;
+    }
+
 }

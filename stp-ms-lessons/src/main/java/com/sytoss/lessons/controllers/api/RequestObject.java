@@ -9,6 +9,6 @@ import java.util.List;
 @Setter
 public class RequestObject {
 
-    private List<FilterField> filter;
+    private List<FilterItem> filter;
 
 }

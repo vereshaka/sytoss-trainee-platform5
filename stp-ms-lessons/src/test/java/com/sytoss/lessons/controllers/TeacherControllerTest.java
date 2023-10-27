@@ -20,7 +20,7 @@ public class TeacherControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() throws JOSEException {
-        when(disciplineService.findDisciplines(1,1)).thenReturn(Page.empty());
+        when(disciplineService.findDisciplines(1,1, new ArrayList<>())).thenReturn(Page.empty());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> result = doGet("/api/teacher/my/disciplines", httpEntity, new ParameterizedTypeReference<List<Discipline>>() {
