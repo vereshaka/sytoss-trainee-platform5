@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/task")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 public class TaskController {
 
     private final TaskService taskService;

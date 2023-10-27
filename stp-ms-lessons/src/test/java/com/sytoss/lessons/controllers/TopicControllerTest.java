@@ -11,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,16 +20,15 @@ import static org.mockito.Mockito.when;
 
 public class TopicControllerTest extends LessonsControllerTest {
 
-
     @Test
     public void shouldAssignTaskToTopic() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         TaskIds taskIds = new TaskIds();
-        taskIds.setTaskIds(List.of(1L,2L,3L));
+        taskIds.setTaskIds(List.of(1L, 2L, 3L));
         HttpEntity<TaskIds> requestEntity = new HttpEntity<>(taskIds, httpHeaders);
 
-        when(taskService.assignTasksToTopic(anyLong(), any(ArrayList.class))).thenReturn(List.of(new Task()));
+        when(taskService.assignTasksToTopic(anyLong(), any())).thenReturn(List.of(new Task()));
 
         ResponseEntity<List<Task>> result = doPost("/api/topic/1/assign/tasks", requestEntity, new ParameterizedTypeReference<>() {
         });

@@ -30,8 +30,7 @@ public class GroupWhen extends LessonsIntegrationTest {
     @When("^receive all groups by teacher with id (.*)")
     public void receiveAllGroupsByTeacherWithId(Integer teacherId) {
         String url = "/api/teacher/my/groups";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "123", "123", "123", "123"));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", teacherId);

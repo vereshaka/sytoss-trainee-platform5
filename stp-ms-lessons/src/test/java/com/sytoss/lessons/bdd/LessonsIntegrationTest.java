@@ -16,6 +16,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+
 @Getter
 @CucumberContextConfiguration
 @ExtendWith(SpringExtension.class)
@@ -79,5 +81,10 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Override
     protected LessonsDetails createDetails() {
         return new LessonsDetails();
+    }
+
+    @Override
+    protected String getToken() {
+        return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Teacher");
     }
 }

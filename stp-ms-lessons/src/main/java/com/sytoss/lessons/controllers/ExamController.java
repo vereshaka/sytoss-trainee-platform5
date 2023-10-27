@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 @RestController
 @RequestMapping("/api/exam")
 @RequiredArgsConstructor
