@@ -22,7 +22,7 @@ import java.util.*;
 public class PumlConvertor {
 
     public List<Table> parse(String pumlScript) {
-        String boundary = UUID.randomUUID().toString();
+        String boundary = UUID.randomUUID().toString() + "-";
         String workedScript = pumlScript
                 .replaceAll("table", boundary + "table")
                 .replaceAll("data", boundary + "data");
@@ -87,8 +87,13 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
+        if (tableName.startsWith("ble")) {
+            log.error("Im here!!");
+        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
+
         if (result == null) {
+            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
@@ -195,7 +200,7 @@ public class PumlConvertor {
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);
                 } else {
-                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : rows.getValue()).append(StringUtils.LF);
+                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : "\"" + rows.getValue() + "\"").append(StringUtils.LF);
                 }
 
             }
@@ -300,21 +305,19 @@ public class PumlConvertor {
     public String createObject(Table table) {
         StringBuilder initTableStringBuilder = new StringBuilder();
         initTableStringBuilder.append("object \"").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
-        List<String> columnsName = table.getColumns().stream().map(Column::getName).toList();
+        Set<String> columnsName = table.getRows().get(0).getValues().keySet();
         String delimiter = "|= ";
         String header = delimiter + String.join(" " + delimiter, columnsName) + " |";
         initTableStringBuilder.append(header).append(StringUtils.LF);
 
         for (DataRow dataRow : table.getRows()) {
-            if (dataRow.getValues().size() < table.getColumns().size()) {
-                StringBuilder rawBuilder = new StringBuilder("| ");
-                for (Column column : table.getColumns()) {
-                    String value = dataRow.getValues().get(column.getName());
-                    value = value != null ? value : "null";
-                    rawBuilder.append(value).append(" | ");
-                }
-                dataRow.setRaw(rawBuilder.toString());
+            StringBuilder rawBuilder = new StringBuilder("| ");
+            for (String column : columnsName) {
+                String value = dataRow.getValues().get(column);
+                value = value != null ? value : "null";
+                rawBuilder.append(value).append(" | ");
             }
+            dataRow.setRaw(rawBuilder.toString());
             initTableStringBuilder.append(dataRow.getRaw()).append(StringUtils.LF);
         }
 

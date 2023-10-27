@@ -54,7 +54,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         }
 
         if (getTestExecutionContext().getIdMapping().get(disciplineId) != null) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getById(getTestExecutionContext().getIdMapping().get(disciplineId));
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getById((Long)getTestExecutionContext().getIdMapping().get(disciplineId));
             getDisciplineConnector().delete(disciplineDTO);
         }
 

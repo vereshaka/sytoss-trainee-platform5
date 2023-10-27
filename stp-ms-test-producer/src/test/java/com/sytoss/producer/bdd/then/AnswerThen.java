@@ -21,6 +21,11 @@ public class AnswerThen extends TestProducerIntegrationTest {
         Question firstTask = getTestExecutionContext().getDetails().getFirstTaskResponse().getBody();
     }
 
+    @Then("^status of first answer of \"(.*)\" exam for this student should be \"(.*)\"$")
+    public void answerShouldHaveStatus(String examName,  String answerStatus) {
+        answerShouldHaveStatus(examName, getTestExecutionContext().getDetails().getStudentUid(), answerStatus);
+    }
+
     @Then("^status of first answer of \"(.*)\" exam for student with (.*) id should be \"(.*)\"$")
     public void answerShouldHaveStatus(String examName, String studentId, String answerStatus) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
@@ -31,7 +36,7 @@ public class AnswerThen extends TestProducerIntegrationTest {
     @Then("^answer with id (.*) of personal exam with id (.*) should have value \"(.*)\" and change status to (.*) and grade (.*)$")
     public void taskWithNumberShouldHaveAnswer(String answerId, String examId, String string, String status, String grade) {
 
-        PersonalExam personalExam = getPersonalExamConnector().getById(examId);
+        PersonalExam personalExam = getPersonalExamConnector().getById(getTestExecutionContext().replaceId(examId).toString());
 
         Optional<Answer> foundAnswer = personalExam.getAnswers().stream()
                 .filter(answerTmp -> answerTmp.getId().equals(Long.parseLong(answerId)))
@@ -44,14 +49,12 @@ public class AnswerThen extends TestProducerIntegrationTest {
         Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
     }
 
-    @Then("response should return next task")
-    public void responseShouldReturnNextTask(Answer answer) throws JsonProcessingException {
+    @Then("^response should return next task with number (.*)$")
+    public void responseShouldReturnNextTask(Integer taskNumber) throws JsonProcessingException {
 
-        Answer nextAnswer = getMapper().readValue(getTestExecutionContext().getDetails().getResponse().getBody(), Answer.class);
+        Question nextAnswer = getMapper().readValue(getTestExecutionContext().getDetails().getResponse().getBody(), Question.class);
 
-        Assertions.assertEquals(answer.getId(), nextAnswer.getId());
-        Assertions.assertEquals(answer.getTask().getQuestion(), nextAnswer.getTask().getQuestion());
-        Assertions.assertNotNull(nextAnswer.getTask());
-        Assertions.assertEquals(answer.getStatus(), nextAnswer.getStatus());
+        Assertions.assertEquals(taskNumber, nextAnswer.getTask().getQuestionNumber());
+
     }
 }

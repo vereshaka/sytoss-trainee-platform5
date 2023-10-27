@@ -10,13 +10,16 @@ import lombok.Setter;
 @Setter
 public class Group {
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    @JsonView({Group.TeacherGroups.class,PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Long id;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String name;
 
+    @JsonView({Group.TeacherGroups.class})
     private Discipline discipline;
 
     private int countOfStudents;
+
+    public static class TeacherGroups {}
 }

@@ -1,16 +1,13 @@
 package com.sytoss.users.bdd.then;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import jakarta.transaction.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,4 +50,6 @@ public class GroupThen extends UsersIntegrationTest {
         }
         assertEquals(students.size(), count);
     }
+
+
 }

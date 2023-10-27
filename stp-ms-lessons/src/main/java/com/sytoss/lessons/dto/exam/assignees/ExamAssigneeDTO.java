@@ -1,5 +1,6 @@
 package com.sytoss.lessons.dto.exam.assignees;
 
+import com.sytoss.lessons.dto.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Setter
 @Entity(name = "EXAM_ASSIGNEE")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class ExamAssigneeDTO {
+public class ExamAssigneeDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -35,5 +36,5 @@ public class ExamAssigneeDTO {
 
     @ManyToOne
     @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID")
-    private ExamDTO exam;
+    private ExamDTO exam = new ExamDTO();
 }

@@ -28,6 +28,6 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({RequestIsNotValidException.class})
     public ResponseEntity<?> handleValidationException(RequestIsNotValidException requestIsNotValidException) {
         log.error("Global Exception Handler", requestIsNotValidException);
-        return ResponseEntity.status(406).body(requestIsNotValidException.getMessage());
+        return ResponseEntity.status(406).body(new ApplicationError(requestIsNotValidException));
     }
 }

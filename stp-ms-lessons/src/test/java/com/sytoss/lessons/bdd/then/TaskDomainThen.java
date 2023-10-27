@@ -87,7 +87,7 @@ public class TaskDomainThen extends LessonsIntegrationTest {
             Task task = dataTableCommon.mapTasks(row);
             String id = row.get("taskDomainId");
             TaskDomain taskDomain = new TaskDomain();
-            taskDomain.setId(getTestExecutionContext().getIdMapping().get(id));
+            taskDomain.setId((Long)getTestExecutionContext().getIdMapping().get(id));
             task.setTaskDomain(taskDomain);
             tasksFromTable.add(task);
         }

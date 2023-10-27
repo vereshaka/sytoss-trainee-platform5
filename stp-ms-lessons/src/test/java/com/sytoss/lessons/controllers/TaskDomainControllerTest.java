@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -99,7 +100,7 @@ public class TaskDomainControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<TaskDomainModel> responseEntity = doGet("/api/task-domain/1/overview", httpEntity, TaskDomainModel.class);
         Assertions.assertEquals(200, responseEntity.getStatusCode().value());
-        Assertions.assertEquals(1, responseEntity.getBody().getCountOfTasks());
+        Assertions.assertEquals(1, Objects.requireNonNull(responseEntity.getBody()).getCountOfTasks());
     }
 
 

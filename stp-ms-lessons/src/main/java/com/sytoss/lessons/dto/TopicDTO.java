@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "TOPIC")
-public class TopicDTO {
+public class TopicDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

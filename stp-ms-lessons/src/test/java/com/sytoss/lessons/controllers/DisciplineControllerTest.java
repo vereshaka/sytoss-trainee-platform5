@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.dto.GroupsIds;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -168,12 +169,25 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         GroupsIds groupsIds = new GroupsIds();
         groupsIds.setGroupsIds(List.of(1L, 2L));
         HttpEntity<?> httpEntity = new HttpEntity<>(groupsIds, httpHeaders);
 
         ResponseEntity<Void> result = doPost("/api/discipline/1/assign/groups", httpEntity, Void.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldDeleteDiscipline() {
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        discipline.setName("SQL");
+        discipline.setTeacher(new Teacher());
+        when(disciplineService.getById(any())).thenReturn(discipline);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<Discipline> result = doDelete("/api/discipline/1/delete", requestEntity, Discipline.class);
         assertEquals(200, result.getStatusCode().value());
     }
 }

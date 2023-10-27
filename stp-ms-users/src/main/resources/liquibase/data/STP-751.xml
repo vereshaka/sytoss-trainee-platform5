@@ -1,0 +1,51 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-176.xml">
+
+    <changeSet author="IgorI" id="STP-751">
+        <addColumn tableName="APP_USER">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="GROUPS">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <addColumn tableName="group2student">
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="group2student" columnName="CREATED_BY" />
+            <dropColumn tableName="group2student" columnName="CREATED_DATE" />
+            <dropColumn tableName="group2student" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="group2student" columnName="LAST_MODIFIED_DATE" />
+        </rollback>
+
+        <rollback>
+            <dropColumn tableName="APP_USER" columnName="CREATED_BY" />
+            <dropColumn tableName="APP_USER" columnName="CREATED_DATE" />
+            <dropColumn tableName="APP_USER" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="APP_USER" columnName="LAST_MODIFIED_DATE" />
+        </rollback>
+
+        <rollback>
+            <dropColumn tableName="GROUPS" columnName="CREATED_BY" />
+            <dropColumn tableName="GROUPS" columnName="CREATED_DATE" />
+            <dropColumn tableName="GROUPS" columnName="LAST_MODIFIED_BY" />
+            <dropColumn tableName="GROUPS" columnName="LAST_MODIFIED_DATE" />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

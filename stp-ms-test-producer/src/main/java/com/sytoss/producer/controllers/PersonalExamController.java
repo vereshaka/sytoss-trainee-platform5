@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -27,6 +28,7 @@ public class PersonalExamController {
     @Autowired
     private AnswerService answerService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -37,6 +39,7 @@ public class PersonalExamController {
         return personalExamService.create(examConfiguration);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that return personal exam with summary grade")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -148,6 +151,7 @@ public class PersonalExamController {
         return personalExamService.getByStudentId(userId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that return personal exams by user id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -158,6 +162,7 @@ public class PersonalExamController {
         return personalExamService.getByTeacherId(userId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that change personal exam status to reviewed")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -177,6 +182,7 @@ public class PersonalExamController {
         return personalExamService.getQuestionImage(personalExamId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that update all personal exams by exam id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -187,6 +193,7 @@ public class PersonalExamController {
         return personalExamService.reschedule(examConfiguration);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve personal exams by exam id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -199,6 +206,7 @@ public class PersonalExamController {
         return personalExamService.getByExamAssigneeId(examAssigneeId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that delete personal exam by exam id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -211,6 +219,7 @@ public class PersonalExamController {
         return personalExamService.deleteByExamAssigneeId(examAssigneeId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that delete personal exams by exam assignee ids")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -224,6 +233,7 @@ public class PersonalExamController {
         return personalExamService.deleteByExamAssigneeIds(examAssigneeIds);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that change personal exam status to reviewed")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -233,4 +243,29 @@ public class PersonalExamController {
         return personalExamService.reviewByAnswers(answers);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that return excel file of personal exams by exam assignee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/assignee/{examAssigneeId}")
+    public byte[] getExcelReport(
+            @Parameter(description = "Id of exam assignee to get excel report about personal exams")
+            @PathVariable Long examAssigneeId
+    ) throws IOException {
+        return personalExamService.getExcelReport(examAssigneeId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that return excel file of personal exam by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/group/{groupId}")
+    public byte[] getExcelReportByGroup(
+            @Parameter(description = "Id of group to get excel report about personal exams")
+            @PathVariable Long groupId
+    ) throws IOException {
+        return personalExamService.getExcelReportByGroup(groupId);
+    }
 }

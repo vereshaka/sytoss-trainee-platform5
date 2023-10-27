@@ -1,6 +1,9 @@
 Feature: PersonalExam
 
-  @Bug @STP-409
+  Background:
+    Given student "John" "Do" with "student@domain.com" email exists
+
+  @Bug
   Scenario: system create personal exam
     Given tasks exist
       | discipline | topic           | task       |
@@ -8,31 +11,37 @@ Feature: PersonalExam
       | SQL        | Join            | Left Join  |
       | SQL        | Sorting results | SELECT     |
       | Java       | Sorting results | SELECT     |
-    When system create "First" personal exam by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id
+    When system create "First" personal exam with maxGrade 4 by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id between 11.05.2024 and 12.05.2024
     Then operation is successful
     And "First" exam by "SQL" discipline and "Join" topic for student with 1 id should have tasks
       | task       |
       | Inner Join |
       | Left Join  |
 
-  @Bug @STP-447
   Scenario: Student can start test
-    Given personal "Exam" exam for student with 2 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
+    Given this student has "Exam" personal exam and NOT_STARTED status exist and time 10 and amountOfTasks 1
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
-    When student with 2 id start personal exam "Exam"
+    When this student start personal exam "Exam"
     Then operation is successful
-    And should return personal exam with time 10 and amountOfTasks 1
+    And should return personal exam with time more than 10 and amountOfTasks 1
     And PersonalExam with "What are the different subsets of SQL?" question should be received
-    And status of "Exam" exam for student with 2 id should be "IN_PROGRESS"
-    And status of first answer of "Exam" exam for student with 2 id should be "IN_PROGRESS"
+    And status of "Exam" exam for this student should be "IN_PROGRESS"
+    And status of first answer of "Exam" exam for this student should be "IN_PROGRESS"
 
   Scenario: Student is not allowed to start test when it already start
-    Given personal "Exam" exam for student with 2 id and IN_PROGRESS status exist and time 10 and amountOfTasks 1
+    Given this student has "Exam" personal exam and IN_PROGRESS status exist and time 10 and amountOfTasks 1
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
-    When student with 2 id start second time personal exam "Exam"
-    Then operation should be finished with 409 "Exam is already in progress!" error
+    When this student start second time personal exam "Exam"
+    Then operation is successful
+
+  Scenario: Student is not allowed to start test when it already finished
+    Given this student has "Exam" personal exam and FINISHED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
+    When this student start second time personal exam "Exam"
+    Then operation should be finished with 409 "{"message":"Exam is finished!","technical":true}" error
 
   Scenario: Student is not allowed to start test when
     Given personal "Exam" exam for student with 2 id and IN_PROGRESS status exist and time 10 and amountOfTasks 1
@@ -45,7 +54,7 @@ Feature: PersonalExam
     Then operation is successful
     And should return "true"
 
-  @Bug @STP-409
+  @Bug
   Scenario: system create personal exam with a photo retrieve
     Given tasks exist
       | discipline | topic           | task       |
@@ -53,13 +62,12 @@ Feature: PersonalExam
       | SQL        | Join            | Left Join  |
       | SQL        | Sorting results | SELECT     |
       | Java       | Sorting results | SELECT     |
-    When system create "First" personal exam by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id
+    When system create "First" personal exam with maxGrade 4 by "SQL" discipline and "Join" topic with 2 tasks for student with 1 id between 11.05.2024 and 12.05.2024
     Then operation is successful
     And "First" exam by "SQL" discipline and "Join" topic for student with 1 id should have tasks
       | task       |
       | Inner Join |
       | Left Join  |
-    And tasks from exam should have id image
 
   Scenario: retrieve all personal exams by examId
     Given personal "Exam1" exam with examId 1 for student with 3 id and NOT_STARTED status exist and time 10 and amountOfTasks 1

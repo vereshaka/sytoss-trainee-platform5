@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -58,7 +59,7 @@ public class AnswerService extends AbstractService {
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());
-        examModel.setTime(personalExam.getTime());
+        examModel.setTime((int) TimeUnit.MILLISECONDS.toSeconds(personalExam.getRelevantTo().getTime() - new Date().getTime()));
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
