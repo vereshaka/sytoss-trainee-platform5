@@ -3,6 +3,7 @@ Feature: Summary
   Background:
     Given teacher "John" "Do" with "teacher@domain.com" email exists
 
+    @Bug
   Scenario: teacher path to summary when all tasks are graded
     Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023
       | listOfSubjects | taskId | question                    | answer                    | task status | grade | comment          |
