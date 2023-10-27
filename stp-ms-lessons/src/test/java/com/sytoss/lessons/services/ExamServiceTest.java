@@ -325,7 +325,6 @@ public class ExamServiceTest extends StpUnitTest {
         examDTO.setName("Exam");
         examDTO.setMaxGrade(1);
         examDTO.setNumberOfTasks(1);
-        examDTO.setTasks(List.of(taskDTO));
 
         when(examAssigneeConnector.getReferenceById(1L)).thenReturn(examAssigneeDTO);
         when(examConnector.findByExamAssignees_Id(1L)).thenReturn(examDTO);
@@ -334,8 +333,6 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals("Exam", result.getExamName());
         assertEquals(1, result.getMaxGrade());
         assertEquals(1, result.getAmountOfTasks());
-        assertEquals(1L, result.getTasks().get(0).getId());
-        assertEquals("Question", result.getTasks().get(0).getQuestion());
         assertEquals(examAssigneeDTO.getRelevantFrom(), result.getRelevantFrom());
         assertEquals(examAssigneeDTO.getRelevantTo(), result.getRelevantTo());
     }
