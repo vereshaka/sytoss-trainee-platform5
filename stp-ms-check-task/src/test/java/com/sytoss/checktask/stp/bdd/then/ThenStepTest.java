@@ -11,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ThenStepTest extends CheckTaskIntegrationTest {
 
+    @Then("^request should be processed with error (.*)")
+    public void requestShouldBeProcessedWithError(Integer code) {
+        assertEquals(code, getTestExecutionContext().getResponse().getStatusCode().value());
+    }
+
     @Then("request should be processed successfully")
     public void requestShouldBeProcessedSuccessfully() {
         assertEquals(200, getTestExecutionContext().getResponse().getStatusCode().value());
