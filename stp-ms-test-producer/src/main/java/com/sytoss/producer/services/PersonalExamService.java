@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskReportModel;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ExamAssigneeConnector;
@@ -378,4 +379,16 @@ public class PersonalExamService extends AbstractService {
         bos.close();
         return byteArray;
     }
+
+    public void updateTask(Task task) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
+        for(PersonalExam personalExam : personalExams){
+           for(Answer answer : personalExam.getAnswers()){
+               if(Objects.equals(answer.getTask().getId(), task.getId())){
+                   answer.setTask(task);
+               }
+           }
+        }
+    }
+
 }
