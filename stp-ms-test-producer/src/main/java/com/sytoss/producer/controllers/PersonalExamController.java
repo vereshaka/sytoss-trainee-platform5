@@ -34,6 +34,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/create")
+    @JsonView({PersonalExam.Public.class})
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }
@@ -43,8 +44,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-
-    @JsonView({PersonalExam.TeacherOnly.class})
+    @JsonView({PersonalExam.PublicWithAnswers.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
@@ -157,6 +157,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/teacher/{userId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByTeacherId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByTeacherId(userId);
     }
@@ -167,6 +168,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/review")
+    @JsonView(PersonalExam.PublicWithAnswers.class)
     public PersonalExam review(@RequestBody PersonalExam personalExam) {
         return personalExamService.review(personalExam);
     }
@@ -186,6 +188,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @PostMapping("/reschedule")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> reschedule(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.reschedule(examConfiguration);
     }
@@ -196,10 +199,10 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/exam/assignee/{examAssigneeId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByExamAssigneeId(
             @Parameter(description = "Id of exam to get personal exams")
-            @PathVariable("examAssigneeId") Long examAssigneeId
-    ) {
+            @PathVariable("examAssigneeId") Long examAssigneeId) {
         return personalExamService.getByExamAssigneeId(examAssigneeId);
     }
 
@@ -209,10 +212,10 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @DeleteMapping(value = "/exam/assignee/{examAssigneeId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> deleteByExamId(
             @Parameter(description = "Id of exam to delete personal exams")
-            @PathVariable("examAssigneeId") Long examAssigneeId
-    ) {
+            @PathVariable("examAssigneeId") Long examAssigneeId) {
         return personalExamService.deleteByExamAssigneeId(examAssigneeId);
     }
 
@@ -222,6 +225,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @DeleteMapping(value = "/exam/delete")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> deleteByExamAssigneeIds(
             @Parameter(description = "Exam assignee ids to delete personal exams")
             @RequestBody List<Long> examAssigneeIds
