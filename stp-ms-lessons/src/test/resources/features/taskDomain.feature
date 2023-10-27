@@ -77,12 +77,11 @@ Feature: Task Domain
     Then operation is successful
     And task domain have 1 tasks
 
-    @Bug
   Scenario: Get tasks of task domain
     Given task domains exist
       | discipline  | task domain | id |
-      | SQL         | Join        | *1 |
-      | POSTGRE_SQL | Join        | *2 |
+      | SQL         | Join domain | *1 |
+      | POSTGRE_SQL | Join domain | *2 |
     And task domain tasks exist
       | task                | taskDomainId |
       | What is Join?       | *1           |

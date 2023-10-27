@@ -92,3 +92,4 @@ Feature: Discipline
     When receive this discipline's icon
     Then operation is successful
     And discipline's icon should be received
+

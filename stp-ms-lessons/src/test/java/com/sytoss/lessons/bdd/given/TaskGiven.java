@@ -1,10 +1,12 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -31,6 +33,9 @@ public class TaskGiven extends LessonsIntegrationTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private TaskService taskService;
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
@@ -113,12 +118,25 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^task with specific id (.*) exists")
     public void taskWithIdExists(Long taskId) {
         try {
+            taskService.deleteTask(taskId);
+        } catch (TaskNotFoundException e) {
+
+        }
+        try {
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK WHERE ID = " + taskId);
             statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER) " +
                     "VALUES(" + taskId + ", " + getTestExecutionContext().getDetails().getTaskDomainId() +
                     ", 'Generic Question#" + taskId + "', 'Generic Answer')");
+            while(true){
+                ResultSet rs = statement.executeQuery("select TASK_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if(id>=taskId){
+                    break;
+                }
+            }
             statement.close();
             connection.commit();
             statement = connection.createStatement();
@@ -189,6 +207,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
                 getTaskConvertor().toDTO(task, taskDTO);
+                taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(taskDTO.getTaskDomain().getId()));
                 getTaskConnector().save(taskDTO);
             }
         }
