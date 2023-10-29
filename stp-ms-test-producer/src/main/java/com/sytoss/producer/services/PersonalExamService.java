@@ -380,7 +380,7 @@ public class PersonalExamService extends AbstractService {
         return byteArray;
     }
 
-    public void updateTask(Task task) {
+    public List<PersonalExam> updateTask(Task task) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
         for(PersonalExam personalExam : personalExams){
            for(Answer answer : personalExam.getAnswers()){
@@ -389,6 +389,7 @@ public class PersonalExamService extends AbstractService {
                }
            }
         }
+        return personalExams;
     }
 
 }

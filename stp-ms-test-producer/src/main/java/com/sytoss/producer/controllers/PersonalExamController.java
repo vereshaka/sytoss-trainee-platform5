@@ -272,7 +272,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/task/update")
-    public void updateTask(@RequestBody Task task) {
-        personalExamService.updateTask(task);
+    public List<PersonalExam> updateTask(@RequestBody Task task) {
+        return personalExamService.updateTask(task);
     }
 }

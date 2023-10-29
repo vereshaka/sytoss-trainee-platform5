@@ -226,7 +226,7 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
 
-        ResponseEntity<Task> result = doPost("/api/personal-exam/task/update", httpEntity, Task.class);
+        ResponseEntity<List<PersonalExam>> result = doPost("/api/personal-exam/task/update", httpEntity, new ParameterizedTypeReference<>() {});
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 }
