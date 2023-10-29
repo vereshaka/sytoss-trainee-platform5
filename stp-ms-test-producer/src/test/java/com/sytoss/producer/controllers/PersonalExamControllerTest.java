@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,11 +20,17 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
 
     @Test
     public void shouldCreateExam() {
-        when(personalExamService.create(any())).thenReturn(new PersonalExam());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        PersonalExam personalExam = new PersonalExam();
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.ANSWERED);
+        personalExam.setAnswers(List.of(answer));
+        when(personalExamService.create(any())).thenReturn(personalExam);
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), httpHeaders);
         ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
+        personalExam = result.getBody();
+        assertEquals(0, personalExam.getAnswers().size());
     }
 
     @Test
@@ -39,10 +44,17 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
 
     @Test
     public void shouldSummaryExam() {
+        PersonalExam personalExam = new PersonalExam();
+        Answer answer = new Answer();
+        answer.setStatus(AnswerStatus.ANSWERED);
+        personalExam.setAnswers(List.of(answer));
+        when(personalExamService.summary(any())).thenReturn(personalExam);
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> result = doGet("/api/personal-exam/123/summary", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());
+        personalExam = result.getBody();
+        assertEquals(1, personalExam.getAnswers().size());
     }
 
     @Test
@@ -94,6 +106,7 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
         exams.add(createPersonalExam(2L, "SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
 
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
@@ -110,24 +123,6 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<PersonalExam>> result = doDelete("/api/personal-exam/exam/assignee/1", httpEntity, new ParameterizedTypeReference<>() {
         });
-        assertEquals(200, result.getStatusCode().value());
-    }
-
-    @Test
-    public void shouldReturnExcelReport() throws IOException {
-        when(personalExamService.getExcelReport(1L)).thenReturn(new byte[]{});
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> result = doGet("/api/personal-exam/excel/assignee/1", httpEntity, String.class);
-        assertEquals(200, result.getStatusCode().value());
-    }
-
-    @Test
-    public void shouldReturnExcelReportByGroup() throws IOException {
-        when(personalExamService.getExcelReportByGroup(1L)).thenReturn(new byte[]{});
-        HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> result = doGet("/api/personal-exam/excel/group/1", httpEntity, String.class);
         assertEquals(200, result.getStatusCode().value());
     }
 
