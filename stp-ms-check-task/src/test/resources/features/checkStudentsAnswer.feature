@@ -95,3 +95,21 @@ Feature: check answer
       | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT_1 | IDPRODUCT | QUANTITY | DATESALE   |
       | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4          | 3         | 5        | 2022-09-15 |
 
+  Scenario: STP-791 GROUP BY exception
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is "Select Company, sum(Quantity)   from Client c inner join Sale s on c.IdClient=s.IdProduct  group by c.IdClient "
+    When request sent to check
+    Then request should be processed with error 406
+
+  Scenario: STP-791 GROUP BY correct
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is "Select CompanY,c.Company, sum(Quantity)   from Client c inner join Sale s on c.IdClient=s.IdProduct  group by c.Company "
+    When request sent to check
+    Then request should be processed successfully
+
+
+  Scenario: STP-791-test GROUP BY exception
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is "select * from CLIENT group by COMPANY"
+    When request sent to check
+    Then request should be processed with error 406
