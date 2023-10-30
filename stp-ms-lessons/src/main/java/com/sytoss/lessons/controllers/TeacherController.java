@@ -8,6 +8,8 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.controllers.api.PagingInfo;
 import com.sytoss.lessons.controllers.api.ResponseObject;
+import com.sytoss.lessons.controllers.filter.FilterFactory;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.ExamService;
 import com.sytoss.lessons.services.GroupService;
@@ -47,10 +49,7 @@ public class TeacherController {
     ) {
         ResponseObject<Discipline> responseObject = new ResponseObject();
         if (CollectionUtils.isEmpty(filters)){
-            filters = new ArrayList<>();
-            FilterItem nameFilterItem = new FilterItem();
-            nameFilterItem.setFieldName("name");
-            filters.add(nameFilterItem);
+            filters = FilterFactory.getFilterSet(DisciplineDTO.class);
         }
         Page<Discipline> disciplines = disciplineService.findDisciplines(page, pageSize, filters);
         responseObject.setData(disciplines.getContent());
