@@ -196,8 +196,8 @@ public class ExamService extends AbstractService {
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
         List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-        examAssigneeService.deleteAllByExamId(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
+        examAssigneeService.deleteAllByExamId(examId);
         examConnector.deleteById(exam.getId());
         return exam;
     }
