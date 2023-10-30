@@ -285,15 +285,18 @@ public class ExamServiceTest extends StpUnitTest {
         examAssignee.setExam(exam);
         examAssignee.setId(2L);
         examAssignee.setRelevantTo(date);
+        examAssignee.setRelevantFrom(date);
         date = new Date(33333333);
         ExamAssignee examAssignee2 = new ExamAssignee();
         examAssignee2.setExam(exam);
         examAssignee2.setId(1L);
         examAssignee2.setRelevantTo(date);
+        examAssignee2.setRelevantFrom(date);
         ExamAssignee examAssignee3 = new ExamAssignee();
         examAssignee3.setExam(exam);
         examAssignee3.setId(3L);
         examAssignee3.setRelevantTo(new Date());
+        examAssignee3.setRelevantFrom(new Date());
 
         when(examConnector.findByTeacherIdOrderByCreationDateDesc(any())).thenReturn(List.of(examDTO));
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();

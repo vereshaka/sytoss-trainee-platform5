@@ -290,8 +290,7 @@ public class ExamService extends AbstractService {
                     return examAssignee;
                 }).toList());
             }
-            Comparator<ExamAssignee> dateComparator = (obj1, obj2) -> obj2.getRelevantTo().compareTo(obj1.getRelevantTo());
-            examAssignees.sort(dateComparator);
+            examAssignees = examAssignees.stream().sorted((obj1, obj2) -> obj2.getRelevantFrom().compareTo(obj1.getRelevantFrom())).toList();
             return examAssignees;
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
