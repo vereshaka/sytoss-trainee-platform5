@@ -9,7 +9,6 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bom.ExamModelForGroup;
 import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -18,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,7 +25,7 @@ import java.util.List;
 public class ExamWhen extends LessonsIntegrationTest {
 
     @When("^a teacher request exam list")
-    public void teacherRequestExamList()  {
+    public void teacherRequestExamList() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity requestEntity = new HttpEntity<>(null, httpHeaders);
 
@@ -72,7 +70,7 @@ public class ExamWhen extends LessonsIntegrationTest {
 
 
         for (Topic topic : topics) {
-            if (topic.getDiscipline().getName().equals(disciplineName)){
+            if (topic.getDiscipline().getName().equals(disciplineName)) {
                 topic.setId(getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId()).getId());
                 topic.setDiscipline(discipline);
             } else {
@@ -104,7 +102,7 @@ public class ExamWhen extends LessonsIntegrationTest {
     }
 
     @When("^a teacher assign (.*) exam to groups: (.*)")
-    public void teacherAssignExamToGroup(String examId, String groupIds){
+    public void teacherAssignExamToGroup(String examId, String groupIds) {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         ExamAssignee assignee = new ExamAssignee();
         assignee.setRelevantFrom(new Date());
@@ -116,9 +114,9 @@ public class ExamWhen extends LessonsIntegrationTest {
         }).toList());
         HttpEntity<ExamAssignee> requestEntity = new HttpEntity<>(assignee, httpHeaders);
 
-        ResponseEntity<ExamModelForGroup> responseEntity = doPost("/api/assignee/" +
-                getTestExecutionContext().replaceId(examId) + "/groups",
-                requestEntity, ExamModelForGroup.class);
+        ResponseEntity<Exam> responseEntity = doPost("/api/exam/" +
+                        getTestExecutionContext().replaceId(examId) + "/assign",
+                requestEntity, Exam.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }
