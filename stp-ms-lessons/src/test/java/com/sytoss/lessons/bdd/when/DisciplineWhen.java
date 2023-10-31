@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.controllers.api.ResponseObject;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
@@ -77,7 +78,7 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", teacherId.intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<ResponseObject> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
