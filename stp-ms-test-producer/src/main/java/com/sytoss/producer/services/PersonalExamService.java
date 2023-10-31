@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskReportModel;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ExamAssigneeConnector;
@@ -11,6 +12,7 @@ import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
+import com.sytoss.producer.writers.GroupExcelBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,6 +43,8 @@ public class PersonalExamService extends AbstractService {
     private final ExamAssigneeConnector examAssigneeConnector;
 
     private final ObjectProvider<ExcelBuilder> excelBuilderFactory;
+
+    private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
 
     private final AnswerGenerator answerGenerator;
 
@@ -326,8 +331,28 @@ public class PersonalExamService extends AbstractService {
         ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
         ExamReportModel examReportModel = examAssigneeConnector.getReportInfo(examAssigneeId);
         List<PersonalExam> personalExams = personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
+
+        List<TaskReportModel> uniqueTasks = personalExams.stream()
+                .flatMap(exam -> exam.getAnswers().stream().map(Answer::getTask))
+                .collect(Collectors.toMap(
+                        Task::getId,
+                        task -> task,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream().map(task -> {
+                    TaskReportModel taskReportModel = new TaskReportModel();
+                    taskReportModel.setId(task.getId());
+                    taskReportModel.setCode(task.getCode());
+                    taskReportModel.setQuestion(task.getQuestion());
+                    return taskReportModel;
+                })
+                .toList();
+
+        examReportModel.setTasks(uniqueTasks);
         List<PersonalExamReportModel> personalExamReportModels = convertToReportModel(personalExams);
         Workbook wb = excelBuilder.createExcelReportByExamAssignee(examReportModel, personalExamReportModels);
+        excelBuilder.write("D:/tmp.xlsx", wb);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         wb.write(bos);
         byte[] byteArray = bos.toByteArray();
@@ -368,10 +393,10 @@ public class PersonalExamService extends AbstractService {
     }
 
     public byte[] getExcelReportByGroup(Long groupId) throws IOException {
-        ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
+        GroupExcelBuilder groupExcelBuilder = groupExcelBuilderFactory.getObject();
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_PrimaryGroup_Id(groupId);
         List<PersonalExamReportModel> reportModels = convertToReportModel(personalExams);
-        Workbook wb = excelBuilder.createExcelReportByGroup(reportModels);
+        Workbook wb = groupExcelBuilder.createExcelReportByGroup(reportModels);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         wb.write(bos);
         byte[] byteArray = bos.toByteArray();

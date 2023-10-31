@@ -302,16 +302,7 @@ public class ExamService extends AbstractService {
             examReportModel.setRelevantTo(examAssigneeDTO.getRelevantTo());
 
             ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
-            List<TaskReportModel> tasks = examDTO.getTasks().stream().map(taskDTO -> {
-                TaskReportModel task = new TaskReportModel();
-                task.setId(taskDTO.getId());
-                task.setQuestion(taskDTO.getQuestion());
-                task.setCode(taskDTO.getCode());
-                return task;
-            }).toList();
-
             examReportModel.setExamName(examDTO.getName());
-            examReportModel.setTasks(tasks);
             examReportModel.setAmountOfTasks(examDTO.getNumberOfTasks());
             examReportModel.setMaxGrade(examDTO.getMaxGrade());
             return examReportModel;
