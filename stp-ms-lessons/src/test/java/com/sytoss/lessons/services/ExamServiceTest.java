@@ -186,7 +186,6 @@ public class ExamServiceTest extends StpUnitTest {
         examToStudentAssigneeDTO.setStudentId(1L);
         examAssigneeDTO.setExamAssigneeToDTOList(List.of(examToStudentAssigneeDTO));
         examDTO.setExamAssignees(List.of(examAssigneeDTO));
-       // when(examAssigneeToConnector.getAllByParent_IdOrderByParent_RelevantFromDesc(any())).thenReturn(List.of(examToStudentAssigneeDTO));
         when(examAssigneeConnector.getAllByExam_Id(any())).thenReturn(List.of(examAssigneeDTO));
         when(examConnector.getReferenceById(1L)).thenReturn(examDTO);
         Exam result = examService.delete(1L);
