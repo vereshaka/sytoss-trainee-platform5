@@ -28,7 +28,7 @@ public class DisciplineThen extends LessonsIntegrationTest {
 
     @Then("^disciplines should be received$")
     public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
-        ResponseObject<Discipline> responseObject = (ResponseObject<Discipline>) getTestExecutionContext().getResponse().getBody();
+        ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
         List<Discipline> disciplineList = responseObject.getData();
         assertEquals(disciplines.size(), disciplineList.size());
         assertTrue(
