@@ -2,14 +2,14 @@ package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.controllers.api.ResponseObject;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class DisciplineThen extends LessonsIntegrationTest {
@@ -28,11 +28,14 @@ public class DisciplineThen extends LessonsIntegrationTest {
 
     @Then("^disciplines should be received$")
     public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
-        List<Discipline> disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
+        ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
+        List<Discipline> disciplineList = responseObject.getData();
         assertEquals(disciplines.size(), disciplineList.size());
-        for (int i = 0; i < disciplineList.size(); i++) {
-            assertEquals(disciplines.get(i).getName(), disciplineList.get(i).getName());
-        }
+        assertTrue(
+                disciplines.stream().allMatch(discipline -> disciplineList.stream().anyMatch(
+                        backendDiscipline -> backendDiscipline.getName().equals(discipline.getName()))
+                )
+        );
     }
 
     @Then("^discipline's icon should be received$")
