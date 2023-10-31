@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -278,20 +279,15 @@ public class ExamService extends AbstractService {
 
     public List<ExamAssignee> findExamAssignees() {
         AbstractUser abstractUser = getCurrentUser();
-
         if (abstractUser instanceof Teacher) {
             List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
-            List<ExamAssignee> examAssignees = new ArrayList<>();
-            for (Long examId : examDTOList.stream().map(ExamDTO::getId).toList()) {
-                List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-                examAssignees.addAll(examAssigneeDTOS.stream().map(examAssigneeDTO -> {
-                    ExamAssignee examAssignee = new ExamAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                    return examAssignee;
-                }).toList());
-            }
-            examAssignees = examAssignees.stream().sorted((obj1, obj2) -> obj2.getRelevantFrom().compareTo(obj1.getRelevantFrom())).toList();
-            return examAssignees;
+            List<Long> examDTOIds = examDTOList.stream().map(ExamDTO::getId).toList();
+            List<ExamAssigneeDTO> examAssigneeDTOList = examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(examDTOIds);
+            return examAssigneeDTOList.stream().map(examAssigneeDTO -> {
+                ExamAssignee examAssignee = new ExamAssignee();
+                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                return examAssignee;
+            }).toList();
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
             throw new UserNotIdentifiedException("User type not teacher!");

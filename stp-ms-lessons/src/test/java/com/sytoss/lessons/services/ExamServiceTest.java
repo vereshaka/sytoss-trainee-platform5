@@ -305,7 +305,7 @@ public class ExamServiceTest extends StpUnitTest {
         examAssigneeConvertor.toDTO(examAssignee2, examAssigneeDTO2);
         ExamAssigneeDTO examAssigneeDTO3 = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examAssignee3, examAssigneeDTO3);
-        when(examAssigneeConnector.getAllByExam_Id(examDTO.getId())).thenReturn(List.of(examAssigneeDTO, examAssigneeDTO2, examAssigneeDTO3));
+        when(examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(any())).thenReturn(List.of(examAssigneeDTO3, examAssigneeDTO, examAssigneeDTO2));
         List<ExamAssignee> examAssignees = examService.findExamAssignees();
         assertEquals(3L, examAssignees.get(0).getId());
         assertEquals(2L, examAssignees.get(1).getId());
