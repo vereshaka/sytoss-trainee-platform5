@@ -27,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.sytoss.common.SSLUtil.disableSSL;
@@ -37,15 +36,14 @@ import static com.sytoss.common.SSLUtil.disableSSL;
 @EnableScheduling
 public class AppConfig {
 
-    @Autowired
-    private UserConnector userConnector;
-
-    @Autowired
-    private UserConvertor userConvertor;
-
     static {
         disableSSL();
     }
+
+    @Autowired
+    private UserConnector userConnector;
+    @Autowired
+    private UserConvertor userConvertor;
 
     @Bean
     public JwtDecoder jwtDecoder(final OAuth2ResourceServerProperties properties) throws MalformedURLException {

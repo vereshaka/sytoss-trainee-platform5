@@ -403,4 +403,17 @@ public class PersonalExamService extends AbstractService {
         bos.close();
         return byteArray;
     }
+
+    public List<PersonalExam> updateTask(Task task) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
+        for(PersonalExam personalExam : personalExams){
+           for(Answer answer : personalExam.getAnswers()){
+               if(Objects.equals(answer.getTask().getId(), task.getId())){
+                   answer.setTask(task);
+               }
+           }
+        }
+        return personalExams;
+    }
+
 }

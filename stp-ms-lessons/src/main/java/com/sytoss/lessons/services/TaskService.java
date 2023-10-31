@@ -8,18 +8,11 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
@@ -58,6 +51,8 @@ public class TaskService {
     private final PumlConvertor pumlConvertor;
 
     private final ExamService examService;
+
+    private final PersonalExamConnector personalExamConnector;
 
     public Task getById(Long id) {
         try {
@@ -209,6 +204,7 @@ public class TaskService {
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
 
+        personalExamConnector.updateTask(task);
         return task;
     }
 
