@@ -35,8 +35,10 @@ public class PersonalExam {
     @Deprecated
     private Long examAId;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Discipline discipline;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Teacher teacher;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
