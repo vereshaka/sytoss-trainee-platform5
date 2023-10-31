@@ -30,7 +30,7 @@ public class ExamAssigneeDTO extends Auditable {
     @Column(name = "DURATION")
     private Integer duration;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
     private List<ExamAssigneeToDTO> examAssigneeToDTOList = new ArrayList<>();
 
