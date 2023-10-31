@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface ExamAssigneeConnector extends JpaRepository<ExamAssigneeDTO, Long> {
     List<ExamAssigneeDTO> getAllByExam_Id(Long examId);
+
+    List<ExamAssigneeDTO> findByExam_IdInOrderByRelevantFromDesc(List<Long> examIds);
 }

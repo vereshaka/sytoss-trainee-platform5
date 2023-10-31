@@ -461,11 +461,7 @@ public class Select extends Query {
     private void queryGroup(int columnCount, LocalResult result, long offset, boolean quickOffset) {
         initGroupData(columnCount);
         try {
-            try {
-                gatherGroup(columnCount, DataAnalysisOperation.STAGE_GROUP);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            gatherGroup(columnCount, DataAnalysisOperation.STAGE_GROUP);
             processGroupResult(columnCount, result, offset, quickOffset, true);
         } finally {
             groupData.reset();

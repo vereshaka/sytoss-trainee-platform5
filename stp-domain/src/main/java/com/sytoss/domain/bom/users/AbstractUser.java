@@ -11,22 +11,23 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public abstract class AbstractUser {
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Long id;
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+
+    @JsonView({PersonalExam.Public.class})
     private String firstName;
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+
     private String middleName;
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+
+    @JsonView({PersonalExam.Public.class})
     private String lastName;
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+
     private String email;
 
     private String imageName;
 
     private boolean isModerated;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    @JsonView({PersonalExam.Public.class})
     private String uid;
 
     public boolean isValid() {
