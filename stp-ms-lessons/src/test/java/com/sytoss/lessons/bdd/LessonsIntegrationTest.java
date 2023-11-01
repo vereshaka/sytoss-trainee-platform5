@@ -78,6 +78,12 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Autowired
     private DisciplineConvertor disciplineConvertor;
 
+    @Autowired
+    private ExamAssigneeConnector examAssigneeConnector;
+
+    @Autowired
+    private ExamAssigneeToConnector examAssigneeToConnector;
+
     @Override
     protected LessonsDetails createDetails() {
         return new LessonsDetails();

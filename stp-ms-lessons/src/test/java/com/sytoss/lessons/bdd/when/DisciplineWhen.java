@@ -120,4 +120,14 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
+
+    @When("^a teacher delete discipline with id (.*)$")
+    public void teacherDeleteDiscipline(String id) {
+        Long disciplineId = (Long) getTestExecutionContext().replaceId(id);
+        String url = "/api/discipline/"+disciplineId+"/delete";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Discipline> responseEntity = doDelete(url, httpEntity, Discipline.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
 }
