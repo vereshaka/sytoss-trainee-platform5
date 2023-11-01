@@ -1,6 +1,5 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.lessons.controllers.api.ResponseObject;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ public class TeacherControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() {
-        when(disciplineService.findDisciplines(anyInt(),anyInt(), anyList())).thenReturn(Page.empty());
+        when(disciplineService.findDisciplinesWithPaging(anyInt(),anyInt(), anyList())).thenReturn(Page.empty());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<ResponseObject> result = doPost("/api/teacher/my/disciplines/0/5", httpEntity, new ParameterizedTypeReference<>() {

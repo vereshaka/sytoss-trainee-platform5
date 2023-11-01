@@ -146,7 +146,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         List<DisciplineDTO> disciplines = List.of(disciplineDTO);
         Page<DisciplineDTO> input = new PageImpl<>(disciplines);
         when(disciplineConnector.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(input);
-        Page<Discipline> result = disciplineService.findDisciplines(1,1, FilterFactory.getFilterSet(DisciplineDTO.class));
+        Page<Discipline> result = disciplineService.findDisciplinesWithPaging(1,1, FilterFactory.getFilterSet(DisciplineDTO.class));
         assertEquals(1, result.getContent().size());
     }
 

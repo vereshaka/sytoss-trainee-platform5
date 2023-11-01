@@ -85,7 +85,7 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public Page<Discipline> findDisciplines(int pageNo, int pageSize, List<FilterItem> filters) {
+    public Page<Discipline> findDisciplinesWithPaging(int pageNo, int pageSize, List<FilterItem> filters) {
         Specification<DisciplineDTO> teacherSpec = (root, query, builder) ->
                 builder.equal(root.get("teacherId"), getCurrentUser().getId());
 
@@ -104,6 +104,18 @@ public class DisciplineService extends AbstractService {
                 .map(this::convert);
 
         return page;
+    }
+
+
+    public List<Discipline> findDisciplines() {
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
+        List<Discipline> result = new ArrayList<>();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            result.add(discipline);
+        }
+        return result;
     }
 
     public List<Task> findTasksByDisciplineId(Long id) {

@@ -22,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @PreAuthorize("hasRole('Teacher')")
@@ -51,13 +50,24 @@ public class TeacherController {
         if (CollectionUtils.isEmpty(filters)){
             filters = FilterFactory.getFilterSet(DisciplineDTO.class);
         }
-        Page<Discipline> disciplines = disciplineService.findDisciplines(page, pageSize, filters);
+        Page<Discipline> disciplines = disciplineService.findDisciplinesWithPaging(page, pageSize, filters);
         responseObject.setData(disciplines.getContent());
         responseObject.setPaging(new PagingInfo(disciplines.getTotalElements(), page, pageSize));
 
         responseObject.setFilters(filters);
         return responseObject;
     }
+
+    @Operation(description = "Method that retrieve disciplines by teacher")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Teacher does not exist!"),
+    })
+    @GetMapping("/my/disciplines")
+    public List<Discipline> findDisciplines() {
+        return disciplineService.findDisciplines();
+    }
+
 
     @JsonView({Group.TeacherGroups.class})
     @Operation(description = "Method that retrieve disciplines by teacher")
