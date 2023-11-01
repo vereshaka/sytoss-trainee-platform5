@@ -49,7 +49,7 @@ public class ExamDTO extends Auditable {
             inverseJoinColumns = @JoinColumn(name = "TASK_ID"))
     private Collection<TaskDTO> tasks;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "EXAM_ID", referencedColumnName = "ID")
     private List<ExamAssigneeDTO> examAssignees = new ArrayList<>();
 
