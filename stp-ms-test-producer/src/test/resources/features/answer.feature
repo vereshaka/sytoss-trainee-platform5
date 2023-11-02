@@ -2,6 +2,7 @@ Feature: Answer
   Background:
     Given student "John" "Do" with "student@domain.com" email exists
 
+    @Bug
   Scenario: student answers on task
     Given this student has personal exam with id *1 with 60 max grade and sum of coef 30 exist
       | answerId | taskId | taskDomainId | question                    | answer              | status      | etalon                 | grade | coef | comment          |

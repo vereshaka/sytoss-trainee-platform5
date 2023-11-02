@@ -2,6 +2,7 @@ package com.sytoss.domain.bom.convertors;
 
 import com.sytoss.domain.bom.convertors.common.*;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.exceptions.business.ScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,6 +131,10 @@ public class PumlConvertor {
         List<String> createTableScripts = tables.stream().map(this::returnCreateTableLiquibaseGroup).toList();
         List<String> initTableScripts = tables.stream().map(this::returnInitTableLiquibaseGroup).toList();
         List<String> initForeignKeysScripts = tables.stream().map(this::returnInitForeignKeys).toList();
+
+        if (createTableScripts.isEmpty()) {
+            throw new ScriptIsNotValidException("Script is not valid");
+        }
 
         createTableStringBuilder.append(String.join("", createTableScripts));
         initTableStringBuilder.append(String.join("", initTableScripts));
