@@ -5,14 +5,22 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sql.DataSource;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.when;
 
 public class TeacherGiven extends LessonsIntegrationTest {
+
+    @Autowired
+    private DataSource dataSource;
 
     @Given("^teacher \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
     public void teacherExists(String firstName, String lastName, String email) {

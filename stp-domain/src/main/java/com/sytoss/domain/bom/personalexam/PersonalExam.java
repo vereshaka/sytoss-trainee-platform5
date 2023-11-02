@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.*;
@@ -36,8 +35,10 @@ public class PersonalExam {
     @Deprecated
     private Long examAId;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Discipline discipline;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Teacher teacher;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -55,7 +56,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Student student;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    @JsonView({PersonalExam.PublicWithAnswers.class})
     private List<Answer> answers = new ArrayList<>();
 
     private Integer time;
@@ -159,5 +160,8 @@ public class PersonalExam {
     }
 
     public static class TeacherOnly {
+    }
+
+    public static class PublicWithAnswers extends Public {
     }
 }

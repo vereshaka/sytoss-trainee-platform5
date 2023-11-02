@@ -1,10 +1,12 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
@@ -23,7 +25,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,6 +33,9 @@ public class TaskGiven extends LessonsIntegrationTest {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private TaskService taskService;
 
     @Given("^task with question \"(.*)\" exists$")
     public void taskExists(String question) {
@@ -114,12 +118,25 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^task with specific id (.*) exists")
     public void taskWithIdExists(Long taskId) {
         try {
+            taskService.deleteTask(taskId);
+        } catch (TaskNotFoundException e) {
+
+        }
+        try {
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK WHERE ID = " + taskId);
             statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER) " +
                     "VALUES(" + taskId + ", " + getTestExecutionContext().getDetails().getTaskDomainId() +
                     ", 'Generic Question#" + taskId + "', 'Generic Answer')");
+            while(true){
+                ResultSet rs = statement.executeQuery("select TASK_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if(id>=taskId){
+                    break;
+                }
+            }
             statement.close();
             connection.commit();
             statement = connection.createStatement();
@@ -185,23 +202,13 @@ public class TaskGiven extends LessonsIntegrationTest {
             tasks.add(task);
         }
 
-        List<String> taskDomainIds = table.asMaps().stream().map(el -> el.get("taskDomainId")).toList();
-
-        List<TaskDTO> taskDTOList = new ArrayList<>();
         for (Task task : tasks) {
-            TaskDTO taskDTO = new TaskDTO();
-            getTaskConvertor().toDTO(task, taskDTO);
-            taskDTOList.add(taskDTO);
-        }
-
-        for (int i = 0; i < taskDTOList.size(); i++) {
-            String taskDomainIdString = taskDomainIds.get(i);
-            Long taskDomainId = (Long) getTestExecutionContext().getIdMapping().get(taskDomainIdString);
-            TaskDomainDTO taskDomain = getTestExecutionContext().getDetails().getTaskDomains().stream().filter(el -> Objects.equals(el.getId(), taskDomainId)).toList().get(0);
-            taskDTOList.get(i).setTaskDomain(taskDomain);
-            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(taskDTOList.get(i).getQuestion(), taskDTOList.get(i).getTaskDomain().getId());
+            TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
-                getTaskConnector().save(taskDTOList.get(i));
+                taskDTO = new TaskDTO();
+                getTaskConvertor().toDTO(task, taskDTO);
+                taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(taskDTO.getTaskDomain().getId()));
+                getTaskConnector().save(taskDTO);
             }
         }
     }
