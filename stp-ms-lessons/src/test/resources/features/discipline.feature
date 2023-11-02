@@ -95,16 +95,16 @@ Feature: Discipline
 
 
   Scenario: STP-772 Delete Discipline
-    Given "SQL" discipline exists with id *d1
+    Given "SQL-772" discipline exists with id *d1
     And topics exist
       | discipline | topic  |
-      | SQL        | Select |
-      | SQL        | Join   |
+      | SQL-772    | Select |
+      | SQL-772    | Join   |
     And "Trade23" task domain with "task-domain/prod-trade23-db.yml" db and "task-domain/prod-trade23-data.yml" data scripts exists for this discipline
       | question                               | answer            | id  | topics       |
       | What are the different subsets of SQL? | select  from dual | ta1 | Select, Join |
       | "What is content of dual table?        | select  from dual | ta2 | Select       |
-    And this discipline with id *d1 has exams
+    And this discipline has exams
       | name  | tasks    | topic  | taskCount | maxGrade | id   |
       | Exam1 | ta1, ta2 | Select | 2         | 2        | *ex1 |
     And this exams have assignees

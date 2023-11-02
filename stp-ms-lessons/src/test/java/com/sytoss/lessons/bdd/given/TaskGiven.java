@@ -10,6 +10,7 @@ import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,13 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 public class TaskGiven extends LessonsIntegrationTest {
-
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     private TaskService taskService;
@@ -118,12 +117,11 @@ public class TaskGiven extends LessonsIntegrationTest {
     @Given("^task with specific id (.*) exists")
     public void taskWithIdExists(Long taskId) {
         try {
-            taskService.deleteTask(taskId);
+            //taskService.deleteTask(taskId);
         } catch (TaskNotFoundException e) {
-
         }
         try {
-            Connection connection = dataSource.getConnection();
+            Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK WHERE ID = " + taskId);
             statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER) " +
@@ -133,21 +131,26 @@ public class TaskGiven extends LessonsIntegrationTest {
                 ResultSet rs = statement.executeQuery("select TASK_SEQ.nextVal from Dual");
                 rs.next();
                 int id = rs.getInt(1);
-                if(id>=taskId){
+                if(id>=taskId + 5){
                     break;
                 }
             }
             statement.close();
             connection.commit();
+            connection.close();
+            connection = getDataSource().getConnection();
             statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT * FROM TASK where ID = " + taskId);
+            ResultSet rs = statement.executeQuery("SELECT ID FROM TASK where ID = " + taskId);
             assertTrue(rs.next());
+            assertEquals(3L, rs.getLong(1));
             rs.close();
             statement.close();
             connection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        getEntityManager().clear();
+        getTaskConnector().getReferenceById(taskId);
     }
 
     @Given("^task with id (.*) doesnt exist")

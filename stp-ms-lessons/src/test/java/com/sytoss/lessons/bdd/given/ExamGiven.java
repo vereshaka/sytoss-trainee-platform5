@@ -71,4 +71,23 @@ public class ExamGiven extends LessonsIntegrationTest {
             getTestExecutionContext().registerId(item.getId(), dto.getId());
         }
     }
+
+    @Given("^this discipline has exams$")
+    public void examExists(DataTable exams) {
+        List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(el -> new ExamView(el)).toList();
+        for (ExamView item : examList) {
+            ExamDTO dto = new ExamDTO();
+            dto.setName(item.getName());
+            dto.setMaxGrade(Integer.valueOf(item.getMaxGrade()));
+            dto.setTasks(new ArrayList<>());
+            dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
+            List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(el -> el.trim()).toList();
+            for (String taskId : taskIds) {
+                Long id = (Long)getTestExecutionContext().replaceId(taskId);
+                dto.getTasks().add(getTaskConnector().getReferenceById(id));
+            }
+            dto = getExamConnector().save(dto);
+            getTestExecutionContext().registerId(item.getId(), dto.getId());
+        }
+    }
 }

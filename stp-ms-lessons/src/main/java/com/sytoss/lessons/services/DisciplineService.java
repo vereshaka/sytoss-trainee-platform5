@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -218,12 +219,15 @@ public class DisciplineService extends AbstractService {
         return examService.getExamsByDiscipline(disciplineId);
     }
 
+    @Transactional
     public Discipline delete(Long disciplineId) {
         Discipline discipline = getById(disciplineId);
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
-        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
+        for (Exam exam: examList) {
+            examService.delete(exam.getId());
+        }
 
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         taskDomainDTOList.forEach(taskDomainDTO -> {
             List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainDTO.getId());
             taskDTOList.forEach(examService::deleteAssignTaskToExam);
@@ -232,9 +236,8 @@ public class DisciplineService extends AbstractService {
 
         taskDomainConnector.deleteAll(taskDomainDTOList);
 
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
         topicConnector.deleteAll(topicDTOList);
-
-        examList.forEach(exam -> examService.delete(exam.getId()));
 
         disciplineConnector.deleteById(disciplineId);
         return discipline;

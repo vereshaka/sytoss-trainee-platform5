@@ -18,6 +18,7 @@ import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -196,10 +197,11 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
-        List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-        personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-        examAssigneeService.deleteAllByExamId(examId);
-        examConnector.deleteById(exam.getId());
+        ExamDTO dto = examConnector.getReferenceById(examId);
+        dto.setExamAssignees(new ArrayList<>());
+        examConnector.save(dto);
+        personalExamConnector.deletePersonalExamsByExamAssigneeId(exam.getExamAssignees().stream().map(ExamAssignee::getId).toList());
+        examConnector.deleteById(examId);
         return exam;
     }
 

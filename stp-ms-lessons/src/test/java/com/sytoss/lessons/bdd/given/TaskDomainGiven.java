@@ -29,9 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class TaskDomainGiven extends LessonsIntegrationTest {
 
-    @Autowired
-    private DataSource dataSource;
-
     @Given("^\"(.*)\" task domain exists$")
     public void taskDomainExist(String taskDomainName) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
@@ -186,7 +183,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Connection connection = dataSource.getConnection();
+            Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK_DOMAIN WHERE ID = " + taskDomainId);
             statement.execute("INSERT INTO TASK_DOMAIN (ID, NAME, DATABASE_SCRIPT, DATA_SCRIPT, DISCIPLINE_ID, SHORT_DESCRIPTION) VALUES(" + taskDomainId + ", 'task domain 2', 'db', 'data', " + getTestExecutionContext().getDetails().getDisciplineId() + ",'desc'"+")");
@@ -210,5 +207,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             throw new RuntimeException(e);
         }
         getTestExecutionContext().getDetails().setTaskDomainId(taskDomainId);
+        getEntityManager().clear();
     }
+
 }

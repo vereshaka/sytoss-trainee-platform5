@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.controllers.api.ResponseObject;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -130,5 +133,18 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Discipline> responseEntity = doDelete(url, httpEntity, Discipline.class);
         getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @Given("^\"(.*)\" discipline exists with id (.*)$")
+    public void disciplineExist(String disciplineName, String id) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            getTestExecutionContext().registerId(id, disciplineDTO.getId());
+        }
     }
 }
