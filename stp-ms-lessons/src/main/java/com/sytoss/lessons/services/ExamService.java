@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -196,8 +197,8 @@ public class ExamService extends AbstractService {
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
         List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-        examAssigneeService.deleteAllByExamId(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
+        examAssigneeService.deleteAllByExamId(examId);
         examConnector.deleteById(exam.getId());
         return exam;
     }
@@ -278,21 +279,15 @@ public class ExamService extends AbstractService {
 
     public List<ExamAssignee> findExamAssignees() {
         AbstractUser abstractUser = getCurrentUser();
-
         if (abstractUser instanceof Teacher) {
             List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
-            List<ExamAssignee> examAssignees = new ArrayList<>();
-            for (Long examId : examDTOList.stream().map(ExamDTO::getId).toList()) {
-                List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-                examAssignees.addAll(examAssigneeDTOS.stream().map(examAssigneeDTO -> {
-                    ExamAssignee examAssignee = new ExamAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                    return examAssignee;
-                }).toList());
-            }
-            Comparator<ExamAssignee> dateComparator = (obj1, obj2) -> obj2.getRelevantTo().compareTo(obj1.getRelevantTo());
-            examAssignees.sort(dateComparator);
-            return examAssignees;
+            List<Long> examDTOIds = examDTOList.stream().map(ExamDTO::getId).toList();
+            List<ExamAssigneeDTO> examAssigneeDTOList = examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(examDTOIds);
+            return examAssigneeDTOList.stream().map(examAssigneeDTO -> {
+                ExamAssignee examAssignee = new ExamAssignee();
+                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                return examAssignee;
+            }).toList();
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
             throw new UserNotIdentifiedException("User type not teacher!");
@@ -307,16 +302,7 @@ public class ExamService extends AbstractService {
             examReportModel.setRelevantTo(examAssigneeDTO.getRelevantTo());
 
             ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
-            List<TaskReportModel> tasks = examDTO.getTasks().stream().map(taskDTO -> {
-                TaskReportModel task = new TaskReportModel();
-                task.setId(taskDTO.getId());
-                task.setQuestion(taskDTO.getQuestion());
-                task.setCode(taskDTO.getCode());
-                return task;
-            }).toList();
-
             examReportModel.setExamName(examDTO.getName());
-            examReportModel.setTasks(tasks);
             examReportModel.setAmountOfTasks(examDTO.getNumberOfTasks());
             examReportModel.setMaxGrade(examDTO.getMaxGrade());
             return examReportModel;

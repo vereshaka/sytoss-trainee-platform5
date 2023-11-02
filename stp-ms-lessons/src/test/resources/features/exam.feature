@@ -22,21 +22,20 @@ Feature: Exam
       | SQL        | Set of Tables |
       | SQL        | Join          |
 
-  @Bug
   Scenario: STP-695 Error occurs during exam creation
-    Given "SQL" discipline exists for this teacher
-    And "First Domain" task domain exists
+    #Given teacher with specific id 4 exists
+    Given discipline with specific id 1 and specific teacher id 4 exists
+    And task domain with specific id 5 and "task-domain/prod-trade23-db.yml" db, "task-domain/prod-trade23-data.yml" data scripts exists
     And topic with specific id 6 exists
     And task with specific id 3 exists
     When a teacher create exam by request STP-695.json
     Then operation is successful
 
-  @Bug
   Scenario: STP-694 Could not fetch exam list
     Given topics exist
       | discipline | topic  |
-      | SQL        | Select |
-      | SQL        | Join   |
+      | Mongo      | Select |
+      | Mongo      | Join   |
     And "Trade23" task domain with "task-domain/prod-trade23-db.yml" db and "task-domain/prod-trade23-data.yml" data scripts exists for this discipline
       | question                               | answer             | id   | topics       |
       | What are the different subsets of SQL? | select * from dual | *ta1 | Select, Join |

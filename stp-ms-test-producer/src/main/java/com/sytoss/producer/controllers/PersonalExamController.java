@@ -2,6 +2,7 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
@@ -44,7 +45,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView({PersonalExam.PublicWithAnswers.class})
+    @JsonView({PersonalExam.TeacherOnly.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
@@ -168,7 +169,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/review")
-    @JsonView(PersonalExam.PublicWithAnswers.class)
+    @JsonView(PersonalExam.TeacherOnly.class)
     public PersonalExam review(@RequestBody PersonalExam personalExam) {
         return personalExamService.review(personalExam);
     }
@@ -267,5 +268,15 @@ public class PersonalExamController {
             @PathVariable Long groupId
     ) throws IOException {
         return personalExamService.getExcelReportByGroup(groupId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/task/update")
+    public List<PersonalExam> updateTask(@RequestBody Task task) {
+        return personalExamService.updateTask(task);
     }
 }

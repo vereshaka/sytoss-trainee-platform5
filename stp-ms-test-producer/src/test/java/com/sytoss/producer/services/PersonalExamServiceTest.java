@@ -331,4 +331,43 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Assertions.assertEquals("12345", returnPersonalExam.getId());
     }
 
+
+    @Test
+    void updateTask() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setQuestion("select all from products");
+
+        Answer answer1 = new Answer();
+        answer1.setValue("select * from products");
+        answer1.setGrade(new Grade(1, "answer correct"));
+        answer1.setStatus(AnswerStatus.GRADED);
+        answer1.setTask(task);
+        Answer answer2 = new Answer();
+        answer2.setValue("select * from products");
+        answer2.setGrade(new Grade(1, "answer correct"));
+        answer2.setStatus(AnswerStatus.GRADED);
+        answer2.setTask(task);
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+        personalExam.review();
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamConnector.getAllByAnswersTaskIdAndStatusIs(any(), any())).thenReturn(List.of(personalExam2));
+        task.setQuestion("select * from products");
+
+        List<PersonalExam> personalExams = personalExamService.updateTask(task);
+        assertEquals(1, personalExams.size());
+        assertEquals("2", personalExams.get(0).getId());
+        assertEquals("select * from products", personalExams.get(0).getAnswerById(2L).getTask().getQuestion());
+    }
 }

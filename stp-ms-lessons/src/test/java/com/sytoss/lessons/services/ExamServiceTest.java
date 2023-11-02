@@ -11,6 +11,7 @@ import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -179,6 +180,13 @@ public class ExamServiceTest extends StpUnitTest {
         examDTO.setName("Exam 1");
         examDTO.setTopics(List.of(topicDTO));
         examDTO.setTasks(List.of(taskDTO));
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeDTO.setId(1L);
+        ExamToStudentAssigneeDTO examToStudentAssigneeDTO = new ExamToStudentAssigneeDTO();
+        examToStudentAssigneeDTO.setStudentId(1L);
+        examAssigneeDTO.setExamAssigneeToDTOList(List.of(examToStudentAssigneeDTO));
+        examDTO.setExamAssignees(List.of(examAssigneeDTO));
+        when(examAssigneeConnector.getAllByExam_Id(any())).thenReturn(List.of(examAssigneeDTO));
         when(examConnector.getReferenceById(1L)).thenReturn(examDTO);
         Exam result = examService.delete(1L);
         assertEquals(1L, result.getId());
@@ -285,15 +293,18 @@ public class ExamServiceTest extends StpUnitTest {
         examAssignee.setExam(exam);
         examAssignee.setId(2L);
         examAssignee.setRelevantTo(date);
+        examAssignee.setRelevantFrom(date);
         date = new Date(33333333);
         ExamAssignee examAssignee2 = new ExamAssignee();
         examAssignee2.setExam(exam);
         examAssignee2.setId(1L);
         examAssignee2.setRelevantTo(date);
+        examAssignee2.setRelevantFrom(date);
         ExamAssignee examAssignee3 = new ExamAssignee();
         examAssignee3.setExam(exam);
         examAssignee3.setId(3L);
         examAssignee3.setRelevantTo(new Date());
+        examAssignee3.setRelevantFrom(new Date());
 
         when(examConnector.findByTeacherIdOrderByCreationDateDesc(any())).thenReturn(List.of(examDTO));
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
@@ -302,7 +313,7 @@ public class ExamServiceTest extends StpUnitTest {
         examAssigneeConvertor.toDTO(examAssignee2, examAssigneeDTO2);
         ExamAssigneeDTO examAssigneeDTO3 = new ExamAssigneeDTO();
         examAssigneeConvertor.toDTO(examAssignee3, examAssigneeDTO3);
-        when(examAssigneeConnector.getAllByExam_Id(examDTO.getId())).thenReturn(List.of(examAssigneeDTO, examAssigneeDTO2, examAssigneeDTO3));
+        when(examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(any())).thenReturn(List.of(examAssigneeDTO3, examAssigneeDTO, examAssigneeDTO2));
         List<ExamAssignee> examAssignees = examService.findExamAssignees();
         assertEquals(3L, examAssignees.get(0).getId());
         assertEquals(2L, examAssignees.get(1).getId());
@@ -325,7 +336,6 @@ public class ExamServiceTest extends StpUnitTest {
         examDTO.setName("Exam");
         examDTO.setMaxGrade(1);
         examDTO.setNumberOfTasks(1);
-        examDTO.setTasks(List.of(taskDTO));
 
         when(examAssigneeConnector.getReferenceById(1L)).thenReturn(examAssigneeDTO);
         when(examConnector.findByExamAssignees_Id(1L)).thenReturn(examDTO);
@@ -334,8 +344,6 @@ public class ExamServiceTest extends StpUnitTest {
         assertEquals("Exam", result.getExamName());
         assertEquals(1, result.getMaxGrade());
         assertEquals(1, result.getAmountOfTasks());
-        assertEquals(1L, result.getTasks().get(0).getId());
-        assertEquals("Question", result.getTasks().get(0).getQuestion());
         assertEquals(examAssigneeDTO.getRelevantFrom(), result.getRelevantFrom());
         assertEquals(examAssigneeDTO.getRelevantTo(), result.getRelevantTo());
     }

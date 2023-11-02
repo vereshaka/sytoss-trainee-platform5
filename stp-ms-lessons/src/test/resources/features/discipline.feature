@@ -39,7 +39,6 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
-    @Bug
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -93,3 +92,4 @@ Feature: Discipline
     When receive this discipline's icon
     Then operation is successful
     And discipline's icon should be received
+

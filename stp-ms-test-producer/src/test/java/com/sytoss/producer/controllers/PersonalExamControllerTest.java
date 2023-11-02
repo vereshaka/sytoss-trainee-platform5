@@ -183,4 +183,45 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
         ResponseEntity<ExamAssigneeAnswersModel> result = doPost("/api/personal-exam/review/answers", httpEntity, ExamAssigneeAnswersModel.class);
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
+
+    @Test
+    void updateTask() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setQuestion("select all from products");
+
+        Answer answer1 = new Answer();
+        answer1.setValue("select * from products");
+        answer1.setGrade(new Grade(1, "answer correct"));
+        answer1.setStatus(AnswerStatus.GRADED);
+        answer1.setTask(task);
+        Answer answer2 = new Answer();
+        answer2.setValue("select * from products");
+        answer2.setGrade(new Grade(1, "answer correct"));
+        answer2.setStatus(AnswerStatus.GRADED);
+        answer2.setTask(task);
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+        personalExam.review();
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamService.getById("1")).thenReturn(personalExam);
+        when(personalExamService.getById("2")).thenReturn(personalExam2);
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
+
+        ResponseEntity<List<PersonalExam>> result = doPost("/api/personal-exam/task/update", httpEntity, new ParameterizedTypeReference<>() {});
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 }
