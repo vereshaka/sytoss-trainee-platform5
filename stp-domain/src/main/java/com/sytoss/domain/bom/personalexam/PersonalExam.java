@@ -159,9 +159,9 @@ public class PersonalExam {
     public static class Public {
     }
 
-    public static class TeacherOnly {
+    public static class TeacherOnly extends Public{
     }
 
-    public static class PublicWithAnswers extends Public {
+    public static class PublicWithAnswers extends TeacherOnly {
     }
 }
