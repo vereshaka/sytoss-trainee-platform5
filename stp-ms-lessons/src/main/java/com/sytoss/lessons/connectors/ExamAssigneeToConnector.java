@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ExamAssigneeToConnector extends JpaRepository<ExamAssigneeToDTO, Long> {
     List<ExamAssigneeToDTO> getAllByParent_IdOrderByParent_RelevantFromDesc(Long examAssigneeDTOId);
+    List<ExamAssigneeToDTO> deleteAllByParent_Id(Long examAssigneeDTOId);
 
     List<ExamToGroupAssigneeDTO> findByGroupIdOrderByParent_RelevantFromDesc(Long groupId);
 }

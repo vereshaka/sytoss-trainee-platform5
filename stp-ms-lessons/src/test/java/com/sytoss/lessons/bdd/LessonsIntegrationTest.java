@@ -9,6 +9,7 @@ import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.convertors.TopicConvertor;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
+import jakarta.persistence.EntityManager;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 
 @Getter
@@ -78,10 +80,22 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Autowired
     private DisciplineConvertor disciplineConvertor;
 
+    @Autowired
+    private ExamAssigneeConnector examAssigneeConnector;
+
+    @Autowired
+    private ExamAssigneeToConnector examAssigneeToConnector;
+
     @Override
     protected LessonsDetails createDetails() {
         return new LessonsDetails();
     }
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     protected String getToken() {

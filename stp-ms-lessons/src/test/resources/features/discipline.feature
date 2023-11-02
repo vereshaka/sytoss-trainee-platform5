@@ -93,3 +93,25 @@ Feature: Discipline
     Then operation is successful
     And discipline's icon should be received
 
+
+  Scenario: STP-772 Delete Discipline
+    Given "SQL-772" discipline exists with id *d1
+    And topics exist
+      | discipline | topic  |
+      | SQL-772    | Select |
+      | SQL-772    | Join   |
+    And "Trade23" task domain with "task-domain/prod-trade23-db.yml" db and "task-domain/prod-trade23-data.yml" data scripts exists for this discipline
+      | question                               | answer            | id  | topics       |
+      | What are the different subsets of SQL? | select  from dual | ta1 | Select, Join |
+      | "What is content of dual table?        | select  from dual | ta2 | Select       |
+    And this discipline has exams
+      | name  | tasks    | topic  | taskCount | maxGrade | id   |
+      | Exam1 | ta1, ta2 | Select | 2         | 2        | *ex1 |
+    And this exams have assignees
+      | relevantFrom               | relevantTo                 | examId | id   |
+      | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 | *ex1   | *as1 |
+    And this exam assignees have exam assignees to
+      | studentId | assigneeId |
+      | 1         | *as1       |
+    When a teacher delete discipline with id *d1
+    Then operation is successful

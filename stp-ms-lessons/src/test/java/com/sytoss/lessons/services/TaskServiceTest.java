@@ -18,6 +18,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
