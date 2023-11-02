@@ -56,7 +56,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Student student;
 
-    @JsonView({PersonalExam.PublicWithAnswers.class})
+    @JsonView({PersonalExam.TeacherOnly.class})
     private List<Answer> answers = new ArrayList<>();
 
     private Integer time;
@@ -160,8 +160,5 @@ public class PersonalExam {
     }
 
     public static class TeacherOnly extends Public{
-    }
-
-    public static class PublicWithAnswers extends TeacherOnly {
     }
 }
