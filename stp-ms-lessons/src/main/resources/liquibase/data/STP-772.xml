@@ -4,6 +4,14 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-772.xml">
 
+    <changeSet author="yevgenyv" id="SPT-772.0">
+        <sql>
+            delete from exam_assignee ea
+            where not exists (select 1 from exam where id = ea.exam_id ) or exam_id is null;
+
+        </sql>
+    </changeSet>
+
     <changeSet author="yevgenyv" id="SPT-772.1">
         <addForeignKeyConstraint baseTableName="EXAM_ASSIGNEE" baseColumnNames="EXAM_ID"
                                  constraintName="FK_ASSIGNEE2EXAM" referencedTableName="EXAM_ASSIGNEE"
