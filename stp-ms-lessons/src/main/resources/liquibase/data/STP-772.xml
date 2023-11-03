@@ -14,7 +14,7 @@
 
     <changeSet author="yevgenyv" id="SPT-772.1">
         <addForeignKeyConstraint baseTableName="EXAM_ASSIGNEE" baseColumnNames="EXAM_ID"
-                                 constraintName="FK_ASSIGNEE2EXAM" referencedTableName="EXAM_ASSIGNEE"
+                                 constraintName="FK_ASSIGNEE2EXAM" referencedTableName="EXAM"
                                  referencedColumnNames="ID"/>
     </changeSet>
 </databaseChangeLog>
