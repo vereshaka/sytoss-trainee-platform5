@@ -18,7 +18,7 @@ public abstract class ExamAssigneeToDTO extends Auditable {
     @SequenceGenerator(name = "exam_assignee_to_id_generator", sequenceName = "EXAM_ASSIGNEE_TO_SEQ", allocationSize = 1)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE, optional = false)
     @JoinColumn(name = "ASSIGNEE_ID", referencedColumnName = "ID")
     private ExamAssigneeDTO parent;
 }
