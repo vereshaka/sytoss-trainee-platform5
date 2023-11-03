@@ -107,9 +107,19 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
 
-
   Scenario: STP-791-test GROUP BY exception
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "select * from CLIENT group by COMPANY"
     When request sent to check
     Then request should be processed with error 406
+
+  Scenario: STP-xxx Check line break
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is
+    """
+    Select CompanY,c.Company, sum(Quantity)
+  from Client c inner join Sale s on c.IdClient=s.IdProduct
+  group by c.Company
+    """
+    When request sent to check
+    Then request should be processed successfully
