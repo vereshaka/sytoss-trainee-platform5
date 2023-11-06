@@ -45,7 +45,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView({PersonalExam.PublicWithAnswers.class})
+    @JsonView({PersonalExam.TeacherOnly.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
         return personalExamService.summary(examId);
@@ -169,7 +169,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/review")
-    @JsonView(PersonalExam.PublicWithAnswers.class)
+    @JsonView(PersonalExam.TeacherOnly.class)
     public PersonalExam review(@RequestBody PersonalExam personalExam) {
         return personalExamService.review(personalExam);
     }

@@ -21,18 +21,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 public class TopicGiven extends AbstractGiven {
 
-
-    @Autowired
-    private DataSource dataSource;
-
     @Given("^topic with specific id (.*) exists")
     public void topicWithIdExists(Long topicId) {
         try {
-            Connection connection = dataSource.getConnection();
+            Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TOPIC WHERE ID = " + topicId);
             statement.execute("INSERT INTO TOPIC (ID, NAME, DISCIPLINE_ID) VALUES(" + topicId + ", 'Generic Topic#" + topicId + "', " +
                     getTestExecutionContext().getDetails().getDisciplineId() + ")");
+            while (true) {
+                ResultSet rs = statement.executeQuery("select TOPIC_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if (id >= topicId) {
+                    break;
+                }
+            }
             statement.close();
             connection.commit();
             statement = connection.createStatement();
@@ -44,6 +48,7 @@ public class TopicGiven extends AbstractGiven {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        getEntityManager().clear();
     }
 
     @Given("^topic with id (.*) contains the following tasks:")

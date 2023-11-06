@@ -89,7 +89,6 @@ public class ExamAssigneeService extends AbstractService {
     }
 
     private void deleteAllExamAssigneeToByExamAssignee(Long examAssigneeId) {
-        List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeToConnector.getAllByParent_IdOrderByParent_RelevantFromDesc(examAssigneeId);
-        examAssigneeToConnector.deleteAll(examAssigneeToDTOS);
+       examAssigneeToConnector.deleteAllByParent_Id(examAssigneeId);
     }
 }

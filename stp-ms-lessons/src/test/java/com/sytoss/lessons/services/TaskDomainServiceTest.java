@@ -147,7 +147,8 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomain = new TaskDomainDTO();
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
-        taskDomain.setDatabaseScript("Script Domain");
+        taskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        taskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         taskDomain.setShortDescription("Task Domain Description");
         taskDomain.setFullDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -159,18 +160,19 @@ public class TaskDomainServiceTest extends StpUnitTest {
             final Object[] args = invocation.getArguments();
             TaskDomainDTO result = (TaskDomainDTO) args[0];
             result.setName("new");
-            result.setDatabaseScript("new");
+            result.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+            result.setDataScript(FileUtils.readFromFile("puml/data.puml"));
             result.setShortDescription("new");
             result.setFullDescription("new");
             return result;
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         when(taskService.findByDomainId(anyLong())).thenReturn(new ArrayList<>());
         TaskDomain updateTaskDomain = new TaskDomain();
-        taskDomain.setName("new");
-        taskDomain.setDatabaseScript("new");
+        updateTaskDomain.setName("new");
+        updateTaskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        updateTaskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
         assertEquals("new", result.getName());
-        assertEquals("new", result.getDatabaseScript());
         assertEquals("new", result.getShortDescription());
         assertEquals("new", result.getFullDescription());
     }

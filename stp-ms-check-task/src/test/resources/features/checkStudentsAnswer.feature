@@ -107,7 +107,6 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
 
-
   Scenario: STP-791-test GROUP BY exception
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "select * from CLIENT group by COMPANY"
@@ -131,3 +130,14 @@ Feature: check answer
     Then request should be processed successfully
     And Grade value is 1
     And Grade message is ""
+
+  Scenario: STP-xxx Check line break
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is
+    """
+    Select CompanY,c.Company, sum(Quantity)
+  from Client c inner join Sale s on c.IdClient=s.IdProduct
+  group by c.Company
+    """
+    When request sent to check
+    Then request should be processed successfully

@@ -2,7 +2,10 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -24,8 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -196,10 +201,22 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
-        List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-        personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-        examAssigneeService.deleteAllByExamId(examId);
-        examConnector.deleteById(exam.getId());
+        personalExamConnector.deletePersonalExamsByExamAssigneeId(exam.getExamAssignees().stream().map(ExamAssignee::getId).toList());
+
+        ExamDTO dto = examConnector.getReferenceById(examId);
+        dto.getExamAssignees().forEach(item -> {
+            item.getExamAssigneeToDTOList().forEach(ea2item -> examAssigneeToConnector.delete(ea2item));
+            item.setExamAssigneeToDTOList(new ArrayList<>());
+            examAssigneeConnector.delete(item);
+        });
+
+        dto.setExamAssignees(new ArrayList<>());
+        dto.setTopics(new ArrayList<>());
+        dto.setTasks(new ArrayList<>());
+
+        examConnector.save(dto);
+
+        examConnector.deleteById(examId);
         return exam;
     }
 

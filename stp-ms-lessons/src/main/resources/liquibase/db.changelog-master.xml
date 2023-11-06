@@ -45,4 +45,5 @@
     <include file="data/STP-719.xml" relativeToChangelogFile="true" />
     <include file="data/STP-738.xml" relativeToChangelogFile="true" />
     <include file="data/STP-751.xml" relativeToChangelogFile="true" />
+    <include file="data/STP-772.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

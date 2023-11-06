@@ -1,7 +1,9 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.services.DisciplineService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DisciplineGiven extends AbstractGiven {
 
     @Autowired
-    private DataSource dataSource;
+    private DisciplineService disciplineService;
 
     @Given("^this teacher has \"(.*)\" discipline with id (.*) and following topics:")
     public void teacherHasDiscipline(String disciplineName, String disciplineId, DataTable topicsData) {
@@ -163,7 +165,12 @@ public class DisciplineGiven extends AbstractGiven {
     @Given("^discipline with specific id (.*) and specific teacher id (.*) exists")
     public void disciplineWithIdExists(Long disciplineId, Long teacherId) {
         try {
-            Connection connection = dataSource.getConnection();
+            disciplineService.delete(disciplineId);
+        } catch (DisciplineNotFoundException e) {
+
+        }
+        try {
+            Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM DISCIPLINE WHERE ID = " + disciplineId);
             statement.execute("INSERT INTO DISCIPLINE (ID, NAME, TEACHER_ID,CREATION_DATE) VALUES(" + disciplineId + ", 'discipline', " +
@@ -187,6 +194,7 @@ public class DisciplineGiven extends AbstractGiven {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        getEntityManager().clear();
         getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
     }
 }
