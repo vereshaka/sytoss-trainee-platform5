@@ -113,6 +113,24 @@ Feature: check answer
     When request sent to check
     Then request should be processed with error 406
 
+  Scenario: STP-853 Check correct student's answer with in and sub-query
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""
+
+  Scenario: STP-853 Check correct student's answer with not in and sub-query
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "SELECT IdClient, LName FROM Client WHERE IdClient NOT IN (SELECT IdClient FROM Sale);"
+    And check SQL is "SELECT IdClient, LName FROM Client WHERE IdClient NOT IN (SELECT IdClient FROM Sale);"
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""
+
   Scenario: STP-xxx Check line break
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is

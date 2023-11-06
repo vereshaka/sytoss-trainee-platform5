@@ -108,7 +108,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
             @RequestBody String taskAnswer) {
-        return answerService.checkByAnswerId(personalExamId, taskAnswer.replaceAll("\"", ""), answerId);
+        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId);
     }
 
     @Operation(description = "Method returns image of db structure for task")

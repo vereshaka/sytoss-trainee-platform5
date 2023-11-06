@@ -1,7 +1,6 @@
 package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.convertors.CheckConvertor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
@@ -79,8 +78,8 @@ public class AnswerService extends AbstractService {
         Task task = answer.getTask();
         TaskDomain taskDomain = task.getTaskDomain();
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setRequest(CheckConvertor.formatTaskAnswer(answer.getValue()));
-        checkTaskParameters.setEtalon(CheckConvertor.formatTaskAnswer(task.getEtalonAnswer()));
+        checkTaskParameters.setRequest(answer.getValue());
+        checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
         String liquibase = pumlConvertor.convertToLiquibase(script);
@@ -133,7 +132,7 @@ public class AnswerService extends AbstractService {
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-        request.setRequest(CheckConvertor.formatTaskAnswer(taskAnswer));
+        request.setRequest(taskAnswer);
         request.setScript(liquibaseScript);
         try {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);
