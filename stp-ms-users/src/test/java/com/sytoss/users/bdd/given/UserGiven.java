@@ -14,13 +14,6 @@ import java.util.Map;
 @Transactional
 public class UserGiven extends UsersIntegrationTest {
 
-    @DataTableType
-    public GroupDTO mapGroupDTO(Map<String, String> row) {
-        GroupDTO groupDTO = new GroupDTO();
-        groupDTO.setName(row.get("group"));
-        return groupDTO;
-    }
-
     @Given("^teacher with \"(\\w+)\" firstName and \"(\\w+)\" lastName doesnt exist$")
     public void teacherNotExist(String firstName, String lastName) {
         UserDTO teacherDTO = getUserConnector().getByFirstNameAndLastName(firstName, lastName);

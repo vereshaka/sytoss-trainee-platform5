@@ -8,17 +8,52 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.time.Instant;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 public class TopicGiven extends AbstractGiven {
 
+    @Given("^topic with specific id (.*) exists")
+    public void topicWithIdExists(Long topicId) {
+        try {
+            Connection connection = getDataSource().getConnection();
+            Statement statement = connection.createStatement();
+            statement.execute("DELETE FROM TOPIC WHERE ID = " + topicId);
+            statement.execute("INSERT INTO TOPIC (ID, NAME, DISCIPLINE_ID) VALUES(" + topicId + ", 'Generic Topic#" + topicId + "', " +
+                    getTestExecutionContext().getDetails().getDisciplineId() + ")");
+            while (true) {
+                ResultSet rs = statement.executeQuery("select TOPIC_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if (id >= topicId) {
+                    break;
+                }
+            }
+            statement.close();
+            connection.commit();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM TOPIC where ID = " + topicId);
+            assertTrue(rs.next());
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        getEntityManager().clear();
+    }
+
     @Given("^topic with id (.*) contains the following tasks:")
     public void topicContainsTasks(String topicKey, DataTable tasksData) {
-        TopicDTO topic = getTopicConnector().getReferenceById(getTestExecutionContext().getIdMapping().get(topicKey));
+        TopicDTO topic = getTopicConnector().getReferenceById((Long) getTestExecutionContext().getIdMapping().get(topicKey));
         List<TaskDTO> existsTasks = getTaskConnector().findByTopicsId(topic.getId());
 
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
@@ -40,7 +75,7 @@ public class TopicGiven extends AbstractGiven {
         deleteTasks(existsTasks.stream().filter(item -> !tasks.contains(item.getQuestion().toLowerCase())).toList());
     }
 
-    @Given("topics exist")
+    @Given("^topics exist")
     public void thisExamHasAnswers(List<Topic> topics) {
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         List<TopicDTO> topicDTOS = new ArrayList<>();

@@ -1,17 +1,27 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.services.DisciplineService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class DisciplineGiven extends AbstractGiven {
+
+    @Autowired
+    private DisciplineService disciplineService;
 
     @Given("^this teacher has \"(.*)\" discipline with id (.*) and following topics:")
     public void teacherHasDiscipline(String disciplineName, String disciplineId, DataTable topicsData) {
@@ -150,5 +160,41 @@ public class DisciplineGiven extends AbstractGiven {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         return format.format(value);
+    }
+
+    @Given("^discipline with specific id (.*) and specific teacher id (.*) exists")
+    public void disciplineWithIdExists(Long disciplineId, Long teacherId) {
+        try {
+            disciplineService.delete(disciplineId);
+        } catch (DisciplineNotFoundException e) {
+
+        }
+        try {
+            Connection connection = getDataSource().getConnection();
+            Statement statement = connection.createStatement();
+            statement.execute("DELETE FROM DISCIPLINE WHERE ID = " + disciplineId);
+            statement.execute("INSERT INTO DISCIPLINE (ID, NAME, TEACHER_ID,CREATION_DATE) VALUES(" + disciplineId + ", 'discipline', " +
+                    teacherId + ",'2023-08-28T07:03:39.655+00:00'" + ")");
+            while (true) {
+                ResultSet rs = statement.executeQuery("select DISCIPLINE_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if (id >= disciplineId) {
+                    break;
+                }
+            }
+            statement.close();
+            connection.commit();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM DISCIPLINE where ID = " + disciplineId);
+            assertTrue(rs.next());
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        getEntityManager().clear();
+        getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
     }
 }

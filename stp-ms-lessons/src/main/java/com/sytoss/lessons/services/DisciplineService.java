@@ -8,13 +8,23 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -75,6 +85,28 @@ public class DisciplineService extends AbstractService {
             throw new DisciplineExistException(discipline.getName());
         }
     }
+
+    public Page<Discipline> findDisciplinesWithPaging(int pageNo, int pageSize, List<FilterItem> filters) {
+        Specification<DisciplineDTO> teacherSpec = (root, query, builder) ->
+                builder.equal(root.get("teacherId"), getCurrentUser().getId());
+
+        FilterItem nameFilterItem = filters.stream()
+                .filter(filter -> filter.getFieldName().equals("name"))
+                .findFirst().get();
+
+        if (StringUtils.isNotEmpty(nameFilterItem.getValue())) {
+            Specification<DisciplineDTO> disciplineNameSpec = (root, query, builder) ->
+                    builder.like(root.get("name"), "%" + nameFilterItem.getValue() + "%");
+            teacherSpec = teacherSpec.and(disciplineNameSpec);
+        }
+
+        Page<Discipline> page = disciplineConnector
+                .findAll(teacherSpec, PageRequest.of(pageNo, pageSize))
+                .map(this::convert);
+
+        return page;
+    }
+
 
     public List<Discipline> findDisciplines() {
         List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
@@ -187,12 +219,15 @@ public class DisciplineService extends AbstractService {
         return examService.getExamsByDiscipline(disciplineId);
     }
 
+    @Transactional
     public Discipline delete(Long disciplineId) {
         Discipline discipline = getById(disciplineId);
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
-        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
+        for (Exam exam: examList) {
+            examService.delete(exam.getId());
+        }
 
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         taskDomainDTOList.forEach(taskDomainDTO -> {
             List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainDTO.getId());
             taskDTOList.forEach(examService::deleteAssignTaskToExam);
@@ -201,9 +236,8 @@ public class DisciplineService extends AbstractService {
 
         taskDomainConnector.deleteAll(taskDomainDTOList);
 
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
         topicConnector.deleteAll(topicDTOList);
-
-        examList.forEach(exam -> examService.deleteById(exam.getId()));
 
         disciplineConnector.deleteById(disciplineId);
         return discipline;
@@ -217,4 +251,11 @@ public class DisciplineService extends AbstractService {
             return discipline;
         }).collect(Collectors.toList());
     }
+
+    private Discipline convert(DisciplineDTO disciplineDTO){
+        Discipline discipline = new Discipline();
+        disciplineConvertor.fromDTO(disciplineDTO, discipline);
+        return discipline;
+    }
+
 }

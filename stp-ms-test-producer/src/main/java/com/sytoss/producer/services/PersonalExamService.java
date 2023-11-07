@@ -10,7 +10,9 @@ import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.connectors.ExamAssigneeConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
+import com.sytoss.producer.writers.GroupExcelBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -40,6 +43,10 @@ public class PersonalExamService extends AbstractService {
     private final ExamAssigneeConnector examAssigneeConnector;
 
     private final ObjectProvider<ExcelBuilder> excelBuilderFactory;
+
+    private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
+
+    private final AnswerGenerator answerGenerator;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -55,7 +62,7 @@ public class PersonalExamService extends AbstractService {
         personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
         personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
         personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
-        List<Answer> answers = generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
+        List<Answer> answers = answerGenerator.generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
         personalExam.setAnswers(answers);
         double sumOfCoef = 0;
         for (Answer answer : answers) {
@@ -66,22 +73,6 @@ public class PersonalExamService extends AbstractService {
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
-    }
-
-    private List<Answer> generateAnswers(int numberOfTasks, List<Task> tasks) {
-        List<Answer> answers = new ArrayList<>();
-        for (int i = 0; i <= numberOfTasks - 1; i++) {
-            Random random = new Random();
-            int numTask = random.nextInt(tasks.size());
-            Task task = tasks.get(numTask);
-            Answer answer = new Answer();
-            answer.setId((long) (i + 1));
-            answer.setStatus(AnswerStatus.NOT_STARTED);
-            answer.setTask(task);
-            answers.add(answer);
-            tasks.remove(task);
-        }
-        return answers;
     }
 
     public boolean taskDomainIsUsed(Long taskDomainId) {
@@ -340,8 +331,28 @@ public class PersonalExamService extends AbstractService {
         ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
         ExamReportModel examReportModel = examAssigneeConnector.getReportInfo(examAssigneeId);
         List<PersonalExam> personalExams = personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
+
+        List<TaskReportModel> uniqueTasks = personalExams.stream()
+                .flatMap(exam -> exam.getAnswers().stream().map(Answer::getTask))
+                .collect(Collectors.toMap(
+                        Task::getId,
+                        task -> task,
+                        (existing, replacement) -> existing
+                ))
+                .values()
+                .stream().map(task -> {
+                    TaskReportModel taskReportModel = new TaskReportModel();
+                    taskReportModel.setId(task.getId());
+                    taskReportModel.setCode(task.getCode());
+                    taskReportModel.setQuestion(task.getQuestion());
+                    return taskReportModel;
+                })
+                .toList();
+
+        examReportModel.setTasks(uniqueTasks);
         List<PersonalExamReportModel> personalExamReportModels = convertToReportModel(personalExams);
         Workbook wb = excelBuilder.createExcelReportByExamAssignee(examReportModel, personalExamReportModels);
+        excelBuilder.write("D:/tmp.xlsx", wb);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         wb.write(bos);
         byte[] byteArray = bos.toByteArray();
@@ -382,14 +393,27 @@ public class PersonalExamService extends AbstractService {
     }
 
     public byte[] getExcelReportByGroup(Long groupId) throws IOException {
-        ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
+        GroupExcelBuilder groupExcelBuilder = groupExcelBuilderFactory.getObject();
         List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_PrimaryGroup_Id(groupId);
         List<PersonalExamReportModel> reportModels = convertToReportModel(personalExams);
-        Workbook wb = excelBuilder.createExcelReportByGroup(reportModels);
+        Workbook wb = groupExcelBuilder.createExcelReportByGroup(reportModels);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         wb.write(bos);
         byte[] byteArray = bos.toByteArray();
         bos.close();
         return byteArray;
     }
+
+    public List<PersonalExam> updateTask(Task task) {
+        List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
+        for(PersonalExam personalExam : personalExams){
+           for(Answer answer : personalExam.getAnswers()){
+               if(Objects.equals(answer.getTask().getId(), task.getId())){
+                   answer.setTask(task);
+               }
+           }
+        }
+        return personalExams;
+    }
+
 }

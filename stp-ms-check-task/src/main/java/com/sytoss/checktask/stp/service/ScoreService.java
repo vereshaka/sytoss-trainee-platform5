@@ -122,7 +122,7 @@ public class ScoreService {
                 result = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest()) :
                         helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
             } catch (SQLException e) {
-                throw new RequestIsNotValidException(e.getMessage());
+                throw new RequestIsNotValidException(e.getMessage(), e);
             }
             return result;
         } finally {

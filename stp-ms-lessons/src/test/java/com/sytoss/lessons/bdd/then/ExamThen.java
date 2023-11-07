@@ -14,19 +14,12 @@ import java.util.Objects;
 
 public class ExamThen extends LessonsIntegrationTest {
 
-    @Then("^\"(.*)\" exam should be from (.*) to (.*) with (.*) tasks for this group with (.*) minutes duration$")
-    public void examShouldBeWithParams(String examName, String relevantFromString, String relevantToString, Integer numberOfTasks, Integer duration) throws ParseException {
+    @Then("^\"(.*)\" exam should have (.*) tasks for this group$")
+    public void examShouldBeWithParams(String examName, Integer numberOfTasks) {
         ExamDTO examDTO = getExamConnector().getByName(examName);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        Date relevantFrom = dateFormat.parse(relevantFromString);
-        Date relevantTo = dateFormat.parse(relevantToString);
-
         Assertions.assertEquals(examName, examDTO.getName());
-        //Assertions.assertEquals(relevantFrom, examDTO.getRelevantFrom());
-        //Assertions.assertEquals(relevantTo, examDTO.getRelevantTo());
         Assertions.assertEquals(numberOfTasks, examDTO.getNumberOfTasks());
-        //Assertions.assertEquals(duration, examDTO.getDuration());
     }
 
     @Then("^\"(.*)\" exam for this group should have topics$")

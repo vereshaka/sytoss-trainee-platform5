@@ -12,15 +12,19 @@ import com.sytoss.stp.test.FileUtils;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 public class TaskDomainGiven extends LessonsIntegrationTest {
@@ -163,4 +167,47 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             getTaskDomainConnector().save(taskDomainDTO);
         }
     }
+
+    @Given("^task domain with specific id (.*) and \"(.*)\" db, \"(.*)\" data scripts exists")
+    public void taskDomainWithIdExists(Long taskDomainId, String dbScript, String dataScript) {
+        try {
+            String dbScriptFromFile = null;
+            try {
+                dbScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dbScript), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            String dataScriptFromFile = null;
+            try {
+                dataScriptFromFile = IOUtils.toString(getClass().getResourceAsStream("/data/" + dataScript), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Connection connection = getDataSource().getConnection();
+            Statement statement = connection.createStatement();
+            statement.execute("DELETE FROM TASK_DOMAIN WHERE ID = " + taskDomainId);
+            statement.execute("INSERT INTO TASK_DOMAIN (ID, NAME, DATABASE_SCRIPT, DATA_SCRIPT, DISCIPLINE_ID, SHORT_DESCRIPTION) VALUES(" + taskDomainId + ", 'task domain 2', 'db', 'data', " + getTestExecutionContext().getDetails().getDisciplineId() + ",'desc'"+")");
+            while(true){
+                ResultSet rs = statement.executeQuery("select TASK_DOMAIN_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if(id>=taskDomainId){
+                    break;
+                }
+            }
+            statement.close();
+            connection.commit();
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM TASK_DOMAIN where ID = " + taskDomainId);
+            assertTrue(rs.next());
+            rs.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        getTestExecutionContext().getDetails().setTaskDomainId(taskDomainId);
+        getEntityManager().clear();
+    }
+
 }

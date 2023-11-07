@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 @RestController
 @RequestMapping("/api/task-domain")
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class TaskDomainController {
 
     private final TaskDomainService taskDomainService;
 
-    @Operation(description = "Method that save information about exam")
+    @Operation(description = "Method that retrieve information about task domain")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Task domain not found"),
@@ -82,7 +82,7 @@ public class TaskDomainController {
         return taskDomainService.getTasks(taskDomainId);
     }
 
-    @Operation(description = "Method that update task domain bu id")
+    @Operation(description = "Method that update task domain by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })

@@ -17,7 +17,7 @@ public class TestExecutionContext<T> {
     private String token;
     private T details;
     @Setter(AccessLevel.NONE)
-    private Map<String, Long> idMapping = new HashMap<>();
+    private Map<String, Object> idMapping = new HashMap<>();
 
     public static <T> TestExecutionContext<T> getTestContext() {
         if (testContext.get() == null) {
@@ -30,17 +30,17 @@ public class TestExecutionContext<T> {
         testContext.set(null);
     }
 
-    public void registerId(String key, Long id) {
+    public void registerId(String key, Object id) {
         if (idMapping.containsKey(key)) {
             throw new IllegalArgumentException("Key already registered. Key: " + key);
         }
         idMapping.put(key, id);
     }
 
-    public Long replaceId(String key) {
-       Long result = idMapping.get(key);
+    public Object replaceId(String key) {
+        Object result = idMapping.get(key);
        if (result == null) {
-           result = Long.valueOf(key);
+           result = key;
        }
        return result;
     }

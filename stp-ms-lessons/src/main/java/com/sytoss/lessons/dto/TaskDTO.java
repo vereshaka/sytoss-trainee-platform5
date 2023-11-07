@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "TASK")
-public class TaskDTO {
+public class TaskDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -39,7 +39,7 @@ public class TaskDTO {
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private List<TopicDTO> topics;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
     private List<TaskConditionDTO> conditions = new ArrayList<>();
 
