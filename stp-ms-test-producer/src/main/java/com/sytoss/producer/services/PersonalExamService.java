@@ -132,6 +132,7 @@ public class PersonalExamService extends AbstractService {
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestionNumber(1);
+        taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
         return firstTask;
     }

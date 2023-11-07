@@ -123,7 +123,6 @@ public class TaskController {
         return taskService.getTopics(taskId);
     }
 
-
     @Operation(description = "Method that retrieve exams by task id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),

@@ -29,6 +29,7 @@ public class TaskConvertor {
         destination.setCoef(source.getCoef());
         destination.setCode(source.getCode() == null ? "" : source.getCode());
         destination.setCreateDate(source.getCreateDate());
+        destination.setCheckAnswer(source.getCheckAnswer());
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
@@ -71,6 +72,7 @@ public class TaskConvertor {
         destination.setCoef(source.getCoef());
         destination.setCode(source.getCode());
         destination.setCreateDate(source.getCreateDate());
+        destination.setCheckAnswer(source.getCheckAnswer());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);

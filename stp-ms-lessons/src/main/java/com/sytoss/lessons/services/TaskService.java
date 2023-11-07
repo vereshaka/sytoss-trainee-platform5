@@ -157,6 +157,7 @@ public class TaskService {
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setCheckAnswer(taskDomainRequestParameters.getCheckAnswer());
             checkRequestParameters.setScript(liquibaseScript);
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
@@ -196,6 +197,10 @@ public class TaskService {
 
         if (Objects.nonNull(task.getCode())) {
             updateTaskDTO.setCode(task.getCode());
+        }
+
+        if (Objects.nonNull(task.getCheckAnswer())) {
+            updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
         }
 
         updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));

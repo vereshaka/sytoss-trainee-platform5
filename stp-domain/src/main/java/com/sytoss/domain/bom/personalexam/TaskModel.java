@@ -8,4 +8,6 @@ import lombok.Setter;
 public class TaskModel {
 
     private Integer questionNumber;
+
+    private boolean needCheckQuery;
 }
