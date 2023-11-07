@@ -114,26 +114,27 @@ public class AnswerService extends AbstractService {
         }
     }
 
-    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
+    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer, String checkAnswer) {
         String parsedTaskAnswer = taskAnswer.replaceAll("\\n", " ");
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
 
-        return check(parsedTaskAnswer, answer);
+        return check(parsedTaskAnswer, answer,checkAnswer);
     }
 
     public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getAnswerById(Long.valueOf(answerId));
-        return check(taskAnswer, answer);
+        return check(taskAnswer, answer,);
     }
 
-    public QueryResult check(String taskAnswer, Answer answer) {
+    public QueryResult check(String taskAnswer, Answer answer, String checkAnswer) {
         CheckRequestParameters request = new CheckRequestParameters();
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
         request.setRequest(CheckConvertor.formatTaskAnswer(taskAnswer));
+        request.setCheckAnswer(checkAnswer);
         request.setScript(liquibaseScript);
         try {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);

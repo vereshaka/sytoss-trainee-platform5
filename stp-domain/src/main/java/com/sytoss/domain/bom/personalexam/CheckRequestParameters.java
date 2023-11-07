@@ -11,6 +11,8 @@ public class CheckRequestParameters {
 
     private String script;
 
+    private String checkAnswer;
+
     public boolean isQueryForUpdate(){
         if(request != null){
             return !request.toUpperCase().startsWith("SELECT");
