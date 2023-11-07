@@ -40,15 +40,13 @@ public class DatabaseHelperService {
 
     private final QueryResultConvertor queryResultConvertor;
 
-    private String url = "jdbc:h2:mem:";
-
     private Connection connection;
 
     private Connection getConnection() {
         if (connection == null) {
             try {
                 Class.forName("org.h2.Driver");
-                url += generateDatabaseName() + ";" + MSSQL_MODE;
+                String url = "jdbc:h2:mem:" + generateDatabaseName() + ";" + MSSQL_MODE;
                 connection = DriverManager.getConnection(url, username, password);
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);
@@ -58,7 +56,6 @@ public class DatabaseHelperService {
     }
 
     public void generateDatabase(String databaseScript) {
-        url += generateDatabaseName();
         try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
