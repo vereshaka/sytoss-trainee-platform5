@@ -20,7 +20,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
     @Test
     void generateDatabase() {
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script_v1.yml"));
-        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from Client"));
+        Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from Client",null));
     }
 
     @Test
@@ -38,7 +38,7 @@ class DatabaseHelperServiceTest extends StpUnitTest {
         queryResult.addValues(map2);
         int quantityOfInitiatedElements = map.size() + map2.size();
 
-        QueryResult queryResultFromDatabase = databaseHelperService.getExecuteQueryResult("select * from discipline");
+        QueryResult queryResultFromDatabase = databaseHelperService.getExecuteQueryResult("select * from discipline",null);
         int quantityOfElements = 0;
         List<String> keys = queryResultFromDatabase.getHeader();
         for (int i = 0; i < queryResultFromDatabase.getResultMapList().size(); i++) {
@@ -55,6 +55,6 @@ class DatabaseHelperServiceTest extends StpUnitTest {
     void dropDatabase() {
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         databaseHelperService.dropDatabase();
-        Assertions.assertThrows(CreateDbConnectionException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer"));
+        Assertions.assertThrows(CreateDbConnectionException.class, () -> databaseHelperService.getExecuteQueryResult("select * from answer",null));
     }
 }
