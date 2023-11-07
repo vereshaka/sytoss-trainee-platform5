@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.checktask.exceptions.CompareConditionException;
 import com.sytoss.domain.bom.checktask.exceptions.DifferentRowsAmountException;
 import com.sytoss.domain.bom.checktask.exceptions.EtalonColumnsNotFoundException;
 import com.sytoss.domain.bom.checktask.exceptions.WrongDataException;
+import com.sytoss.domain.bom.exceptions.business.CheckAnswerIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
@@ -31,25 +32,27 @@ public class ScoreService {
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
     public Score checkAndScore(CheckTaskParameters data) {
-        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
-        try {
-            helperServiceProviderObject.generateDatabase(data.getScript());
+            CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+            checkRequestParameters.setScript(data.getScript());
+            checkRequestParameters.setRequest(data.getRequest());
+            checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
+
             QueryResult queryResultAnswer;
             try {
-                queryResultAnswer = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest()) :
-                        helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
+                queryResultAnswer = checkQuery(checkRequestParameters);
             } catch (SQLException e) {
                 return new Score(0, e.getMessage());
             }
-            helperServiceProviderObject = databaseHelperServiceProvider.getObject();
-            helperServiceProviderObject.generateDatabase(data.getScript());
+
+            checkRequestParameters.setRequest(data.getEtalon());
+
             QueryResult queryResultEtalon;
             try {
-                queryResultEtalon = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getEtalon()) :
-                        helperServiceProviderObject.getExecuteQueryResult(data.getEtalon());
+                queryResultEtalon = checkQuery(checkRequestParameters);
             } catch (SQLException e) {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
+
             List<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon);
             List<TaskCondition> failedCondition = new ArrayList<>();
             for (TaskCondition condition : data.getConditions()) {
@@ -65,9 +68,6 @@ public class ScoreService {
                 result.add(new CompareConditionException(failedCondition)); // case #1
             }
             return grade(result);
-        } finally {
-            helperServiceProviderObject.dropDatabase();
-        }
     }
 
     private Score grade(List<Exception> failedChecks) {
@@ -88,45 +88,38 @@ public class ScoreService {
         return new Score(grade, comment);
     }
 
-    public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
-        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
-        try {
-            helperServiceProviderObject.generateDatabase(data.getScript());
-            IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
-
+    private QueryResult checkQuery(CheckRequestParameters data) throws SQLException {
+        if(data.getCheckAnswer()==null || data.getCheckAnswer().toLowerCase().startsWith("select")){
+            DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
             try {
-                if(data.isQueryForUpdate()){
-                    helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest());
-                }else{
-                    helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
-                }
-            } catch (SQLException e) {
-                isCheckEtalon.setChecked(false);
-                isCheckEtalon.setException(e.getMessage());
-                return isCheckEtalon;
+                helperServiceProviderObject.generateDatabase(data.getScript());
+                return helperServiceProviderObject.getExecuteQueryResult(data.getRequest(), data.getCheckAnswer());
+            } finally {
+                helperServiceProviderObject.dropDatabase();
             }
-            isCheckEtalon.setChecked(true);
-            return isCheckEtalon;
-        } finally {
-            helperServiceProviderObject.dropDatabase();
+        } else{
+            throw new CheckAnswerIsNotValidException(data.getCheckAnswer()+" is not valid");
         }
+
+    }
+
+    public IsCheckEtalon checkEtalon(CheckRequestParameters data) {
+        IsCheckEtalon isCheckEtalon = new IsCheckEtalon();
+        try {
+            checkQuery(data);
+            isCheckEtalon.setChecked(true);
+        } catch (SQLException e) {
+            isCheckEtalon.setChecked(false);
+            isCheckEtalon.setException(e.getMessage());
+        }
+        return isCheckEtalon;
     }
 
     public QueryResult checkRequest(CheckRequestParameters data) {
-        DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
         try {
-            helperServiceProviderObject.generateDatabase(data.getScript());
-            QueryResult result;
-
-            try {
-                result = data.isQueryForUpdate() ? helperServiceProviderObject.getExecuteQueryUpdate(data.getRequest()) :
-                        helperServiceProviderObject.getExecuteQueryResult(data.getRequest());
-            } catch (SQLException e) {
-                throw new RequestIsNotValidException(e.getMessage(), e);
-            }
-            return result;
-        } finally {
-            helperServiceProviderObject.dropDatabase();
+            return checkQuery(data);
+        } catch (SQLException e) {
+            throw new RequestIsNotValidException(e.getMessage(), e);
         }
     }
 

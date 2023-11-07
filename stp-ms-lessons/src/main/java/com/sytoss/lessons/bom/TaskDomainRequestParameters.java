@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class TaskDomainRequestParameters {
     private String request;
+    private String checkAnswer;
     private Long taskDomainId;
 }

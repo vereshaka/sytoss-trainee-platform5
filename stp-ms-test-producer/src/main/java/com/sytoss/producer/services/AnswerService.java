@@ -67,7 +67,7 @@ public class AnswerService extends AbstractService {
                         || item.getStatus().equals(AnswerStatus.GRADED))
                 .count();
         taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
-
+        taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
 
         return firstTask;
@@ -121,10 +121,10 @@ public class AnswerService extends AbstractService {
         return check(parsedTaskAnswer, answer,checkAnswer);
     }
 
-    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {
+    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId, String checkAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getAnswerById(Long.valueOf(answerId));
-        return check(taskAnswer, answer,);
+        return check(taskAnswer, answer,checkAnswer);
     }
 
     public QueryResult check(String taskAnswer, Answer answer, String checkAnswer) {
@@ -133,6 +133,7 @@ public class AnswerService extends AbstractService {
                 + answer.getTask().getTaskDomain().getDataScript();
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
         request.setRequest(taskAnswer);
+        request.setCheckAnswer(checkAnswer);
         request.setScript(liquibaseScript);
         try {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);

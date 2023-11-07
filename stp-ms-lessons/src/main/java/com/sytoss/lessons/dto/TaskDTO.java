@@ -50,5 +50,5 @@ public class TaskDTO extends Auditable {
     private Date createDate;
 
     @Column(name = "CHECK_ANSWER")
-    private Date checkAnswer;
+    private String checkAnswer;
 }

@@ -155,6 +155,7 @@ class ScoreServiceTest extends StpUnitTest {
 
         CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
         checkRequestParameters.setRequest("insert into Authors(id,name) values (100,'Author 2')");
+        checkRequestParameters.setCheckAnswer("select * from Authors");
         checkRequestParameters.setScript(readFromFile("task-domain/script1.json"));
 
         scoreService.checkRequest(checkRequestParameters);

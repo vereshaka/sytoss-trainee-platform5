@@ -110,7 +110,7 @@ public class PersonalExamController {
             @PathVariable(value = "answerId") String answerId,
             @RequestBody String taskAnswer,
             @RequestParam String checkAnswer) {
-        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId);
+        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId,checkAnswer);
     }
 
     @Operation(description = "Method returns image of db structure for task")

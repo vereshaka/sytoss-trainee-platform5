@@ -111,24 +111,21 @@ public class DatabaseHelperService {
         return scriptFile;
     }
 
-    public QueryResult getExecuteQueryResult(String query) throws SQLException {
-        try (Statement statement = getConnection().createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-            log.info("query result was got");
-            QueryResult queryResult = new QueryResult();
+    public QueryResult getExecuteQueryResult(String query, String checkAnswer) throws SQLException {
+        QueryResult queryResult = new QueryResult();
+        ResultSet resultSet;
+        try (Statement statement = getConnection().createStatement()) {
+            if(!query.toLowerCase().startsWith("select")){
+                int result = statement.executeUpdate(query);
+                queryResult.setAffectedRowsCount(result);
+                resultSet = statement.executeQuery(checkAnswer);
+            }else{
+                resultSet = statement.executeQuery(query);
+            }
+
             queryResultConvertor.convertFromResultSet(resultSet,queryResult);
-            return queryResult;
         }
+        return queryResult;
     }
 
-    public QueryResult getExecuteQueryUpdate(String query) throws SQLException {
-        try (Statement statement = getConnection().createStatement()) {
-            int result = statement.executeUpdate(query);
-            QueryResult queryResult = new QueryResult();
-            queryResult.setAffectedRowsCount(result);
-            queryResult.setRowsAffected(true);
-            log.info("query result was got. Result: "+result);
-            return queryResult;
-        }
-    }
 }
