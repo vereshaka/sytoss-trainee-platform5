@@ -93,8 +93,9 @@ public class PersonalExamController {
     public QueryResult checkCurrentAnswer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
-        return answerService.checkCurrentAnswer(personalExamId, taskAnswer);
+            @RequestParam String taskAnswer,
+            @RequestParam String checkAnswer) {
+        return answerService.checkCurrentAnswer(personalExamId, taskAnswer, checkAnswer);
     }
 
     @Operation(description = "Method for answering tasks")
@@ -107,8 +108,9 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
-            @RequestBody String taskAnswer) {
-        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId);
+            @RequestBody String taskAnswer,
+            @RequestParam String checkAnswer) {
+        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId,checkAnswer);
     }
 
     @Operation(description = "Method returns image of db structure for task")
