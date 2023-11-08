@@ -95,7 +95,7 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswersModel answersModel) {
-        return answerService.checkCurrentAnswer(personalExamId, answersModel.getCheckAnswer(), answersModel.getCheckAnswer());
+        return answerService.checkCurrentAnswer(personalExamId, answersModel.getTaskAnswer(), answersModel.getCheckAnswer());
     }
 
     @Operation(description = "Method for answering tasks")
