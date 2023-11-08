@@ -115,7 +115,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -273,7 +273,7 @@ public class TaskService {
         try {
             TopicDTO topicDTO = topicConnector.getReferenceById(topicId);
 
-            List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
             taskDTOList.forEach(taskDTO -> {
                 taskDTO.getTopics().remove(topicDTO);
                 taskConnector.save(taskDTO);

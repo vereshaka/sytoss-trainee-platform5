@@ -8,9 +8,7 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.time.Instant;
 import java.util.*;
@@ -54,7 +52,7 @@ public class TopicGiven extends AbstractGiven {
     @Given("^topic with id (.*) contains the following tasks:")
     public void topicContainsTasks(String topicKey, DataTable tasksData) {
         TopicDTO topic = getTopicConnector().getReferenceById((Long) getTestExecutionContext().getIdMapping().get(topicKey));
-        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsId(topic.getId());
+        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsIdOrderByCode(topic.getId());
 
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
 
@@ -62,12 +60,14 @@ public class TopicGiven extends AbstractGiven {
 
         for (int i = 1; i < tasksData.height(); i++) {
             String taskName = tasksData.row(i).get(0).trim();
+            String taskCode = tasksData.row(i).get(1).trim();
             tasks.add(taskName);
             TaskDTO result = existsTasks.stream().filter(item -> item.getQuestion().equalsIgnoreCase(taskName)).findFirst().orElse(null);
             if (result == null) {
                 result = new TaskDTO();
                 result.setQuestion(taskName);
                 result.setTopics(List.of(topic));
+                result.setCode(taskCode);
                 result.setTaskDomain(taskDomain);
                 getTaskConnector().save(result);
             }
