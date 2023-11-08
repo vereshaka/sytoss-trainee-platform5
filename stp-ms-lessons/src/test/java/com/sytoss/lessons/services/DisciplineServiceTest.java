@@ -213,7 +213,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         domainDTO.setDiscipline(disciplineDTO);
         taskDTO.setTaskDomain(domainDTO);
         input.add(taskDTO);
-        when(taskConnector.getByTaskDomainDisciplineId(1L)).thenReturn(input);
+        when(taskConnector.getByTaskDomainDisciplineIdOrderByCode(1L)).thenReturn(input);
         List<Task> result = disciplineService.findTasksByDisciplineId(1L);
         assertEquals(1, result.size());
     }
