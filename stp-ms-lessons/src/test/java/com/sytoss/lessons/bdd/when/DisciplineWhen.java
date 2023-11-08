@@ -2,7 +2,9 @@ package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.controllers.api.ResponseObject;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -71,13 +75,13 @@ public class DisciplineWhen extends LessonsIntegrationTest {
 
     @When("^teacher with id (.*) retrieve his disciplines$")
     public void requestSentReceiveDisciplinesByTeacher(Long teacherId) {
-        String url = "/api/teacher/my/disciplines";
+        String url = "/api/teacher/my/disciplines/0/5";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
         teacherMap.put("id", teacherId.intValue());
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<ResponseObject<Discipline>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -105,7 +109,6 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void getDisciplineIcon() {
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/icon";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
         getTestExecutionContext().setResponse(responseEntity);
@@ -120,5 +123,28 @@ public class DisciplineWhen extends LessonsIntegrationTest {
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^a teacher delete discipline with id (.*)$")
+    public void teacherDeleteDiscipline(String id) {
+        Long disciplineId = (Long) getTestExecutionContext().replaceId(id);
+        String url = "/api/discipline/"+disciplineId+"/delete";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Discipline> responseEntity = doDelete(url, httpEntity, Discipline.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @Given("^\"(.*)\" discipline exists with id (.*)$")
+    public void disciplineExist(String disciplineName, String id) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            getTestExecutionContext().registerId(id, disciplineDTO.getId());
+        }
     }
 }

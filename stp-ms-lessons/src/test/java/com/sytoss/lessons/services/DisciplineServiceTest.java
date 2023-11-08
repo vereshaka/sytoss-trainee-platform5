@@ -5,12 +5,11 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.GroupReferenceConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.controllers.filter.FilterFactory;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -64,6 +67,9 @@ public class DisciplineServiceTest extends StpUnitTest {
 
     @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private TopicConnector topicConnector;
 
     @Test
     public void shouldSaveDiscipline() {
@@ -133,15 +139,15 @@ public class DisciplineServiceTest extends StpUnitTest {
         Object credential = null;
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        List<DisciplineDTO> input = new ArrayList<>();
         DisciplineDTO disciplineDTO = new DisciplineDTO();
         disciplineDTO.setId(1L);
         disciplineDTO.setName("SQL");
         disciplineDTO.setTeacherId(1L);
-        input.add(disciplineDTO);
-        when(disciplineConnector.findByTeacherIdOrderByCreationDateDesc(1L)).thenReturn(input);
-        List<Discipline> result = disciplineService.findDisciplines();
-        assertEquals(1, result.size());
+        List<DisciplineDTO> disciplines = List.of(disciplineDTO);
+        Page<DisciplineDTO> input = new PageImpl<>(disciplines);
+        when(disciplineConnector.findAll(any(Specification.class), any(PageRequest.class))).thenReturn(input);
+        Page<Discipline> result = disciplineService.findDisciplinesWithPaging(1,1, FilterFactory.getFilterSet(DisciplineDTO.class));
+        assertEquals(1, result.getContent().size());
     }
 
     @Test
@@ -207,7 +213,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         domainDTO.setDiscipline(disciplineDTO);
         taskDTO.setTaskDomain(domainDTO);
         input.add(taskDTO);
-        when(taskConnector.getByTaskDomainDisciplineId(1L)).thenReturn(input);
+        when(taskConnector.getByTaskDomainDisciplineIdOrderByCode(1L)).thenReturn(input);
         List<Task> result = disciplineService.findTasksByDisciplineId(1L);
         assertEquals(1, result.size());
     }
@@ -220,6 +226,7 @@ public class DisciplineServiceTest extends StpUnitTest {
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
         when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
+        when(topicConnector.countDurationByDisciplineId(any())).thenReturn(1.0);
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
         verify(groupReferenceConnector, times(groupsIds.getGroupsIds().size())).save(any(GroupReferenceDTO.class));
     }

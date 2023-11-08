@@ -16,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -61,7 +63,7 @@ public class GroupService {
     }
 
     public void assignStudentToGroup(Long groupId, String studentId) {
-        AbstractUser user = userService.getById(studentId);
+        AbstractUser user = userService.getByUid(studentId);
         if (!(user instanceof Student)) {
             throw new UserTypeNotIdentifiedException("User is not student");
         }
@@ -80,6 +82,10 @@ public class GroupService {
             userConverter.fromDTO(studentDTO, student);
             students.add(student);
         }
+        Locale ukrainianLocale = Locale.forLanguageTag("uk-UA");
+        Collator collator = Collator.getInstance(ukrainianLocale);
+        collator.setStrength(Collator.PRIMARY);
+        students.sort((prevStudent, nextStudent) -> collator.compare(prevStudent.getLastName(), nextStudent.getLastName()));
         return students;
     }
 

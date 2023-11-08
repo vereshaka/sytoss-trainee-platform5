@@ -2,21 +2,27 @@ package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
@@ -24,38 +30,67 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
 
     private final String URI = "/api/";
 
-    @When("^system create \"(.*)\" personal exam by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id$")
-    public void requestSentCreatePersonalExam(String examName, String disciplineName, String topicName, int quantityOfTask, String studentId) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
-        when(getImageConnector().convertImage(anyString())).thenReturn(1L);
+    @When("^system create \"(.*)\" personal exam with maxGrade (.*) by \"(.*)\" discipline and \"(.*)\" topic with (.*) tasks for student with (.*) id between (.*) and (.*)$")
+    public void requestSentCreatePersonalExam(String examName, Integer maxGrade, String disciplineName, String topicName, int numberOfTasks,
+                                              String studentId, String relevantFrom, String relevantTo) throws ParseException {
+        String[] tasks = getTestExecutionContext().getDetails().getTaskMapping().get(topicName).split(", ");
+        List<Task> taskList = new ArrayList<>();
+        Topic topic = new Topic();
+        topic.setId(1L);
+        for (String task : tasks) {
+            Task newTask = new Task();
+            newTask.setCoef(1d);
+            newTask.setQuestion(task);
+            newTask.setTopics(List.of(topic));
+            taskList.add(newTask);
+        }
+
         ExamConfiguration examConfiguration = new ExamConfiguration();
         Student student = new Student();
         student.setUid(studentId);
         examConfiguration.setStudent(student);
-        //TODO: STP-409: fix me
-/*        examConfiguration.setExamName(examName);
-        examConfiguration.setQuantityOfTask(quantityOfTask);
-        examConfiguration.setTasks(getTopicId(topicName));
-        examConfiguration.setDisciplineId(getDisciplineId(disciplineName));*/
 
-        String[] tasks = getTestExecutionContext().getDetails().getTaskMapping().get(topicName).split(", ");
-        List<Task> taskList = new ArrayList<>();
-        for (String task : tasks) {
-            Task newTask = new Task();
-            newTask.setQuestion(task);
-            taskList.add(newTask);
-        }
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setRelevantTo(new Date());
+        examAssignee.setRelevantFrom(new Date());
+        examAssignee.setExam(examConfiguration.getExam());
+        examConfiguration.setExamAssignee(new ExamAssignee());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        examConfiguration.getExamAssignee().setRelevantFrom(dateFormat.parse(relevantFrom));
+        examConfiguration.getExamAssignee().setRelevantTo(dateFormat.parse(relevantTo));
+
+        Teacher teacher = new Teacher();
+        teacher.setFirstName("Teacher");
+
+        examConfiguration.setExam(new Exam());
+        examConfiguration.getExam().setName(examName);
+        examConfiguration.getExam().setNumberOfTasks(numberOfTasks);
+        examConfiguration.getExam().setTopics(new ArrayList<>());
+        examConfiguration.getExam().setMaxGrade(maxGrade);
+        examConfiguration.getExam().setTeacher(teacher);
+
+        examConfiguration.getExam().setTasks(taskList);
+
+        topic.setId(getTopicId(topicName));
+        examConfiguration.getExam().getTopics().add(topic);
 
         Discipline discipline = new Discipline();
         discipline.setId(getDisciplineId(disciplineName));
         discipline.setName(disciplineName);
+
+        examConfiguration.getExam().setDiscipline(discipline);
+
         when(getMetadataConnector().getDiscipline(anyLong())).thenReturn(discipline);
         when(getMetadataConnector().getTasksForTopic(anyLong())).thenReturn(taskList);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
+
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, httpHeaders);
         String url = getBaseUrl() + URI + "personal-exam/create";
         ResponseEntity<PersonalExam> responseEntity = getRestTemplate().postForEntity(url, requestEntity, PersonalExam.class);
+
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
@@ -64,23 +99,32 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
     public void theExamIsDoneOnTask(String examId) {
         String url = URI + "personal-exam/" + examId + "/summary";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 
-    private List<Long> getTopicId(String name) {
-        List<Long> topicsId = new ArrayList<>();
+    @When("^student path to summary to exam with id (.*)$")
+    public void studentPathToSummary(String personalExamId) {
+        String url = URI + "personal-exam/" + personalExamId + "/summary";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Student"));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
+        getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
+    private Long getTopicId(String name) {
         if ("Join".equals(name)) {
-            topicsId.add(1L);
+            return 1L;
         } else if ("SELECT".equals(name)) {
-            topicsId.add(2L);
+            return 2L;
         } else {
-            topicsId.add(3L);
+            return 3L;
         }
-        return topicsId;
     }
 
     private Long getDisciplineId(String name) {
@@ -93,15 +137,20 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         }
     }
 
-    @When("^student with (.*) id start personal exam \"(.*)\"$")
-    public void startPersonalExam(String studentId, String personalExamName) throws JOSEException {
-        PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, studentId);
+    @When("^this student start personal exam \"(.*)\"$")
+    public void startPersonalExam(String personalExamName) throws JOSEException {
+        PersonalExam input = getPersonalExamConnector().getByNameAndStudentUid(personalExamName, getTestExecutionContext().getDetails().getStudentUid());
         String url = getBaseUrl() + "/api/personal-exam/" + input.getId() + "/start";
         log.info("Send request to " + url);
-        HttpEntity<Task> requestEntity = startTest(studentId);
+        HttpEntity<Task> requestEntity = startTest(getTestExecutionContext().getDetails().getStudentId().toString());
         ResponseEntity<Question> responseEntity = getRestTemplate().exchange(url, HttpMethod.GET, requestEntity, Question.class);
         getTestExecutionContext().getDetails().setFirstTaskResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
+    @When("^this student start second time personal exam \"(.*)\"$")
+    public void startSecondTimePersonalExam(String personalExamName) throws JOSEException {
+        startSecondTimePersonalExam(getTestExecutionContext().getDetails().getStudentUid(), personalExamName);
     }
 
     @When("^student with (.*) id start second time personal exam \"(.*)\"$")
@@ -148,7 +197,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
 
     @When("operation for retrieving personal exams for userId {} was called")
     public void retrievePersonalExamsByUserId(Long userId) {
-        String url = "/api/personal-exam/user/" + userId;
+        String url = "/api/personal-exam/student/" + userId;
         log.info("Send request to " + url);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));

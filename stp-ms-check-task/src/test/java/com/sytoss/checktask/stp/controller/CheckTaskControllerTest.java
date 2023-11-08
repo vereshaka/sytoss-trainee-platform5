@@ -35,7 +35,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select  Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
         HttpEntity<CheckTaskParameters> httpEntity = new HttpEntity<>(checkTaskParameters);
 
         ResponseEntity<String> responseEntity = doPost("/api/task/check", httpEntity, String.class);
@@ -65,7 +65,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
 
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from Authors");
-        checkRequestBody.setScript(readFromFile("script1.json"));
+        checkRequestBody.setScript(readFromFile("task-domain/script1.json"));
 
         HttpEntity<CheckRequestParameters> httpEntity = new HttpEntity<>(checkRequestBody);
 
@@ -80,7 +80,7 @@ public class CheckTaskControllerTest extends StpApplicationTest {
 
         CheckRequestParameters checkRequestBody = new CheckRequestParameters();
         checkRequestBody.setRequest("select * from asdfasdfasdf");
-        checkRequestBody.setScript(readFromFile("script1.json"));
+        checkRequestBody.setScript(readFromFile("task-domain/script1.json"));
         HttpEntity<CheckRequestParameters> httpEntity = new HttpEntity<>(checkRequestBody);
 
         ResponseEntity<Score> responseEntity = doPost("/api/task/check-request", httpEntity, Score.class);

@@ -3,6 +3,8 @@ package com.sytoss.users.services;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.stp.test.StpUnitTest;
+import com.sytoss.users.connectors.ExamAssigneeConnector;
+import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.convertors.GroupConvertor;
 import com.sytoss.users.convertors.UserConverter;
@@ -36,6 +38,12 @@ public class UserServiceTest extends StpUnitTest {
 
     @Mock
     private UserConnector userConnector;
+
+    @Mock
+    private ImageProviderConnector imageProviderConnector;
+
+    @Mock
+    private ExamAssigneeConnector examAssigneeConnector;
 
     @Spy
     private UserConverter userConverter;
@@ -133,7 +141,7 @@ public class UserServiceTest extends StpUnitTest {
         studentDTO.setLastName("Do");
         studentDTO.setGroups(List.of(createGroupDTO("First Group"), createGroupDTO("Second Group"), createGroupDTO("Third Group")));
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
-                .claim("family_name", "Do").claim("userType", "student").claim("email", "test@test.com").build();
+                .claim("family_name", "Do").claim("sub", "111-11-111").claim("userType", "student").claim("email", "test@test.com").build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
@@ -153,6 +161,11 @@ public class UserServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnStudentWithTrueValidFlag() {
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
+                .claim("family_name", "Do").claim("sub", "111-11-111").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         GroupDTO groupDTO = new GroupDTO();
         groupDTO.setId(1L);
         groupDTO.setStudents(new ArrayList<>());
@@ -163,6 +176,7 @@ public class UserServiceTest extends StpUnitTest {
         studentDTO.setEmail("test@test.com");
         studentDTO.setPrimaryGroup(groupDTO);
         studentDTO.setGroups(List.of(groupDTO));
+        studentDTO.setImageName("Image Name");
         byte[] photoBytes = {0x01, 0x02, 0x03};
         studentDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
@@ -174,16 +188,26 @@ public class UserServiceTest extends StpUnitTest {
         StudentDTO studentDTO = new StudentDTO();
         studentDTO.setEmail("test@test.com");
         when(userConnector.getByEmail("test@test.com")).thenReturn(studentDTO);
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
+                .claim("family_name", "Do").claim("sub", "111-11-111").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         assertFalse(userService.getOrCreateUser("test@test.com").isValid());
     }
 
     @Test
     public void shouldReturnTeacherWithTrueValidFlag() {
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
+                .claim("family_name", "Do").claim("sub", "111-11-111").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setFirstName("John");
         teacherDTO.setMiddleName("Mock");
         teacherDTO.setLastName("Do");
         teacherDTO.setEmail("test@test.com");
+        teacherDTO.setImageName("Image Name");
         byte[] photoBytes = {0x01, 0x02, 0x03};
         teacherDTO.setPhoto(photoBytes);
         when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);
@@ -192,6 +216,11 @@ public class UserServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReturnTeacherWithFalseValidFlag() {
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("given_name", "John").claim("middle_name", "Mock")
+                .claim("family_name", "Do").claim("sub", "111-11-111").claim("userType", "student").claim("email", "test@test.com").build();
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         TeacherDTO teacherDTO = new TeacherDTO();
         teacherDTO.setEmail("test@test.com");
         when(userConnector.getByEmail("test@test.com")).thenReturn(teacherDTO);

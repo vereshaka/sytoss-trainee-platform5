@@ -1,11 +1,12 @@
 package com.sytoss.users.bdd.given;
 
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.users.bdd.UsersIntegrationTest;
 import com.sytoss.users.dto.GroupDTO;
 import com.sytoss.users.dto.StudentDTO;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.When;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupGiven extends UsersIntegrationTest {
@@ -30,10 +31,16 @@ public class GroupGiven extends UsersIntegrationTest {
     }
 
     @Given("^\"(.*)\" group has students")
-    public void thisGroupHasStudents(String groupName, List<StudentDTO> studentDTOList) {
+    public void thisGroupHasStudents(String groupName, List<Student> studentList) {
         GroupDTO groupDTO = getGroupConnector().getByName(groupName);
+        List<StudentDTO> studentDTOList = new ArrayList<>();
+        for (Student student : studentList) {
+            StudentDTO studentDTO = new StudentDTO();
+            getUserConverter().toDTO(student, studentDTO);
+            studentDTOList.add(studentDTO);
+        }
         groupDTO.setStudents(studentDTOList);
-        for(StudentDTO studentDTO : studentDTOList){
+        for (StudentDTO studentDTO : studentDTOList) {
             getUserConnector().save(studentDTO);
         }
         getGroupConnector().save(groupDTO);

@@ -8,9 +8,11 @@ import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,29 +33,63 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         }
     }
 
-    @Given("^personal exam exists with id (.*) and exam name (.*) and studentID (.*) and date (.*)")
-    public void thisExamHasAnswers(String examId, String examName, String studentId, String date, List<Answer> answers) {
+    @Given("^this student has personal exam with id (.*) and exam name (.*) and date (.*)")
+    public void thisExamHasAnswers(String examId, String examName, String date, List<Answer> answers) {
+       thisExamHasAnswers(getTestExecutionContext().getDetails().getStudentId(), examId, examName, date, answers);
+    }
+
+    @Given("^student (.*) has personal exam with id (.*) and exam name (.*) and date (.*)")
+    public void thisExamHasAnswers(Long studentId, String examId, String examName, String date, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
 
         personalExam.setId(examId);
         personalExam.setName(examName);
         Student student = new Student();
-        student.setUid(studentId);
+        student.setId(studentId);
         personalExam.setStudent(student);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
             personalExam.setAssignedDate(dateFormat.parse(date));
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
 
         personalExam.setAnswers(answers);
         getPersonalExamConnector().save(personalExam);
     }
 
+    @Given("^this student has \"(.*)\" personal exam and (.*) status exist and time (.*) and amountOfTasks (.*)$")
+    public void personalExamExist(String examName, PersonalExamStatus examStatus, String time, String amountOfTasks, List<Answer> answers) {
+        String studentUid = getTestExecutionContext().getDetails().getStudentUid();
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentUid);
+        if (personalExam != null) {
+            personalExam.getAnswers().clear();
+            getPersonalExamConnector().save(personalExam);
+        } else {
+            personalExam = new PersonalExam();
+        }
+        personalExam.setName(examName);
+        personalExam.setRelevantFrom(new Date());
+        personalExam.setRelevantTo(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+        Student student = new Student();
+        student.setUid(studentUid);
+        student.setId(getTestExecutionContext().getDetails().getStudentId());
+        personalExam.setStudent(student);
+        personalExam.setTime(Integer.valueOf(time));
+        personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
+        personalExam.setAnswers(answers);
+        try {
+            FieldUtils.writeField(personalExam, "status", examStatus, true);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        getPersonalExamConnector().save(personalExam);
+    }
+
     @Given("^personal \"(.*)\" exam(?: with examId (.*)|) for student with (.*) id and (.*) status exist and time (.*) and amountOfTasks (.*)$")
-    public void personalExamExist(String examName, String examId, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
+    public void personalExamExist(String examName, String examAssigneeId, String studentId, String answerStatus, String time, String amountOfTasks, List<Answer> answers) {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentId);
         if (personalExam != null) {
             personalExam.getAnswers().clear();
@@ -68,8 +104,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.start();
-            if(StringUtils.isNotEmpty(examId)) {
-                personalExam.setExamId(Long.valueOf(examId));
+            if(StringUtils.isNotEmpty(examAssigneeId)) {
+                personalExam.setExamAssigneeId(Long.valueOf(examAssigneeId));
             }
         }
         personalExam.setAnswers(answers);

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "DISCIPLINE")
-public class DisciplineDTO {
+public class DisciplineDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -29,9 +29,6 @@ public class DisciplineDTO {
 
     @Column(name = "FULL_DESCRIPTION")
     private String fullDescription;
-
-    @Column(name = "DURATION")
-    private Double duration;
 
     @Column(name = "ICON")
     private byte[] icon;

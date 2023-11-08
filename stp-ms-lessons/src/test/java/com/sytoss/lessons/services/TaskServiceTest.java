@@ -3,18 +3,20 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -26,34 +28,76 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 public class TaskServiceTest extends StpUnitTest {
 
+    private final ExamConnector examConnector = mock(ExamConnector.class);
+
     @Mock
     protected CheckTaskConnector checkTaskConnector;
+
     @Mock
     private TaskConnector taskConnector;
-    @InjectMocks
-    private TaskService taskService;
+
     @Mock
     private TopicService topicService;
+
     @Mock
     private TaskDomainConnector taskDomainConnector;
+
     @Mock
     private DisciplineConnector disciplineConnector;
+
     @Spy
     private TaskConvertor taskConvertor = new TaskConvertor(new TaskDomainConvertor(
             new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor()));
+
     @Spy
     private PumlConvertor pumlConvertor;
+
+    @Mock
+    private ExamConvertor examConvertor;
+
+    @Mock
+    private PersonalExamConnector personalExamConnector;
+
+    @Mock
+    private ExamAssigneeConvertor examAssigneeConvertor;
+
+    @Mock
+    private ExamAssigneeConnector examAssigneeConnector;
+
+    @Mock
+    private ExamAssigneeToConnector examAssigneeConnectorTo;
+
+    @Mock
+    private UserConnector userConnector;
+
+    @Mock
+    private ExamAssigneeService examAssigneeService;
+
+    @Mock
+    private TopicConnector topicConnector;
+
+
+    @Spy
+    private ExamService examService = new ExamService(
+            examConnector, examConvertor, userConnector,
+            personalExamConnector, examAssigneeConvertor,
+            examAssigneeConnector, disciplineConnector,
+            examAssigneeConnectorTo, examAssigneeService,
+            topicConnector, taskConnector
+    );
+
+    @InjectMocks
+    private TaskService taskService;
 
     @Test
     public void getTaskById() {
@@ -133,18 +177,31 @@ public class TaskServiceTest extends StpUnitTest {
 
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setId(1L);
+        taskDTO.setCode("1");
         taskDTO.setQuestion("Question");
         taskDTO.setEtalonAnswer("Answer");
         taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+        TaskDTO taskDTO2 = new TaskDTO();
+        taskDTO2.setId(2L);
+        taskDTO2.setCode("2");
+        taskDTO2.setQuestion("Question");
+        taskDTO2.setEtalonAnswer("Answer");
+        taskDTO2.setCoef(2.0);
+        taskDTO2.setTaskDomain(taskDomainDTO);
+        taskDTO2.setTopics(List.of(topicDTO));
+
+        when(taskConnector.findByTopicsIdOrderByCode(anyLong())).thenReturn(List.of(taskDTO,taskDTO2));
 
         List<Task> result = taskService.findByTopicId(1L);
+        Assertions.assertEquals(2,result.size());
         Assertions.assertEquals(1L, result.get(0).getId());
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
+        Assertions.assertEquals("1", result.get(0).getCode());
+        Assertions.assertEquals("2", result.get(1).getCode());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
     }
 
@@ -193,8 +250,8 @@ public class TaskServiceTest extends StpUnitTest {
         hashMap.put("1", "1");
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
-        taskDomainDTO.setDataScript("Script");
-        taskDomainDTO.setDatabaseScript("Script");
+        taskDomainDTO.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        taskDomainDTO.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         QueryResult queryResult = new QueryResult();
         queryResult.setHeader(List.of("1"));
         queryResult.addValues(hashMap);
@@ -204,11 +261,13 @@ public class TaskServiceTest extends StpUnitTest {
         taskDomainRequestParameters.setRequest("");
         taskDomainRequestParameters.setTaskDomainId(1L);
         QueryResult result = taskService.getQueryResult(taskDomainRequestParameters);
-        assertEquals("1", result.getValue(0,"1"));
+        assertEquals("1", result.getValue(0, "1"));
     }
 
     @Test
     public void shouldDeleteTask() {
+        ExamDTO examDTO = mock(ExamDTO.class);
+        List<TaskDTO> taskDTOList = mock(List.class);
         TaskDTO taskDTO = new TaskDTO();
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainDTO.setId(1L);
@@ -222,13 +281,19 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO.setEtalonAnswer("one");
         taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
+        examDTO.setTasks(List.of(taskDTO));
 
         when(taskConnector.getReferenceById(1L)).thenReturn(taskDTO);
+        when(examConnector.findByTasks_Id(1L)).thenReturn(List.of(examDTO));
+        when(examDTO.getTasks()).thenReturn(taskDTOList);
+        when(taskDTOList.remove(any())).thenReturn(true);
         doNothing().when(taskConnector).deleteById(1L);
 
         Task task = taskService.deleteTask(1L);
 
         assertEquals(1L, task.getId());
+        verify(examConnector).findByTasks_Id(1L);
+        verify(examConnector).save(examDTO);
     }
 
     @Test

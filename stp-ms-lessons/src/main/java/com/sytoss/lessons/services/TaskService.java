@@ -7,20 +7,17 @@ import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistExcept
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +44,8 @@ public class TaskService {
 
     private final TopicService topicService;
 
+    private final TopicConnector topicConnector;
+
     private final CheckTaskConnector checkTaskConnector;
 
     private final TaskDomainConnector taskDomainConnector;
@@ -54,6 +53,8 @@ public class TaskService {
     private final PumlConvertor pumlConvertor;
 
     private final ExamService examService;
+
+    private final PersonalExamConnector personalExamConnector;
 
     public Task getById(Long id) {
         try {
@@ -68,6 +69,7 @@ public class TaskService {
 
 
     public Task create(Task task) {
+        task.setCreateDate(new Date());
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
         TaskDTO taskDTO = new TaskDTO();
         taskConvertor.toDTO(task, taskDTO);
@@ -116,7 +118,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -129,7 +131,7 @@ public class TaskService {
     public Task addCondition(Long taskId, TaskCondition taskCondition) {
         Task result = getById(taskId);
         if (!result.getTaskConditions().contains(taskCondition)) {
-            result.getTaskConditions().add(taskCondition);
+            result.setRequiredCommand(taskCondition.getType().equals(ConditionType.CONTAINS) ? taskCondition.getValue() : "!" + taskCondition.getValue());
             TaskDTO taskDTO = new TaskDTO();
             taskConvertor.toDTO(result, taskDTO);
             taskDTO = taskConnector.save(taskDTO);
@@ -141,7 +143,7 @@ public class TaskService {
     }
 
     public List<Task> findByDomainId(Long taskDomainId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainId(taskDomainId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainId);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -158,6 +160,7 @@ public class TaskService {
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setCheckAnswer(taskDomainRequestParameters.getCheckAnswer());
             checkRequestParameters.setScript(liquibaseScript);
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
@@ -195,18 +198,34 @@ public class TaskService {
             updateTaskDTO.setCoef(task.getCoef());
         }
 
+        if (Objects.nonNull(task.getCode())) {
+            updateTaskDTO.setCode(task.getCode());
+        }
+
+        if (Objects.nonNull(task.getCheckAnswer())) {
+            updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
+        }
+
         updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
 
+        personalExamConnector.updateTask(task);
         return task;
     }
 
     public Task deleteTask(Long id) {
-        Task task = getById(id);
-        taskConnector.deleteById(id);
-        return task;
+        try {
+            TaskDTO taskDTO = taskConnector.getReferenceById(id);
+            examService.deleteAssignTaskToExam(taskDTO);
+            taskConnector.deleteById(id);
+            Task task = new Task();
+            taskConvertor.fromDTO(taskDTO, task);
+            return task;
+        } catch (EntityNotFoundException e) {
+            throw new TaskNotFoundException(id);
+        }
     }
 
     //todo: check how to update when condition with a proper value already exists in DB
@@ -268,5 +287,22 @@ public class TaskService {
 
     public List<Exam> getExams(Long taskId) {
         return examService.getExamsByTaskId(taskId);
+    }
+
+    public Topic deleteAssignTopicToTask(Long topicId) {
+        try {
+            TopicDTO topicDTO = topicConnector.getReferenceById(topicId);
+
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
+            taskDTOList.forEach(taskDTO -> {
+                taskDTO.getTopics().remove(topicDTO);
+                taskConnector.save(taskDTO);
+            });
+            examService.deleteAssignTopicToExam(topicDTO);
+
+            return topicService.delete(topicId);
+        } catch (EntityNotFoundException e) {
+            throw new TopicNotFoundException(topicId);
+        }
     }
 }

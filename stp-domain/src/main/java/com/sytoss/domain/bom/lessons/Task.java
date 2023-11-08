@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -20,6 +21,9 @@ public class Task {
     @JsonView({PersonalExam.TeacherOnly.class})
     private String etalonAnswer;
 
+    @JsonView({PersonalExam.TeacherOnly.class})
+    private String checkAnswer;
+
     private TaskDomain taskDomain;
 
     private List<Topic> topics = new ArrayList<>();
@@ -32,4 +36,9 @@ public class Task {
     private Double coef;
 
     private String requiredCommand;
+
+    @JsonView({PersonalExam.TeacherOnly.class})
+    private String code;
+
+    private Date createDate;
 }

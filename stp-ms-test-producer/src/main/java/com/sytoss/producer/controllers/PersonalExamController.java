@@ -2,11 +2,8 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.personalexam.AnswerModule;
-import com.sytoss.domain.bom.personalexam.ExamConfiguration;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
-import com.sytoss.domain.bom.personalexam.Question;
-import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @PreAuthorize("isAuthenticated()")
@@ -29,25 +27,24 @@ public class PersonalExamController {
     private PersonalExamService personalExamService;
 
     @Autowired
-    private PersonalExamConnector personalExamConnector;
-
-    @Autowired
     private AnswerService answerService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/create")
+    @JsonView({PersonalExam.Public.class})
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.create(examConfiguration);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that return personal exam with summary grade")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-
     @JsonView({PersonalExam.TeacherOnly.class})
     @GetMapping("/{id}/summary")
     public PersonalExam summary(@PathVariable(value = "id") String examId) {
@@ -80,7 +77,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswerModule answerModule
     ) {
-         Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
+        Question nextQuestion = answerService.answer(personalExamId, answerModule.getAnswer(), answerModule.getAnswerUIDate(), answerModule.getTimeSpent());
         if (nextQuestion != null) {
             return ResponseEntity.ok(nextQuestion);
         }
@@ -96,8 +93,9 @@ public class PersonalExamController {
     public QueryResult checkCurrentAnswer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
-        return answerService.checkCurrentAnswer(personalExamId, taskAnswer);
+            @RequestParam String taskAnswer,
+            @RequestParam String checkAnswer) {
+        return answerService.checkCurrentAnswer(personalExamId, taskAnswer, checkAnswer);
     }
 
     @Operation(description = "Method for answering tasks")
@@ -110,8 +108,9 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
-            @RequestBody  String taskAnswer) {
-        return answerService.checkByAnswerId(personalExamId, taskAnswer.replaceAll("\"", ""), answerId);
+            @RequestBody String taskAnswer,
+            @RequestParam String checkAnswer) {
+        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId,checkAnswer);
     }
 
     @Operation(description = "Method returns image of db structure for task")
@@ -119,7 +118,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbStructure")
-    public byte[] getDbStructureImage(
+    public String getDbStructureImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDbImage(personalExamId);
@@ -130,7 +129,7 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/{personalExamId}/task/dbData")
-    public byte[] getDbDataImage(
+    public String getDbDataImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId) {
         return answerService.getDataImage(personalExamId);
@@ -155,20 +154,24 @@ public class PersonalExamController {
         return personalExamService.getByStudentId(userId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that return personal exams by user id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/teacher/{userId}")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> getByTeacherId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByTeacherId(userId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that change personal exam status to reviewed")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/review")
+    @JsonView(PersonalExam.TeacherOnly.class)
     public PersonalExam review(@RequestBody PersonalExam personalExam) {
         return personalExamService.review(personalExam);
     }
@@ -182,14 +185,103 @@ public class PersonalExamController {
         return personalExamService.getQuestionImage(personalExamId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that update all personal exams by exam id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @PostMapping("/reschedule")
+    @JsonView(PersonalExam.Public.class)
     public List<PersonalExam> reschedule(@RequestBody ExamConfiguration examConfiguration) {
         return personalExamService.reschedule(examConfiguration);
     }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that retrieve personal exams by exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/exam/assignee/{examAssigneeId}")
+    @JsonView(PersonalExam.Public.class)
+    public List<PersonalExam> getByExamAssigneeId(
+            @Parameter(description = "Id of exam to get personal exams")
+            @PathVariable("examAssigneeId") Long examAssigneeId) {
+        return personalExamService.getByExamAssigneeId(examAssigneeId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that delete personal exam by exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @DeleteMapping(value = "/exam/assignee/{examAssigneeId}")
+    @JsonView(PersonalExam.Public.class)
+    public List<PersonalExam> deleteByExamId(
+            @Parameter(description = "Id of exam to delete personal exams")
+            @PathVariable("examAssigneeId") Long examAssigneeId) {
+        return personalExamService.deleteByExamAssigneeId(examAssigneeId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that delete personal exams by exam assignee ids")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @DeleteMapping(value = "/exam/delete")
+    @JsonView(PersonalExam.Public.class)
+    public List<PersonalExam> deleteByExamAssigneeIds(
+            @Parameter(description = "Exam assignee ids to delete personal exams")
+            @RequestBody List<Long> examAssigneeIds
+    ) {
+        return personalExamService.deleteByExamAssigneeIds(examAssigneeIds);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/review/answers")
+    public ExamAssigneeAnswersModel reviewAnswers(@RequestBody ExamAssigneeAnswersModel answers) {
+        return personalExamService.reviewByAnswers(answers);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that return excel file of personal exams by exam assignee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/assignee/{examAssigneeId}")
+    public byte[] getExcelReport(
+            @Parameter(description = "Id of exam assignee to get excel report about personal exams")
+            @PathVariable Long examAssigneeId
+    ) throws IOException {
+        return personalExamService.getExcelReport(examAssigneeId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that return excel file of personal exam by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping(value = "/excel/group/{groupId}")
+    public byte[] getExcelReportByGroup(
+            @Parameter(description = "Id of group to get excel report about personal exams")
+            @PathVariable Long groupId
+    ) throws IOException {
+        return personalExamService.getExcelReportByGroup(groupId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that change personal exam status to reviewed")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/task/update")
+    public List<PersonalExam> updateTask(@RequestBody Task task) {
+        return personalExamService.updateTask(task);
+    }
+
 
     @Operation(description = "Method for making user screenshot")
     @ApiResponses(value = {

@@ -1,10 +1,9 @@
 package com.sytoss.stp.test;
 
-import java.io.File;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import java.nio.charset.Charset;
 
 public class FileUtils {
 
@@ -13,13 +12,10 @@ public class FileUtils {
     }
 
     public static String readFromFile(String script) {
-        ClassLoader classLoader = FileUtils.class.getClassLoader();
-        File file = new File(classLoader.getResource("scripts/" + script).getFile());
         try {
-            List<String> data = Files.readAllLines(Path.of(file.getPath()));
-            return String.join("\n", data);
+            return IOUtils.toString(FileUtils.class.getResourceAsStream("/data/" + script), Charset.defaultCharset());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not read script: " + script, e);
         }
 
     }

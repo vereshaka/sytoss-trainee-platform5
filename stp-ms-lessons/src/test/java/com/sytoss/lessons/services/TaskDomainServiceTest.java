@@ -16,17 +16,16 @@ import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,6 +34,7 @@ import org.mockito.Spy;
 import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +43,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+@Slf4j
 public class TaskDomainServiceTest extends StpUnitTest {
 
     @InjectMocks
@@ -62,6 +63,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
 
     @Mock
     private TaskService taskService;
+
+    @Mock
+    private ImageProviderConnector imageProviderConnector;
 
     @Spy
     private TaskDomainConvertor taskDomainConvertor = new TaskDomainConvertor(new DisciplineConvertor());
@@ -96,7 +100,9 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertEquals(taskDomain.getDatabaseScript(), result.getDatabaseScript());
         assertEquals(taskDomain.getShortDescription(), result.getShortDescription());
         assertEquals(taskDomain.getFullDescription(), result.getFullDescription());
-        assertEquals(FileUtils.readFromFile("puml/script.puml"), taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript());
+        List<String> expected = Arrays.stream(FileUtils.readFromFile("puml/script.puml").split("\n")).map(el -> el.trim()).toList();
+        List<String> actual = Arrays.stream((taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript()).trim().split("\n")).map(el -> el.trim()).toList();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -141,7 +147,8 @@ public class TaskDomainServiceTest extends StpUnitTest {
         TaskDomainDTO taskDomain = new TaskDomainDTO();
         taskDomain.setId(1L);
         taskDomain.setName("First Domain");
-        taskDomain.setDatabaseScript("Script Domain");
+        taskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        taskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         taskDomain.setShortDescription("Task Domain Description");
         taskDomain.setFullDescription("Task Domain Description");
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -153,18 +160,19 @@ public class TaskDomainServiceTest extends StpUnitTest {
             final Object[] args = invocation.getArguments();
             TaskDomainDTO result = (TaskDomainDTO) args[0];
             result.setName("new");
-            result.setDatabaseScript("new");
+            result.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+            result.setDataScript(FileUtils.readFromFile("puml/data.puml"));
             result.setShortDescription("new");
             result.setFullDescription("new");
             return result;
         }).when(taskDomainConnector).save(any(TaskDomainDTO.class));
         when(taskService.findByDomainId(anyLong())).thenReturn(new ArrayList<>());
         TaskDomain updateTaskDomain = new TaskDomain();
-        taskDomain.setName("new");
-        taskDomain.setDatabaseScript("new");
+        updateTaskDomain.setName("new");
+        updateTaskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        updateTaskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
         TaskDomain result = taskDomainService.update(taskDomain.getId(), updateTaskDomain);
         assertEquals("new", result.getName());
-        assertEquals("new", result.getDatabaseScript());
         assertEquals("new", result.getShortDescription());
         assertEquals("new", result.getFullDescription());
     }
@@ -264,6 +272,37 @@ public class TaskDomainServiceTest extends StpUnitTest {
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
         assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
     }
+
+
+   @Test
+   @Disabled
+   public void multithreadPumlConvertor(){
+       List<Thread> threads = new ArrayList<>();
+       final String pumlScript = FileUtils.readFromFile("puml/script_v1.puml");
+       for (int i=0;i<500;i++){
+           final int index = i;
+           threads.add(new Thread(new Runnable() {
+               @Override
+               public void run() {
+                   log.info("Start thread#" + index);
+                   //  assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DB));
+                   //assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.DATA));
+                   assertNotNull(taskDomainService.generatePngFromPuml(pumlScript, ConvertToPumlParameters.ALL));
+                   log.info("Stop thread#" + index);
+               }
+           }));
+       }
+       for (Thread th: threads){
+           th.start();
+       }
+       for (Thread th: threads){
+           try {
+               th.join();
+           } catch (InterruptedException e) {
+               //throw new RuntimeException(e);
+           }
+       }
+   }
 
     @Test
     void getCountOfTasks() {

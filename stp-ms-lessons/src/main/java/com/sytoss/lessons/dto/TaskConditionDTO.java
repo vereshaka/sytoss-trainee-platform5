@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "TASK_CONDITION")
-public class TaskConditionDTO {
+public class TaskConditionDTO extends Auditable {
 
     @Id
     @Column(name = "ID")

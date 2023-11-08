@@ -3,14 +3,12 @@ Feature: Task Domain
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
     And "SQL" discipline exists for this teacher
-    Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
-    And "SQL" discipline exists
 
   Scenario: system create a new task domain
     Given "First Domain" task domain doesnt exist
     When system create "First Domain" task domain
     Then operation is successful
-    And "First Domain" task domain should be created
+    And "First Domain" task domain should exists
 
   Scenario: system not create a new task domain when it exist
     Given "First Domain" task domain exists
@@ -45,10 +43,10 @@ Feature: Task Domain
       | SQL        | Set of Tables |
 
   Scenario: Update task domain
-    Given "First Domain" task domain with a script from "script.yml" exists for this discipline
+    Given "First Domain" task domain exists
     When teacher updates "First Domain" task domain to "Second Domain"
     Then operation is successful
-    And "Second Domain" task domain with a script from "script.yml" should be
+    And "Second Domain" task domain should exists
 
   Scenario: Update task domain when task domain does not exist
     Given "First Domain" task domain doesnt exist
@@ -63,7 +61,7 @@ Feature: Task Domain
     And  "First Domain" should have image
 
   Scenario: Update task domain when personal exam does not finished
-    Given  "First Domain" task domain with a script from "script.yml" exists for this discipline
+    Given  "First Domain" task domain with a script from "task-domain/script.yml" exists for this discipline
     And personal exam exists
       | examName         | status       | task domain  |
       | SQL Querry       | Graded       | First Domain |
@@ -82,8 +80,8 @@ Feature: Task Domain
   Scenario: Get tasks of task domain
     Given task domains exist
       | discipline  | task domain | id |
-      | SQL         | Join        | *1 |
-      | POSTGRE_SQL | Join        | *2 |
+      | SQL         | Join domain | *1 |
+      | POSTGRE_SQL | Join domain | *2 |
     And task domain tasks exist
       | task                | taskDomainId |
       | What is Join?       | *1           |

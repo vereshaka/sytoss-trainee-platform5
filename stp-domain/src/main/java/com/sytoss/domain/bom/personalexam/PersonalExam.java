@@ -29,10 +29,16 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String name;
 
-    private Long examId;
+    private Long examAssigneeId;
 
+    //TODO: yevgenyv: SHOULD BE DELETED AFTER MIGRATION
+    @Deprecated
+    private Long examAId;
+
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Discipline discipline;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Teacher teacher;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -50,7 +56,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Student student;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    @JsonView({PersonalExam.TeacherOnly.class})
     private List<Answer> answers = new ArrayList<>();
 
     private Integer time;
@@ -62,7 +68,7 @@ public class PersonalExam {
     private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private float summaryGrade;
+    private double summaryGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
@@ -143,12 +149,16 @@ public class PersonalExam {
 
     @JsonIgnore
     private boolean isTimeOut() {
-        return new Date().compareTo(relevantTo) >= 0;
+        if (relevantTo != null) {
+            return new Date().compareTo(relevantTo) >= 0;
+        } else {
+            return false;
+        }
     }
 
     public static class Public {
     }
 
-    public static class TeacherOnly {
+    public static class TeacherOnly extends Public{
     }
 }

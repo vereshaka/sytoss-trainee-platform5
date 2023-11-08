@@ -3,11 +3,14 @@ package com.sytoss.users.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.users.connectors.ExamAssigneeConnector;
 import com.sytoss.users.connectors.GroupConnector;
+import com.sytoss.users.connectors.ImageProviderConnector;
 import com.sytoss.users.connectors.UserConnector;
 import com.sytoss.users.controllers.GroupReferenceConnector;
 import com.sytoss.users.convertors.GroupConvertor;
@@ -20,6 +23,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,15 +50,25 @@ public class UserService extends AbstractStpService {
 
     private final GroupConnector groupConnector;
 
+    private final ImageProviderConnector imageProviderConnector;
+
+    private final ExamAssigneeConnector examAssigneeConnector;
+
     @Value("#{new Boolean('${registration.allow-registration}')}")
     private boolean isAllowed;
 
-    public AbstractUser getById(String userId) {
-        UserDTO foundUser = getDTOById(userId);
+    public AbstractUser getByUid(String userId) {
+        UserDTO foundUser = getDTOByUid(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            foundUser = saveUserPhoto(foundUser);
+        }
+
         return instantiateUser(foundUser);
     }
 
-    private UserDTO getDTOById(String userId) {
+
+    private UserDTO getDTOByUid(String userId) {
         try {
             return userConnector.getByUid(userId);
         } catch (EntityNotFoundException e) {
@@ -74,19 +91,50 @@ public class UserService extends AbstractStpService {
         if (userDto == null) {
             registerUser(email);
             userDto = userConnector.getByEmail(email);
+        } else {
+            if (StringUtils.isNoneEmpty(getMyUid()) && !Objects.equals(getMyUid(), userDto.getUid())) {
+                userDto.setUid(getMyUid());
+                userConnector.save(userDto);
+            }
+        }
+        if (Objects.isNull(userDto.getImageName()) && Objects.nonNull(userDto.getPhoto())) {
+            userDto = saveUserPhoto(userDto);
         }
         return instantiateUser(userDto);
     }
 
+    private UserDTO saveUserPhoto(UserDTO userDto) {
+        try {
+            String imageName = imageProviderConnector.saveImage(userDto.getPhoto());
+            userDto.setImageName(imageName);
+            return userConnector.save(userDto);
+        } catch (Exception e) {
+            log.warn("Could not save user photo!", e);
+            return userDto;
+        }
+    }
+
+    private void updateUserPhoto(String imageName, MultipartFile photo) {
+        try {
+            imageProviderConnector.saveImage(imageName, photo);
+        } catch (Exception e) {
+            log.warn("Could not update user photo!");
+        }
+    }
+
     private AbstractUser instantiateUser(UserDTO userDto) {
         AbstractUser result;
-        if (userDto instanceof TeacherDTO) {
+        UserDTO source = userDto;
+        if (userDto instanceof HibernateProxy) {
+            source = (UserDTO) ((HibernateProxy) userDto).getHibernateLazyInitializer().getImplementation();
+        }
+        if (source instanceof TeacherDTO) {
             Teacher teacher = new Teacher();
-            userConverter.fromDTO(userDto, teacher);
+            userConverter.fromDTO(source, teacher);
             result = teacher;
-        } else if (userDto instanceof StudentDTO) {
+        } else if (source instanceof StudentDTO) {
             Student student = new Student();
-            userConverter.fromDTO((StudentDTO) userDto, student);
+            userConverter.fromDTO((StudentDTO) source, student);
             result = student;
         } else {
             throw new IllegalArgumentException("Unsupported user class: " + userDto.getClass());
@@ -133,16 +181,24 @@ public class UserService extends AbstractStpService {
     @Transactional
     public void updateProfile(ProfileModel profileModel) {
         UserDTO dto = getMeAsDto();
+        GroupDTO group = null;
+
+        if (dto instanceof StudentDTO) {
+            group = ((StudentDTO) dto).getPrimaryGroup();
+        }
+
+        dto.setMiddleName(profileModel.getMiddleName());
         if (profileModel.getFirstName() != null) {
             dto.setFirstName(profileModel.getFirstName());
-        }
-        if (profileModel.getMiddleName() != null) {
-            dto.setMiddleName(profileModel.getMiddleName());
         }
         if (profileModel.getLastName() != null) {
             dto.setLastName(profileModel.getLastName());
         }
         if (profileModel.getPhoto() != null) {
+            if (Objects.nonNull(dto.getImageName())) {
+                updateUserPhoto(dto.getImageName(), profileModel.getPhoto());
+            }
+
             updatePhoto(profileModel.getPhoto());
         }
         if ((dto instanceof StudentDTO) && profileModel.getPrimaryGroup() != null) {
@@ -159,7 +215,25 @@ public class UserService extends AbstractStpService {
             groupReferenceDTO.setStudent((StudentDTO) dto);
             groupReferenceConnector.save(groupReferenceDTO);
         }
-        userConnector.save(dto);
+
+        UserDTO userDTO = userConnector.save(dto);
+
+        if (userDTO instanceof StudentDTO) {
+            if ((group == null && ((StudentDTO) userDTO).getPrimaryGroup() != null) || !Objects.requireNonNull(group).getId().equals(((StudentDTO) userDTO).getPrimaryGroup().getId())) {
+                updateStudentPersonalExam(userDTO);
+            }
+        }
+    }
+
+    private void updateStudentPersonalExam(UserDTO userDTO) {
+        try {
+            StudentDTO studentDTO = (StudentDTO) userDTO;
+            Student student = new Student();
+            userConverter.fromDTO(studentDTO, student);
+            examAssigneeConnector.createGroupExamsOnStudent(student.getPrimaryGroup().getId(), student);
+        } catch (Exception exception) {
+            log.warn("Could not create personal exams on student: {}", exception.getMessage());
+        }
     }
 
     public List<Group> findByStudent() {
@@ -174,7 +248,7 @@ public class UserService extends AbstractStpService {
     }
 
     public byte[] getUserPhoto(String userId) {
-        UserDTO userDTO = getDTOById(userId);
+        UserDTO userDTO = getDTOByUid(userId);
         return userDTO.getPhoto();
     }
 
@@ -193,4 +267,24 @@ public class UserService extends AbstractStpService {
         }
         return groupsId;
     }
+
+    public AbstractUser getById(Long userId) {
+        UserDTO foundUser = getDTOById(userId);
+
+        if (Objects.isNull(foundUser.getImageName()) && Objects.nonNull(foundUser.getPhoto())) {
+            foundUser = saveUserPhoto(foundUser);
+        }
+
+        return instantiateUser(foundUser);
+    }
+
+
+    private UserDTO getDTOById(Long userId) {
+        try {
+            return userConnector.getReferenceById(userId);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException("User not found", e);
+        }
+    }
+
 }

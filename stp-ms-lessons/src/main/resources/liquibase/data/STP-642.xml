@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-642.xml">
+    <changeSet author="YehorBP" id="STP-642-1">
+        <addColumn tableName="TASK">
+            <column name="CODE" type="VARCHAR2(100 BYTE)" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="TASK" columnName="CODE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YehorBP" id="STP-642-2">
+        <addColumn tableName="TASK">
+            <column name="CREATE_DATE" type="DATE" />
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="TASK" columnName="CREATE_DATE" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

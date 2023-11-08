@@ -93,6 +93,15 @@ public class UserController {
     })
     @GetMapping("/{uid}")
     public AbstractUser getByUid(@PathVariable("uid") String uid) {
-        return userService.getById(uid);
+        return userService.getByUid(uid);
+    }
+
+    @Operation(description = "Method that retrieve user by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/id/{id}")
+    public AbstractUser getById(@PathVariable("id") Long id) {
+        return userService.getById(id);
     }
 }

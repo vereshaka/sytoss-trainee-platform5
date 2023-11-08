@@ -24,3 +24,21 @@ spring:
           jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
 registration:
   allow-registration: ${ALLOW_TEACHER_REGISTRATION:true}
+logging:
+  level:
+    root: ${APP_LOG:INFO}
+    de:
+      flapdoodle: WARN
+    sun:
+      rmi: WARN
+    org:
+      springframework: WARN
+      mongodb: WARN
+    liquibase: WARN
+#feign:
+#  client:
+#    config:
+#      default:
+#        loggerLevel: FULL
+image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9204/api}
+lessons-url: ${LESSONS_URI:http://localhost:9101/api}

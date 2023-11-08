@@ -1,10 +1,10 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
-import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -57,7 +58,7 @@ public class AnswerService extends AbstractService {
         Question firstTask = new Question();
         ExamModel examModel = new ExamModel();
         examModel.setName(personalExam.getName());
-        examModel.setTime(personalExam.getTime());
+        examModel.setTime((int) TimeUnit.MILLISECONDS.toSeconds(personalExam.getRelevantTo().getTime() - new Date().getTime()));
         examModel.setAmountOfTasks(personalExam.getAmountOfTasks());
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
@@ -66,7 +67,7 @@ public class AnswerService extends AbstractService {
                         || item.getStatus().equals(AnswerStatus.GRADED))
                 .count();
         taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
-
+        taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
 
         return firstTask;
@@ -84,65 +85,64 @@ public class AnswerService extends AbstractService {
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        //TODO:BodenchukY Max grade is always 0, need to set it when create exam
         double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
         Grade grade = new Grade();
         grade.setValue(gradeValue);
         grade.setComment(score.getComment());
         answer.grade(grade);
+        answer.setScore(score);
         personalExamConnector.save(personalExam);
     }
 
-    public byte[] getDbImage(String personalExamId) {
+    public String getDbImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DB);
     }
 
-    public byte[] getDataImage(String personalExamId) {
+    public String getDataImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DATA);
     }
 
 
-    private byte[] getImage(String personalExamId, ConvertToPumlParameters type) {
+    private String getImage(String personalExamId, ConvertToPumlParameters type) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
-        String databaseScript = answer.getTask().getTaskDomain().getDatabaseScript();
-        String dataScript = answer.getTask().getTaskDomain().getDataScript();
-        return pumlConvertor.generatePngFromPuml(databaseScript + "\n\n" + dataScript, type);
+        if (type == ConvertToPumlParameters.DB) {
+            return answer.getTask().getTaskDomain().getDbImageName();
+        } else {
+            return answer.getTask().getTaskDomain().getDataImageName();
+        }
     }
 
-    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer) {
+    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer, String checkAnswer) {
         String parsedTaskAnswer = taskAnswer.replaceAll("\\n", " ");
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getCurrentAnswer();
 
-        return check(parsedTaskAnswer, answer);
+        return check(parsedTaskAnswer, answer,checkAnswer);
     }
 
-    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId) {
+    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId, String checkAnswer) {
         PersonalExam personalExam = personalExamConnector.getById(personalExamId);
         Answer answer = personalExam.getAnswerById(Long.valueOf(answerId));
-        return check(taskAnswer, answer);
+        return check(taskAnswer, answer,checkAnswer);
     }
 
-    public QueryResult check(String taskAnswer, Answer answer) {
+    public QueryResult check(String taskAnswer, Answer answer, String checkAnswer) {
         CheckRequestParameters request = new CheckRequestParameters();
-        request.setRequest(taskAnswer);
         String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
                 + answer.getTask().getTaskDomain().getDataScript();
         String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-        checkRequestParameters.setRequest(taskAnswer);
-        checkRequestParameters.setScript(liquibaseScript);
-
+        request.setRequest(taskAnswer);
+        request.setCheckAnswer(checkAnswer);
         request.setScript(liquibaseScript);
         try {
             QueryResult queryResult = checkTaskConnector.testAnswer(request);
             return queryResult;
         } catch (Exception e) {
-            log.error("Error during check request", e);
             if (e instanceof FeignException) {
                 throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
-            } else throw e;
+            }
+            throw e;
         }
     }
 }

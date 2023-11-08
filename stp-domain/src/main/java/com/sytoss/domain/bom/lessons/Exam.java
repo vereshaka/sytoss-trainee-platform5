@@ -1,10 +1,11 @@
 package com.sytoss.domain.bom.lessons;
 
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,14 +15,6 @@ public class Exam {
     private Long id;
 
     private String name;
-
-    private Date relevantFrom;
-
-    private Date relevantTo;
-
-    private Integer duration;
-
-    private Group group;
 
     private Integer numberOfTasks;
 
@@ -34,4 +27,6 @@ public class Exam {
     private Discipline discipline;
 
     private List<Task> tasks;
+
+    private List<ExamAssignee> examAssignees = new ArrayList<>();
 }

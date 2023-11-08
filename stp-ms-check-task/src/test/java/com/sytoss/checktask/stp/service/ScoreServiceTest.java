@@ -30,12 +30,12 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Authors");
         checkTaskParameters.setEtalon("select * from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
         Assertions.assertEquals(1, score.getValue());
-        Assertions.assertEquals("ok", score.getComment());
+        Assertions.assertEquals("", score.getComment());
     }
 
     @Test
@@ -45,12 +45,12 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select id,name from Authors");
         checkTaskParameters.setEtalon("select name,id from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
         Assertions.assertEquals(1, score.getValue());
-        Assertions.assertEquals("ok", score.getComment());
+        Assertions.assertEquals("", score.getComment());
     }
 
     @Test
@@ -60,13 +60,13 @@ class ScoreServiceTest extends StpUnitTest {
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Books");
         checkTaskParameters.setEtalon("select * from Authors");
-        checkTaskParameters.setScript(readFromFile("script1.json"));
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
         ScoreService scoreService = new ScoreService(objectProvider);
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
         Assertions.assertEquals(0, score.getValue());
-        Assertions.assertEquals("not ok", score.getComment());
+        Assertions.assertEquals("Amount of data is different", score.getComment());
     }
 
     @Test
@@ -85,6 +85,66 @@ class ScoreServiceTest extends StpUnitTest {
         Score score = scoreService.checkAndScore(checkTaskParameters);
 
         Assertions.assertEquals(0.7, score.getValue());
-        Assertions.assertEquals("ok", score.getComment());
+        Assertions.assertEquals("\"ORDER BY\" condition are failed to check", score.getComment());
+    }
+
+    @Test
+    void checkAndGradeCorrectAnswerWithDifferentColumnsNumber() {
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+
+        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
+        checkTaskParameters.setRequest("select id,book_name,author_id from Books");
+        checkTaskParameters.setEtalon("select book_name,id from Books");
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
+
+        Score score = scoreService.checkAndScore(checkTaskParameters);
+
+        Assertions.assertEquals(1, score.getValue());
+        Assertions.assertEquals("There are more columns in the answer than in the etalon", score.getComment());
+    }
+
+    @Test
+    void checkAndGradeWrongData() {
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+
+        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
+        checkTaskParameters.setRequest("select count(*) from Authors");
+        checkTaskParameters.setEtalon("select sum(id) from Authors");
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
+
+        Score score = scoreService.checkAndScore(checkTaskParameters);
+
+        Assertions.assertEquals(0, score.getValue());
+        Assertions.assertEquals("Request data is wrong comparable to etalon data", score.getComment());
+    }
+
+    @Test
+    void checkAndGradeWrongData2() {
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+
+        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
+        checkTaskParameters.setRequest("select name from Authors");
+        checkTaskParameters.setEtalon("select id from Authors");
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
+
+        Score score = scoreService.checkAndScore(checkTaskParameters);
+
+        Assertions.assertEquals(0, score.getValue());
+        Assertions.assertEquals("Request data is wrong comparable to etalon data", score.getComment());
+    }
+
+    @Test
+    void checkAndGradeEtalonColumnsNotFound() {
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+
+        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
+        checkTaskParameters.setRequest("select name from Authors");
+        checkTaskParameters.setEtalon("select name,id from Authors");
+        checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
+
+        Score score = scoreService.checkAndScore(checkTaskParameters);
+
+        Assertions.assertEquals(0, score.getValue());
+        Assertions.assertEquals("ID columns are absent in the answer", score.getComment());
     }
 }

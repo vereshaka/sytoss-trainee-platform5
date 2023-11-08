@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-738.xml">
+    <changeSet author="YehorBP" id="STP-738-1">
+        <addColumn tableName="TASK_DOMAIN">
+            <column name="DATA_IMAGE_NAME" type="VARCHAR2(100 BYTE)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="TASK_DOMAIN" columnName="DATA_IMAGE_NAME" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="STP-738-2" author="YehorBP">
+        <addColumn tableName="TASK_DOMAIN">
+            <column name="DB_IMAGE_NAME" type="VARCHAR2(100 BYTE)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="TASK_DOMAIN" columnName="DB_IMAGE_NAME" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -1,15 +1,17 @@
 package com.sytoss.lessons.convertors;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.dto.ExamDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.exam.assignees.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -22,78 +24,65 @@ public class ExamConvertor {
 
     private final TopicConvertor topicConvertor;
     private final TaskConvertor taskConvertor;
+    private final ExamAssigneeConvertor examAssigneeConvertor;
 
     public void toDTO(Exam source, ExamDTO destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setDuration(source.getDuration());
-        destination.setRelevantTo(source.getRelevantTo());
-        destination.setRelevantFrom(source.getRelevantFrom());
 
-        if (ObjectUtils.isNotEmpty(source.getGroup())) {
-            destination.setGroupId(source.getGroup().getId());
-        }
-
-        List<TopicDTO> topicDTOList = new ArrayList<>();
-
-        source.getTopics().forEach(topic -> {
-            TopicDTO topicDTO = new TopicDTO();
-            topicConvertor.toDTO(topic, topicDTO);
-            topicDTOList.add(topicDTO);
-        });
-
-        destination.setTopics(topicDTOList);
-
-        List<TaskDTO> taskDTOList = new ArrayList<>();
-
-        source.getTasks().forEach(task -> {
-            TaskDTO taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task, taskDTO);
-            taskDTOList.add(taskDTO);
-        });
-
-        destination.setTasks(taskDTOList);
         destination.setNumberOfTasks(source.getNumberOfTasks());
         destination.setTeacherId(source.getTeacher().getId());
         destination.setMaxGrade(source.getMaxGrade());
+
+        if (!source.getExamAssignees().isEmpty()) {
+            for (ExamAssignee examAssignee : source.getExamAssignees()) {
+                ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+                examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+                destination.getExamAssignees().add(examAssigneeDTO);
+            }
+        }
     }
 
     public void fromDTO(ExamDTO source, Exam destination) {
         destination.setId(source.getId());
         destination.setName(source.getName());
-        destination.setDuration(source.getDuration());
-        destination.setRelevantTo(source.getRelevantTo());
-        destination.setRelevantFrom(source.getRelevantFrom());
-
-        if (ObjectUtils.isNotEmpty(source.getGroupId())) {
-            Group group = new Group();
-            group.setId(source.getGroupId());
-            destination.setGroup(group);
+        if (source.getDiscipline() != null) {
+            destination.setDiscipline(new Discipline());
+            destination.getDiscipline().setId(source.getDiscipline().getId());
         }
 
-        List<Topic> topicList = new ArrayList<>();
-
-        source.getTopics().forEach(topicDTO -> {
-            Topic topic = new Topic();
-            topicConvertor.fromDTO(topicDTO, topic);
-            topicList.add(topic);
-        });
-        List<Task> tasksList = new ArrayList<>();
-
-        if (!CollectionUtils.isEmpty(source.getTasks())) {
-            source.getTasks().forEach(taskDTO -> {
-                Task task = new Task();
-                taskConvertor.fromDTO(taskDTO, task);
-                tasksList.add(task);
+        if (source.getTopics() != null) {
+            List<Topic> topicList = new ArrayList<>();
+            source.getTopics().forEach(topicDTO -> {
+                Topic topic = new Topic();
+                topicConvertor.fromDTO(topicDTO, topic);
+                topicList.add(topic);
             });
+            destination.setTopics(topicList);
         }
 
-        destination.setTopics(topicList);
-        destination.setTasks(tasksList);
+        if (source.getTasks() != null) {
+            List<Task> tasksList = new ArrayList<>();
+
+            if (!CollectionUtils.isEmpty(source.getTasks())) {
+                source.getTasks().forEach(taskDTO -> {
+                    Task task = new Task();
+                    taskConvertor.fromDTO(taskDTO, task);
+                    tasksList.add(task);
+                });
+            }
+            destination.setTasks(tasksList);
+        }
         destination.setNumberOfTasks(source.getNumberOfTasks());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);
         destination.setMaxGrade(source.getMaxGrade());
+
+        for (ExamAssigneeDTO examAssigneeDTO : source.getExamAssignees()) {
+            ExamAssignee examAssignee = new ExamAssignee();
+            examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+            destination.getExamAssignees().add(examAssignee);
+        }
     }
 }

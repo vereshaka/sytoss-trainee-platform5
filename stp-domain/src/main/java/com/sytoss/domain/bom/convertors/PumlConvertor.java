@@ -1,6 +1,8 @@
 package com.sytoss.domain.bom.convertors;
 
+import com.sytoss.domain.bom.convertors.common.*;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.exceptions.business.ScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,7 @@ import java.util.*;
 public class PumlConvertor {
 
     public List<Table> parse(String pumlScript) {
-        String boundary = UUID.randomUUID().toString();
+        String boundary = UUID.randomUUID().toString() + "-";
         String workedScript = pumlScript
                 .replaceAll("table", boundary + "table")
                 .replaceAll("data", boundary + "data");
@@ -29,18 +31,16 @@ public class PumlConvertor {
         List<String> tables = items.stream().filter(item -> item.trim().startsWith("table")).toList();
         List<String> datas = items.stream().filter(item -> item.trim().startsWith("data")).toList();
         List<Table> result = new ArrayList<>();
-        if(tables.size()>0){
-            tables.forEach(item -> result.add(parseTable(item)));
+        if (tables.size() > 0) {
+            for(String tableName : tables){
+                result.add(parseTable(tableName));
+            }
+            fillForeignKeys(result);
         }
-        if(datas.size()>0){
+        if (datas.size() > 0) {
             datas.forEach(item -> parseData(item, result));
         }
-        validate(result);
         return result;
-    }
-
-    private void validate(List<Table> result) {
-        //TODO: yevgenyv: add validation
     }
 
     private Table parseTable(String tableScript) {
@@ -59,7 +59,7 @@ public class PumlConvertor {
         String source = columnDefinition.trim().replaceAll("( )+", " ");
         Column result = new Column();
         String[] temp = source.split(":");
-        if(temp.length>1){
+        if (temp.length > 1) {
             result.setName(temp[0].trim());
             temp = temp[1].split("<<");
             result.setDatatype(temp[0].trim());
@@ -88,8 +88,13 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
+        if (tableName.startsWith("ble")) {
+            log.error("Im here!!");
+        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
+
         if (result == null) {
+            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
@@ -126,6 +131,10 @@ public class PumlConvertor {
         List<String> createTableScripts = tables.stream().map(this::returnCreateTableLiquibaseGroup).toList();
         List<String> initTableScripts = tables.stream().map(this::returnInitTableLiquibaseGroup).toList();
         List<String> initForeignKeysScripts = tables.stream().map(this::returnInitForeignKeys).toList();
+
+        if (createTableScripts.isEmpty()) {
+            throw new ScriptIsNotValidException("Script is not valid");
+        }
 
         createTableStringBuilder.append(String.join("", createTableScripts));
         initTableStringBuilder.append(String.join("", initTableScripts));
@@ -181,7 +190,7 @@ public class PumlConvertor {
             for (Map.Entry<String, String> rows : dataRow.getValues().entrySet()) {
                 object.append(innerIndent).append(StringUtils.leftPad(StringUtils.SPACE, 2)).append("- column:").append(StringUtils.LF)
                         .append(columnsIndent).append("name: ").append(rows.getKey()).append(StringUtils.LF);
-                Column currentColumn = table.getColumns().get(table.getColumns().stream().map(el->el.getName().toUpperCase()).toList().indexOf(rows.getKey().toUpperCase()));
+                Column currentColumn = table.getColumns().get(table.getColumns().stream().map(el -> el.getName().toUpperCase()).toList().indexOf(rows.getKey().toUpperCase()));
                 if (currentColumn.isBoolean()) {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
@@ -193,12 +202,10 @@ public class PumlConvertor {
                                 .append(dates[1]).append("-")
                                 .append(dates[0]).append("' as DateTime)").append(StringUtils.LF);
                     }
-
-
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);
                 } else {
-                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : rows.getValue()).append(StringUtils.LF);
+                    object.append(columnsIndent).append("value: ").append(rows.getValue().equals("") ? "null" : "\"" + rows.getValue() + "\"").append(StringUtils.LF);
                 }
 
             }
@@ -261,7 +268,6 @@ public class PumlConvertor {
 
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         String pumlConvertedScript = "@startuml\n" + pumlStringBuilder + "\n@enduml";
-        System.out.println(pumlConvertedScript);
         try {
             SourceStringReader reader = new SourceStringReader(pumlConvertedScript);
             String result = reader.outputImage(png).getDescription();
@@ -303,22 +309,20 @@ public class PumlConvertor {
 
     public String createObject(Table table) {
         StringBuilder initTableStringBuilder = new StringBuilder();
-        initTableStringBuilder.append("object \"Data:").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
-        List<String> columnsName = table.getColumns().stream().map(Column::getName).toList();
+        initTableStringBuilder.append("object \"").append(table.getName()).append("\" as d").append(table.getName()).append(" {").append(StringUtils.LF);
+        Set<String> columnsName = table.getRows().get(0).getValues().keySet();
         String delimiter = "|= ";
         String header = delimiter + String.join(" " + delimiter, columnsName) + " |";
         initTableStringBuilder.append(header).append(StringUtils.LF);
 
         for (DataRow dataRow : table.getRows()) {
-            if(dataRow.getValues().size()<table.getColumns().size()){
-                StringBuilder rawBuilder = new StringBuilder("| ");
-                for(Column column : table.getColumns()){
-                    String value = dataRow.getValues().get(column.getName());
-                    value = value!=null ? value : "null";
-                    rawBuilder.append(value).append(" | ");
-                }
-                dataRow.setRaw(rawBuilder.toString());
+            StringBuilder rawBuilder = new StringBuilder("| ");
+            for (String column : columnsName) {
+                String value = dataRow.getValues().get(column);
+                value = value != null ? value : "null";
+                rawBuilder.append(value).append(" | ");
             }
+            dataRow.setRaw(rawBuilder.toString());
             initTableStringBuilder.append(dataRow.getRaw()).append(StringUtils.LF);
         }
 
@@ -342,7 +346,7 @@ public class PumlConvertor {
         StringBuilder initLinksStringBuilder = new StringBuilder();
         for (Column column : table.getColumns()) {
             if (column.getForeignKey() != null) {
-                initLinksStringBuilder.append(table.getName()).append(" --o ")
+                initLinksStringBuilder.append(table.getName()).append(returnLink(column.getForeignKey()))
                         .append(column.getForeignKey().getTargetTable())
                         .append(": FK ").append(column.getForeignKey().getTargetTable())
                         .append("(").append(column.getForeignKey().getTargetColumn()).append(")")
@@ -356,7 +360,8 @@ public class PumlConvertor {
         StringBuilder initLinksStringBuilder = new StringBuilder();
         for (Column column : table.getColumns()) {
             if (column.getForeignKey() != null) {
-                initLinksStringBuilder.append("d").append(table.getName()).append(" --o ")
+                initLinksStringBuilder.append("d").append(table.getName())
+                        .append(returnLink(column.getForeignKey()))
                         .append("d")
                         .append(column.getForeignKey().getTargetTable())
                         .append(": FK ").append(column.getForeignKey().getTargetTable())
@@ -365,6 +370,49 @@ public class PumlConvertor {
             }
         }
         return initLinksStringBuilder.toString();
+    }
+
+    private List<Table> fillForeignKeys(List<Table> tables) {
+        for (Table table : tables) {
+            for (Column column : table.getColumns()) {
+                if (column.getForeignKey() != null) {
+                    Table targetTable = tables.stream().filter((item) -> (Objects.equals(item.getName(), column.getForeignKey().getTargetTable()))).toList().get(0);
+                    Column targetColumn = targetTable.getColumns().stream().filter((item) -> (Objects.equals(item.getName(), column.getForeignKey().getTargetColumn()))).toList().get(0);
+                    if (targetColumn.isNullable()) {
+                        column.getForeignKey().setTarget(ForeignKeyType.ZERO_TO_ONE);
+                    } else {
+                        column.getForeignKey().setTarget(ForeignKeyType.ONE_TO_ONE);
+                    }
+                    if (column.isNullable() && !column.isPrimary()) {
+                        column.getForeignKey().setSource(ForeignKeyType.ZERO_TO_MANY);
+                    } else if (!column.isNullable() && !column.isPrimary()) {
+                        column.getForeignKey().setSource(ForeignKeyType.ONE_TO_MANY);
+                    } else if (column.isNullable() && column.isPrimary()) {
+                        column.getForeignKey().setSource(ForeignKeyType.ZERO_TO_ONE);
+                    } else if (!column.isNullable() && column.isPrimary()) {
+                        column.getForeignKey().setSource(ForeignKeyType.ONE_TO_ONE);
+                    }
+                }
+            }
+        }
+        return tables;
+    }
+
+    private String returnLink(ForeignKey foreignKey){
+        StringBuilder initLinkStringBuilder = new StringBuilder();
+        initLinkStringBuilder.append(" ");
+        switch (foreignKey.getSource()) {
+            case ZERO_TO_ONE -> initLinkStringBuilder.append("|o--");
+            case ONE_TO_ONE -> initLinkStringBuilder.append("||--");
+            case ZERO_TO_MANY -> initLinkStringBuilder.append("}o--");
+            case ONE_TO_MANY -> initLinkStringBuilder.append("}|--");
+        }
+        switch (foreignKey.getTarget()) {
+            case ZERO_TO_ONE -> initLinkStringBuilder.append("--o|");
+            case ONE_TO_ONE -> initLinkStringBuilder.append("--||");
+        }
+        initLinkStringBuilder.append(" ");
+        return initLinkStringBuilder.toString();
     }
 }
 

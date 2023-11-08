@@ -22,7 +22,6 @@ class PumlConvertorTest {
         String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script_v1.yml");
-        System.out.println(pumlConvertedScript);
         List<String> pumlScriptStrings = Arrays.stream(pumlConvertedScript.split("\n")).toList();
         List<String> liquibaseScriptStrings = Arrays.stream(liquibaseScript.split("\n")).toList();
         int quantityOfStrings = 0;
@@ -42,19 +41,8 @@ class PumlConvertorTest {
         String pumlScript = readFromFile("puml/script_v1.puml");
         String pumlConvertedScript = pumlConvertor.convertToLiquibase(pumlScript);
         String liquibaseScript = readFromFile("liquibase/script_v1.yml");
-        System.out.println(pumlConvertedScript);
         assertEquals(liquibaseScript, pumlConvertedScript.trim());
     }
-/*
-    @Test
-    void addLinksTest() {
-        PumlConvertor pumlConvertor = new PumlConvertor();
-        String pumlScript = readFromFile("puml/script_v1.puml");
-        List<String> entities = pumlConvertor.getEntities(pumlScript);
-        String pumlConvertedScript = pumlConvertor.addLinks(String.join(StringUtils.LF + StringUtils.LF, entities), pumlScript, ConvertToPumlParameters.DB);
-        String pumlExampleScript = readFromFile("puml/scriptWithLinks.puml");
-        assertEquals(pumlExampleScript, pumlConvertedScript);
-    }*/
 
     private String readFromFile(String path)  {
         ClassLoader classLoader = getClass().getClassLoader();

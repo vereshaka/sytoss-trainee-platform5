@@ -1,34 +1,41 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
-import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
-import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
+import com.sytoss.domain.bom.exceptions.business.notfound.*;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.connectors.ExamConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.UserConnector;
+import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
-import com.sytoss.lessons.dto.ExamDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class ExamService extends AbstractService {
 
     private final ExamConnector examConnector;
@@ -39,48 +46,60 @@ public class ExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    public List<Exam> save(Exam exam, List<Group> groups) {
-        List<Exam> exams = new ArrayList<>();
+    private final ExamAssigneeConvertor examAssigneeConvertor;
 
-        for(Group group : groups){
-            exam.setTeacher((Teacher) getCurrentUser());
-            List<Task> distinctTasks = new ArrayList<>();
-            for(Task task : exam.getTasks()){
-                if(!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())){
-                    distinctTasks.add(task);
-                }
+    private final ExamAssigneeConnector examAssigneeConnector;
+
+    private final DisciplineConnector disciplineConnector;
+
+    private final ExamAssigneeToConnector examAssigneeToConnector;
+
+    private final ExamAssigneeService examAssigneeService;
+
+    private final TopicConnector topicConnector;
+
+    private final TaskConnector taskConnector;
+
+    public Exam save(Exam exam) {
+        exam.setTeacher((Teacher) getCurrentUser());
+        List<Task> distinctTasks = new ArrayList<>();
+        for (Task task : exam.getTasks()) {
+            if (!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())) {
+                distinctTasks.add(task);
             }
-            if(exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()){
-                exam.setNumberOfTasks(distinctTasks.size());
-            }
-            exam.setTasks(distinctTasks);
-            exam.setGroup(group);
-            //TODO: yevgenyv: re think it
-            exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
-            ExamDTO examDTO = new ExamDTO();
-            examConvertor.toDTO(exam, examDTO);
-            examDTO = examConnector.save(examDTO);
-            examConvertor.fromDTO(examDTO, exam);
-            List<Student> students = userConnector.getStudentOfGroup(exam.getGroup().getId());
-            for (Student student: students){
-                try {
-                    personalExamConnector.create(new ExamConfiguration(exam, student));
-                } catch (Exception e) {
-                    //TODO: yevgenyv: need to re think return answer
-                    log.error("Could not create a personal exam for student", e);
-                }
-            }
-            exams.add(exam);
         }
+        if (exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()) {
+            exam.setNumberOfTasks(distinctTasks.size());
+        }
+        exam.setTasks(distinctTasks);
+        //TODO: yevgenyv: re think it
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
+        final ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
 
-        return exams;
+        examDTO.setTopics(new ArrayList<>());
+        exam.getTopics().forEach(topic -> {
+            examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId()));
+        });
+
+        examDTO.setTasks(new ArrayList<>());
+        exam.getTasks().forEach(task -> {
+            examDTO.getTasks().add(taskConnector.getReferenceById(task.getId()));
+        });
+
+        if (exam.getDiscipline() != null) {
+            examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
+        }
+        ExamDTO result = examConnector.save(examDTO);
+        examConvertor.fromDTO(result, exam);
+        return exam;
     }
 
     public List<Exam> findExams() {
         AbstractUser abstractUser = getCurrentUser();
 
         if (abstractUser instanceof Teacher) {
-            List<ExamDTO> examDTOList = examConnector.findByTeacherId(abstractUser.getId());
+            List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
 
             return examDTOList.stream().map((examDTO) -> {
                 Exam exam = new Exam();
@@ -104,23 +123,22 @@ public class ExamService extends AbstractService {
         }
     }
 
-    public Exam reschedule(ScheduleModel scheduleModel, Long examId) {
-        ExamDTO examToUpdateDTO = examConnector.getReferenceById(examId);
-        Exam examToUpdate = new Exam();
-        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
-        examToUpdate.setRelevantTo(scheduleModel.getRelevantTo());
-        examToUpdate.setRelevantFrom(scheduleModel.getRelevantFrom());
-        examConvertor.toDTO(examToUpdate, examToUpdateDTO);
+    public ExamAssignee reschedule(ScheduleModel scheduleModel, Long examAssigneeId) {
+        ExamAssigneeDTO examToUpdateAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
+        ExamAssignee examToUpdateAssignee = new ExamAssignee();
+        examAssigneeConvertor.fromDTO(examToUpdateAssigneeDTO, examToUpdateAssignee);
+        examToUpdateAssignee.setRelevantTo(scheduleModel.getRelevantTo());
+        examToUpdateAssignee.setRelevantFrom(scheduleModel.getRelevantFrom());
+        examAssigneeConvertor.toDTO(examToUpdateAssignee, examToUpdateAssigneeDTO);
 
-        examToUpdateDTO = examConnector.save(examToUpdateDTO);
-        examConvertor.fromDTO(examToUpdateDTO, examToUpdate);
+        examToUpdateAssigneeDTO = examAssigneeConnector.save(examToUpdateAssigneeDTO);
+        examAssigneeConvertor.fromDTO(examToUpdateAssigneeDTO, examToUpdateAssignee);
 
         ExamConfiguration examConfiguration = new ExamConfiguration();
-        examConfiguration.setExam(examToUpdate);
-
+        examConfiguration.setExamAssignee(examToUpdateAssignee);
         personalExamConnector.reschedule(examConfiguration);
 
-        return examToUpdate;
+        return examToUpdateAssignee;
     }
 
     public List<Exam> getExamsByTaskId(Long taskId) {
@@ -145,9 +163,180 @@ public class ExamService extends AbstractService {
         }
 
         return examDTOList.stream().map(examDTO -> {
-           Exam exam = new Exam();
-           examConvertor.fromDTO(examDTO, exam);
-           return exam;
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
+    }
+
+    public List<Exam> getExamsByDiscipline(Long disciplineId) {
+        List<ExamDTO> examDTOList = examConnector.findByTopics_Discipline_Id(disciplineId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new DisciplineNotFoundException(disciplineId);
+        }
+
+        return examDTOList.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
+    }
+
+    public void deleteAssignTopicToExam(TopicDTO topicDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTopicsId(topicDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTopics().remove(topicDTO);
+            examConnector.save(examDTO);
+        });
+    }
+
+    public void deleteAssignTaskToExam(TaskDTO taskDTO) {
+        List<ExamDTO> examDTOList = examConnector.findByTasks_Id(taskDTO.getId());
+        examDTOList.forEach(examDTO -> {
+            examDTO.getTasks().remove(taskDTO);
+            examConnector.save(examDTO);
+        });
+    }
+
+    public Exam delete(Long examId) {
+        Exam exam = getById(examId);
+        personalExamConnector.deletePersonalExamsByExamAssigneeId(exam.getExamAssignees().stream().map(ExamAssignee::getId).toList());
+
+        ExamDTO dto = examConnector.getReferenceById(examId);
+        dto.getExamAssignees().forEach(item -> {
+            item.getExamAssigneeToDTOList().forEach(ea2item -> examAssigneeToConnector.delete(ea2item));
+            item.setExamAssigneeToDTOList(new ArrayList<>());
+            examAssigneeConnector.delete(item);
+        });
+
+        dto.setExamAssignees(new ArrayList<>());
+        dto.setTopics(new ArrayList<>());
+        dto.setTasks(new ArrayList<>());
+
+        examConnector.save(dto);
+
+        examConnector.deleteById(examId);
+        return exam;
+    }
+
+    public Exam assign(Long examId, ExamAssignee examAssignee) {
+        ExamDTO examDTO = examConnector.getReferenceById(examId);
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssignee.getExam().setId(examId);
+        examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+        examAssigneeDTO.setExam(examDTO);
+        examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
+        examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+        Exam exam = new Exam();
+        examConvertor.fromDTO(examDTO, exam);
+
+        for (Group group : examAssignee.getGroups()) {
+            ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
+            examToGroupAssigneeDTO.setGroupId(group.getId());
+            examToGroupAssigneeDTO.setParent(examAssigneeDTO);
+            examAssigneeToConnector.save(examToGroupAssigneeDTO);
+            List<Student> students = userConnector.getStudentOfGroup(group.getId());
+            for (Student student : students) {
+                try {
+                    //TODO: yevgenyv: fix me ASAP
+                    personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
+                } catch (Exception e) {
+                    //TODO: yevgenyv: need to re think return answer
+                    log.error("Could not create a personal exam for student", e);
+                }
+            }
+        }
+        for (Student student : examAssignee.getStudents()) {
+            ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
+            assigneeToDto.setStudentId(student.getId());
+            assigneeToDto.setParent(examAssigneeDTO);
+            examAssigneeToConnector.save(assigneeToDto);
+            try {
+                personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
+            } catch (Exception e) {
+                //TODO: yevgenyv: need to re think return answer
+                log.error("Could not create a personal exam for student", e);
+            }
+        }
+        return exam;
+    }
+
+    public List<ExamAssignee> returnExamAssignees(Long examId) {
+        ExamDTO examDTO = examConnector.getReferenceById(examId);
+        Exam exam = new Exam();
+        examConvertor.fromDTO(examDTO, exam);
+        return exam.getExamAssignees();
+    }
+
+    public ExamAssignee returnExamAssigneeById(Long examAssigneeId) {
+        ExamAssigneeDTO examAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+        return examAssignee;
+    }
+
+    public void createGroupExamsOnStudent(Long groupId, Student student) {
+        List<ExamToGroupAssigneeDTO> examToGroupAssigneeDTOList = examAssigneeToConnector.findByGroupIdOrderByParent_RelevantFromDesc(groupId);
+        examToGroupAssigneeDTOList.forEach(examToGroupAssigneeDTO -> {
+            ExamAssignee examAssignee = new ExamAssignee();
+            examAssigneeConvertor.fromDTO(examToGroupAssigneeDTO.getParent(), examAssignee);
+            if (new Date().before(examAssignee.getRelevantFrom())) {
+                try {
+                    ExamDTO examDTO = examConnector.getReferenceById(examToGroupAssigneeDTO.getParent().getExam().getId());
+                    Exam exam = new Exam();
+                    examConvertor.fromDTO(examDTO, exam);
+                    personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
+                } catch (Exception exception) {
+                    log.warn("Could not create group exam on student: {}", exception.getMessage());
+                }
+            }
+        });
+    }
+
+    public List<ExamAssignee> findExamAssignees() {
+        AbstractUser abstractUser = getCurrentUser();
+        if (abstractUser instanceof Teacher) {
+            List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
+            List<Long> examDTOIds = examDTOList.stream().map(ExamDTO::getId).toList();
+            List<ExamAssigneeDTO> examAssigneeDTOList = examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(examDTOIds);
+            return examAssigneeDTOList.stream().map(examAssigneeDTO -> {
+                ExamAssignee examAssignee = new ExamAssignee();
+                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                return examAssignee;
+            }).toList();
+        } else {
+            log.warn("User type was not valid when try to get exams by teacher id!");
+            throw new UserNotIdentifiedException("User type not teacher!");
+        }
+    }
+
+    public ExamReportModel getReportInfo(Long examAssigneeId) {
+        try {
+            ExamReportModel examReportModel = new ExamReportModel();
+            ExamAssigneeDTO examAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
+            examReportModel.setRelevantFrom(examAssigneeDTO.getRelevantFrom());
+            examReportModel.setRelevantTo(examAssigneeDTO.getRelevantTo());
+
+            ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
+            examReportModel.setExamName(examDTO.getName());
+            examReportModel.setAmountOfTasks(examDTO.getNumberOfTasks());
+            examReportModel.setMaxGrade(examDTO.getMaxGrade());
+            return examReportModel;
+        } catch (EntityNotFoundException exception) {
+            log.warn("Exam assignee not found: {}", exception.getMessage());
+            throw new ExamAssigneeNotFoundException(examAssigneeId);
+        }
+    }
+
+    public List<Exam> getExamsByTopic(Long topicId) {
+        TopicDTO topic = new TopicDTO();
+        topic.setId(topicId);
+        List<ExamDTO> examDTOS = examConnector.getAllByTopicsContaining(topic);
+        return examDTOS.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
         }).toList();
     }
 }

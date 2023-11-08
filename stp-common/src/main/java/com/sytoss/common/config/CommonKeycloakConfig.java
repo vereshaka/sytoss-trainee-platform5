@@ -56,6 +56,10 @@ public abstract class CommonKeycloakConfig {
             public Collection<GrantedAuthority> convert(Jwt jwt) {
                 Collection<GrantedAuthority> grantedAuthorities = delegate.convert(jwt);
 
+                if (Objects.nonNull(jwt.getClaim("userType"))) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + jwt.getClaim("userType")));
+                }
+
                 if (Objects.isNull(jwt.getClaim("realm_access"))) {
                     return grantedAuthorities;
                 }

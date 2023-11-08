@@ -27,6 +27,9 @@ public class TaskConvertor {
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
         destination.setCoef(source.getCoef());
+        destination.setCode(source.getCode() == null ? "" : source.getCode());
+        destination.setCreateDate(source.getCreateDate());
+        destination.setCheckAnswer(source.getCheckAnswer());
         TaskDomain taskDomain = new TaskDomain();
         taskDomainConvertor.fromDTO(source.getTaskDomain(), taskDomain);
         destination.setTaskDomain(taskDomain);
@@ -67,6 +70,9 @@ public class TaskConvertor {
         destination.setQuestion(source.getQuestion());
         destination.setEtalonAnswer(source.getEtalonAnswer());
         destination.setCoef(source.getCoef());
+        destination.setCode(source.getCode());
+        destination.setCreateDate(source.getCreateDate());
+        destination.setCheckAnswer(source.getCheckAnswer());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);
@@ -97,9 +103,11 @@ public class TaskConvertor {
     }
 
     public void fromRequiredCommandToTaskConditions(Task task) {
-        if (!task.getRequiredCommand().equals("")) {
-            List<TaskCondition> taskConditions = new ArrayList<>();
-            task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(), taskConditions));
+        if (task.getRequiredCommand() != null) {
+            if(!task.getRequiredCommand().equals("")){
+                List<TaskCondition> taskConditions = new ArrayList<>();
+                task.setTaskConditions(fromRequiredCommandToTaskConditions(task.getRequiredCommand(), taskConditions));
+            }
         }
     }
 

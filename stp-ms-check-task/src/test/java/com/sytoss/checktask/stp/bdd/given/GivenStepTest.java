@@ -1,16 +1,36 @@
 package com.sytoss.checktask.stp.bdd.given;
 
 import com.sytoss.checktask.stp.bdd.CheckTaskIntegrationTest;
+import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.stp.test.FileUtils;
 import io.cucumber.java.en.Given;
+import org.apache.commons.io.IOUtils;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("^Request contains database script as in \"(.*)\"$")
     public void givenDatabaseScript(String script) {
-        String data = FileUtils.readFromFile(script);
+        String data = null;
+        try {
+            data = IOUtils.toString(getClass().getResourceAsStream("/data/" + script), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(data);
+    }
+
+    @Given("^Request contains database script from \"(.*)\" puml$")
+    public void givenDatabaseScriptFromPuml(String script) {
+        String data = null;
+        try {
+            data = new PumlConvertor().convertToLiquibase(IOUtils.toString(getClass().getResourceAsStream("/data/" + script), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         getTestExecutionContext().getDetails().getCheckTaskParameters().setScript(data);
     }
 
@@ -29,6 +49,11 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("^check SQL is \"(.*)\"$")
     public void givenAnswerScript(String answer) {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
+    }
+
+    @Given("^check SQL is$")
+    public void givenAnswerMultiLineScript(String answer) {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
     }
 }

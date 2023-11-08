@@ -2,7 +2,6 @@ package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,15 +28,14 @@ public class GroupWhen extends LessonsIntegrationTest {
     }
 
     @When("^receive all groups by teacher with id (.*)")
-    public void receiveAllGroupsByTeacherWithId(String teacherKey) {
+    public void receiveAllGroupsByTeacherWithId(Integer teacherId) {
         String url = "/api/teacher/my/groups";
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "123", "123", "123", "123"));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         LinkedHashMap<String, Object> teacherMap = new LinkedHashMap<>();
-        teacherMap.put("id", getTestExecutionContext().getIdMapping().get(teacherKey).intValue());
+        teacherMap.put("id", teacherId);
         when(getUserConnector().getMyProfile()).thenReturn(teacherMap);
-        ResponseEntity<List<GroupReferenceDTO>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }

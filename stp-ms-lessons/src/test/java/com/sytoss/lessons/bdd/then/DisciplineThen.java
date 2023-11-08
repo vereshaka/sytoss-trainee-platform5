@@ -2,14 +2,15 @@ package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.controllers.api.ResponseObject;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class DisciplineThen extends LessonsIntegrationTest {
@@ -27,12 +28,21 @@ public class DisciplineThen extends LessonsIntegrationTest {
     }
 
     @Then("^disciplines should be received$")
-    public void disciplinesShouldBeReceived(List<DisciplineDTO> disciplines) {
-        List<Discipline> disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
-        assertEquals(disciplines.size(), disciplineList.size());
-        for (int i = 0; i < disciplineList.size(); i++) {
-            assertEquals(disciplines.get(i).getName(), disciplineList.get(i).getName());
+    public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
+        List<Discipline> disciplineList;
+        if(getTestExecutionContext().getResponse().getBody() instanceof ArrayList){
+            disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
         }
+        else{
+            ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
+            disciplineList = responseObject.getData();
+        }
+        assertEquals(disciplines.size(), disciplineList.size());
+        assertTrue(
+                disciplines.stream().allMatch(discipline -> disciplineList.stream().anyMatch(
+                        backendDiscipline -> backendDiscipline.getName().equals(discipline.getName()))
+                )
+        );
     }
 
     @Then("^discipline's icon should be received$")
@@ -43,11 +53,11 @@ public class DisciplineThen extends LessonsIntegrationTest {
     }
 
     @Then("should receive information about discipline of student")
-    public void shouldReceiveInformationAboutDisciplineOfStudent(List<DisciplineDTO> disciplines) {
+    public void shouldReceiveInformationAboutDisciplineOfStudent(List<Discipline> disciplines) {
         List<Discipline> disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(disciplineList.size());
         int count = 0;
-        for (DisciplineDTO discipline : disciplines) {
+        for (Discipline discipline : disciplines) {
             for (Discipline answer : disciplineList) {
                 if (discipline.getName().equals(answer.getName())) {
                     count++;

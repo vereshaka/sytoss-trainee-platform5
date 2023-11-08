@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity(name = "APP_USER")
 @DiscriminatorColumn(name = "USER_TYPE")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public abstract class UserDTO {
+public abstract class UserDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
@@ -31,6 +31,9 @@ public abstract class UserDTO {
 
     @Column(name = "PHOTO")
     private byte[] photo;
+
+    @Column(name = "IMAGE_NAME")
+    private String imageName;
 
     @Column(name = "IS_MODERATED")
     private boolean isModerated;

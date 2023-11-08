@@ -27,9 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @Disabled
 public class PersonalExamServiceTest extends StpUnitTest {
@@ -186,15 +186,17 @@ public class PersonalExamServiceTest extends StpUnitTest {
     public void shouldReturnPersonalExamsByUserId() throws ParseException {
         List<PersonalExam> exams = new ArrayList<>();
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
-        exams.add(createPersonalExam(1L,"Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));        exams.add(createPersonalExam(2L,"SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L, "Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L, "Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(1L, "Math", 5, format.parse("14.12.2018"), format.parse("14.12.2018")));
+        exams.add(createPersonalExam(2L, "SQL", 10, format.parse("14.12.2018"), format.parse("14.12.2018")));
         when(personalExamConnector.getAllByStudent_IdOrderByAssignedDateDesc(1L)).thenReturn(exams);
 
         List<PersonalExam> result = personalExamService.getByStudentId(1L);
 
         assertEquals(exams.size(), result.size());
         for (int i = 0; i < result.size(); i++) {
-            assertEquals(exams.get(1).getExamId(), result.get(1).getExamId());
+            assertEquals(exams.get(1).getExamAssigneeId(), result.get(1).getExamAssigneeId());
             assertEquals(exams.get(1).getAmountOfTasks(), result.get(1).getAmountOfTasks());
             assertEquals(exams.get(1).getStatus(), result.get(1).getStatus());
             assertEquals(exams.get(1).getAssignedDate(), result.get(1).getAssignedDate());
@@ -218,9 +220,26 @@ public class PersonalExamServiceTest extends StpUnitTest {
         assertNotNull(result);
     }
 
-    private PersonalExam createPersonalExam(Long examId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
+    @Test
+    public void shouldDeletePersonalExamsByExamAssigneeId() {
         PersonalExam personalExam = new PersonalExam();
-        personalExam.setExamId(examId);
+        personalExam.setId("123-abc-def");
+        Task task = createTask("question");
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        answer.setTask(task);
+        personalExam.setAnswers(List.of(answer));
+
+        when(personalExamConnector.getAllByExamAssigneeId(1L)).thenReturn(List.of(personalExam));
+        doNothing().when(personalExamConnector).deleteAll(any());
+
+        List<PersonalExam> personalExams = personalExamService.deleteByExamAssigneeId(1L);
+        assertEquals(1, personalExams.size());
+        verify(personalExamConnector).deleteAll(any());
+    }
+
+    private PersonalExam createPersonalExam(Long examAssigneeId, String name, int amountOfTasks, Date assignedDate, Date startedDate) {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setExamAssigneeId(examAssigneeId);
         personalExam.setName(name);
         personalExam.finish();
         personalExam.setAmountOfTasks(amountOfTasks);
@@ -249,7 +268,106 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Grade score = new Grade();
         score.setValue(gradeValue);
         score.setComment(comment);
-
         return score;
+    }
+
+    @Test
+    public void shouldReviewTestByAnswers() {
+        Answer answer1 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
+        Answer answer2 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
+
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamConnector.getById("1")).thenReturn(personalExam);
+        when(personalExamConnector.getById("2")).thenReturn(personalExam2);
+
+        answer1.setTeacherGrade(new Grade(20, "ok"));
+        answer2.setTeacherGrade(new Grade(10, "ok"));
+
+        ExamAssigneeAnswersModel examAssigneeAnswersModel = new ExamAssigneeAnswersModel();
+        ReviewGradeModel gradeModel1 = new ReviewGradeModel();
+        gradeModel1.setPersonalExamId(personalExam.getId());
+        gradeModel1.setAnswer(answer1);
+        ReviewGradeModel gradeModel2 = new ReviewGradeModel();
+        gradeModel2.setPersonalExamId(personalExam2.getId());
+        gradeModel2.setAnswer(answer2);
+        examAssigneeAnswersModel.setGrades(List.of(gradeModel1, gradeModel2));
+
+        ExamAssigneeAnswersModel answers = personalExamService.reviewByAnswers(examAssigneeAnswersModel);
+
+        Assertions.assertEquals(answers.getGrades().size(), 2);
+        Assertions.assertEquals("1", answers.getGrades().get(0).getPersonalExamId());
+        Assertions.assertEquals(20, answers.getGrades().get(0).getAnswer().getTeacherGrade().getValue());
+        Assertions.assertEquals("2", answers.getGrades().get(1).getPersonalExamId());
+        Assertions.assertEquals(10, answers.getGrades().get(1).getAnswer().getTeacherGrade().getValue());
+    }
+
+    @Test
+    public void shouldReturnPersonalExam() {
+        PersonalExam personalExam = new PersonalExam();
+
+        personalExam.setId("12345");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED),
+                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED)
+        ));
+
+        when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
+
+        PersonalExam returnPersonalExam = personalExamService.getById(personalExam.getId());
+        Assertions.assertEquals("12345", returnPersonalExam.getId());
+    }
+
+
+    @Test
+    void updateTask() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setQuestion("select all from products");
+
+        Answer answer1 = new Answer();
+        answer1.setValue("select * from products");
+        answer1.setGrade(new Grade(1, "answer correct"));
+        answer1.setStatus(AnswerStatus.GRADED);
+        answer1.setTask(task);
+        Answer answer2 = new Answer();
+        answer2.setValue("select * from products");
+        answer2.setGrade(new Grade(1, "answer correct"));
+        answer2.setStatus(AnswerStatus.GRADED);
+        answer2.setTask(task);
+        answer1.setId(1L);
+        answer2.setId(2L);
+
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId("1");
+        personalExam.setName("DDL requests");
+        personalExam.setAnswers(List.of(answer1));
+        personalExam.review();
+
+        PersonalExam personalExam2 = new PersonalExam();
+        personalExam2.setId("2");
+        personalExam2.setName("DDL requests");
+        personalExam2.setAnswers(List.of(answer2));
+
+        when(personalExamConnector.getAllByAnswersTaskIdAndStatusIs(any(), any())).thenReturn(List.of(personalExam2));
+        task.setQuestion("select * from products");
+
+        List<PersonalExam> personalExams = personalExamService.updateTask(task);
+        assertEquals(1, personalExams.size());
+        assertEquals("2", personalExams.get(0).getId());
+        assertEquals("select * from products", personalExams.get(0).getAnswerById(2L).getTask().getQuestion());
     }
 }

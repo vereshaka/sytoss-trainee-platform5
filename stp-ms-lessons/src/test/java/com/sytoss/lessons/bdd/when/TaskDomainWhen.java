@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +28,9 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
     public void requestSentCreateTaskDomain(String name) {
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setName(name);
+        taskDomain.setDataScript(FileUtils.readFromFile("puml/data.puml"));
+        taskDomain.setDatabaseScript(FileUtils.readFromFile("puml/database.puml"));
+        when(getCheckTaskConnector().checkValidation(any())).thenReturn(true);
         String url = "/api/discipline/" + getTestExecutionContext().getDetails().getDisciplineId() + "/task-domain";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<TaskDomain> httpEntity = new HttpEntity<>(taskDomain, httpHeaders);
@@ -75,6 +79,7 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
 
     @When("^teacher updates \"(.*)\" task domain to \"(.*)\"$")
     public void teacherUpdatesTaskDomainTo(String oldTaskDomainName, String newTaskDomainName) {
+        when(getCheckTaskConnector().checkValidation(any())).thenReturn(true);
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(oldTaskDomainName, disciplineDTO.getId());
         TaskDomain taskDomain = new TaskDomain();
@@ -127,7 +132,7 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
     @When("^system generate image of scheme and save in \"(.*)\" task domain with empty script$")
     public void requestSentCreateImageForTaskDomainWithWrongScript(String taskDomainName) {
         TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
-        String url = "/api/task-domain/puml/"+ ConvertToPumlParameters.ALL;
+        String url = "/api/task-domain/puml/" + ConvertToPumlParameters.ALL;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity = doPut(url, httpEntity, String.class);
@@ -146,10 +151,10 @@ public class TaskDomainWhen extends LessonsIntegrationTest {
 
     @When("^system retrieve information about (.*) task domain tasks$")
     public void systemRetrieveInformationAboutTaskDomainTasks(String taskDomainStringId) {
-        Long taskDomainId = getTestExecutionContext().getIdMapping().get(taskDomainStringId);
+        Long taskDomainId = (Long) getTestExecutionContext().getIdMapping().get(taskDomainStringId);
         String url = "/api/task-domain/" + taskDomainId + "/tasks";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);

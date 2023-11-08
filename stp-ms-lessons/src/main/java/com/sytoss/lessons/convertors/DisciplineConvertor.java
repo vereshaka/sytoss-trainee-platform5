@@ -18,7 +18,6 @@ public class DisciplineConvertor {
         destination.setTeacher(teacher);
         destination.setShortDescription(source.getShortDescription());
         destination.setFullDescription(source.getFullDescription());
-        destination.setDuration(source.getDuration());
         destination.setIcon(source.getIcon());
         destination.setCreationDate(source.getCreationDate());
     }
@@ -30,7 +29,6 @@ public class DisciplineConvertor {
             destination.setTeacherId(source.getTeacher().getId());
             destination.setShortDescription(source.getShortDescription());
             destination.setFullDescription(source.getFullDescription());
-            destination.setDuration(source.getDuration());
             destination.setIcon(source.getIcon());
             destination.setCreationDate(source.getCreationDate());
         }

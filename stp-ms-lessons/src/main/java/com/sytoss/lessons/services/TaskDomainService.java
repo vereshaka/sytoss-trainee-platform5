@@ -14,17 +14,17 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.DisciplineConnector;
-import com.sytoss.lessons.connectors.PersonalExamConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDomainDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +32,12 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskDomainService {
 
     private final TaskDomainConnector taskDomainConnector;
 
     private final TaskDomainConvertor taskDomainConvertor;
-
-    private final DisciplineService disciplineService;
 
     private final PersonalExamConnector personalExamConnector;
 
@@ -52,6 +51,8 @@ public class TaskDomainService {
 
     private final ExamService examService;
 
+    private final ImageProviderConnector imageProviderConnector;
+
     public TaskDomain create(Long disciplineId, TaskDomain taskDomain) {
         DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElseThrow(() -> new DisciplineNotFoundException(disciplineId));
         TaskDomainDTO oldTaskDomainDTO = taskDomainConnector.getByNameAndDisciplineId(taskDomain.getName(), disciplineId);
@@ -62,9 +63,9 @@ public class TaskDomainService {
             if (!isValid(taskDomain)) {
                 throw new ScriptIsNotValidException("Script is not valid");
             }
+            generateOrUpdateImage(taskDomain, taskDomainDTO);
             taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
             taskDomainConvertor.fromDTO(taskDomainDTO, taskDomain);
-
             return taskDomain;
         } else {
             throw new TaskDomainAlreadyExist(taskDomain.getName());
@@ -150,9 +151,30 @@ public class TaskDomainService {
         if (!isValid(taskDomainToUpdate)) {
             throw new ScriptIsNotValidException("Script is not valid");
         }
+        generateOrUpdateImage(taskDomain, taskDomainDTO);
         taskDomainDTO = taskDomainConnector.save(taskDomainDTO);
         taskDomainConvertor.fromDTO(taskDomainDTO, taskDomainToUpdate);
         return taskDomainToUpdate;
+    }
+
+    private void generateOrUpdateImage(TaskDomain taskDomain, TaskDomainDTO taskDomainDTO) {
+        try {
+            String puml = taskDomain.getDatabaseScript() + "\n\n" + taskDomain.getDataScript();
+            byte[] dbImage = generatePngFromPuml(puml, ConvertToPumlParameters.DB);
+            byte[] dataImage = generatePngFromPuml(puml, ConvertToPumlParameters.DATA);
+            if (Objects.isNull(taskDomainDTO.getDbImageName())) {
+                taskDomainDTO.setDbImageName(imageProviderConnector.saveImage(dbImage));
+            } else {
+                imageProviderConnector.saveImageByteWithName(taskDomainDTO.getDbImageName(), dbImage);
+            }
+            if (Objects.isNull(taskDomainDTO.getDataImageName())) {
+                taskDomainDTO.setDataImageName(imageProviderConnector.saveImage(dataImage));
+            } else {
+                imageProviderConnector.saveImageByteWithName(taskDomainDTO.getDataImageName(), dataImage);
+            }
+        } catch (Exception exception) {
+            log.warn("Could not update or generate image for task domain: {}", exception.getMessage());
+        }
     }
 
     private boolean isValid(TaskDomain taskDomain) {

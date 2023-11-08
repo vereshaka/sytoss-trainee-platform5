@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "GROUPS")
-public class GroupDTO {
+public class GroupDTO extends Auditable {
 
     @Id
     @Column(name = "ID")
