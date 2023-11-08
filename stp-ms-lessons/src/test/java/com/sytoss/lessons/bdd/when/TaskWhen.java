@@ -164,4 +164,18 @@ public class TaskWhen extends LessonsIntegrationTest {
         ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
+
+    @When("^teacher updates this task with question \"(.*)\" question to \"(.*)\"$")
+    public void teacherUpdatesThisTaskQuestionTo(String oldQuestion, String newQuestion) {
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(oldQuestion,getTestExecutionContext().getDetails().getTaskDomainId());
+        Task task = new Task();
+        getTaskConvertor().fromDTO(taskDTO,task);
+        task.setQuestion(newQuestion);
+
+        String url = "/api/task";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
+        ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
 }

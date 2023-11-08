@@ -198,7 +198,18 @@ public class TaskService {
             updateTaskDTO.setCode(task.getCode());
         }
 
-        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
+        List<TaskConditionDTO> taskConditionsForUpdate = getTaskConditionsForUpdate(task);
+
+        if(updateTaskDTO.getConditions() != null){
+            for(int i=0; i<updateTaskDTO.getConditions().size(); i++){
+                updateTaskDTO.getConditions().remove(i);
+            }
+        }
+        else{
+            updateTaskDTO.setConditions(new ArrayList<>());
+        }
+
+        updateTaskDTO.getConditions().addAll(taskConditionsForUpdate);
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
