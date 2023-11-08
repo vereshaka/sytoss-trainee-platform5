@@ -281,4 +281,18 @@ public class PersonalExamController {
     public List<PersonalExam> updateTask(@RequestBody Task task) {
         return personalExamService.updateTask(task);
     }
+
+
+    @Operation(description = "Method for making user screenshot")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/{personalExamId}/screenshot")
+    public void makeUserScreenshot(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @RequestBody String capture
+    ) {
+        personalExamService.makeScreenshot(capture, personalExamId);
+    }
 }
