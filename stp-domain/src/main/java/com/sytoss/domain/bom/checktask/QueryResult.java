@@ -17,8 +17,6 @@ public class QueryResult {
     private List<String> header = new ArrayList<>();
     @Setter
     private int affectedRowsCount = 0;
-    @Setter
-    private boolean isRowsAffected = false;
 
     public void addValues(Map<String, Object> row) {
         Map<Integer, Object> tableRow = new HashMap<>();
@@ -42,44 +40,38 @@ public class QueryResult {
 
     public List<Exception> compareWithEtalon(QueryResult etalon) {
         List<Exception> result = new ArrayList<>();
-        if (isRowsAffected) {
-            if (etalon.getAffectedRowsCount() != this.getAffectedRowsCount()) {
-                result.add(new DifferentRowsAmountException());  // case #2
-            }
+        if (etalon.getResultMapList().size() != this.getResultMapList().size()) {
+            result.add(new DifferentRowsAmountException());  // case #2
         } else {
-            if (etalon.getResultMapList().size() != this.getResultMapList().size()) {
-                result.add(new DifferentRowsAmountException());  // case #2
-            } else {
-                Map<Integer, Integer> columnIndexMapping = new HashMap<>();
-                for (int i = 0; i < etalon.getHeader().size(); i++) {
-                    List<Object> etalonColumn = etalon.getColumnValue(i);
-                    columnIndexMapping.put(i, containsColumnByValue(etalonColumn));
-                }
+            Map<Integer, Integer> columnIndexMapping = new HashMap<>();
+            for (int i = 0; i < etalon.getHeader().size(); i++) {
+                List<Object> etalonColumn = etalon.getColumnValue(i);
+                columnIndexMapping.put(i, containsColumnByValue(etalonColumn));
+            }
 
-                List<String> absentColumns = new ArrayList<>();
-                List<String> wrongOrderingColumns = new ArrayList<>();
-                for (int index : columnIndexMapping.keySet()) {
-                    int answerIndex = columnIndexMapping.get(index);
-                    if (answerIndex == -1) {
-                        absentColumns.add(etalon.getHeader().get(index));
-                    } else {
-                        if (!CollectionUtils.isEqualCollection(etalon.getColumnValue(index), getColumnValue(answerIndex))) {
-                            wrongOrderingColumns.add(etalon.getHeader().get(index));
-                        }
+            List<String> absentColumns = new ArrayList<>();
+            List<String> wrongOrderingColumns = new ArrayList<>();
+            for (int index : columnIndexMapping.keySet()) {
+                int answerIndex = columnIndexMapping.get(index);
+                if (answerIndex == -1) {
+                    absentColumns.add(etalon.getHeader().get(index));
+                } else {
+                    if (!CollectionUtils.isEqualCollection(etalon.getColumnValue(index), getColumnValue(answerIndex))) {
+                        wrongOrderingColumns.add(etalon.getHeader().get(index));
                     }
                 }
-                if (absentColumns.size() == etalon.getHeader().size()) {
-                    result.add(new WrongDataException()); // case #3
-                } else {
-                    if (absentColumns.size() > 0) {
-                        result.add(new EtalonColumnsNotFoundException(absentColumns)); // case #5
-                    }
-                    if (wrongOrderingColumns.size() > 0) {
-                        result.add(new WrongOrderingColumnException(wrongOrderingColumns)); // case #4
-                    }
-                    if (etalon.getHeader().size() < getHeader().size()) {
-                        result.add(new MoreColumnsException());  // case #6
-                    }
+            }
+            if (absentColumns.size() == etalon.getHeader().size()) {
+                result.add(new WrongDataException()); // case #3
+            } else {
+                if (absentColumns.size() > 0) {
+                    result.add(new EtalonColumnsNotFoundException(absentColumns)); // case #5
+                }
+                if (wrongOrderingColumns.size() > 0) {
+                    result.add(new WrongOrderingColumnException(wrongOrderingColumns)); // case #4
+                }
+                if (etalon.getHeader().size() < getHeader().size()) {
+                    result.add(new MoreColumnsException());  // case #6
                 }
             }
         }
