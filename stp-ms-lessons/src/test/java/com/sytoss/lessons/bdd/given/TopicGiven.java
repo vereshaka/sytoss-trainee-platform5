@@ -13,7 +13,6 @@ import java.sql.*;
 import java.time.Instant;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
@@ -79,7 +78,7 @@ public class TopicGiven extends AbstractGiven {
     public void thisExamHasAnswers(List<Topic> topics) {
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         List<TopicDTO> topicDTOS = new ArrayList<>();
-        for(Topic topic : topics){
+        for (Topic topic : topics) {
             TopicDTO topicDTO = new TopicDTO();
             topicDTO.setName(topic.getName());
             DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -113,7 +112,7 @@ public class TopicGiven extends AbstractGiven {
             topicIds.add(topicResult.getId());
         }
         for (Map.Entry<Long, List<Long>> entry : finalTopics.entrySet()) {
-            List<TopicDTO> topicDTOSFromConnector = getTopicConnector().findByDisciplineId(entry.getKey());
+            List<TopicDTO> topicDTOSFromConnector = getTopicConnector().findByDisciplineIdOrderByName(entry.getKey());
             Iterator<TopicDTO> iTopic = topicDTOSFromConnector.iterator();
             while (iTopic.hasNext()) {
                 TopicDTO t = iTopic.next();
