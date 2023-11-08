@@ -1,8 +1,6 @@
 package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.AnswerModule;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
@@ -17,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class AnswerWhen extends TestProducerIntegrationTest {
@@ -25,18 +22,10 @@ public class AnswerWhen extends TestProducerIntegrationTest {
     @When("^student calls answer with value \"(.*)\" on personal exam with id (.*)$")
     public void studentCallsAnswer(String answer, String personalExamId) throws JOSEException {
 
-        Task task = new Task();
-        task.setId(13L);
-        TaskDomain taskDomain = new TaskDomain();
-        taskDomain.setDatabaseScript(".uml");
-        task.setTaskDomain(taskDomain);
-
-        when(getMetadataConnector().getTaskById(anyLong())).thenReturn(task);
-        when(getMetadataConnector().getTaskDomain(anyLong())).thenReturn(taskDomain);
-
         Score score = new Score();
         score.setValue(1);
         when(getCheckTaskConnector().checkAnswer(any(CheckTaskParameters.class))).thenReturn(score);
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), String.valueOf(getTestExecutionContext().getDetails().getStudentId())));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
