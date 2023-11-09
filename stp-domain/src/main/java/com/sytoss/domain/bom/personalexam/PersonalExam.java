@@ -61,6 +61,9 @@ public class PersonalExam {
 
     private Integer time;
 
+    @Setter(AccessLevel.NONE)
+    private Long spentTime;
+
     private Integer amountOfTasks;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -88,10 +91,12 @@ public class PersonalExam {
 
     public void summary() {
         summaryGrade = 0;
+        spentTime = 0L;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
                 summaryGrade += answer.getTeacherGrade().getValue();
+                spentTime += answer.getTimeSpent();
             }
         });
     }
