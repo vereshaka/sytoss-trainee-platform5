@@ -24,6 +24,8 @@ public class PersonalExamReportModel {
 
     private Double summary;
 
+    private Long spentTime;
+
     private PersonalExamStatus personalExamStatus;
 
     private List<AnswerReportModel> answers;

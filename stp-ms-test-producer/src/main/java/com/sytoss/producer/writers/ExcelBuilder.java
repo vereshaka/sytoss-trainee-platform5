@@ -35,7 +35,7 @@ public class ExcelBuilder extends BaseExcelWriter {
 
     private final String sheetName = "Exam result";
 
-    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary");
+    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary", "Total Answer Time");
 
     public Workbook createExcelReportByExamAssignee(
             ExamReportModel examReportModel, List<PersonalExamReportModel> personalExams
@@ -120,9 +120,18 @@ public class ExcelBuilder extends BaseExcelWriter {
             sheet.autoSizeColumn(tableValueStartIndex++);
             writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getEmail());
             sheet.autoSizeColumn(tableValueStartIndex++);
-            writeCell(contentRow, tableValueStartIndex++, getValue(), personalExam.getSummary());
+            writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getSummary());
+            sheet.autoSizeColumn(tableValueStartIndex++);
+            writeCell(contentRow, tableValueStartIndex++, getValue(), formatSeconds(personalExam.getSpentTime()));
             writePersonalExamGrades(personalExam, tasksInExam, contentRow, sheet);
         }
+    }
+
+    private String formatSeconds(long seconds) {
+        long minutes = seconds / 60;
+        long remainingSeconds = seconds % 60;
+
+        return String.format("%d min %d s", minutes, remainingSeconds);
     }
 
     private void writePersonalExamGrades(
@@ -135,7 +144,7 @@ public class ExcelBuilder extends BaseExcelWriter {
             for (TaskReportModel task : tasksInExam) {
                 Optional<AnswerReportModel> findAnswer = personalExam.getAnswers().stream().filter(answer -> Objects.equals(answer.getTask().getId(), task.getId())).findFirst();
                 if (findAnswer.isPresent() && findAnswer.get().getAnswerStatus() == AnswerStatus.GRADED) {
-                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
+                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + " s");
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
 
                     if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "") && !Objects.equals(findAnswer.get().getSystemGrade().getComment(), "ok")) {
