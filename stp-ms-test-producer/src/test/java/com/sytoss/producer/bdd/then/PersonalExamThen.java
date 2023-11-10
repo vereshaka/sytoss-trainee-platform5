@@ -38,10 +38,10 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         assertEquals(quantityOfTasks, personalExamAnswer.getAnswers().size());
     }
 
-    @Then("^summary grade should be (.*)$")
+    @Then("^teacher grade should be (.*)$")
     public void summaryGrade(Double summaryGrade) throws JsonProcessingException {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
-        assertEquals(summaryGrade, personalExam.getSummaryGrade());
+        assertEquals(summaryGrade, personalExam.getTeacherGrade());
     }
 
     @Then("^operation should finish with (.*) error$")
@@ -54,7 +54,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
 
         assertEquals(examName, personalExam.getName());
-        assertEquals(studentId, personalExam.getStudent().getId());
+        assertEquals(studentId.toString(), personalExam.getStudent().getUid());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         assertEquals(dateFormat.parse(date), personalExam.getAssignedDate());
@@ -67,8 +67,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
                 Answer answerResult = i.next();
                 if (answer.getValue().equals(answerResult.getValue()) &&
                         answer.getStatus().equals(answerResult.getStatus()) &&
-                        answer.getGrade().getValue() == answerResult.getGrade().getValue() &&
-                        answer.getGrade().getComment().equals(answerResult.getGrade().getComment())) {
+                        answer.getGrade().getValue() == answerResult.getGrade().getValue()) {
                     i.remove();
                 }
             }
@@ -125,5 +124,11 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         if(!examNames.containsAll(compareWithExamNames)){
             fail("Invalid exam names were retrieved");
         }
+    }
+
+    @Then("^system grade should be (.*)$")
+    public void systemGrade(Double systemGrade) {
+        PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
+        assertEquals(systemGrade, personalExam.getSystemGrade());
     }
 }

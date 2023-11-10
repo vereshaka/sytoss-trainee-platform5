@@ -2,8 +2,10 @@ package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.connectors.ImageConnector;
@@ -97,7 +99,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         verify(personalExamConnector).getById("12345");
         Assertions.assertEquals("12345", returnPersonalExam.getId());
-        Assertions.assertEquals(3, returnPersonalExam.getSummaryGrade());
+        Assertions.assertEquals(3, returnPersonalExam.getTeacherGrade());
     }
 
     @Test
@@ -118,7 +120,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         verify(personalExamConnector).getById("12345");
         Assertions.assertEquals("12345", returnPersonalExam.getId());
-        Assertions.assertEquals(2, returnPersonalExam.getSummaryGrade());
+        Assertions.assertEquals(2, returnPersonalExam.getTeacherGrade());
     }
 
     @Test
@@ -369,5 +371,46 @@ public class PersonalExamServiceTest extends StpUnitTest {
         assertEquals(1, personalExams.size());
         assertEquals("2", personalExams.get(0).getId());
         assertEquals("select * from products", personalExams.get(0).getAnswerById(2L).getTask().getQuestion());
+    }
+
+    @Test
+    public void shouldReturnPersonalExamWithGradesByExamAssigneeId() {
+        PersonalExam personalExam = new PersonalExam();
+
+        personalExam.setId("12345");
+        personalExam.setName("DDL requests");
+
+        Answer answer1 = new Answer();
+        answer1.setValue("Select something 1");
+        answer1.setStatus(AnswerStatus.GRADED);
+
+        Answer answer2 = new Answer();
+        answer2.setValue("Select something 2");
+        answer2.setStatus(AnswerStatus.GRADED);
+
+        List<Answer> answers = List.of(answer1, answer2);
+
+        answers.forEach(el -> {
+            el.setGrade(new Grade());
+            el.getGrade().setValue(1.0);
+            el.setTeacherGrade(new Grade());
+            el.getTeacherGrade().setValue(2.0);
+        });
+
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setExam(new Exam());
+        examAssignee.setId(1L);
+
+        personalExam.setExamAssigneeId(examAssignee.getId());
+
+        personalExam.setAnswers(answers);
+
+        when(personalExamConnector.getByExamAssigneeId(any())).thenReturn(List.of(personalExam));
+
+        List<PersonalExam> personalExams = personalExamService.getByExamAssigneeId(examAssignee.getId());
+        Assertions.assertEquals(1, personalExams.size());
+        Assertions.assertEquals(2, personalExams.get(0).getAnswers().size());
+        Assertions.assertEquals(2.0, personalExams.get(0).getSystemGrade());
+        Assertions.assertEquals(4.0, personalExams.get(0).getTeacherGrade());
     }
 }

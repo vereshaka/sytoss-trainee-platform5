@@ -206,4 +206,15 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         getTestExecutionContext().getDetails().setResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
+
+    @When("^the exam with id (.*) is reviewed$")
+    public void theExamWithIdIsReviewed(String id) {
+        String url = "/api/personal-exam/review";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
+        HttpEntity<PersonalExam> requestEntity = new HttpEntity<>(getTestExecutionContext().getDetails().getPersonalExamToReview(), httpHeaders);
+        ResponseEntity<PersonalExam> responseEntity = doPost(url, requestEntity, PersonalExam.class);
+        getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
 }

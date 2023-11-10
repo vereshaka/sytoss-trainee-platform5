@@ -24,6 +24,8 @@ public class TestProducerDetails {
 
     private String studentUid;
 
+    private PersonalExam personalExamToReview;
+
     @Getter
     @Setter
     private Map<String, String> taskMapping = new HashMap<>();

@@ -68,7 +68,10 @@ public class PersonalExam {
     private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private double summaryGrade;
+    private double teacherGrade;
+
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    private double systemGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
@@ -87,11 +90,13 @@ public class PersonalExam {
     }
 
     public void summary() {
-        summaryGrade = 0;
+        teacherGrade = 0;
+        systemGrade = 0;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
-                summaryGrade += answer.getTeacherGrade().getValue();
+                systemGrade += answer.getGrade().getValue();
+                teacherGrade += answer.getTeacherGrade().getValue();
             }
         });
     }
@@ -159,6 +164,6 @@ public class PersonalExam {
     public static class Public {
     }
 
-    public static class TeacherOnly extends Public{
+    public static class TeacherOnly extends Public {
     }
 }

@@ -151,7 +151,7 @@ public class PersonalExamService extends AbstractService {
         return personalExamConnector.getById(personalExamId);
     }
 
-    public List<PersonalExam> getAllByExamId(Long examAssigneeId) {
+    public List<PersonalExam> getAllByExamAssigneeId(Long examAssigneeId) {
         return personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
     }
 
@@ -195,6 +195,7 @@ public class PersonalExamService extends AbstractService {
         );
 
         personalExam.review();
+        personalExam.summary();
         return personalExamConnector.save(personalExam);
     }
 
@@ -394,7 +395,7 @@ public class PersonalExamService extends AbstractService {
             personalExamReportModel.setEmail(personalExam.getStudent().getEmail());
             personalExamReportModel.setStudentId(personalExam.getStudent().getId());
             personalExamReportModel.setStudentName(personalExam.getStudent().getLastName() + " " + personalExam.getStudent().getFirstName());
-            personalExamReportModel.setSummary(personalExam.getSummaryGrade());
+            personalExamReportModel.setSummary(personalExam.getTeacherGrade());
             personalExamReportModel.setAnswers(answerReportModels);
             personalExamReportModel.setGroupName(personalExam.getStudent().getPrimaryGroup().getName());
             personalExamReportModel.setPersonalExamStatus(personalExam.getStatus());

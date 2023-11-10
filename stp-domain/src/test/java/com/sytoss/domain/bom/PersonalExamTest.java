@@ -16,7 +16,7 @@ public class PersonalExamTest {
 
         personalExam.summary();
 
-        assertEquals(personalExam.getSummaryGrade(), 3.7);
+        assertEquals(personalExam.getTeacherGrade(), 3.7);
     }
 
     private Answer createNewAnswerWithGrade(double value) {
