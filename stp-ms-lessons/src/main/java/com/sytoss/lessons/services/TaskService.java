@@ -205,12 +205,11 @@ public class TaskService {
 
         List<TaskConditionDTO> taskConditionsForUpdate = getTaskConditionsForUpdate(task);
 
-        if(updateTaskDTO.getConditions() != null){
-            for(int i=0; i<updateTaskDTO.getConditions().size(); i++){
+        if (updateTaskDTO.getConditions() != null) {
+            for (int i = 0; i < updateTaskDTO.getConditions().size(); i++) {
                 updateTaskDTO.getConditions().remove(i);
             }
-        }
-        else{
+        } else {
             updateTaskDTO.setConditions(new ArrayList<>());
         }
 
