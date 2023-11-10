@@ -112,7 +112,7 @@ public class DatabaseHelperService {
         QueryResult queryResult = new QueryResult();
         ResultSet resultSet;
         try (Statement statement = getConnection().createStatement()) {
-            if(!query.toLowerCase().startsWith("select")){
+            if(query!=null && !query.toLowerCase().startsWith("select")){
                 int result = statement.executeUpdate(query);
                 queryResult.setAffectedRowsCount(result);
                 resultSet = statement.executeQuery(checkAnswer);
