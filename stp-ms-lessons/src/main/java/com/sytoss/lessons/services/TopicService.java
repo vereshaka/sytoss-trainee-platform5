@@ -29,7 +29,7 @@ public class TopicService {
     private final DisciplineService disciplineService;
 
     public List<Topic> findByDiscipline(Long disciplineId) {
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineIdOrderByName(disciplineId);
         List<Topic> topicList = new ArrayList<>();
         for (TopicDTO topicDTO : topicDTOList) {
             Topic topic = new Topic();

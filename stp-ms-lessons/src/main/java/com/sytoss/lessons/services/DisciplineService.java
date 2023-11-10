@@ -236,7 +236,7 @@ public class DisciplineService extends AbstractService {
 
         taskDomainConnector.deleteAll(taskDomainDTOList);
 
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineIdOrderByName(disciplineId);
         topicConnector.deleteAll(topicDTOList);
 
         disciplineConnector.deleteById(disciplineId);

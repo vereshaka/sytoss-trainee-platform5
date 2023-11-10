@@ -44,7 +44,7 @@ public class TopicServiceTest extends StpUnitTest {
         topics.add(createTopicWithDiscipline("topic first"));
         topics.add(createTopicWithDiscipline("topic second"));
         topics.add(createTopicWithDiscipline("topic third"));
-        when(topicConnector.findByDisciplineId(any())).thenReturn(topics);
+        when(topicConnector.findByDisciplineIdOrderByName(any())).thenReturn(topics);
         List<Topic> topicAnswer = topicService.findByDiscipline(1L);
         assertEquals(3, topicAnswer.size());
     }
