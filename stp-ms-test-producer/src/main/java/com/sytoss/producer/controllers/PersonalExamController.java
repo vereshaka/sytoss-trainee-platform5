@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.producer.bom.AnswersModel;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,8 +94,8 @@ public class PersonalExamController {
     public QueryResult checkCurrentAnswer(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
-            @RequestBody String taskAnswer) {
-        return answerService.checkCurrentAnswer(personalExamId, taskAnswer);
+            @RequestBody AnswersModel answersModel) {
+        return answerService.checkCurrentAnswer(personalExamId, answersModel.getTaskAnswer(), answersModel.getCheckAnswer());
     }
 
     @Operation(description = "Method for answering tasks")
@@ -107,8 +108,8 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
-            @RequestBody String taskAnswer) {
-        return answerService.checkByAnswerId(personalExamId, taskAnswer, answerId);
+            @RequestBody AnswersModel answersModel) {
+        return answerService.checkByAnswerId(personalExamId, answersModel.getTaskAnswer(), answerId, answersModel.getCheckAnswer());
     }
 
     @Operation(description = "Method returns image of db structure for task")
@@ -278,5 +279,19 @@ public class PersonalExamController {
     @PostMapping("/task/update")
     public List<PersonalExam> updateTask(@RequestBody Task task) {
         return personalExamService.updateTask(task);
+    }
+
+
+    @Operation(description = "Method for making user screenshot")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/{personalExamId}/screenshot")
+    public void makeUserScreenshot(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable(value = "personalExamId") String personalExamId,
+            @RequestBody String capture
+    ) {
+        personalExamService.makeScreenshot(capture, personalExamId);
     }
 }

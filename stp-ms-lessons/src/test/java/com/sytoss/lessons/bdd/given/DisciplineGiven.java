@@ -8,7 +8,6 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +37,7 @@ public class DisciplineGiven extends AbstractGiven {
         getTestExecutionContext().registerId(disciplineId, discipline.getId());
 
         List<String> topics = new ArrayList<>();
-        List<TopicDTO> existTopics = getTopicConnector().findByDisciplineId(discipline.getId());
+        List<TopicDTO> existTopics = getTopicConnector().findByDisciplineIdOrderByName(discipline.getId());
 
         for (int i = 1; i < topicsData.height(); i++) {
             String topicKey = topicsData.row(i).get(0).trim();

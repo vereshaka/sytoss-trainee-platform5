@@ -13,19 +13,22 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
 import com.sytoss.producer.writers.GroupExcelBuilder;
+import com.sytoss.producer.bom.ScreenshotModel;
+import com.sytoss.producer.connectors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +50,13 @@ public class PersonalExamService extends AbstractService {
     private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
 
     private final AnswerGenerator answerGenerator;
+
+    private final UserConnector userConnector;
+
+    private final ScreenshotConnector screenshotConnector;
+
+    @Value("${image-provider.image-folder}")
+    private String imageUrl;
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
@@ -132,6 +142,7 @@ public class PersonalExamService extends AbstractService {
         firstTask.setExam(examModel);
         TaskModel taskModel = new TaskModel();
         taskModel.setQuestionNumber(1);
+        taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
         return firstTask;
     }
@@ -416,4 +427,38 @@ public class PersonalExamService extends AbstractService {
         return personalExams;
     }
 
+
+    public void makeScreenshot(String pictureCode, String personalExamId){
+        //pictureCode = pictureCode.substring(16);
+        ScreenshotModel screenshotModel = new ScreenshotModel();
+        Date currentDate = new Date();
+
+       // Long userId = userConnector.getByUid(getCurrentUser().getUid()).getId();
+        Long userId = getCurrentUser().getId();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyddMMhh24mmss");
+        String formattedDate = simpleDateFormat.format(currentDate);
+        String imageName = personalExamId+"-"+userId+"-"+formattedDate+".jpg";
+
+        byte[] picture = Base64.getMimeDecoder().decode(pictureCode);
+        byte[] decodedPicture = Arrays.copyOfRange(picture, 15, picture.length);
+
+        try {
+            File imageFile = new File(imageUrl+imageName);
+            FileOutputStream fis = new FileOutputStream(imageFile);
+            fis.write(decodedPicture);
+            fis.flush();
+            fis.close();
+        } catch (Exception e) {
+            throw new ScreenshotCouldNotCreateImageException(e);
+        }
+
+        screenshotModel.setPersonalExamId(personalExamId);
+        screenshotModel.setUserUid(getCurrentUser().getUid());
+        screenshotModel.setUserId(userId);
+        screenshotModel.setEmail(getCurrentUser().getEmail());
+        screenshotModel.setDate(currentDate);
+        screenshotModel.setImageFileName(imageName);
+
+        screenshotConnector.save(screenshotModel);
+    }
 }

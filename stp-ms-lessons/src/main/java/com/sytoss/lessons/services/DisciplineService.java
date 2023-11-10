@@ -120,7 +120,7 @@ public class DisciplineService extends AbstractService {
     }
 
     public List<Task> findTasksByDisciplineId(Long id) {
-        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineId(id);
+        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineIdOrderByCode(id);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : tasks) {
             Task task = new Task();
@@ -236,7 +236,7 @@ public class DisciplineService extends AbstractService {
 
         taskDomainConnector.deleteAll(taskDomainDTOList);
 
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineIdOrderByName(disciplineId);
         topicConnector.deleteAll(topicDTOList);
 
         disciplineConnector.deleteById(disciplineId);

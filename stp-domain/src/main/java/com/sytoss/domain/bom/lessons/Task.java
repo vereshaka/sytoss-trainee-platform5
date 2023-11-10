@@ -21,6 +21,9 @@ public class Task {
     @JsonView({PersonalExam.TeacherOnly.class})
     private String etalonAnswer;
 
+    @JsonView({PersonalExam.TeacherOnly.class})
+    private String checkAnswer;
+
     private TaskDomain taskDomain;
 
     private List<Topic> topics = new ArrayList<>();

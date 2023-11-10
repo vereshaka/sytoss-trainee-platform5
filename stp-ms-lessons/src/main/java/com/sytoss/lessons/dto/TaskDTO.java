@@ -48,4 +48,7 @@ public class TaskDTO extends Auditable {
 
     @Column(name = "CREATE_DATE")
     private Date createDate;
+
+    @Column(name = "CHECK_ANSWER")
+    private String checkAnswer;
 }

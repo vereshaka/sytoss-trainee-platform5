@@ -18,7 +18,6 @@ import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -178,18 +177,31 @@ public class TaskServiceTest extends StpUnitTest {
 
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setId(1L);
+        taskDTO.setCode("1");
         taskDTO.setQuestion("Question");
         taskDTO.setEtalonAnswer("Answer");
         taskDTO.setCoef(2.0);
         taskDTO.setTaskDomain(taskDomainDTO);
         taskDTO.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsId(anyLong())).thenReturn(List.of(taskDTO));
+        TaskDTO taskDTO2 = new TaskDTO();
+        taskDTO2.setId(2L);
+        taskDTO2.setCode("2");
+        taskDTO2.setQuestion("Question");
+        taskDTO2.setEtalonAnswer("Answer");
+        taskDTO2.setCoef(2.0);
+        taskDTO2.setTaskDomain(taskDomainDTO);
+        taskDTO2.setTopics(List.of(topicDTO));
+
+        when(taskConnector.findByTopicsIdOrderByCode(anyLong())).thenReturn(List.of(taskDTO,taskDTO2));
 
         List<Task> result = taskService.findByTopicId(1L);
+        Assertions.assertEquals(2,result.size());
         Assertions.assertEquals(1L, result.get(0).getId());
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
+        Assertions.assertEquals("1", result.get(0).getCode());
+        Assertions.assertEquals("2", result.get(1).getCode());
         Assertions.assertEquals(TaskDomain.class, result.get(0).getTaskDomain().getClass());
     }
 

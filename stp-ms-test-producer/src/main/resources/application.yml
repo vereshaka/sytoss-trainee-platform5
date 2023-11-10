@@ -11,7 +11,9 @@ spring:
           jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
 check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api/}
 lessons-url: ${LESSONS_URI:http://localhost:9101/api/}
-image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9104/api/}
+image-provider:
+  url: ${IMAGE_PROVIDER_URL:http://localhost:9104/api/}
+  image-folder: ${IMAGE_FOLDER:D:/sytoss-trainee-platform7/stp-ms-test-producer/src/main/resources/screenshots/}
 users-url: ${USER_URI:http://localhost:9102/api}
 logging:
   level:

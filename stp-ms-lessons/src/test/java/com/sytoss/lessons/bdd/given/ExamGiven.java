@@ -11,10 +11,8 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public class ExamGiven extends LessonsIntegrationTest {
@@ -29,7 +27,7 @@ public class ExamGiven extends LessonsIntegrationTest {
 
     @Given("^this discipline with id (.*) has exams$")
     public void examExists(String disciplineId,DataTable exams) {
-        List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(el -> new ExamView(el)).toList();
+        List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(ExamView::new).toList();
         for (ExamView item : examList) {
             ExamDTO dto = new ExamDTO();
             dto.setName(item.getName());
@@ -38,8 +36,8 @@ public class ExamGiven extends LessonsIntegrationTest {
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             Long id = (Long) getTestExecutionContext().replaceId(disciplineId);
             dto.setDiscipline(getDisciplineConnector().getReferenceById(id));
-            dto.setTopics(getTopicConnector().findByDisciplineId(id));
-            List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(el -> el.trim()).toList();
+            dto.setTopics(getTopicConnector().findByDisciplineIdOrderByName(id));
+            List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(String::trim).toList();
             for (String taskId : taskIds) {
                 id = (Long) getTestExecutionContext().replaceId(taskId);
                 dto.getTasks().add(getTaskConnector().getReferenceById(id));
@@ -74,14 +72,14 @@ public class ExamGiven extends LessonsIntegrationTest {
 
     @Given("^this discipline has exams$")
     public void examExists(DataTable exams) {
-        List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(el -> new ExamView(el)).toList();
+        List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(ExamView::new).toList();
         for (ExamView item : examList) {
             ExamDTO dto = new ExamDTO();
             dto.setName(item.getName());
             dto.setMaxGrade(Integer.valueOf(item.getMaxGrade()));
             dto.setTasks(new ArrayList<>());
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
-            List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(el -> el.trim()).toList();
+            List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(String::trim).toList();
             for (String taskId : taskIds) {
                 Long id = (Long)getTestExecutionContext().replaceId(taskId);
                 dto.getTasks().add(getTaskConnector().getReferenceById(id));

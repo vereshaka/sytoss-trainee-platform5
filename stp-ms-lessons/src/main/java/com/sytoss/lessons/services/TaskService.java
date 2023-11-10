@@ -115,7 +115,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -157,6 +157,7 @@ public class TaskService {
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
             checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setCheckAnswer(taskDomainRequestParameters.getCheckAnswer());
             checkRequestParameters.setScript(liquibaseScript);
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
@@ -198,6 +199,10 @@ public class TaskService {
             updateTaskDTO.setCode(task.getCode());
         }
 
+        if (Objects.nonNull(task.getCheckAnswer())) {
+            updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
+        }
+
         List<TaskConditionDTO> taskConditionsForUpdate = getTaskConditionsForUpdate(task);
 
         if(updateTaskDTO.getConditions() != null){
@@ -210,6 +215,8 @@ public class TaskService {
         }
 
         updateTaskDTO.getConditions().addAll(taskConditionsForUpdate);
+
+        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
@@ -242,8 +249,11 @@ public class TaskService {
 
         List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
 
-        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
-        idForDelete.forEach(conditionService::deleteById);
+        for (TaskCondition oldTaskCondition : oldTaskConditions) {
+            TaskConditionDTO oldTaskConditionDTO = new TaskConditionDTO();
+            taskConditionConvertor.toDTO(oldTaskCondition, oldTaskConditionDTO);
+            conditionService.delete(oldTaskConditionDTO);
+        }
 
         for (TaskCondition taskCondition : newTaskConditions) {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
@@ -284,7 +294,7 @@ public class TaskService {
         try {
             TopicDTO topicDTO = topicConnector.getReferenceById(topicId);
 
-            List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
             taskDTOList.forEach(taskDTO -> {
                 taskDTO.getTopics().remove(topicDTO);
                 taskConnector.save(taskDTO);

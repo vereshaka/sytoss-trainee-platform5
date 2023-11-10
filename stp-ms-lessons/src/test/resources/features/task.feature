@@ -32,21 +32,21 @@ Feature: Task
       | topicId | topicName |
       | *5      | Join      |
     And topic with id *2 contains the following tasks:
-      | taskName            |
-      | What is Join?       |
-      | What is Inner Join? |
+      | taskName            | code |
+      | What is Join?       | 2    |
+      | What is Inner Join? | 1    |
     And topic with id *3 contains the following tasks:
-      | taskName      |
-      | What is Join? |
+      | taskName      | code |
+      | What is Join? | 2    |
     And topic with id *5 contains the following tasks:
-      | taskName      |
-      | What is Join? |
+      | taskName      | code |
+      | What is Join? | 2    |
     When retrieve information about tasks of topic with id *2
     Then operation is successful
     And tasks of topic with id *2 should be received
-      | discipline | topic | task                |
-      | SQL        | Join  | What is Join?       |
-      | SQL        | Join  | What is Inner Join? |
+      | discipline | topic | task                | code |
+      | SQL        | Join  | What is Inner Join? | 1    |
+      | SQL        | Join  | What is Join?       | 2    |
 
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
