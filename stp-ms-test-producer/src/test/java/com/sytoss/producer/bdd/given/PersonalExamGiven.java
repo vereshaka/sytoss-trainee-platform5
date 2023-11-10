@@ -135,6 +135,6 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         }
         personalExam.setAnswers(answers);
 
-        getTestExecutionContext().getDetails().setPersonalExamToReview(personalExam);
+        getTestExecutionContext().getDetails().setPersonalExam(personalExam);
     }
 }

@@ -24,8 +24,6 @@ public class TestProducerDetails {
 
     private String studentUid;
 
-    private PersonalExam personalExamToReview;
-
     private PersonalExam personalExam;
     @Getter
     @Setter
