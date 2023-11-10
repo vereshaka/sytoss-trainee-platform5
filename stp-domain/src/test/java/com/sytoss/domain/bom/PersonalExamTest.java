@@ -27,6 +27,7 @@ public class PersonalExamTest {
         answer.setGrade(grade);
         answer.setTeacherGrade(grade);
         answer.setStatus(AnswerStatus.GRADED);
+        answer.setTimeSpent(1L);
 
         return answer;
     }
