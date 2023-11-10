@@ -99,7 +99,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         verify(personalExamConnector).getById("12345");
         Assertions.assertEquals("12345", returnPersonalExam.getId());
-        Assertions.assertEquals(3, returnPersonalExam.getTeacherGrade());
+        Assertions.assertEquals(3, returnPersonalExam.getSummaryGrade());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         verify(personalExamConnector).getById("12345");
         Assertions.assertEquals("12345", returnPersonalExam.getId());
-        Assertions.assertEquals(2, returnPersonalExam.getTeacherGrade());
+        Assertions.assertEquals(2, returnPersonalExam.getSummaryGrade());
     }
 
     @Test
@@ -411,6 +411,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Assertions.assertEquals(1, personalExams.size());
         Assertions.assertEquals(2, personalExams.get(0).getAnswers().size());
         Assertions.assertEquals(2.0, personalExams.get(0).getSystemGrade());
-        Assertions.assertEquals(4.0, personalExams.get(0).getTeacherGrade());
+        Assertions.assertEquals(4.0, personalExams.get(0).getSummaryGrade());
     }
 }

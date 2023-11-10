@@ -71,7 +71,7 @@ public class PersonalExam {
     private PersonalExamStatus status = PersonalExamStatus.NOT_STARTED;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
-    private double teacherGrade;
+    private double summaryGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double systemGrade;
@@ -93,14 +93,14 @@ public class PersonalExam {
     }
 
     public void summary() {
-        teacherGrade = 0;
+        summaryGrade = 0;
         systemGrade = 0;
         spentTime = 0L;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
                 systemGrade += answer.getGrade().getValue();
-                teacherGrade += answer.getTeacherGrade().getValue();
+                summaryGrade += answer.getTeacherGrade().getValue();
                 spentTime += answer.getTimeSpent();
             }
         });

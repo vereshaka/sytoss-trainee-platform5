@@ -41,7 +41,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
     @Then("^teacher grade should be (.*)$")
     public void summaryGrade(Double summaryGrade) throws JsonProcessingException {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
-        assertEquals(summaryGrade, personalExam.getTeacherGrade());
+        assertEquals(summaryGrade, personalExam.getSummaryGrade());
     }
 
     @Then("^operation should finish with (.*) error$")
