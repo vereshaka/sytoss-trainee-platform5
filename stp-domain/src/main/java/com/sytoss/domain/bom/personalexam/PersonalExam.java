@@ -100,6 +100,9 @@ public class PersonalExam {
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
                 systemGrade += answer.getGrade().getValue();
+                if(answer.getTeacherGrade()==null){
+                    answer.setTeacherGrade(new Grade());
+                }
                 summaryGrade += answer.getTeacherGrade().getValue();
                 spentTime += answer.getTimeSpent();
             }

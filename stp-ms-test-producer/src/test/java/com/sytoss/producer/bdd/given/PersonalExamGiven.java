@@ -59,6 +59,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         long i=0;
         for(Answer answer : answers){
             answer.setId(i++);
+            answer.setTeacherGrade(answer.getGrade());
+            answer.setTimeSpent(1L);
         }
        // answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
 
