@@ -20,6 +20,8 @@ public class TestProducerDetails {
 
     private ResponseEntity<PersonalExam> personalExamResponse;
 
+    private ResponseEntity<Double> ratingsResponse;
+
     private Long studentId;
 
     private String studentUid;

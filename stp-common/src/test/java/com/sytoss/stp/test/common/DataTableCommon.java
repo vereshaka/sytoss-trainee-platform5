@@ -75,6 +75,38 @@ public class DataTableCommon {
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
         personalExam.getAnswers().add(answer);
+
+        String studentId = entry.get("studentId");
+        if (studentId != null) {
+            Student student = new Student();
+            student.setId(Long.parseLong(studentId));
+            student.setUid(studentId);
+
+            String groupId = entry.get("groupId");
+            if (groupId != null) {
+                Group group = new Group();
+                group.setId(Long.parseLong(groupId));
+                student.setPrimaryGroup(group);
+            }
+            personalExam.setStudent(student);
+        }
+
+        String status = entry.get("status");
+        if (status != null) {
+            if (status.equals("FINISHED")) {
+                personalExam.finish();
+            } else if (status.equals("REVIEWED")) {
+                personalExam.summary();
+                personalExam.finish();
+            }
+        }
+
+        String grade = entry.get("grade");
+        if (grade != null) {
+            Double summaryGrade = Double.parseDouble(grade);
+            personalExam.setSummaryGrade(summaryGrade);
+        }
+
         return personalExam;
     }
 
