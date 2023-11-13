@@ -10,11 +10,9 @@ import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -127,11 +125,11 @@ public class TaskGiven extends LessonsIntegrationTest {
             statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER) " +
                     "VALUES(" + taskId + ", " + getTestExecutionContext().getDetails().getTaskDomainId() +
                     ", 'Generic Question#" + taskId + "', 'Generic Answer')");
-            while(true){
+            while (true) {
                 ResultSet rs = statement.executeQuery("select TASK_SEQ.nextVal from Dual");
                 rs.next();
                 int id = rs.getInt(1);
-                if(id>=taskId + 5){
+                if (id >= taskId + 5) {
                     break;
                 }
             }

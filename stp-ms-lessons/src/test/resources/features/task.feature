@@ -89,3 +89,12 @@ Feature: Task
     When delete task
     Then operation is successful
     And should return task with "What are the different subsets of SQL?" question
+
+  Scenario: Update information about task
+    Given task with question "What are the different subsets of SQL?" exists
+    And task with question "What are the different subsets of SQL?" has condition "Join" with type CONTAINS
+    When teacher updates this task with question "What are the different subsets of SQL?" question to "What are the different subsets of Mongo?"
+    Then operation is successful
+    And should return task with "What are the different subsets of Mongo?" question
+
+

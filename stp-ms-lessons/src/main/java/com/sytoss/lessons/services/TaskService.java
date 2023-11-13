@@ -203,6 +203,18 @@ public class TaskService {
             updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
         }
 
+        List<TaskConditionDTO> taskConditionsForUpdate = getTaskConditionsForUpdate(task);
+
+        if (updateTaskDTO.getConditions() != null) {
+            for (int i = 0; i < updateTaskDTO.getConditions().size(); i++) {
+                updateTaskDTO.getConditions().remove(i);
+            }
+        } else {
+            updateTaskDTO.setConditions(new ArrayList<>());
+        }
+
+        updateTaskDTO.getConditions().addAll(taskConditionsForUpdate);
+
         updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
@@ -236,20 +248,11 @@ public class TaskService {
 
         List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
 
-        //   List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
-
         for (TaskCondition oldTaskCondition : oldTaskConditions) {
             TaskConditionDTO oldTaskConditionDTO = new TaskConditionDTO();
             taskConditionConvertor.toDTO(oldTaskCondition, oldTaskConditionDTO);
             conditionService.delete(oldTaskConditionDTO);
         }
-      /*
-        for(TaskCondition taskCondition : task.getTaskConditions()){
-            if(idForDelete.contains(taskCondition.getId())){
-                task.getTaskConditions().remove(taskCondition);
-            }
-        }*/
-        // idForDelete.forEach(conditionService::delete);
 
         for (TaskCondition taskCondition : newTaskConditions) {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
