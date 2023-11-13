@@ -15,7 +15,20 @@ public class RatingsWhen extends TestProducerIntegrationTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
 
-        String url = "/api/ratings/average/estimate/" + groupId;
+        String url = "/api/ratings/average/estimate/" + groupId+"/group";
+
+        HttpEntity<?> request = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Double> responseEntity = doGet(url, request, Double.class);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+        getTestExecutionContext().getDetails().setRatingsResponse(responseEntity);
+    }
+
+    @When("^teacher gets average estimate for the flow (.*)$")
+    public void teacherGetsAverageEstimateForTheFlow(Long disciplineId) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
+
+        String url = "/api/ratings/average/estimate/" + disciplineId+"/discipline";
 
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
         ResponseEntity<Double> responseEntity = doGet(url, request, Double.class);

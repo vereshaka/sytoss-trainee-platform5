@@ -107,6 +107,13 @@ public class DataTableCommon {
             personalExam.setSummaryGrade(summaryGrade);
         }
 
+        String disciplineId = entry.get("disciplineId");
+        if (disciplineId != null) {
+            Discipline discipline = new Discipline();
+            discipline.setId(Long.parseLong(disciplineId));
+            personalExam.setDiscipline(discipline);
+        }
+
         return personalExam;
     }
 

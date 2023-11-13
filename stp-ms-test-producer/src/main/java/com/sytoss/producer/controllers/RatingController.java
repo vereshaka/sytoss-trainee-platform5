@@ -24,9 +24,18 @@ public class RatingController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/average/estimate/{groupId}")
-    public Double getAverageEstimation(@PathVariable Long groupId) {
-        return ratingsService.getAverageEstimation(groupId);
+    @GetMapping("/average/estimate/{groupId}/group")
+    public Double getAverageEstimationForGroup(@PathVariable Long groupId) {
+        return ratingsService.getAverageEstimationForGroup(groupId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that get average estimate for the flow")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/average/estimate/{disciplineId}/discipline")
+    public Double getAverageEstimationForDiscipline(@PathVariable Long disciplineId) {
+        return ratingsService.getAverageEstimationForDiscipline(disciplineId);
+    }
 }
