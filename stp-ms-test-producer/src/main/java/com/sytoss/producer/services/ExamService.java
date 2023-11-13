@@ -15,6 +15,6 @@ public class ExamService extends AbstractService {
     private PersonalExamService personalExamService;
 
     public List<PersonalExam> getPersonalExams(Long examId) {
-        return personalExamService.getAllByExamId(examId);
+        return personalExamService.getAllByExamAssigneeId(examId);
     }
 }

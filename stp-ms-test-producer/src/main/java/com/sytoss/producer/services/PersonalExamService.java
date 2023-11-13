@@ -151,7 +151,7 @@ public class PersonalExamService extends AbstractService {
         return personalExamConnector.getById(personalExamId);
     }
 
-    public List<PersonalExam> getAllByExamId(Long examAssigneeId) {
+    public List<PersonalExam> getAllByExamAssigneeId(Long examAssigneeId) {
         return personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
     }
 
@@ -195,6 +195,7 @@ public class PersonalExamService extends AbstractService {
         );
 
         personalExam.review();
+        personalExam.summary();
         return personalExamConnector.save(personalExam);
     }
 

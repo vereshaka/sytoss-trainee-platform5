@@ -74,6 +74,9 @@ public class PersonalExam {
     private double summaryGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    private double systemGrade;
+
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
 
     private double sumOfCoef;
@@ -91,10 +94,12 @@ public class PersonalExam {
 
     public void summary() {
         summaryGrade = 0;
+        systemGrade = 0;
         spentTime = 0L;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
+                systemGrade += answer.getGrade().getValue();
                 summaryGrade += answer.getTeacherGrade().getValue();
                 spentTime += answer.getTimeSpent();
             }
@@ -164,6 +169,6 @@ public class PersonalExam {
     public static class Public {
     }
 
-    public static class TeacherOnly extends Public{
+    public static class TeacherOnly extends Public {
     }
 }

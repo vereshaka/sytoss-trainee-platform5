@@ -2,6 +2,7 @@ Feature: PersonalExam
 
   Background:
     Given student "John" "Do" with "student@domain.com" email exists
+    And teacher "John" "Teacher" with "sytoss@gmail.com" email exists
 
   Scenario: system create personal exam
     Given tasks exist
@@ -92,3 +93,23 @@ Feature: PersonalExam
     And operation should return 2 personal exams
       | Exam1 |
       | Exam2 |
+
+  Scenario: teacher gets system and teacher grade
+    Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023
+      | listOfSubjects | taskId | question                    | answer                    | task status | grade |
+      | DML            | 1      | get all from tasks table    | SELECT * FROM tasks       | GRADED      | 1     |
+      | DDl            | 2      | get all from students table | SELECT * FROM students    | GRADED      | 1     |
+      | DQL            | 3      | get all from tests table    | SELECT * FROM programmers | GRADED      | 0     |
+      | DDl            | 4      | get all from houses table   | SELECT * FROM trees       | GRADED      | 0     |
+      | DML            | 5      | get all from orders table   | SELECT * FROM orders      | GRADED      | 1     |
+    And this teacher review personal exam with id 123abc123 and exam name "SQL exam" with such grades
+      | taskId | teacherGrade |
+      | 1      | 2            |
+      | 2      | 2            |
+      | 3      | 0            |
+      | 4      | 0            |
+      | 5      | 2            |
+    When the exam with id 123abc123 is reviewed
+    Then operation is successful
+    And system grade should be 3
+    And teacher grade should be 6
