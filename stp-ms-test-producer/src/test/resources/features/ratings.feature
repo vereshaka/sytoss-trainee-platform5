@@ -1,4 +1,4 @@
-Feature: Answer
+Feature: Ratings
 
   Background:
     Given teacher "John" "Teacher" with "sytoss@gmail.com" email exists
