@@ -395,6 +395,7 @@ public class PersonalExamService extends AbstractService {
             personalExamReportModel.setStudentId(personalExam.getStudent().getId());
             personalExamReportModel.setStudentName(personalExam.getStudent().getLastName() + " " + personalExam.getStudent().getFirstName());
             personalExamReportModel.setSummary(personalExam.getSummaryGrade());
+            personalExamReportModel.setSpentTime(personalExam.getSpentTime());
             personalExamReportModel.setAnswers(answerReportModels);
             personalExamReportModel.setGroupName(personalExam.getStudent().getPrimaryGroup().getName());
             personalExamReportModel.setPersonalExamStatus(personalExam.getStatus());

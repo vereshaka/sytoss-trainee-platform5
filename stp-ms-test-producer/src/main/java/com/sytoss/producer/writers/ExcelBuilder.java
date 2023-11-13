@@ -27,6 +27,10 @@ import java.util.Optional;
 @Scope("prototype")
 public class ExcelBuilder extends BaseExcelWriter {
 
+    private static final String MINUTES = "min";
+    private static final String SECONDS = "s";
+    private static final String FORMATTED_DATE_DELIMITER = " ";
+
     private final Integer labelStartIndex = 0;
 
     private final Integer tableStartIndex = 7;
@@ -35,7 +39,7 @@ public class ExcelBuilder extends BaseExcelWriter {
 
     private final String sheetName = "Exam result";
 
-    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary");
+    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary", "Total Answer Time");
 
     public Workbook createExcelReportByExamAssignee(
             ExamReportModel examReportModel, List<PersonalExamReportModel> personalExams
@@ -120,9 +124,35 @@ public class ExcelBuilder extends BaseExcelWriter {
             sheet.autoSizeColumn(tableValueStartIndex++);
             writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getEmail());
             sheet.autoSizeColumn(tableValueStartIndex++);
-            writeCell(contentRow, tableValueStartIndex++, getValue(), personalExam.getSummary());
+            writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getSummary());
+            sheet.autoSizeColumn(tableValueStartIndex++);
+            writeCell(contentRow, tableValueStartIndex++, getValue(), formatSeconds(personalExam.getSpentTime()));
             writePersonalExamGrades(personalExam, tasksInExam, contentRow, sheet);
         }
+    }
+
+    private String formatSeconds(long seconds) {
+        if (seconds == 0) {
+            return 0 + SECONDS;
+        }
+
+        long minutes = seconds / 60;
+        long remainingSeconds = seconds % 60;
+        StringBuilder result = new StringBuilder();
+
+        if (minutes != 0) {
+            result.append(minutes).append(MINUTES);
+        }
+
+        if (remainingSeconds != 0) {
+            if (minutes != 0) {
+                result.append(FORMATTED_DATE_DELIMITER);
+            }
+
+            result.append(remainingSeconds).append(SECONDS);
+        }
+
+        return result.toString();
     }
 
     private void writePersonalExamGrades(
@@ -135,7 +165,7 @@ public class ExcelBuilder extends BaseExcelWriter {
             for (TaskReportModel task : tasksInExam) {
                 Optional<AnswerReportModel> findAnswer = personalExam.getAnswers().stream().filter(answer -> Objects.equals(answer.getTask().getId(), task.getId())).findFirst();
                 if (findAnswer.isPresent() && findAnswer.get().getAnswerStatus() == AnswerStatus.GRADED) {
-                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
+                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + SECONDS);
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
 
                     if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "") && !Objects.equals(findAnswer.get().getSystemGrade().getComment(), "ok")) {
