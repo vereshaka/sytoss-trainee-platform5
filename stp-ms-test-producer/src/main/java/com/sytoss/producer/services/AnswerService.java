@@ -79,6 +79,9 @@ public class AnswerService extends AbstractService {
         TaskDomain taskDomain = task.getTaskDomain();
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest(answer.getValue());
+        if (task.getCheckAnswer() != null) {
+            checkTaskParameters.setCheckAnswer(task.getCheckAnswer());
+        }
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setConditions(task.getTaskConditions());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
