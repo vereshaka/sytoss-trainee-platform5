@@ -24,7 +24,7 @@ public class RatingController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("{examId}/average/estimate/{groupId}")
+    @GetMapping("/{examId}/average/estimate/{groupId}")
     public Double getAverageEstimation(@PathVariable Long examId,
                                        @PathVariable Long groupId) {
         return ratingsService.getAverageEstimation(examId,groupId);

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -20,14 +21,16 @@ public class RatingsService {
 
     public Double getAverageEstimation(Long examId,Long groupId){
         List<ExamAssignee> examAssignees = examAssigneeConnector.getAllExamAssignees(examId);
-        List<PersonalExam> personalExams;
+        List<PersonalExam> personalExams = new ArrayList<>();
         for(ExamAssignee examAssignee : examAssignees){
-            if()
+            List<PersonalExam>personalExamListByExamAssignee = personalExamConnector.getByExamAssigneeId(examAssignee.getId());
+            personalExamListByExamAssignee.forEach(el->{
+                if(!personalExams.stream().map(PersonalExam::getId).toList().contains(el.getId()) && el.getStudent().getId().equals(groupId)
+                && (el.getStatus().equals(PersonalExamStatus.REVIEWED) || el.getStatus().equals(PersonalExamStatus.FINISHED))){
+                    personalExams.add(el);
+                }
+            });
         }
-
-        List<PersonalExam> personalExams = personalExamConnector.getAllByStudent_PrimaryGroup_Id(groupId).stream()
-                .filter(personalExam -> personalExam.getStatus().equals(PersonalExamStatus.FINISHED)
-                        || personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)).toList();
         Double avg = personalExams.stream().map(PersonalExam::getSummaryGrade).reduce(0.0, Double::sum) / personalExams.size();
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return Double.valueOf(decimalFormat.format(avg).replace(",","."));

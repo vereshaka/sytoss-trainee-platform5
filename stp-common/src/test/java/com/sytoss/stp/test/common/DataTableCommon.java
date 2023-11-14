@@ -1,10 +1,8 @@
 package com.sytoss.stp.test.common;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.Grade;
@@ -106,6 +104,12 @@ public class DataTableCommon {
             Double summaryGrade = Double.parseDouble(grade);
             personalExam.setSummaryGrade(summaryGrade);
         }
+
+        String examAssigneeId = entry.get("examAssigneeId");
+        if (examAssigneeId != null) {
+           personalExam.setExamAssigneeId(Long.parseLong(examAssigneeId));
+        }
+
 
         return personalExam;
     }
