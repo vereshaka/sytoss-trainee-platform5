@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
@@ -26,8 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class DisciplineControllerTest extends LessonsControllerTest {
@@ -131,6 +131,15 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         assertEquals(200, result.getStatusCode().value());
     }
 
+    @Test
+    public void shouldFindTaskDomainByDiscipline() {
+        when(taskDomainService.create(anyLong(), any())).thenReturn(new TaskDomain());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<TaskDomain> requestEntity = new HttpEntity<>(new TaskDomain(), httpHeaders);
+        ResponseEntity<TaskDomain> result = doPost("/api/discipline/1/task-domain", requestEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
 
     @Test
     public void shouldLinkGroupToDiscipline() {
@@ -188,6 +197,32 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<Discipline> result = doDelete("/api/discipline/1/delete", requestEntity, Discipline.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldUpdateDiscipline() {
+        when(disciplineService.updateDiscipline(any(Discipline.class))).thenReturn(new Discipline());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("name", "discipline1");
+
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+
+        ResponseEntity<Discipline> result = doPost("/api/discipline/1/update", httpEntity, new ParameterizedTypeReference<>() {
+        });
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnListOfExams() {
+        when(topicService.findByDiscipline(any())).thenReturn(new ArrayList<>());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Exam>> result = doGet("/api/discipline/1/exams", httpEntity, new ParameterizedTypeReference<>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }
