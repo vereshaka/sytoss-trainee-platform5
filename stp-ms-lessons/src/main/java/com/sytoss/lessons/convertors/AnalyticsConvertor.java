@@ -16,6 +16,7 @@ public class AnalyticsConvertor {
         destination.setPersonalExamId(source.getPersonalExamId());
         destination.setGrade(source.getGrade());
         destination.setTimeSpent(source.getTimeSpent());
+        destination.setStartDate(source.getStartDate());
     }
 
     public void toDTO(AnalyticsElement source, AnalyticsElementDTO destination) {
@@ -26,6 +27,7 @@ public class AnalyticsConvertor {
             destination.setPersonalExamId(source.getPersonalExamId());
             destination.setGrade(source.getGrade());
             destination.setTimeSpent(source.getTimeSpent());
+            destination.setStartDate(source.getStartDate());
         }
     }
 }

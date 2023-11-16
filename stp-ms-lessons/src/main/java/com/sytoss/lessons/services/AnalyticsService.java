@@ -123,6 +123,7 @@ public class AnalyticsService extends AbstractService {
             analyticsElement.setPersonalExamId(personalExam.getId());
             analyticsElement.setGrade(personalExam.getSummaryGrade());
             analyticsElement.setTimeSpent(personalExam.getSpentTime());
+            analyticsElement.setStartDate(personalExam.getStartedDate());
             AnalyticsElementDTO analyticsElementDTO = new AnalyticsElementDTO();
             analyticsConvertor.toDTO(analyticsElement, analyticsElementDTO);
             analyticsConnector.save(analyticsElementDTO);

@@ -18,6 +18,7 @@
             <column name="PERSONAL_EXAM_ID" type="TEXT" />
             <column name="GRADE" type="DOUBLE" />
             <column name="TIME_SPENT" type="BIGINT"/>
+            <column name="START_DATE" type="DATE"/>
             <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
             <column name="CREATED_DATE" type="TIMESTAMP" />
             <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />

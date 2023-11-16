@@ -5,6 +5,10 @@ import com.sytoss.lessons.bdd.given.AbstractGiven;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +23,11 @@ public class AnalyticsElementThen extends AbstractGiven {
     }
 
     @Then("analytics elements should be")
-    public void analyticsShouldBe(DataTable dataTable) {
+    public void analyticsShouldBe(DataTable dataTable) throws ParseException {
         List<AnalyticsElement> analyticsElementsFromResponse = (List<AnalyticsElement>) getTestExecutionContext().getResponse().getBody();
         List<Map<String, String>> analyticsMapList = dataTable.asMaps();
         List<AnalyticsElement> analyticsElementList = new ArrayList<>();
-
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
         for (Map<String, String> analyticsMap : analyticsMapList) {
             AnalyticsElement analyticsElement = new AnalyticsElement();
 
@@ -46,6 +50,9 @@ public class AnalyticsElementThen extends AbstractGiven {
             if (analyticsMap.get("timeSpent") != null) {
                 analyticsElement.setTimeSpent(Long.parseLong(analyticsMap.get("timeSpent").trim()));
             }
+            if (analyticsMap.get("startDate") != null) {
+                analyticsElement.setStartDate(sdf.parse(analyticsMap.get("startDate").trim()));
+            }
 
             analyticsElementList.add(analyticsElement);
         }
@@ -58,6 +65,7 @@ public class AnalyticsElementThen extends AbstractGiven {
                 assertEquals(analyticsElementFromFeature.getStudentId(), analyticsElementFromResponse.getStudentId());
                 assertEquals(analyticsElementFromFeature.getPersonalExamId(), analyticsElementFromResponse.getPersonalExamId());
                 assertEquals(analyticsElementFromFeature.getGrade(), analyticsElementFromResponse.getGrade());
+                assertEquals(analyticsElementFromFeature.getStartDate(), analyticsElementFromResponse.getStartDate());
                 analyticsElementsFromResponse.remove(analyticsElementFromResponse);
                 break;
             }

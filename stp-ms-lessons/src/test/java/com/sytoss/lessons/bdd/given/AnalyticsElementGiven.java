@@ -14,7 +14,10 @@ import io.cucumber.java.en.Given;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,11 +26,12 @@ import java.util.Objects;
 public class AnalyticsElementGiven extends AbstractGiven {
 
     @Given("analytics elements exist")
-    public void analyticsElementsExists(DataTable dataTable) {
+    public void analyticsElementsExists(DataTable dataTable) throws ParseException {
         Group group = new Group();
         group.setId(1L);
         getTestExecutionContext().getDetails().setGroupId(List.of(group.getId()));
         List<Map<String, String>> analyticsList = dataTable.asMaps();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
         for (Map<String, String> analytics : analyticsList) {
             String disciplineKey = analytics.get("disciplineId").trim();
             String examKey = analytics.get("examId").trim();
@@ -129,6 +133,10 @@ public class AnalyticsElementGiven extends AbstractGiven {
             String timeSpent = analytics.get("timeSpent");
             if (timeSpent != null) {
                 analyticsElementDTO.setTimeSpent(Long.parseLong(timeSpent));
+            }
+            String startDate = analytics.get("startDate");
+            if (startDate != null) {
+                analyticsElementDTO.setStartDate(sdf.parse(startDate));
             }
             getAnalyticsConnector().save(analyticsElementDTO);
         }

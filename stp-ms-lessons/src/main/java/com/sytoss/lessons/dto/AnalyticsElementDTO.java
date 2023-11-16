@@ -7,6 +7,8 @@ import jakarta.persistence.IdClass;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Entity(name = "ANALYTICS")
@@ -33,4 +35,7 @@ public class AnalyticsElementDTO extends Auditable {
 
     @Column(name = "TIME_SPENT")
     private Long timeSpent;
+
+    @Column(name = "START_DATE")
+    private Date startDate;
 }

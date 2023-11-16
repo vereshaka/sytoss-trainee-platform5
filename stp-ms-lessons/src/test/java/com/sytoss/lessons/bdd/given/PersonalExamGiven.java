@@ -13,7 +13,11 @@ import com.sytoss.lessons.dto.TaskDomainDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +26,10 @@ import static org.mockito.Mockito.when;
 public class PersonalExamGiven extends LessonsIntegrationTest {
 
     @Given("^personal exams for migration exist$")
-    public void personalExamsForMigrationExist(DataTable dataTable) {
+    public void personalExamsForMigrationExist(DataTable dataTable) throws ParseException {
         List<Student> students = new ArrayList<>();
         Group group = new Group();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
         if (getTestExecutionContext().getDetails().getGroupId() == null) {
             group.setId(1L);
         } else {
@@ -51,6 +56,11 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
 
             if (personalExamMap.get("summaryGrade") != null) {
                 personalExam.setSummaryGrade(Double.parseDouble(personalExamMap.get("summaryGrade").trim()));
+            }
+
+            String startDate = personalExamMap.get("startDate");
+            if (startDate != null) {
+                personalExam.setStartedDate(sdf.parse(startDate));
             }
 
             personalExams.add(personalExam);
