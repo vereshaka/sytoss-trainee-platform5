@@ -1,15 +1,15 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.lessons.Rating;
-import com.sytoss.lessons.dto.RatingDTO;
+import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.lessons.dto.AnalyticsElementDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RatingConvertor {
+public class AnalyticsConvertor {
 
-    public void fromDTO(RatingDTO source, Rating destination) {
+    public void fromDTO(AnalyticsElementDTO source, AnalyticsElement destination) {
         destination.setDisciplineId(source.getDisciplineId());
         destination.setExamId(source.getExamId());
         destination.setStudentId(source.getStudentId());
@@ -18,7 +18,7 @@ public class RatingConvertor {
         destination.setTimeSpent(source.getTimeSpent());
     }
 
-    public void toDTO(Rating source, RatingDTO destination) {
+    public void toDTO(AnalyticsElement source, AnalyticsElementDTO destination) {
         if (source != null) {
             destination.setDisciplineId(source.getDisciplineId());
             destination.setExamId(source.getExamId());

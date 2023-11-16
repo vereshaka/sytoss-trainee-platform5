@@ -9,9 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "RATING")
-@IdClass(RatingId.class)
-public class RatingDTO extends Auditable {
+@Entity(name = "ANALYTICS")
+@IdClass(AnalyticsElementId.class)
+public class AnalyticsElementDTO extends Auditable {
 
     @Id
     @Column(name = "DISCIPLINE_ID")

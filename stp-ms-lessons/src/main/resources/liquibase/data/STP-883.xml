@@ -2,10 +2,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
-                   logicalFilePath="data/rating.xml">
+                   logicalFilePath="data/STP-883.xml">
 
-    <changeSet author="IvanL" id="rating_1">
-        <createTable tableName="RATING">
+    <changeSet author="IvanL" id="analytics_1">
+        <createTable tableName="ANALYTICS">
             <column name="DISCIPLINE_ID" type="BIGINT" >
                 <constraints nullable="false" />
             </column>
@@ -29,35 +29,28 @@
         </rollback>
     </changeSet>
 
-    <changeSet author="IvanL" id="rating_2">
-        <addPrimaryKey tableName="RATING" columnNames="DISCIPLINE_ID,EXAM_ID,STUDENT_ID" constraintName="PK_RATING" />
+    <changeSet author="IvanL" id="analytics_2">
+        <addPrimaryKey tableName="ANALYTICS" columnNames="DISCIPLINE_ID,EXAM_ID,STUDENT_ID" constraintName="PK_ANALYTICS" />
         <rollback>
-            <dropPrimaryKey tableName="RATING" constraintName="PK_RATING" />
+            <dropPrimaryKey tableName="ANALYTICS" constraintName="PK_ANALYTICS" />
         </rollback>
     </changeSet>
 
-    <changeSet author="IvanL" id="rating_3">
-        <addForeignKeyConstraint baseTableName="RATING" baseColumnNames="DISCIPLINE_ID"
-                                 constraintName="FK_RATING2DISCIPLINE" referencedTableName="DISCIPLINE"
+    <changeSet author="IvanL" id="analytics_3">
+        <addForeignKeyConstraint baseTableName="ANALYTICS" baseColumnNames="DISCIPLINE_ID"
+                                 constraintName="FK_ANALYTICS2DISCIPLINE" referencedTableName="DISCIPLINE"
                                  referencedColumnNames="ID" />
         <rollback>
-            <dropForeignKeyConstraint baseTableName="RATING" constraintName="FK_RATING2DISCIPLINE" />
+            <dropForeignKeyConstraint baseTableName="ANALYTICS" constraintName="FK_ANALYTICS2DISCIPLINE" />
         </rollback>
     </changeSet>
 
-    <changeSet author="IvanL" id="rating_4">
-        <addForeignKeyConstraint baseTableName="RATING" baseColumnNames="EXAM_ID"
-                                 constraintName="FK_RATING2EXAM" referencedTableName="EXAM"
+    <changeSet author="IvanL" id="analytics_4">
+        <addForeignKeyConstraint baseTableName="ANALYTICS" baseColumnNames="EXAM_ID"
+                                 constraintName="FK_ANALYTICS2EXAM" referencedTableName="EXAM"
                                  referencedColumnNames="ID" />
         <rollback>
-            <dropForeignKeyConstraint baseTableName="RATING" constraintName="FK_RATING2EXAM" />
-        </rollback>
-    </changeSet>
-
-    <changeSet author="IvanL" id="rating_5">
-        <createSequence sequenceName="RATING_SEQ" />
-        <rollback>
-            <dropSequence sequenceName="RATING_SEQ" />
+            <dropForeignKeyConstraint baseTableName="ANALYTICS" constraintName="FK_ANALYTICS2EXAM" />
         </rollback>
     </changeSet>
 </databaseChangeLog>

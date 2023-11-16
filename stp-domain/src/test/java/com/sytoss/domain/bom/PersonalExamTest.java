@@ -1,6 +1,9 @@
 package com.sytoss.domain.bom;
 
-import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.AnswerStatus;
+import com.sytoss.domain.bom.personalexam.Grade;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.sytoss.lessons.controllers;
 
-import com.sytoss.domain.bom.lessons.Rating;
-import com.sytoss.lessons.services.RatingService;
+import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,27 +15,27 @@ import java.util.List;
 @PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/rating")
-@Tag(name = "RatingController")
-public class RatingController {
+@RequestMapping("/api/analytics")
+@Tag(name = "AnalyticsController")
+public class AnalyticsController {
 
-    private final RatingService ratingService;
+    private final AnalyticsService analyticsService;
 
-    @Operation(description = "Method that update information about student's rating")
+    @Operation(description = "Method that update information about student's analytics element")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/update")
-    public Rating updateRating(@RequestBody Rating rating) {
-        return ratingService.updateRating(rating);
+    public AnalyticsElement updateAnalyticsElement(@RequestBody AnalyticsElement analyticsElement) {
+        return analyticsService.updateAnalyticsElement(analyticsElement);
     }
 
-    @Operation(description = "Method that migrate old tests to init ratings")
+    @Operation(description = "Method that migrate old tests to analytics elements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/migrate/{disciplineId}")
-    public List<Rating> migrate(@PathVariable Long disciplineId) {
-        return ratingService.migrate(disciplineId);
+    public List<AnalyticsElement> migrate(@PathVariable Long disciplineId) {
+        return analyticsService.migrate(disciplineId);
     }
 }

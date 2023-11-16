@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingId implements Serializable {
+public class AnalyticsElementId implements Serializable {
     private Long disciplineId;
 
     private Long examId;

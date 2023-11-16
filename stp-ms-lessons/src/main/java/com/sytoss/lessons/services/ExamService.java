@@ -2,10 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.ExamReportModel;
-import com.sytoss.domain.bom.lessons.ScheduleModel;
-import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -60,7 +57,7 @@ public class ExamService extends AbstractService {
 
     private final TaskConnector taskConnector;
 
-    private final RatingService ratingService;
+    private final AnalyticsService analyticsService;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -96,7 +93,7 @@ public class ExamService extends AbstractService {
         examConvertor.fromDTO(result, exam);
 
         List<Student> students = userConnector.getStudentOfGroup(exam.getDiscipline().getId());
-        ratingService.initializeRatingsDTOs(exam.getId(),exam.getDiscipline().getId(),students);
+        analyticsService.initializeAnalyticsElementDTOs(exam.getId(),exam.getDiscipline().getId(),students);
         return exam;
     }
 
@@ -207,6 +204,8 @@ public class ExamService extends AbstractService {
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
         personalExamConnector.deletePersonalExamsByExamAssigneeId(exam.getExamAssignees().stream().map(ExamAssignee::getId).toList());
+        analyticsService.deleteByExamId(examId);
+
 
         ExamDTO dto = examConnector.getReferenceById(examId);
         dto.getExamAssignees().forEach(item -> {

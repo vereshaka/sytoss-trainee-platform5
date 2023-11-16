@@ -84,10 +84,10 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     private ExamAssigneeToConnector examAssigneeToConnector;
 
     @Autowired
-    private RatingConnector ratingConnector;
+    private AnalyticsConnector analyticsConnector;
 
     @Autowired
-    private RatingConvertor ratingConvertor;
+    private AnalyticsConvertor analyticsConvertor;
 
     @Override
     protected LessonsDetails createDetails() {

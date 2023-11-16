@@ -19,8 +19,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         List<Long> groupId = new ArrayList<>();
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
         for(Group group : groups){
-            DisciplineDTO disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setId(group.getDiscipline().getId());
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(group.getDiscipline().getId());
             GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(),disciplineDTO);
             groupReferenceDTOS.add(groupReferenceDTO);
         }
@@ -32,7 +31,7 @@ public class GroupGiven extends LessonsIntegrationTest {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
                 disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
-                getDisciplineConnector().save(disciplineDTO);
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
             }
             GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
             if (result == null) {

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Rating {
+public class AnalyticsElement {
 
     private Long disciplineId;
 

@@ -236,43 +236,43 @@ public class DataTableCommon {
     }
 
     @DataTableType
-    public Rating mapRating(Map<String, String> entry) {
-        Rating rating = new Rating();
+    public AnalyticsElement mapAnalyticsElement(Map<String, String> entry) {
+        AnalyticsElement analyticsElement = new AnalyticsElement();
         String temp = entry.get("disciplineId");
         if(temp!=null){
-            rating.setDisciplineId(Long.parseLong(temp));
+            analyticsElement.setDisciplineId(Long.parseLong(temp));
         }
 
        temp = entry.get("examId");
         if(temp!=null){
-            rating.setExamId(Long.parseLong(temp));
+            analyticsElement.setExamId(Long.parseLong(temp));
         }
 
         temp = entry.get("studentId");
         if(temp!=null){
-            rating.setStudentId(Long.parseLong(temp));
+            analyticsElement.setStudentId(Long.parseLong(temp));
         }
 
         temp = entry.get("personalExamId");
         if(temp!=null){
-            rating.setPersonalExamId(temp);
+            analyticsElement.setPersonalExamId(temp);
         }
 
         temp = entry.get("grade");
         if(temp!=null){
-            rating.setGrade(Double.parseDouble(temp));
+            analyticsElement.setGrade(Double.parseDouble(temp));
         }
 
         temp = entry.get("timeSpent");
         if(temp!=null){
-            rating.setTimeSpent(Long.parseLong(temp));
+            analyticsElement.setTimeSpent(Long.parseLong(temp));
         }
 
         temp = entry.get("examAssigneeId");
         if(temp!=null){
-            rating.setExamAssigneeId(Long.parseLong(temp));
+            analyticsElement.setExamAssigneeId(Long.parseLong(temp));
         }
 
-        return rating;
+        return analyticsElement;
     }
 }

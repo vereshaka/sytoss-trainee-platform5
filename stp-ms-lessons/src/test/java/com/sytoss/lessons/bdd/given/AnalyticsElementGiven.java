@@ -1,10 +1,10 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.lessons.Rating;
+import com.sytoss.domain.bom.lessons.AnalyticsElement;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.RatingDTO;
+import com.sytoss.lessons.dto.AnalyticsElementDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
@@ -20,22 +20,22 @@ import java.util.Map;
 import java.util.Objects;
 
 @Transactional
-public class RatingGiven extends AbstractGiven {
+public class AnalyticsElementGiven extends AbstractGiven {
 
-    @Given("rating exists")
-    public void ratingExists(DataTable dataTable) {
+    @Given("analytics elements exist")
+    public void analyticsElementsExists(DataTable dataTable) {
         Group group = new Group();
         group.setId(1L);
         getTestExecutionContext().getDetails().setGroupId(List.of(group.getId()));
-        List<Map<String, String>> ratingList = dataTable.asMaps();
-        for (Map<String, String> rating : ratingList) {
-            String disciplineKey = rating.get("disciplineId").trim();
-            String examKey = rating.get("examId").trim();
-            String examAssigneeKey = rating.get("examAssigneeId");
+        List<Map<String, String>> analyticsList = dataTable.asMaps();
+        for (Map<String, String> analytics : analyticsList) {
+            String disciplineKey = analytics.get("disciplineId").trim();
+            String examKey = analytics.get("examId").trim();
+            String examAssigneeKey = analytics.get("examAssigneeId");
             if (examAssigneeKey != null) {
                 examAssigneeKey = examAssigneeKey.trim();
             }
-            String personalExamId = rating.get("personalExamId").trim().replace("*", "");
+            String personalExamId = analytics.get("personalExamId").trim().replace("*", "");
             String newDisciplineKey = disciplineKey;
             if (getTestExecutionContext().replaceId(disciplineKey) != null) {
                 newDisciplineKey = getTestExecutionContext().replaceId(disciplineKey).toString();
@@ -90,7 +90,7 @@ public class RatingGiven extends AbstractGiven {
                 examId = (Long) getTestExecutionContext().replaceId(examKey);
             }
 
-            Long studentId = Long.valueOf(rating.get("studentId"));
+            Long studentId = Long.valueOf(analytics.get("studentId"));
 
             if (examAssigneeKey != null) {
                 String newExamAssigneeKey = examAssigneeKey;
@@ -112,56 +112,56 @@ public class RatingGiven extends AbstractGiven {
                 }
             }
 
-            RatingDTO ratingDTO = getRatingConnector().getByDisciplineIdAndExamIdAndStudentId(disciplineId, examId, studentId);
-            if (ratingDTO != null) {
-                getRatingConnector().deleteRatingDTOByDisciplineIdAndStudentId(disciplineId, studentId);
+            AnalyticsElementDTO analyticsElementDTO = getAnalyticsConnector().getByDisciplineIdAndExamIdAndStudentId(disciplineId, examId, studentId);
+            if (analyticsElementDTO != null) {
+                getAnalyticsConnector().deleteAnalyticsElementDTOByDisciplineIdAndStudentId(disciplineId, studentId);
             }
 
-            ratingDTO = new RatingDTO();
-            ratingDTO.setDisciplineId(disciplineId);
-            ratingDTO.setExamId(examId);
-            ratingDTO.setStudentId(studentId);
-            ratingDTO.setPersonalExamId(personalExamId);
-            String grade = rating.get("grade");
+            analyticsElementDTO = new AnalyticsElementDTO();
+            analyticsElementDTO.setDisciplineId(disciplineId);
+            analyticsElementDTO.setExamId(examId);
+            analyticsElementDTO.setStudentId(studentId);
+            analyticsElementDTO.setPersonalExamId(personalExamId);
+            String grade = analytics.get("grade");
             if (grade != null) {
-                ratingDTO.setGrade(Double.parseDouble(grade));
+                analyticsElementDTO.setGrade(Double.parseDouble(grade));
             }
-            String timeSpent = rating.get("timeSpent");
+            String timeSpent = analytics.get("timeSpent");
             if (timeSpent != null) {
-                ratingDTO.setTimeSpent(Long.parseLong(timeSpent));
+                analyticsElementDTO.setTimeSpent(Long.parseLong(timeSpent));
             }
-            getRatingConnector().save(ratingDTO);
+            getAnalyticsConnector().save(analyticsElementDTO);
         }
     }
 
     @Given("^teacher changes grade to$")
     public void teacherChangeGradeTo(DataTable dataTable) {
-        Map<String, String> ratingMap = dataTable.asMaps().get(0);
-        Rating rating = new Rating();
+        Map<String, String> analyticsMap = dataTable.asMaps().get(0);
+        AnalyticsElement analyticsElement = new AnalyticsElement();
 
-        Long disciplineId = (Long) getTestExecutionContext().replaceId(ratingMap.get("disciplineId"));
-        Long examId = (Long) getTestExecutionContext().replaceId(ratingMap.get("examId"));
-        Long studentId = Long.parseLong(ratingMap.get("studentId"));
-        String personalExamId = ratingMap.get("personalExamId").trim().replace("*", "");
+        Long disciplineId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("disciplineId"));
+        Long examId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("examId"));
+        Long studentId = Long.parseLong(analyticsMap.get("studentId"));
+        String personalExamId = analyticsMap.get("personalExamId").trim().replace("*", "");
 
-        rating.setDisciplineId(disciplineId);
-        rating.setExamId(examId);
-        rating.setStudentId(studentId);
-        rating.setPersonalExamId(personalExamId);
+        analyticsElement.setDisciplineId(disciplineId);
+        analyticsElement.setExamId(examId);
+        analyticsElement.setStudentId(studentId);
+        analyticsElement.setPersonalExamId(personalExamId);
 
-        if (ratingMap.get("examAssigneeId") != null) {
-            Long examAssigneeId = (Long) getTestExecutionContext().replaceId(ratingMap.get("examAssigneeId"));
-            rating.setExamAssigneeId(examAssigneeId);
+        if (analyticsMap.get("examAssigneeId") != null) {
+            Long examAssigneeId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("examAssigneeId"));
+            analyticsElement.setExamAssigneeId(examAssigneeId);
         }
-        if (ratingMap.get("grade") != null) {
-            Double grade = Double.parseDouble(ratingMap.get("grade"));
-            rating.setGrade(grade);
+        if (analyticsMap.get("grade") != null) {
+            Double grade = Double.parseDouble(analyticsMap.get("grade"));
+            analyticsElement.setGrade(grade);
         }
-        if (ratingMap.get("timeSpent") != null) {
-            Long timeSpent = Long.parseLong(ratingMap.get("timeSpent"));
-            rating.setTimeSpent(timeSpent);
+        if (analyticsMap.get("timeSpent") != null) {
+            Long timeSpent = Long.parseLong(analyticsMap.get("timeSpent"));
+            analyticsElement.setTimeSpent(timeSpent);
         }
 
-        getTestExecutionContext().getDetails().setRating(rating);
+        getTestExecutionContext().getDetails().setAnalyticsElement(analyticsElement);
     }
 }

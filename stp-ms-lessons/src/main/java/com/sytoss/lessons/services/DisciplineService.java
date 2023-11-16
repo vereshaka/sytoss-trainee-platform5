@@ -53,7 +53,7 @@ public class DisciplineService extends AbstractService {
 
     private final TaskDomainConnector taskDomainConnector;
 
-    private final RatingService ratingService;
+    private final AnalyticsService analyticsService;
 
     public Discipline getById(Long id) {
         try {
@@ -147,7 +147,7 @@ public class DisciplineService extends AbstractService {
         List<Student> students = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
         List<Exam> exams = examService.getExamsByDiscipline(disciplineId);
         for (Exam exam : exams) {
-            ratingService.initializeRatingsDTOs(exam.getId(), disciplineId, students);
+            analyticsService.initializeAnalyticsElementDTOs(exam.getId(), disciplineId, students);
         }
         groupReferenceConnector.save(groupReferenceDTO);
     }

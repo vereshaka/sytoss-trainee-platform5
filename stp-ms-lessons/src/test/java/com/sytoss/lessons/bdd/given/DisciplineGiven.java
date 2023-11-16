@@ -69,29 +69,30 @@ public class DisciplineGiven extends AbstractGiven {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, Long.valueOf(teacherId));
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setName(disciplineName);
+                disciplineDTO.setTeacherId(Long.valueOf(teacherId));
+                disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
             }
-            disciplineDTO.setName(disciplineName);
-            disciplineDTO.setTeacherId(Long.valueOf(teacherId));
-            disciplineDTO.setCreationDate(Timestamp.from(creationDate.toInstant()));
             disciplineDTOS.add(disciplineDTO);
         }
 
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
-            for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
+            if(disciplineDTOS.stream().filter(item -> item.getName()
+                    .equals(disciplineDTO.getName()) && item.getTeacherId().equals(disciplineDTO.getTeacherId())).toList().size()==0){
+                disciplineService.delete(disciplineDTO.getId());
+            }
+          /* // for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
                 if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
-                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                    disciplineService.delete(disciplineDTO.getId());
                 }
                 if (!(disciplineDTO.getTeacherId().equals(disciplineDtoFromTable.getTeacherId()))) {
-                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                    disciplineService.delete(disciplineDTO.getId());
                 }
-            }
+         //   }*/
         }
         for (DisciplineDTO discipline : disciplineDTOS) {
-            DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());
-            if (disciplineResult == null) {
-                getDisciplineConnector().save(discipline);
-            }
+            getDisciplineConnector().save(discipline);
         }
     }
 

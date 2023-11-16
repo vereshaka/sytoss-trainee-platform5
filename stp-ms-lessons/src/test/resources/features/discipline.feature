@@ -3,6 +3,7 @@ Feature: Discipline
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
+    @Bug
   Scenario: receive all discipline of student
     Given disciplines exist
       | discipline |

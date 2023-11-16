@@ -65,10 +65,10 @@ public class ExamServiceTest extends StpUnitTest {
     private DisciplineConnector disciplineConnector;
 
     @Mock
-    private RatingService ratingService;
+    private AnalyticsService analyticsService;
 
     @Mock
-    private RatingConnector ratingConnector;
+    private AnalyticsConnector analyticsConnector;
 
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
