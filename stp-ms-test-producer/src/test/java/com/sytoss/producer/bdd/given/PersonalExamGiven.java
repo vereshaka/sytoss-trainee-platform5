@@ -1,5 +1,6 @@
 package com.sytoss.producer.bdd.given;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -43,6 +44,10 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
     @Given("^student (.*) has personal exam with id (.*) and exam name (.*) and date (.*)")
     public void thisExamHasAnswers(Long studentId, String examId, String examName, String date, List<Answer> answers) {
         PersonalExam personalExam = new PersonalExam();
+
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        personalExam.setDiscipline(discipline);
 
         personalExam.setId(examId);
         personalExam.setName(examName);

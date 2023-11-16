@@ -294,4 +294,13 @@ public class PersonalExamController {
     ) {
         personalExamService.makeScreenshot(capture, personalExamId);
     }
+
+    @Operation(description = "Method to get list of personal exams by examId and studentId for migration")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/migrate")
+    public List<PersonalExam> getListOfPersonalExamsByExamIdAndStudentId(Long examAssigneeId,Long studentId) {
+        return personalExamService.getListOfPersonalExamByExamIdAndStudentId(examAssigneeId, studentId);
+    }
 }

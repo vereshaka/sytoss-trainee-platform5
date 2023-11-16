@@ -61,6 +61,15 @@ public class ExamServiceTest extends StpUnitTest {
     @Mock
     private TaskConnector taskConnector;
 
+    @Mock
+    private DisciplineConnector disciplineConnector;
+
+    @Mock
+    private RatingService ratingService;
+
+    @Mock
+    private RatingConnector ratingConnector;
+
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
@@ -106,10 +115,14 @@ public class ExamServiceTest extends StpUnitTest {
         Exam exam = new Exam();
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
         Topic t1 = new Topic();
         t1.setId(1L);
+        t1.setDiscipline(discipline);
         Topic t2 = new Topic();
         t2.setId(2L);
+        t2.setDiscipline(discipline);
         exam.setTopics(List.of(t1, t2));
         Task task = new Task();
         task.setId(1L);

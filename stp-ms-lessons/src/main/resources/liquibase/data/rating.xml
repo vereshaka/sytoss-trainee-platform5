@@ -1,0 +1,63 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/rating.xml">
+
+    <changeSet author="IvanL" id="rating_1">
+        <createTable tableName="RATING">
+            <column name="DISCIPLINE_ID" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="EXAM_ID" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="STUDENT_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PERSONAL_EXAM_ID" type="TEXT" />
+            <column name="GRADE" type="DOUBLE" />
+            <column name="TIME_SPENT" type="BIGINT"/>
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="APPLICANT" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="IvanL" id="rating_2">
+        <addPrimaryKey tableName="RATING" columnNames="DISCIPLINE_ID,EXAM_ID,STUDENT_ID" constraintName="PK_RATING" />
+        <rollback>
+            <dropPrimaryKey tableName="RATING" constraintName="PK_RATING" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="IvanL" id="rating_3">
+        <addForeignKeyConstraint baseTableName="RATING" baseColumnNames="DISCIPLINE_ID"
+                                 constraintName="FK_RATING2DISCIPLINE" referencedTableName="DISCIPLINE"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="RATING" constraintName="FK_RATING2DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="IvanL" id="rating_4">
+        <addForeignKeyConstraint baseTableName="RATING" baseColumnNames="EXAM_ID"
+                                 constraintName="FK_RATING2EXAM" referencedTableName="EXAM"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="RATING" constraintName="FK_RATING2EXAM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="IvanL" id="rating_5">
+        <createSequence sequenceName="RATING_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="RATING_SEQ" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

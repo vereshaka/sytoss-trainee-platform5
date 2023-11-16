@@ -1,10 +1,7 @@
 package com.sytoss.stp.test.common;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.Grade;
@@ -75,6 +72,37 @@ public class DataTableCommon {
         answer.setTask(task);
         answer.setStatus(AnswerStatus.NOT_STARTED);
         personalExam.getAnswers().add(answer);
+
+
+        String temp = entry.get("disciplineId");
+        if(temp!=null){
+            Discipline discipline = new Discipline();
+            discipline.setId(Long.parseLong(temp));
+            personalExam.setDiscipline(discipline);
+        }
+
+        temp = entry.get("personalExamId");
+        if(temp!=null){
+            personalExam.setId(temp);
+        }
+
+        temp = entry.get("examAssigneeId");
+        if(temp!=null){
+            personalExam.setExamAssigneeId(Long.parseLong(temp));
+        }
+
+        temp = entry.get("studentId");
+        if(temp!=null){
+            Student student = new Student();
+            student.setId(Long.parseLong(temp));
+            personalExam.setStudent(student);
+        }
+
+        temp = entry.get("summaryGrade");
+        if(temp!=null){
+            personalExam.setSummaryGrade(Double.parseDouble(temp));
+        }
+
         return personalExam;
     }
 
@@ -205,5 +233,46 @@ public class DataTableCommon {
         student.setFirstName(entry.get("firstName"));
         student.setLastName(entry.get("lastName"));
         return student;
+    }
+
+    @DataTableType
+    public Rating mapRating(Map<String, String> entry) {
+        Rating rating = new Rating();
+        String temp = entry.get("disciplineId");
+        if(temp!=null){
+            rating.setDisciplineId(Long.parseLong(temp));
+        }
+
+       temp = entry.get("examId");
+        if(temp!=null){
+            rating.setExamId(Long.parseLong(temp));
+        }
+
+        temp = entry.get("studentId");
+        if(temp!=null){
+            rating.setStudentId(Long.parseLong(temp));
+        }
+
+        temp = entry.get("personalExamId");
+        if(temp!=null){
+            rating.setPersonalExamId(temp);
+        }
+
+        temp = entry.get("grade");
+        if(temp!=null){
+            rating.setGrade(Double.parseDouble(temp));
+        }
+
+        temp = entry.get("timeSpent");
+        if(temp!=null){
+            rating.setTimeSpent(Long.parseLong(temp));
+        }
+
+        temp = entry.get("examAssigneeId");
+        if(temp!=null){
+            rating.setExamAssigneeId(Long.parseLong(temp));
+        }
+
+        return rating;
     }
 }

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GroupService extends AbstractService {
 
     private final GroupReferenceConnector groupReferenceConnector;
@@ -39,5 +39,19 @@ public class GroupService extends AbstractService {
             return groups;
         }
         return null;
+    }
+
+    public List<Group> getGroups(Long disciplineId) {
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
+        List<Group> result = new ArrayList<>();
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        for (GroupReferenceDTO item : groups) {
+            Group group = new Group();
+            group.setId(item.getGroupId());
+            group.setDiscipline(discipline);
+            result.add(group);
+        }
+        return result;
     }
 }

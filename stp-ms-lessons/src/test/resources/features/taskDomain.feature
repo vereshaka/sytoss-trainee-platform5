@@ -62,7 +62,7 @@ Feature: Task Domain
 
   Scenario: Update task domain when personal exam does not finished
     Given  "First Domain" task domain with a script from "task-domain/script.yml" exists for this discipline
-    And personal exam exists
+    And personal exams exist
       | examName         | status       | task domain  |
       | SQL Querry       | Graded       | First Domain |
       | SQL Querry Last  | Not finished | First Domain |

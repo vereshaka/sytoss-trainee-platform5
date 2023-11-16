@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.lessons.connectors.ExamConnector;
+import com.sytoss.lessons.connectors.RatingConnector;
 import com.sytoss.lessons.connectors.TopicConnector;
 import com.sytoss.lessons.connectors.UserConnector;
 import com.sytoss.lessons.services.*;
@@ -64,8 +65,15 @@ public class LessonsControllerTest extends StpApplicationTest {
     @MockBean
     protected ExamAssigneeService examAssigneeService;
 
+    @MockBean
+    protected GroupService groupService;
+
     @InjectMocks
     protected ExamAssigneeController examAssigneeController;
+    @MockBean
+    protected RatingService ratingService;
+    @MockBean
+    private RatingConnector ratingConnector;
 
     @BeforeEach
     public void mockGetMyProfile() {

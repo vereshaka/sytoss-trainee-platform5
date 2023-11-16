@@ -5,17 +5,13 @@ import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundExce
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +52,8 @@ public class DisciplineService extends AbstractService {
     private final TopicConnector topicConnector;
 
     private final TaskDomainConnector taskDomainConnector;
+
+    private final RatingService ratingService;
 
     public Discipline getById(Long id) {
         try {
@@ -146,22 +144,14 @@ public class DisciplineService extends AbstractService {
         getById(disciplineId);
         DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(disciplineId);
         GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
+        List<Student> students = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+        List<Exam> exams = examService.getExamsByDiscipline(disciplineId);
+        for (Exam exam : exams) {
+            ratingService.initializeRatingsDTOs(exam.getId(), disciplineId, students);
+        }
         groupReferenceConnector.save(groupReferenceDTO);
     }
 
-    public List<Group> getGroups(Long disciplineId) {
-
-        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
-        List<Group> result = new ArrayList<>();
-        Discipline discipline = getById(disciplineId);
-        for (GroupReferenceDTO item : groups) {
-            Group group = new Group();
-            group.setId(item.getGroupId());
-            group.setDiscipline(discipline);
-            result.add(group);
-        }
-        return result;
-    }
 
     public byte[] getIcon(Long id) {
         try {
@@ -223,7 +213,7 @@ public class DisciplineService extends AbstractService {
     public Discipline delete(Long disciplineId) {
         Discipline discipline = getById(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
-        for (Exam exam: examList) {
+        for (Exam exam : examList) {
             examService.delete(exam.getId());
         }
 
@@ -252,10 +242,9 @@ public class DisciplineService extends AbstractService {
         }).collect(Collectors.toList());
     }
 
-    private Discipline convert(DisciplineDTO disciplineDTO){
+    private Discipline convert(DisciplineDTO disciplineDTO) {
         Discipline discipline = new Discipline();
         disciplineConvertor.fromDTO(disciplineDTO, discipline);
         return discipline;
     }
-
 }

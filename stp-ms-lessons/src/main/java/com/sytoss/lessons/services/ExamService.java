@@ -60,6 +60,8 @@ public class ExamService extends AbstractService {
 
     private final TaskConnector taskConnector;
 
+    private final RatingService ratingService;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
@@ -92,6 +94,9 @@ public class ExamService extends AbstractService {
         }
         ExamDTO result = examConnector.save(examDTO);
         examConvertor.fromDTO(result, exam);
+
+        List<Student> students = userConnector.getStudentOfGroup(exam.getDiscipline().getId());
+        ratingService.initializeRatingsDTOs(exam.getId(),exam.getDiscipline().getId(),students);
         return exam;
     }
 

@@ -2,19 +2,13 @@ package com.sytoss.producer.services;
 
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.ExamReportModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskReportModel;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.connectors.ExamAssigneeConnector;
-import com.sytoss.producer.connectors.MetadataConnector;
-import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.bom.ScreenshotModel;
+import com.sytoss.producer.connectors.*;
 import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
 import com.sytoss.producer.writers.GroupExcelBuilder;
-import com.sytoss.producer.bom.ScreenshotModel;
-import com.sytoss.producer.connectors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,7 +21,10 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
@@ -196,6 +193,15 @@ public class PersonalExamService extends AbstractService {
 
         personalExam.review();
         personalExam.summary();
+
+        Rating rating = new Rating();
+        rating.setDisciplineId(personalExam.getDiscipline().getId());
+        rating.setExamAssigneeId(personalExam.getExamAssigneeId());
+        rating.setStudentId(personalExam.getStudent().getId());
+        rating.setPersonalExamId(personalExam.getId());
+        rating.setGrade(personalExam.getSummaryGrade());
+        rating.setTimeSpent(personalExam.getSpentTime());
+
         return personalExamConnector.save(personalExam);
     }
 
@@ -419,33 +425,33 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> updateTask(Task task) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
-        for(PersonalExam personalExam : personalExams){
-           for(Answer answer : personalExam.getAnswers()){
-               if(Objects.equals(answer.getTask().getId(), task.getId())){
-                   answer.setTask(task);
-               }
-           }
+        for (PersonalExam personalExam : personalExams) {
+            for (Answer answer : personalExam.getAnswers()) {
+                if (Objects.equals(answer.getTask().getId(), task.getId())) {
+                    answer.setTask(task);
+                }
+            }
         }
         return personalExams;
     }
 
 
-    public void makeScreenshot(String pictureCode, String personalExamId){
+    public void makeScreenshot(String pictureCode, String personalExamId) {
         //pictureCode = pictureCode.substring(16);
         ScreenshotModel screenshotModel = new ScreenshotModel();
         Date currentDate = new Date();
 
-       // Long userId = userConnector.getByUid(getCurrentUser().getUid()).getId();
+        // Long userId = userConnector.getByUid(getCurrentUser().getUid()).getId();
         Long userId = getCurrentUser().getId();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyddMMhh24mmss");
         String formattedDate = simpleDateFormat.format(currentDate);
-        String imageName = personalExamId+"-"+userId+"-"+formattedDate+".jpg";
+        String imageName = personalExamId + "-" + userId + "-" + formattedDate + ".jpg";
 
         byte[] picture = Base64.getMimeDecoder().decode(pictureCode);
         byte[] decodedPicture = Arrays.copyOfRange(picture, 15, picture.length);
 
         try {
-            File imageFile = new File(imageUrl+imageName);
+            File imageFile = new File(imageUrl + imageName);
             FileOutputStream fis = new FileOutputStream(imageFile);
             fis.write(decodedPicture);
             fis.flush();
@@ -462,5 +468,11 @@ public class PersonalExamService extends AbstractService {
         screenshotModel.setImageFileName(imageName);
 
         screenshotConnector.save(screenshotModel);
+    }
+
+    public List<PersonalExam> getListOfPersonalExamByExamIdAndStudentId(Long examAssigneeId, Long studentId) {
+        return personalExamConnector.getByExamAssigneeId(examAssigneeId).stream()
+                .filter(personalExam -> personalExam.getStatus().equals(PersonalExamStatus.FINISHED) ||
+                        personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)).toList();
     }
 }

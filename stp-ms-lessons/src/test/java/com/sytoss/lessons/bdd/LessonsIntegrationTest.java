@@ -3,10 +3,7 @@ package com.sytoss.lessons.bdd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.lessons.bdd.common.LessonsDetails;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.convertors.DisciplineConvertor;
-import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.convertors.TaskDomainConvertor;
-import com.sytoss.lessons.convertors.TopicConvertor;
+import com.sytoss.lessons.convertors.*;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import jakarta.persistence.EntityManager;
@@ -85,6 +82,12 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
 
     @Autowired
     private ExamAssigneeToConnector examAssigneeToConnector;
+
+    @Autowired
+    private RatingConnector ratingConnector;
+
+    @Autowired
+    private RatingConvertor ratingConvertor;
 
     @Override
     protected LessonsDetails createDetails() {

@@ -8,6 +8,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.dto.GroupsIds;
 import com.sytoss.lessons.services.DisciplineService;
+import com.sytoss.lessons.services.GroupService;
 import com.sytoss.lessons.services.TaskDomainService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,8 @@ public class DisciplineController {
     private final DisciplineService disciplineService;
 
     private final TaskDomainService taskDomainService;
+
+    private final GroupService groupService;
 
     @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
@@ -99,7 +102,7 @@ public class DisciplineController {
     public List<Group> findByDiscipline(@Parameter(description = "id of the discipline to be searched by")
                                         @PathVariable("disciplineId")
                                         Long disciplineId) {
-        return disciplineService.getGroups(disciplineId);
+        return groupService.getGroups(disciplineId);
     }
 
     @Operation(description = "Method that retrieve discipline")

@@ -61,7 +61,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldFindGroupsByDiscipline() {
-        when(disciplineService.getGroups(any())).thenReturn(new ArrayList<>());
+        when(groupService.getGroups(any())).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<>() {

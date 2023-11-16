@@ -71,6 +71,12 @@ public class DisciplineServiceTest extends StpUnitTest {
     @Mock
     private TopicConnector topicConnector;
 
+   @InjectMocks
+    private GroupService groupService;
+
+    @Mock
+    private ExamService examService;
+
     @Test
     public void shouldSaveDiscipline() {
         Teacher user = new Teacher();
@@ -177,10 +183,9 @@ public class DisciplineServiceTest extends StpUnitTest {
 
     @Test
     public void getGroups() {
-        when(disciplineConnector.getReferenceById(anyLong())).thenReturn(mock(DisciplineDTO.class));
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>(List.of(mock(GroupReferenceDTO.class), mock(GroupReferenceDTO.class)));
         when(groupReferenceConnector.findByDisciplineId(anyLong())).thenReturn(groupReferenceDTOS);
-        List<Group> resultList = disciplineService.getGroups(5L);
+        List<Group> resultList = groupService.getGroups(5L);
         assertEquals(2, resultList.size());
     }
 
