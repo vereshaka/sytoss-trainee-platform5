@@ -30,10 +30,9 @@ public class DisciplineThen extends LessonsIntegrationTest {
     @Then("^disciplines should be received$")
     public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
         List<Discipline> disciplineList;
-        if(getTestExecutionContext().getResponse().getBody() instanceof ArrayList){
+        if (getTestExecutionContext().getResponse().getBody() instanceof ArrayList) {
             disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
-        }
-        else{
+        } else {
             ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
             disciplineList = responseObject.getData();
         }
