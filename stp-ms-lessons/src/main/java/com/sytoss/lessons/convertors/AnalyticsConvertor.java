@@ -1,6 +1,7 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.lessons.dto.AnalyticsElementDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,5 +30,11 @@ public class AnalyticsConvertor {
             destination.setTimeSpent(source.getTimeSpent());
             destination.setStartDate(source.getStartDate());
         }
+    }
+
+    public void fromDTOtoRating(AnalyticsElementDTO source, RatingModel destination) {
+        destination.setStudentId(source.getStudentId());
+      //  destination.setAvgGrade(source.getAvgGrade());
+      //  destination.setAvgTimeSpent(source.getAvgTimeSpent());
     }
 }

@@ -1,14 +1,13 @@
 package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +69,19 @@ public class AnalyticsElementThen extends AbstractGiven {
                 break;
             }
         }
+    }
 
-
+    @Then("rating models should be")
+    public void ratingModelsShouldBe(List<RatingModel> ratingModels) {
+        List<RatingModel> ratingsModelsFromResponse = (List<RatingModel>) getTestExecutionContext().getResponse().getBody();
+        for (RatingModel ratingModel : ratingModels) {
+            for (RatingModel ratingModelFromResponse : ratingsModelsFromResponse) {
+                assertEquals(ratingModel.getStudentId(), ratingModelFromResponse.getStudentId());
+                assertEquals(ratingModel.getAvgGrade(), ratingModelFromResponse.getAvgGrade());
+                assertEquals(ratingModel.getAvgTimeSpent(), ratingModelFromResponse.getAvgTimeSpent());
+                ratingsModelsFromResponse.remove(ratingModelFromResponse);
+                break;
+            }
+        }
     }
 }

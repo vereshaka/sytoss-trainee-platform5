@@ -37,3 +37,32 @@ Feature: Analytics
       | *d1          | *ex1   | 3         | *pe3           | 11    | *ea1           | 30-11-2023T11:55:00 |
       | *d1          | *ex1   | 4         | *pe4           | 20    | *ea1           | 30-11-2023T11:55:00 |
       | *d1          | *ex1   | 5         | *pe5           | 21    | *ea1           | 30-11-2023T11:55:00 |
+
+  Scenario: get ratings by id
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
+      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         |
+    When teacher gets ratings by discipline *d1, by exam null and by group null
+    Then operation is successful
+    And rating models should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 2         | 5        | 3            |
+      | 1         | 6        | 1            |
+
+  Scenario: get ratings by id and exam id
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
+      | *d2          | *ex1   | 1         | *pe1           | 6     | 2         |
+    When teacher gets ratings by discipline *d1, by exam *ex1 and by group null
+    Then operation is successful
+    And rating models should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 2         | 5        | 3            |
+      | 1         | 6        | 1            |
+

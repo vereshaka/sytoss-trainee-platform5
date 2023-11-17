@@ -2,6 +2,7 @@ package com.sytoss.stp.test.common;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.AnswerStatus;
 import com.sytoss.domain.bom.personalexam.Grade;
@@ -274,5 +275,14 @@ public class DataTableCommon {
         }
 
         return analyticsElement;
+    }
+
+    @DataTableType
+    public RatingModel mapRatings(Map<String, String> entry) {
+        RatingModel ratingModel = new RatingModel();
+        ratingModel.setStudentId(Long.valueOf(entry.get("studentId")));
+        ratingModel.setAvgGrade(Double.parseDouble(entry.get("avgGrade")));
+        ratingModel.setAvgTimeSpent(Math.round(Double.parseDouble(entry.get("avgTimeSpent"))));
+        return ratingModel;
     }
 }

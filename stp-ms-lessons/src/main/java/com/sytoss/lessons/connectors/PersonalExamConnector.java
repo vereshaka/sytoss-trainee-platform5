@@ -27,6 +27,6 @@ public interface PersonalExamConnector {
     void updateTask(Task task);
 
     @GetMapping("personal-exam/migrate")
-    List<PersonalExam> getListOfPersonalExamByExamAssigneeIdAndStudentId(Long examAssigneeId, Long studentId);
+    List<PersonalExam> getListOfPersonalExamByExamAssigneeId(Long examAssigneeId);
 }
 

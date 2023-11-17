@@ -228,7 +228,7 @@ public class AnalyticsElementServiceTest extends StpUnitTest {
         examAssignee.setId(1L);
         personalExam.setExamAssigneeId(examAssignee.getId());
 
-        when(personalExamConnector.getListOfPersonalExamByExamAssigneeIdAndStudentId(examAssignee.getId(), student.getId())).thenReturn(List.of(personalExam));
+        when(personalExamConnector.getListOfPersonalExamByExamAssigneeId(examAssignee.getId())).thenReturn(List.of(personalExam));
 
         AnalyticsElementDTO analyticsElementDTO = new AnalyticsElementDTO();
         analyticsElementDTO.setDisciplineId(discipline.getId());

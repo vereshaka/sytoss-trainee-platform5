@@ -15,9 +15,7 @@ import io.cucumber.java.en.Given;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +68,7 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
             }
 
             when(getPersonalExamConnector()
-                    .getListOfPersonalExamByExamAssigneeIdAndStudentId(personalExam.getExamAssigneeId(), personalExam.getStudent().getId()))
+                    .getListOfPersonalExamByExamAssigneeId(personalExam.getExamAssigneeId()))
                     .thenReturn(personalExams.stream().filter(personalExam1 -> personalExam1.getExamAssigneeId().equals(personalExam.getExamAssigneeId())
                             && personalExam1.getStudent().getId().equals(personalExam.getStudent().getId())).toList());
         }

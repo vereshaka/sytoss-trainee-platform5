@@ -1,6 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,5 +38,23 @@ public class AnalyticsController {
     @PostMapping("/migrate/{disciplineId}")
     public List<AnalyticsElement> migrate(@PathVariable Long disciplineId) {
         return analyticsService.migrate(disciplineId);
+    }
+
+    @Operation(description = "Method that retrieves analytics elements by discipline id, group id, exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
+    public List<RatingModel> returnAnalyticsElementsByDisciplineGroupExam(@PathVariable Long disciplineId,
+                                                                          @PathVariable(required = false) String groupStringId,
+                                                                          @PathVariable(required = false) String examStringId) {
+        Long examId=null, groupId=null;
+        if(groupStringId!=null){
+            groupId = Long.parseLong(groupStringId);
+        }
+        if(examStringId!=null){
+            examId = Long.parseLong(examStringId);
+        }
+        return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId,groupId,examId);
     }
 }

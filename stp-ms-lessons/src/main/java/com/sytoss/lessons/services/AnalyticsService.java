@@ -1,6 +1,8 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.AbsentDisciplineException;
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
@@ -92,7 +94,7 @@ public class AnalyticsService extends AbstractService {
             for (Student student : students) {
                 for (ExamAssigneeDTO examAssigneeDTO : exam.getExamAssignees()) {
                     List<PersonalExam> personalExamsByExamAssignee = personalExamConnector
-                            .getListOfPersonalExamByExamAssigneeIdAndStudentId(examAssigneeDTO.getId(), student.getId());
+                            .getListOfPersonalExamByExamAssigneeId(examAssigneeDTO.getId()).stream().filter(personalExam -> personalExam.getStudent().getId().equals(student.getId())).toList();
                     for (PersonalExam personalExamByExamAssignee : personalExamsByExamAssignee) {
                         if (personalExams.isEmpty()) {
                             personalExams.add(personalExamByExamAssignee);
@@ -134,5 +136,23 @@ public class AnalyticsService extends AbstractService {
 
     public void deleteByExamId(Long examId) {
         analyticsConnector.deleteAllByExamId(examId);
+    }
+
+    public List<RatingModel> getAnalyticsElementsByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId) {
+        if (disciplineId == null) {
+            throw new AbsentDisciplineException();
+        }
+        List<RatingModel> ratingModels = new ArrayList<>();
+        if (examId == null && groupId == null) {
+            ratingModels = analyticsConnector.getStudentRatingsByDiscipline(disciplineId);
+        } else if (groupId == null) {
+            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndExamId(disciplineId, examId);
+        } else if (examId == null) {
+            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupId(disciplineId, groupId);
+        } else {
+            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, groupId, examId);
+        }
+
+        return ratingModels;
     }
 }
