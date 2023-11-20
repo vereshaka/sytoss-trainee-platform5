@@ -199,7 +199,7 @@ public class DisciplineGiven extends AbstractGiven {
         getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
     }
 
-    @Given("^discipline with specific id (.*) exists$")
+    @Given("^discipline with id (.*) exists$")
     public void disciplineWithSpecificIdExists(String disciplineStringId) {
         String newDisciplineKey = disciplineStringId;
         if (getTestExecutionContext().replaceId(disciplineStringId) != null) {

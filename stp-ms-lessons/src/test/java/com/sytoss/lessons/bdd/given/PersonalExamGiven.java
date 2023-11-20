@@ -69,8 +69,7 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
 
             when(getPersonalExamConnector()
                     .getListOfPersonalExamByExamAssigneeId(personalExam.getExamAssigneeId()))
-                    .thenReturn(personalExams.stream().filter(personalExam1 -> personalExam1.getExamAssigneeId().equals(personalExam.getExamAssigneeId())
-                            && personalExam1.getStudent().getId().equals(personalExam.getStudent().getId())).toList());
+                    .thenReturn(personalExams.stream().filter(personalExam1 -> personalExam1.getExamAssigneeId().equals(personalExam.getExamAssigneeId())).toList());
         }
 
         when(getUserConnector().getStudentOfGroup(group.getId())).thenReturn(students);

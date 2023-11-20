@@ -3,9 +3,9 @@ package com.sytoss.lessons.bdd.given;
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.lessons.dto.AnalyticsElementDTO;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.AnalyticsElementDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
@@ -18,7 +18,10 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.mockito.Mockito.when;
 
@@ -33,7 +36,11 @@ public class AnalyticsElementGiven extends AbstractGiven {
         List<Group> groups = new ArrayList<>();
         for (Map<String, String> analytics : analyticsList) {
             String disciplineKey = analytics.get("disciplineId").trim();
-            Long groupId = Long.valueOf(analytics.get("groupId"));
+            Long groupId = 1L;
+            if (analytics.get("groupId") != null) {
+                groupId = Long.valueOf(analytics.get("groupId"));
+            }
+            final Long finalGroupId = groupId;
             Group group = new Group();
             group.setId(groupId);
             String examKey = analytics.get("examId").trim();
@@ -52,7 +59,8 @@ public class AnalyticsElementGiven extends AbstractGiven {
                 disciplineId = Long.parseLong(newDisciplineKey);
                 disciplineDTO = getDisciplineConnector().findById(disciplineId).orElse(null);
                 List<GroupReferenceDTO> groupReferenceDTOS = getGroupReferenceConnector().findByDisciplineId(disciplineId);
-                if (groupReferenceDTOS.stream().filter(groupReferenceDTO -> Objects.equals(groupReferenceDTO.getGroupId(),groupId)).toList().size() == 0) {
+
+                if (groupReferenceDTOS.stream().filter(groupReferenceDTO -> Objects.equals(groupReferenceDTO.getGroupId(), finalGroupId)).toList().size() == 0) {
                     GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
                     groupReferenceDTO.setGroupId(groupId);
                     groupReferenceDTO.setDiscipline(disciplineDTO);
@@ -101,10 +109,10 @@ public class AnalyticsElementGiven extends AbstractGiven {
             student.setId(studentId);
             student.setPrimaryGroup(group);
 
-            if(students.stream().filter(el-> Objects.equals(el.getId(), studentId)).toList().size()==0){
+            if (students.stream().filter(el -> Objects.equals(el.getId(), studentId)).toList().size() == 0) {
                 students.add(student);
             }
-            if(groups.stream().filter(el-> Objects.equals(el.getId(), groupId)).toList().size()==0){
+            if (groups.stream().filter(el -> Objects.equals(el.getId(), finalGroupId)).toList().size() == 0) {
                 groups.add(group);
             }
 
@@ -154,7 +162,7 @@ public class AnalyticsElementGiven extends AbstractGiven {
             getAnalyticsConnector().save(analyticsElementDTO);
         }
 
-        for(Group group : groups){
+        for (Group group : groups) {
             when(getUserConnector().getStudentOfGroup(group.getId())).thenReturn(students.stream().filter(student -> Objects.equals(student.getPrimaryGroup().getId(), group.getId())).toList());
         }
     }
