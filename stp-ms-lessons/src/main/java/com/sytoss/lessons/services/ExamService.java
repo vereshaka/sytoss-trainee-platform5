@@ -343,4 +343,14 @@ public class ExamService extends AbstractService {
             return exam;
         }).toList();
     }
+
+    public Exam getExamByExamAssignee(Long examAssigneeId) {
+        ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
+        if(examDTO !=null){
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO,exam);
+            return exam;
+        }
+        return null;
+    }
 }

@@ -28,5 +28,8 @@ public interface PersonalExamConnector {
 
     @GetMapping("personal-exam/migrate")
     List<PersonalExam> getListOfPersonalExamByExamAssigneeId(Long examAssigneeId);
+
+    @GetMapping("personal-exam/{id}/summary")
+    PersonalExam personalExamSummary(@PathVariable("id") String id);
 }
 

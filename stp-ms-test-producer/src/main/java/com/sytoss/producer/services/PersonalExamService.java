@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.producer.bom.ScreenshotModel;
 import com.sytoss.producer.connectors.*;
 import com.sytoss.producer.interfaces.AnswerGenerator;

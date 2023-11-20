@@ -3,7 +3,6 @@ Feature: Discipline
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
 
-  @Bug
   Scenario: receive all discipline of student
     Given disciplines exist
       | discipline |
@@ -40,7 +39,6 @@ Feature: Discipline
     Then operation is successful
     And "SQL" discipline should be received
 
-    @Bug
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -56,7 +54,6 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
-      @Bug
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |
@@ -72,7 +69,6 @@ Feature: Discipline
       | 1         | SQL        |
       | 1         | H2         |
 
-  @Bug
   Scenario: search disciplines
     Given disciplines exist
       | discipline |

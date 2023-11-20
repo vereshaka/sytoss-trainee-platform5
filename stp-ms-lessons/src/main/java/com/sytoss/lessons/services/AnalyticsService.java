@@ -1,18 +1,16 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.AbsentDisciplineException;
-import com.sytoss.domain.bom.lessons.AnalyticsElement;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.analytics.RatingModel;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.AnalyticsConnector;
-import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.connectors.PersonalExamConnector;
 import com.sytoss.lessons.convertors.AnalyticsConvertor;
 import com.sytoss.lessons.dto.AnalyticsElementDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +28,13 @@ public class AnalyticsService extends AbstractService {
 
     private final AnalyticsConvertor analyticsConvertor;
 
-    private final ExamConnector examConnector;
+    private final ExamService examService;
 
     private final UserService userService;
 
     private final PersonalExamConnector personalExamConnector;
+
+    private final DisciplineService disciplineService;
 
     public List<AnalyticsElementDTO> initializeAnalyticsElementDTOs(Long examId, Long disciplineId, List<Student> students) {
         List<AnalyticsElementDTO> analyticsElementDTOS = new ArrayList<>();
@@ -53,7 +53,7 @@ public class AnalyticsService extends AbstractService {
 
     public AnalyticsElement updateAnalyticsElement(AnalyticsElement analyticsElement) {
         if (analyticsElement.getExamId() == null && analyticsElement.getExamAssigneeId() != null) {
-            ExamDTO exam = examConnector.findByExamAssignees_Id(analyticsElement.getExamAssigneeId());
+            Exam exam = examService.getExamByExamAssignee(analyticsElement.getExamAssigneeId());
             if (exam != null) {
                 analyticsElement.setExamId(exam.getId());
             }
@@ -87,12 +87,12 @@ public class AnalyticsService extends AbstractService {
             analyticsConnector.deleteAnalyticsElementDTOByDisciplineIdAndStudentId(disciplineId, studentId);
         }
 
-        List<ExamDTO> exams = examConnector.findByTopics_Discipline_Id(disciplineId);
+        List<Exam> exams = examService.getExamsByDiscipline(disciplineId);
         List<AnalyticsElement> analyticsElements = new ArrayList<>();
         List<PersonalExam> personalExams = new ArrayList<>();
-        for (ExamDTO exam : exams) {
+        for (Exam exam : exams) {
             for (Student student : students) {
-                for (ExamAssigneeDTO examAssigneeDTO : exam.getExamAssignees()) {
+                for (ExamAssignee examAssigneeDTO : exam.getExamAssignees()) {
                     List<PersonalExam> personalExamsByExamAssignee = personalExamConnector
                             .getListOfPersonalExamByExamAssigneeId(examAssigneeDTO.getId()).stream().filter(personalExam -> personalExam.getStudent().getId().equals(student.getId())).toList();
                     for (PersonalExam personalExamByExamAssignee : personalExamsByExamAssignee) {
@@ -118,8 +118,8 @@ public class AnalyticsService extends AbstractService {
         }
         for (PersonalExam personalExam : personalExams) {
             AnalyticsElement analyticsElement = new AnalyticsElement();
-            ExamDTO examDTOByExamAssignee = exams.stream().filter(examDTO -> examDTO.getExamAssignees().stream().map(ExamAssigneeDTO::getId).toList().contains(personalExam.getExamAssigneeId())).toList().get(0);
-            analyticsElement.setExamId(examDTOByExamAssignee.getId());
+            Exam examByExamAssignee = exams.stream().filter(examDTO -> examDTO.getExamAssignees().stream().map(ExamAssignee::getId).toList().contains(personalExam.getExamAssigneeId())).toList().get(0);
+            analyticsElement.setExamId(examByExamAssignee.getId());
             analyticsElement.setDisciplineId(disciplineId);
             analyticsElement.setStudentId(personalExam.getStudent().getId());
             analyticsElement.setPersonalExamId(personalExam.getId());
@@ -144,7 +144,7 @@ public class AnalyticsService extends AbstractService {
         }
         List<RatingModel> ratingModels;
         List<Long> students = new ArrayList<>();
-        if(groupId!=null){
+        if (groupId != null) {
             students = userService.getStudentsOfGroup(groupId).stream().map(AbstractUser::getId).toList();
         }
         if (examId == null && groupId == null) {
@@ -158,5 +158,80 @@ public class AnalyticsService extends AbstractService {
         }
 
         return ratingModels;
+    }
+
+    public Analytics getAnalyticByStudentId(Long disciplineId) {
+        Long studentId = getCurrentUser().getId();
+        if (disciplineId == null) {
+            throw new AbsentDisciplineException();
+        }
+        return getAnalyticByStudentId(studentId);
+    }
+
+    public List<Analytics> getAnalyticsSummaryByDiscipline(Long disciplineId) {
+        List<Analytics> analytics = new ArrayList<>();
+        List<Student> students = userService.getStudents(disciplineId);
+        for (Student student : students) {
+            analytics.add(formAnalytics(disciplineId, student.getId()));
+        }
+        return analytics;
+    }
+
+    public List<Analytics> getAnalyticsSummaryByDisciplineAndGroup(Long disciplineId, Long groupId) {
+        List<Analytics> analytics = new ArrayList<>();
+        List<Student> students = userService.getStudentsOfGroup(groupId);
+        for (Student student : students) {
+            analytics.add(formAnalytics(disciplineId, student.getId()));
+        }
+        return analytics;
+    }
+
+    private Analytics formAnalytics(Long disciplineId, Long studentId) {
+        RatingModel ratingModel = analyticsConnector.getStudentRatingsByDiscipline(disciplineId).stream().filter(model -> Objects.equals(model.getStudentId(), studentId)).toList().get(0);
+
+        Analytics analytics = new Analytics();
+
+        Discipline discipline = disciplineService.getById(disciplineId);
+        analytics.setDiscipline(discipline);
+        Student student = new Student();
+        student.setId(ratingModel.getStudentId());
+        analytics.setStudent(student);
+
+        Grade averageGrade = new Grade();
+        averageGrade.setGrade(ratingModel.getAvgGrade());
+        averageGrade.setTimeSpent(ratingModel.getAvgTimeSpent());
+
+
+        List<AnalyticsElementDTO> analyticsElementDTOS = analyticsConnector.getByDisciplineIdAndStudentId(disciplineId, studentId);
+        double max = 0;
+        double timeSpent = 0;
+        for (AnalyticsElementDTO analyticsElementDTO : analyticsElementDTOS) {
+            if (analyticsElementDTO.getGrade() > max && (analyticsElementDTO.getTimeSpent() < timeSpent || timeSpent == 0)) {
+                max = analyticsElementDTO.getGrade();
+                timeSpent = analyticsElementDTO.getTimeSpent();
+            }
+        }
+
+        Grade maxGrade = new Grade();
+        maxGrade.setGrade(max);
+        maxGrade.setTimeSpent(timeSpent);
+        StudentsGrade studentsGrade = new StudentsGrade();
+        studentsGrade.setAverage(averageGrade);
+        studentsGrade.setMax(maxGrade);
+        analytics.setStudentsGrade(studentsGrade);
+
+        List<ExamsElement> examsElementList = new ArrayList<>();
+        for (AnalyticsElementDTO analyticsElementDTO : analyticsElementDTOS) {
+            Exam exam = examService.getById(analyticsElementDTO.getExamId());
+            PersonalExam personalExam = personalExamConnector.personalExamSummary(analyticsElementDTO.getPersonalExamId());
+            ExamsElement examsElement = new ExamsElement();
+            examsElement.setExam(exam);
+            examsElement.setPersonalExam(personalExam);
+            examsElementList.add(examsElement);
+        }
+
+        analytics.setExamsElementList(examsElementList);
+
+        return analytics;
     }
 }

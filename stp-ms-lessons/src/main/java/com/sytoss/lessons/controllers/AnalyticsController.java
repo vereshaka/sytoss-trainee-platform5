@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.lessons.Analytics;
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
 import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.lessons.services.AnalyticsService;
@@ -49,13 +50,59 @@ public class AnalyticsController {
     public List<RatingModel> returnAnalyticsElementsByDisciplineGroupExam(@PathVariable Long disciplineId,
                                                                           @PathVariable(name = "groupId", required = false) String groupStringId,
                                                                           @PathVariable(name = "examId", required = false) String examStringId) {
-        Long examId=null, groupId=null;
-        if(!Objects.equals(groupStringId, "null")){
+        Long examId = null, groupId = null;
+        if (!Objects.equals(groupStringId, "null")) {
             groupId = Long.parseLong(groupStringId);
         }
-        if(!Objects.equals(examStringId, "null")){
+        if (!Objects.equals(examStringId, "null")) {
             examId = Long.parseLong(examStringId);
         }
-        return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId,groupId,examId);
+        return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId, groupId, examId);
+    }
+
+    @Operation(description = "Method that retrieves analytics elements by discipline id, group id, exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
+    public List<RatingModel> getStatisticsByStudent(@PathVariable Long disciplineId,
+                                                    @PathVariable(name = "groupId", required = false) String groupStringId,
+                                                    @PathVariable(name = "examId", required = false) String examStringId) {
+        Long examId = null, groupId = null;
+        if (!Objects.equals(groupStringId, "null")) {
+            groupId = Long.parseLong(groupStringId);
+        }
+        if (!Objects.equals(examStringId, "null")) {
+            examId = Long.parseLong(examStringId);
+        }
+        return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId, groupId, examId);
+    }
+
+    @Operation(description = "Method that retrieves analytics by discipline id and student id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/discipline/{disciplineId}/student")
+    public Analytics getStatisticsByStudent(@PathVariable Long disciplineId) {
+        return analyticsService.getAnalyticByStudentId(disciplineId);
+    }
+
+    @Operation(description = "Method that retrieves summary by disciplineId")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/discipline/{disciplineId}/summary")
+    public List<Analytics> getSummaryByDiscipline(@PathVariable Long disciplineId) {
+        return analyticsService.getAnalyticsSummaryByDiscipline(disciplineId);
+    }
+
+    @Operation(description = "Method that retrieves analytics by discipline id and student id, and group id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/summary")
+    public List<Analytics> getSummaryByDisciplineAndGroupId(@PathVariable Long disciplineId,
+                                                            @PathVariable Long groupId) {
+        return analyticsService.getAnalyticsSummaryByDisciplineAndGroup(disciplineId, groupId);
     }
 }
