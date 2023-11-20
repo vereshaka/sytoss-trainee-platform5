@@ -33,4 +33,15 @@ public class UserService extends AbstractService {
         }
         return students;
     }
+
+    public List<Student> getStudentsOfGroup(Long groupId) {
+        List<Student> students = new ArrayList<>();
+        List<Student> studentsByGroup = userConnector.getStudentOfGroup(groupId);
+        studentsByGroup.forEach(student -> {
+            if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
+                students.add(student);
+            }
+        });
+        return students;
+    }
 }

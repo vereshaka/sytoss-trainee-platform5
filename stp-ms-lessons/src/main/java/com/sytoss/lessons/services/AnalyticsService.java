@@ -142,15 +142,19 @@ public class AnalyticsService extends AbstractService {
         if (disciplineId == null) {
             throw new AbsentDisciplineException();
         }
-        List<RatingModel> ratingModels = new ArrayList<>();
+        List<RatingModel> ratingModels;
+        List<Long> students = new ArrayList<>();
+        if(groupId!=null){
+            students = userService.getStudentsOfGroup(groupId).stream().map(AbstractUser::getId).toList();
+        }
         if (examId == null && groupId == null) {
             ratingModels = analyticsConnector.getStudentRatingsByDiscipline(disciplineId);
         } else if (groupId == null) {
             ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndExamId(disciplineId, examId);
         } else if (examId == null) {
-            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupId(disciplineId, groupId);
+            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupId(disciplineId, students);
         } else {
-            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, groupId, examId);
+            ratingModels = analyticsConnector.getStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
         }
 
         return ratingModels;

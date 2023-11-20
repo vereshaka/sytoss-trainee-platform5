@@ -46,7 +46,7 @@ public class AnalyticsElementWhen extends AbstractGiven {
         if(!Objects.equals(groupStringId, "null")){
             groupId = Long.parseLong(getTestExecutionContext().replaceId(groupStringId).toString());
         }
-        String url = "/api/analytics/rating/discipline/" + disciplineId+"/group/"+examId+"/exam/"+groupId;
+        String url = "/api/analytics/rating/discipline/" + disciplineId+"/group/"+groupId+"/exam/"+examId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<RatingModel>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
@@ -46,13 +47,13 @@ public class AnalyticsController {
     })
     @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
     public List<RatingModel> returnAnalyticsElementsByDisciplineGroupExam(@PathVariable Long disciplineId,
-                                                                          @PathVariable(required = false) String groupStringId,
-                                                                          @PathVariable(required = false) String examStringId) {
+                                                                          @PathVariable(name = "groupId", required = false) String groupStringId,
+                                                                          @PathVariable(name = "examId", required = false) String examStringId) {
         Long examId=null, groupId=null;
-        if(groupStringId!=null){
+        if(!Objects.equals(groupStringId, "null")){
             groupId = Long.parseLong(groupStringId);
         }
-        if(examStringId!=null){
+        if(!Objects.equals(examStringId, "null")){
             examId = Long.parseLong(examStringId);
         }
         return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId,groupId,examId);
