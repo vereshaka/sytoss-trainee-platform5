@@ -5,6 +5,8 @@ import com.sytoss.lessons.bdd.common.ExamAssigneeView;
 import com.sytoss.lessons.bdd.common.ExamView;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import io.cucumber.datatable.DataTable;
@@ -26,7 +28,7 @@ public class ExamGiven extends LessonsIntegrationTest {
     }
 
     @Given("^this discipline with id (.*) has exams$")
-    public void examExists(String disciplineId,DataTable exams) {
+    public void examExists(String disciplineId, DataTable exams) {
         List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(ExamView::new).toList();
         for (ExamView item : examList) {
             ExamDTO dto = new ExamDTO();
@@ -80,9 +82,23 @@ public class ExamGiven extends LessonsIntegrationTest {
             dto.setTasks(new ArrayList<>());
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(String::trim).toList();
+            List<TopicDTO> topicDTOS = new ArrayList<>();
             for (String taskId : taskIds) {
-                Long id = (Long)getTestExecutionContext().replaceId(taskId);
-                dto.getTasks().add(getTaskConnector().getReferenceById(id));
+                Long id = (Long) getTestExecutionContext().replaceId(taskId);
+                TaskDTO taskDTO = getTaskConnector().findById(id).orElse(null);
+                if (taskDTO != null) {
+                    dto.getTasks().add(taskDTO);
+                    for (TopicDTO topicDTO : taskDTO.getTopics()) {
+                        if (!topicDTOS.stream().map(TopicDTO::getId).toList().contains(topicDTO.getId())) {
+                            topicDTOS.add(topicDTO);
+                        }
+                    }
+                }
+
+            }
+            dto.setTopics(topicDTOS);
+            if (!topicDTOS.isEmpty()) {
+                dto.setDiscipline(topicDTOS.get(0).getDiscipline());
             }
             dto = getExamConnector().save(dto);
             getTestExecutionContext().registerId(item.getId(), dto.getId());

@@ -18,7 +18,6 @@ public abstract class StpUnitTest {
 
     protected Discipline createDiscipline(String disciplineName, Teacher teacher) {
         Discipline discipline = new Discipline();
-        discipline.setId(1L);
         discipline.setName(disciplineName);
         discipline.setTeacher(teacher);
         return discipline;

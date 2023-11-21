@@ -103,6 +103,7 @@ public class TopicGiven extends AbstractGiven {
                 topicResult.setName(topic.getName());
                 topicResult.setDiscipline(disciplineDTO);
                 topicResult = getTopicConnector().save(topicResult);
+
             }
             List<Long> topicIds = finalTopics.get(disciplineDTO.getId());
             if (topicIds == null) {

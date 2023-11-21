@@ -27,6 +27,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,10 +80,10 @@ public class ExamServiceTest extends StpUnitTest {
     private DisciplineConnector disciplineConnector;
 
     @Test
-    @Disabled
     public void shouldSaveExam() {
         Teacher teacher = createTeacher("John", "Johns");
         Discipline discipline = createDiscipline("SQL", teacher);
+        discipline.setId(1L);
 
         Mockito.doAnswer((org.mockito.stubbing.Answer<ExamDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
@@ -247,7 +248,7 @@ public class ExamServiceTest extends StpUnitTest {
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
 
-        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
+        when(examConnector.findById(any())).thenReturn(Optional.of(examDTO));
         ExamAssignee examGroupAssignee = new ExamAssignee();
         examGroupAssignee.setRelevantFrom(new Date());
         examGroupAssignee.setRelevantTo(new Date());
@@ -267,6 +268,7 @@ public class ExamServiceTest extends StpUnitTest {
     public void shouldAssignExamToStudents() {
         Teacher teacher = createTeacher("Teacher", "1");
         Discipline discipline = createDiscipline("SQL", teacher);
+        discipline.setId(1L);
         Student student = new Student();
         student.setId(1L);
 
@@ -287,7 +289,7 @@ public class ExamServiceTest extends StpUnitTest {
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
 
-        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
+        when(examConnector.findById(any())).thenReturn(Optional.of(examDTO));
         ExamAssignee examStudentAssignee = new ExamAssignee();
         examStudentAssignee.setRelevantFrom(new Date());
         examStudentAssignee.setRelevantTo(new Date());

@@ -139,7 +139,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
         taskDomainDTO.setDataScript(dataScriptFromFile);
         taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
 
-        List<TaskView> tasksList= tasks.asMaps(String.class, String.class).stream().toList().stream().map(el -> new TaskView(el)).toList();
+        List<TaskView> tasksList= tasks.asMaps(String.class, String.class).stream().toList().stream().map(TaskView::new).toList();
 
         for (TaskView item : tasksList){
             TaskDTO dto = new TaskDTO();
