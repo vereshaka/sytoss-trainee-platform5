@@ -100,12 +100,12 @@ public class ExamController {
         return examService.assign(examId, examAssignee);
     }
 
-    @Operation(description = "Method that assign exam to group")
+    @Operation(description = "Method that returns exam by exam assignee id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/assignee/{examAssigneeId}")
-    public Exam getExamByAssignee(@PathVariable long examAssigneeId) {
+    public Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId) {
         return examService.getExamByExamAssignee(examAssigneeId);
     }
 }

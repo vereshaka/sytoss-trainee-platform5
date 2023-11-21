@@ -1,6 +1,8 @@
 package com.sytoss.producer.bdd.given;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -18,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.mockito.Mockito.when;
 
 public class PersonalExamGiven extends TestProducerIntegrationTest {
 
@@ -54,6 +58,9 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         discipline.setId(1L);
         personalExam.setDiscipline(discipline);
         personalExam.setExamAssigneeId(1L);
+        Exam exam = new Exam();
+        exam.setId(1L);
+        when(getLessonsConnector().getExamByAssignee(personalExam.getExamAssigneeId())).thenReturn(exam);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
             personalExam.setAssignedDate(dateFormat.parse(date));
@@ -69,6 +76,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
        // answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
 
         personalExam.setAnswers(answers);
+
+        personalExam.finish();
         getPersonalExamConnector().save(personalExam);
 
         getTestExecutionContext().getDetails().setStudentUid(student.getUid());
@@ -140,6 +149,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             answers.stream().filter(answer -> Objects.equals(answer.getTask().getId(), taskId)).toList().get(0).setTeacherGrade(newTeacherGrade);
         }
         personalExam.setAnswers(answers);
+        personalExam.review();
 
         getTestExecutionContext().getDetails().setPersonalExam(personalExam);
     }

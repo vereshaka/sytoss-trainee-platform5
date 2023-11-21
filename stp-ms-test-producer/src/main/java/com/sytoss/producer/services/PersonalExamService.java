@@ -198,13 +198,17 @@ public class PersonalExamService extends AbstractService {
         personalExam.summary();
         PersonalExam result = personalExamConnector.save(personalExam);
 
+        PersonalExam personalExam1 = new PersonalExam();
+        personalExam1.setId(personalExam.getId());
+        personalExam1.setExamAssigneeId(personalExam.getExamAssigneeId());
+        personalExam1.finish();
         Analytic analytic = new Analytic();
         analytic.setDiscipline(new Discipline());
         analytic.getDiscipline().setId(personalExam.getDiscipline().getId());
-        analytic.setPersonalExam(new PersonalExam());
-        analytic.getPersonalExam().setId(personalExam.getId());
+        analytic.setPersonalExam(personalExam1);
         analytic.setExam(new Exam());
-        analytic.getExam().setId(lessonsConnector.getExamByAssignee(personalExam.getExamAssigneeId()).getId());
+        Exam exam = lessonsConnector.getExamByAssignee(personalExam1.getExamAssigneeId());
+        analytic.getExam().setId(exam.getId());
         analytic.setStudent(new Student());
         analytic.getStudent().setId(personalExam.getStudent().getId());
         analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));

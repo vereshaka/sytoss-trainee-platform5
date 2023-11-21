@@ -359,4 +359,5 @@ public class ExamService extends AbstractService {
             return exam;
         }
         throw new ExamNotFoundException("examAssigneeId: " + examAssigneeId);
-    }}
+    }
+}

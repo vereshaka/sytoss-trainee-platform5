@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(url = "${lessons-url}", name = "examAssigneeConnector")
+@FeignClient(url = "${lessons-url}", name = "lessonsConnector")
 public interface LessonsConnector {
 
     @GetMapping(value = "assignee/{examAssigneeId}/report")
@@ -19,5 +19,5 @@ public interface LessonsConnector {
     void updateAnalytic(@RequestBody Analytic newItem);
 
     @GetMapping("exam/assignee/{examAssigneeId}")
-    Exam getExamByAssignee(@PathVariable long examAssigneeId);
+    Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId);
 }
