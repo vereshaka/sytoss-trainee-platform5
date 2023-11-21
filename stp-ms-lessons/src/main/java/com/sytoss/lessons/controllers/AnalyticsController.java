@@ -8,10 +8,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
@@ -28,8 +27,15 @@ public class AnalyticsController {
     })
     @PostMapping("")
     public void updateAnalyticsElement(@RequestBody Analytic analytic) {
-        analyticsService.updateAnalyticsElement(analytic);
+        analyticsService.updateAnalytic(analytic);
     }
 
-
+    @Operation(description = "Method that migrate old tests to analytics elements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/migrate/{disciplineId}")
+    public List<Analytic> migrate(@PathVariable Long disciplineId) {
+        return analyticsService.migrate(disciplineId);
+    }
 }

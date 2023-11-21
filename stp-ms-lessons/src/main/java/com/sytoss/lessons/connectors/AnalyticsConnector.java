@@ -13,7 +13,7 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
 
     List<AnalyticsDTO> getByDisciplineIdAndStudentId(Long disciplineId, Long studentId);
 
-    List<AnalyticsDTO> deleteAnalyticsElementDTOByDisciplineIdAndStudentId(Long disciplineId, Long studentId);
+    List<AnalyticsDTO> deleteAnalyticsDTOByDisciplineIdAndStudentId(Long disciplineId, Long studentId);
 
     List<AnalyticsDTO> deleteAllByExamId(Long examId);
 

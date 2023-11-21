@@ -2,6 +2,7 @@ package com.sytoss.lessons.connectors;
 
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,5 +25,9 @@ public interface PersonalExamConnector {
 
     @PostMapping("personal-exam/task/update")
     void updateTask(Task task);
+
+    @GetMapping("personal-exam/assignee/{examAssigneeId}")
+    List<PersonalExam> getListOfPersonalExamByExamAssigneeId(@PathVariable(name = "examAssigneeId") Long examAssigneeId);
+
 }
 
