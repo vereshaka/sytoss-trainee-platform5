@@ -105,7 +105,7 @@ public class ExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/assignee/{examAssigneeId}")
-    public Exam getExamByAssignee(long examAssigneeId) {
+    public Exam getExamByAssignee(@PathVariable long examAssigneeId) {
         return examService.getExamByExamAssignee(examAssigneeId);
     }
 }

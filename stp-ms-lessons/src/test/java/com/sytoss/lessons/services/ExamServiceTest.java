@@ -248,7 +248,7 @@ public class ExamServiceTest extends StpUnitTest {
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
 
-        when(examConnector.findById(any())).thenReturn(Optional.of(examDTO));
+        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
         ExamAssignee examGroupAssignee = new ExamAssignee();
         examGroupAssignee.setRelevantFrom(new Date());
         examGroupAssignee.setRelevantTo(new Date());
@@ -289,7 +289,7 @@ public class ExamServiceTest extends StpUnitTest {
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
 
-        when(examConnector.findById(any())).thenReturn(Optional.of(examDTO));
+        when(examConnector.getReferenceById(any())).thenReturn(examDTO);
         ExamAssignee examStudentAssignee = new ExamAssignee();
         examStudentAssignee.setRelevantFrom(new Date());
         examStudentAssignee.setRelevantTo(new Date());

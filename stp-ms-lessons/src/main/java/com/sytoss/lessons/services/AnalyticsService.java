@@ -2,12 +2,14 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.analytics.AnaliticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.dto.AnalyticsDTO;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -76,8 +78,11 @@ public class AnalyticsService extends AbstractService {
 
         List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(students);
 
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
         for (PersonalExam personalExam : personalExams) {
             Analytic analytic = new Analytic();
+            analytic.setDiscipline(discipline);
             analytic.setExam(new Exam());
             analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
             analytic.setStudent(personalExam.getStudent());

@@ -18,6 +18,6 @@ public interface LessonsConnector {
     @PostMapping("analytics")
     void updateAnalytic(@RequestBody Analytic newItem);
 
-    @GetMapping("assignee/{examAssigneeId}")
+    @GetMapping("exam/assignee/{examAssigneeId}")
     Exam getExamByAssignee(@PathVariable long examAssigneeId);
 }

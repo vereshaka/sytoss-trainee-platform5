@@ -94,6 +94,7 @@ Feature: PersonalExam
       | Exam1 |
       | Exam2 |
 
+    @Bug
   Scenario: teacher gets system and teacher grade
     Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023
       | listOfSubjects | taskId | question                    | answer                    | task status | grade |

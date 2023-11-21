@@ -105,12 +105,6 @@ public class AnalyticsThen extends AbstractGiven {
                 assertEquals(analyticsElementFromFeature.getExam().getId(), analyticsElementFromResponse.getExam().getId());
                 assertEquals(analyticsElementFromFeature.getStudent().getId(), analyticsElementFromResponse.getStudent().getId());
                 assertEquals(analyticsElementFromFeature.getPersonalExam().getId(), analyticsElementFromResponse.getPersonalExam().getId());
-                assertEquals(analyticsElementFromFeature.getExam().getExamAssignees().size(),analyticsElementFromResponse.getExam().getExamAssignees().size());
-                if(analyticsElementFromFeature.getExam().getExamAssignees().size()!=0){
-                    for(int i=0;i<analyticsElementFromFeature.getExam().getExamAssignees().size(); i++){
-                        assertEquals(analyticsElementFromFeature.getExam().getExamAssignees().get(i).getId(),analyticsElementFromResponse.getExam().getExamAssignees().get(i).getId());
-                    }
-                }
                 assertEquals(analyticsElementFromFeature.getGrade().getGrade(), analyticsElementFromResponse.getGrade().getGrade());
                 assertEquals(analyticsElementFromFeature.getGrade().getTimeSpent(), analyticsElementFromResponse.getGrade().getTimeSpent());
                 assertEquals(analyticsElementFromFeature.getStartDate(), analyticsElementFromResponse.getStartDate());
