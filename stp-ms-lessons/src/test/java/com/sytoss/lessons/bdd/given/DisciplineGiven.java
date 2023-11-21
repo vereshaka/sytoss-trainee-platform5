@@ -80,10 +80,11 @@ public class DisciplineGiven extends AbstractGiven {
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
                 if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
+                    disciplineService.delete(disciplineDTO.getId());
                     getDisciplineConnector().deleteById(disciplineDTO.getId());
                 }
                 if (!(disciplineDTO.getTeacherId().equals(disciplineDtoFromTable.getTeacherId()))) {
-                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                    disciplineService.delete(disciplineDTO.getId());
                 }
             }
         }
