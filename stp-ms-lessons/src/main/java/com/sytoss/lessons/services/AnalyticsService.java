@@ -2,19 +2,13 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.analytics.AnaliticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
-import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.AbstractUser;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.convertors.AnalyticsConvertor;
-import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.dto.AnalyticsDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +33,6 @@ public class AnalyticsService extends AbstractService {
     private final ExamConnector examConnector;
 
     private final PersonalExamConnector personalExamConnector;
-
-    private final ExamService examService;
 
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, List<Student> students) {
         List<AnalyticsDTO> analyticsElementDTOS = new ArrayList<>();
@@ -78,28 +70,16 @@ public class AnalyticsService extends AbstractService {
         List<ExamDTO> exams = examConnector.findByTopics_Discipline_Id(disciplineId);
         List<Analytic> analytics = new ArrayList<>();
 
-        ExamAssigneeConvertor examAssigneeConvertor = new ExamAssigneeConvertor();
-
         for (ExamDTO examDTO : exams) {
-            List<ExamAssigneeDTO> examAssigneeDTOS = examDTO.getExamAssignees();
-            for (ExamAssigneeDTO examAssigneeDTO : examAssigneeDTOS) {
-                ExamAssignee examAssignee = new ExamAssignee();
-                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                if (examAssignee.getGroups().isEmpty()) {
-                    checkOrCreate(disciplineId, examDTO.getId(), examAssignee.getStudents());
-                } else {
-                    for (Group group : examAssignee.getGroups()) {
-                        checkOrCreate(disciplineId, examDTO.getId(), group.getId());
-                    }
-                }
-            }
+            checkOrCreate(disciplineId, examDTO.getId(), students);
         }
 
         List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(students);
 
         for (PersonalExam personalExam : personalExams) {
             Analytic analytic = new Analytic();
-            analytic.setExam(examService.getExamByExamAssignee(personalExam.getExamAssigneeId()));
+            analytic.setExam(new Exam());
+            analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
             analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
