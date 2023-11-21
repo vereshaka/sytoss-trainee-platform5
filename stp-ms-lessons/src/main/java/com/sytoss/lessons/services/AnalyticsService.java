@@ -40,7 +40,7 @@ public class AnalyticsService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    private final AnalyticsConvertor analyticsConvertor;
+    private final ExamService examService;
 
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, List<Student> students) {
         List<AnalyticsDTO> analyticsElementDTOS = new ArrayList<>();
@@ -99,26 +99,10 @@ public class AnalyticsService extends AbstractService {
 
         for (PersonalExam personalExam : personalExams) {
             Analytic analytic = new Analytic();
-            ExamDTO examByExamAssignee = exams.stream().filter(examDTO -> examDTO.getExamAssignees().stream().map(ExamAssigneeDTO::getId).toList().contains(personalExam.getExamAssigneeId())).toList().get(0);
-            Discipline discipline = new Discipline();
-            discipline.setId(disciplineId);
-            analytic.setDiscipline(discipline);
-            Exam exam = new Exam();
-            exam.setId(examByExamAssignee.getId());
-            exam.setName(examByExamAssignee.getName());
-            exam.setMaxGrade(examByExamAssignee.getMaxGrade());
-            for (ExamAssigneeDTO examAssigneeDTO : examByExamAssignee.getExamAssignees()) {
-                ExamAssignee examAssignee = new ExamAssignee();
-                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                exam.getExamAssignees().add(examAssignee);
-            }
-            analytic.setExam(exam);
+            analytic.setExam(examService.getExamByExamAssignee(personalExam.getExamAssigneeId()));
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
-            AnaliticGrade analiticGrade = new AnaliticGrade();
-            analiticGrade.setGrade(personalExam.getSummaryGrade());
-            analiticGrade.setTimeSpent(personalExam.getSpentTime());
-            analytic.setGrade(analiticGrade);
+            analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
             analytic.setStartDate(personalExam.getStartedDate());
             updateAnalytic(analytic);
             analytics.add(analytic);
