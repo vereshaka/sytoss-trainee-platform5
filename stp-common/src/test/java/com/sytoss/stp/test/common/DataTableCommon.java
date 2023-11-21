@@ -12,6 +12,7 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.bs.A;
 import liquibase.util.StringUtil;
 
 import java.util.ArrayList;
@@ -284,5 +285,20 @@ public class DataTableCommon {
         ratingModel.setAvgGrade(Double.parseDouble(entry.get("avgGrade")));
         ratingModel.setAvgTimeSpent(Math.round(Double.parseDouble(entry.get("avgTimeSpent"))));
         return ratingModel;
+    }
+
+    @DataTableType
+    public Analytics mapAnalytics(Map<String, String> entry) {
+        Analytics analytics = new Analytics();
+        Student student = new Student();
+        student.setId(Long.valueOf(entry.get("studentId")));
+        analytics.setStudent(student);
+        com.sytoss.domain.bom.lessons.Grade grade = new com.sytoss.domain.bom.lessons.Grade();
+        grade.setGrade(Double.parseDouble(entry.get("avgGrade")));
+        grade.setTimeSpent(Math.round(Double.parseDouble(entry.get("avgTimeSpent"))));
+        StudentsGrade studentsGrade = new StudentsGrade();
+        studentsGrade.setAverage(grade);
+        analytics.setStudentsGrade(studentsGrade);
+        return analytics;
     }
 }

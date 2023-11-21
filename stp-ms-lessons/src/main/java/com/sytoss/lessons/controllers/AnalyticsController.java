@@ -47,7 +47,7 @@ public class AnalyticsController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
-    public List<RatingModel> returnAnalyticsElementsByDisciplineGroupExam(@PathVariable Long disciplineId,
+    public List<Analytics> returnAnalyticsElementsByDisciplineGroupExam(@PathVariable Long disciplineId,
                                                                           @PathVariable(name = "groupId", required = false) String groupStringId,
                                                                           @PathVariable(name = "examId", required = false) String examStringId) {
         Long examId = null, groupId = null;
@@ -65,7 +65,7 @@ public class AnalyticsController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/rating/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
-    public List<RatingModel> getStatisticsByStudent(@PathVariable Long disciplineId,
+    public List<Analytics> getStatisticsByStudent(@PathVariable Long disciplineId,
                                                     @PathVariable(name = "groupId", required = false) String groupStringId,
                                                     @PathVariable(name = "examId", required = false) String examStringId) {
         Long examId = null, groupId = null;

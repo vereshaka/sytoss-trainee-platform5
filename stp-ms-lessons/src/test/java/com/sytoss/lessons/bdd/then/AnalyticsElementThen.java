@@ -1,7 +1,7 @@
 package com.sytoss.lessons.bdd.then;
 
+import com.sytoss.domain.bom.lessons.Analytics;
 import com.sytoss.domain.bom.lessons.AnalyticsElement;
-import com.sytoss.domain.bom.lessons.analytics.RatingModel;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
@@ -71,15 +71,15 @@ public class AnalyticsElementThen extends AbstractGiven {
         }
     }
 
-    @Then("rating models should be")
-    public void ratingModelsShouldBe(List<RatingModel> ratingModels) {
-        List<RatingModel> ratingsModelsFromResponse = (List<RatingModel>) getTestExecutionContext().getResponse().getBody();
-        for (RatingModel ratingModel : ratingModels) {
-            for (RatingModel ratingModelFromResponse : ratingsModelsFromResponse) {
-                assertEquals(ratingModel.getStudentId(), ratingModelFromResponse.getStudentId());
-                assertEquals(ratingModel.getAvgGrade(), ratingModelFromResponse.getAvgGrade());
-                assertEquals(ratingModel.getAvgTimeSpent(), ratingModelFromResponse.getAvgTimeSpent());
-                ratingsModelsFromResponse.remove(ratingModelFromResponse);
+    @Then("analytics should be")
+    public void ratingModelsShouldBe(List<Analytics> analyticsList) {
+        List<Analytics> analyticsListFromResponse = (List<Analytics>) getTestExecutionContext().getResponse().getBody();
+        for (Analytics analytics : analyticsList) {
+            for (Analytics analyticsFromResponse : analyticsListFromResponse) {
+                assertEquals(analytics.getStudent().getId(), analyticsFromResponse.getStudent().getId());
+                assertEquals(analytics.getStudentsGrade().getAverage().getGrade(), analyticsFromResponse.getStudentsGrade().getAverage().getGrade());
+                assertEquals(analytics.getStudentsGrade().getAverage().getTimeSpent(), analyticsFromResponse.getStudentsGrade().getAverage().getTimeSpent());
+                analyticsListFromResponse.remove(analyticsFromResponse);
                 break;
             }
         }

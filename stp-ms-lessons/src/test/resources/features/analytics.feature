@@ -47,7 +47,7 @@ Feature: Analytics
       | *d2          | *ex2   | 1         | *pe1           | 6     | 2         |
     When teacher gets ratings by discipline *d1, by exam null and by group null
     Then operation is successful
-    And rating models should be
+    And analytics should be
       | studentId | avgGrade | avgTimeSpent |
       | 2         | 5        | 3            |
       | 1         | 6        | 1            |
@@ -61,7 +61,7 @@ Feature: Analytics
       | *d2          | *ex1   | 1         | *pe1           | 6     | 2         |
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group null
     Then operation is successful
-    And rating models should be
+    And analytics should be
       | studentId | avgGrade | avgTimeSpent |
       | 2         | 5        | 3            |
       | 1         | 6        | 1            |
@@ -79,7 +79,7 @@ Feature: Analytics
       | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       |
     When teacher gets ratings by discipline *d1, by exam null and by group 1
     Then operation is successful
-    And rating models should be
+    And analytics should be
       | studentId | avgGrade | avgTimeSpent |
       | 1         | 7        | 3            |
 
@@ -100,7 +100,7 @@ Feature: Analytics
       | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       |
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group 1
     Then operation is successful
-    And rating models should be
+    And analytics should be
       | studentId | avgGrade | avgTimeSpent |
       | 2         | 5        | 3            |
       | 1         | 10       | 3            |
