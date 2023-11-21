@@ -2,8 +2,8 @@ Feature: Discipline
 
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
+    And analytics is empty
 
-    @Bug
   Scenario: receive all discipline of student
     Given disciplines exist
       | discipline |
@@ -23,27 +23,23 @@ Feature: Discipline
       | second     |
       | third      |
 
-  @Bug
   Scenario: teacher creates a new discipline
     Given discipline "SQL" doesn't exist
     When teacher creates "SQL" discipline
     Then operation is successful
     And "SQL" discipline should exist
 
-  @Bug
   Scenario: teacher creates a discipline that already exists
     Given "SQL" discipline exists
     When teacher creates "SQL" discipline
     Then operation should be finished with 409 "Discipline with name "SQL" already exist" error
 
-  @Bug
   Scenario: retrieve discipline information
     Given "SQL" discipline exists
     When receive "SQL" discipline information
     Then operation is successful
     And "SQL" discipline should be received
 
-  @Bug
   Scenario: get teacher's discipline
     Given disciplines exist
       | teacherId | discipline |
@@ -59,7 +55,6 @@ Feature: Discipline
       | 1         | Mongo      |
       | 1         | SQL        |
 
-  @Bug
   Scenario: get disciplines in order
     Given disciplines exist
       | teacherId | discipline | creationDate |
@@ -75,7 +70,6 @@ Feature: Discipline
       | 1         | SQL        |
       | 1         | H2         |
 
-  @Bug
   Scenario: search disciplines
     Given disciplines exist
       | discipline |
@@ -88,13 +82,11 @@ Feature: Discipline
       | SQL        |
       | Mongo      |
 
-  @Bug
   Scenario: Link task to topic
     Given "SQL" discipline exists
     When link this discipline to group with id 17
     Then operation is successful
 
-  @Bug
   Scenario: get discipline's icon
     Given "SQL" discipline exists
     And this discipline has icon with bytes "1, 2, 3"
@@ -102,7 +94,6 @@ Feature: Discipline
     Then operation is successful
     And discipline's icon should be received
 
-  @Bug
   Scenario: STP-772 Delete Discipline
     Given "SQL-772" discipline exists with id *d1
     And topics exist

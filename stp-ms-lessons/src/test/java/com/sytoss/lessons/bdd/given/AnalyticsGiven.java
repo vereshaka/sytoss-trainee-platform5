@@ -230,4 +230,9 @@ public class AnalyticsGiven extends AbstractGiven {
         }
         getTestExecutionContext().getDetails().setAnalytic(analytic);
     }
+
+    @Given("^analytics is empty$")
+    public void analyticsIsEmpty() {
+        getAnalyticsConnector().deleteAll();
+    }
 }

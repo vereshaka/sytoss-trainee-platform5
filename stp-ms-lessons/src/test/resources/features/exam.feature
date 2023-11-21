@@ -22,7 +22,6 @@ Feature: Exam
       | SQL        | Set of Tables |
       | SQL        | Join          |
 
-    @Bug
   Scenario: STP-695 Error occurs during exam creation
     #Given teacher with specific id 4 exists
     Given discipline with specific id 1 and specific teacher id 4 exists
