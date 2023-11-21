@@ -1,5 +1,6 @@
 package com.sytoss.producer.bdd.given;
 
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -49,7 +50,10 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         Student student = new Student();
         student.setUid(String.valueOf(studentId));
         personalExam.setStudent(student);
-
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        personalExam.setDiscipline(discipline);
+        personalExam.setExamAssigneeId(1L);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
             personalExam.setAssignedDate(dateFormat.parse(date));

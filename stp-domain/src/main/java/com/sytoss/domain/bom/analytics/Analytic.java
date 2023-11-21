@@ -7,6 +7,8 @@ import com.sytoss.domain.bom.users.Student;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 public class Analytic {
@@ -17,4 +19,5 @@ public class Analytic {
 
     private PersonalExam personalExam;
     private AnaliticGrade grade;
+    private Date startDate;
 }

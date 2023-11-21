@@ -478,4 +478,12 @@ public class PersonalExamService extends AbstractService {
 
         screenshotConnector.save(screenshotModel);
     }
+
+    public List<PersonalExam> getListOfStudentsPersonalExam(List<Student> students) {
+        List<PersonalExam> personalExams = new ArrayList<>();
+        for(Student student : students){
+            personalExams.addAll(personalExamConnector.getAllByStudent_Id(student.getId()));
+        }
+        return personalExams;
+    }
 }

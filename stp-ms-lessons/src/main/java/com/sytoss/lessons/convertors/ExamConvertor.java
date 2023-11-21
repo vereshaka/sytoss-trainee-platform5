@@ -5,12 +5,10 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.users.Group;
-import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExamConvertor {
 
+    private final DisciplineConvertor disciplineConvertor;
     private final TopicConvertor topicConvertor;
     private final TaskConvertor taskConvertor;
     private final ExamAssigneeConvertor examAssigneeConvertor;
@@ -33,6 +32,11 @@ public class ExamConvertor {
         destination.setNumberOfTasks(source.getNumberOfTasks());
         destination.setTeacherId(source.getTeacher().getId());
         destination.setMaxGrade(source.getMaxGrade());
+
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineConvertor.toDTO(source.getDiscipline(), disciplineDTO);
+
+        destination.setDiscipline(disciplineDTO);
 
         if (!source.getExamAssignees().isEmpty()) {
             for (ExamAssignee examAssignee : source.getExamAssignees()) {

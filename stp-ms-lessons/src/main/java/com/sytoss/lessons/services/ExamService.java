@@ -61,6 +61,8 @@ public class ExamService extends AbstractService {
 
     private final AnalyticsService analyticsService;
 
+    private final GroupReferenceConnector groupReferenceConnector;
+
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
@@ -94,7 +96,7 @@ public class ExamService extends AbstractService {
         ExamDTO result = examConnector.save(examDTO);
         examConvertor.fromDTO(result, exam);
 
-        List<GroupReferenceDTO> groups = examDTO.getDiscipline().getGroupReferences();
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(exam.getDiscipline().getId());
         for (GroupReferenceDTO group: groups) {
             analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
         }

@@ -36,7 +36,7 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
     private ExamAssigneeConnector examAssigneeConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
+    private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(),new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
 
     @Spy

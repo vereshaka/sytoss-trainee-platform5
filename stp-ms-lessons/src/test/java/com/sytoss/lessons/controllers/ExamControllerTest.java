@@ -49,6 +49,7 @@ public class ExamControllerTest extends LessonsControllerTest {
         TaskDTO task = new TaskDTO();
         task.setTaskDomain(new TaskDomainDTO());
         exam.setTasks(List.of(task));
+
         when(examConnector.getReferenceById(any())).thenReturn(exam);
 
         Group group = new Group();
