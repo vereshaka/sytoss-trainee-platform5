@@ -15,6 +15,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
@@ -54,11 +55,11 @@ public class ExamService extends AbstractService {
 
     private final ExamAssigneeToConnector examAssigneeToConnector;
 
-    private final ExamAssigneeService examAssigneeService;
-
     private final TopicConnector topicConnector;
 
     private final TaskConnector taskConnector;
+
+    private final AnalyticsService analyticsService;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -92,6 +93,12 @@ public class ExamService extends AbstractService {
         }
         ExamDTO result = examConnector.save(examDTO);
         examConvertor.fromDTO(result, exam);
+
+        List<GroupReferenceDTO> groups = examDTO.getDiscipline().getGroupReferences();
+        for (GroupReferenceDTO group: groups) {
+            analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
+        }
+
         return exam;
     }
 
@@ -246,6 +253,7 @@ public class ExamService extends AbstractService {
                     log.error("Could not create a personal exam for student", e);
                 }
             }
+            analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), students);
         }
         for (Student student : examAssignee.getStudents()) {
             ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
@@ -259,6 +267,7 @@ public class ExamService extends AbstractService {
                 log.error("Could not create a personal exam for student", e);
             }
         }
+        analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), examAssignee.getStudents());
         return exam;
     }
 
@@ -339,4 +348,13 @@ public class ExamService extends AbstractService {
             return exam;
         }).toList();
     }
-}
+
+    public Exam getExamByExamAssignee(Long examAssigneeId) {
+        ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
+        if(examDTO !=null){
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO,exam);
+            return exam;
+        }
+        throw new ExamNotFoundException("examAssigneeId: " + examAssigneeId);
+    }}

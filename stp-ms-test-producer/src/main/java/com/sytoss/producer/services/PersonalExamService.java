@@ -1,13 +1,13 @@
 package com.sytoss.producer.services;
 
+import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.ExamReportModel;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskReportModel;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.connectors.ExamAssigneeConnector;
+import com.sytoss.domain.bom.users.Student;
+import com.sytoss.producer.connectors.LessonsConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.interfaces.AnswerGenerator;
@@ -43,7 +43,7 @@ public class PersonalExamService extends AbstractService {
 
     private final PersonalExamConnector personalExamConnector;
 
-    private final ExamAssigneeConnector examAssigneeConnector;
+    private final LessonsConnector lessonsConnector;
 
     private final ObjectProvider<ExcelBuilder> excelBuilderFactory;
 
@@ -196,7 +196,22 @@ public class PersonalExamService extends AbstractService {
 
         personalExam.review();
         personalExam.summary();
-        return personalExamConnector.save(personalExam);
+        PersonalExam result = personalExamConnector.save(personalExam);
+
+        Analytic analytic = new Analytic();
+        analytic.setDiscipline(new Discipline());
+        analytic.getDiscipline().setId(personalExam.getDiscipline().getId());
+        analytic.setPersonalExam(new PersonalExam());
+        analytic.getPersonalExam().setId(personalExam.getId());
+        analytic.setExam(new Exam());
+        analytic.getExam().setId(lessonsConnector.getExamIdFor(personalExam.getExamAssigneeId()));
+        analytic.setStudent(new Student());
+        analytic.getStudent().setId(personalExam.getStudent().getId());
+        analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+
+        lessonsConnector.updateAnalytic(analytic);
+
+        return result;
     }
 
     public byte[] getQuestionImage(String personalExamId) {
@@ -341,7 +356,7 @@ public class PersonalExamService extends AbstractService {
 
     public byte[] getExcelReport(Long examAssigneeId) throws IOException {
         ExcelBuilder excelBuilder = excelBuilderFactory.getObject();
-        ExamReportModel examReportModel = examAssigneeConnector.getReportInfo(examAssigneeId);
+        ExamReportModel examReportModel = lessonsConnector.getReportInfo(examAssigneeId);
         List<PersonalExam> personalExams = personalExamConnector.getAllByExamAssigneeId(examAssigneeId);
 
         List<TaskReportModel> uniqueTasks = personalExams.stream()

@@ -99,4 +99,13 @@ public class ExamController {
     public Exam assignGroupsToExam(@PathVariable Long examId, @RequestBody ExamAssignee examAssignee) {
         return examService.assign(examId, examAssignee);
     }
+
+    @Operation(description = "Method that assign exam to group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/assignee/{examAssigneeId}")
+    public Exam getExamByAssignee(long examAssigneeId) {
+        return examService.getExamByExamAssignee(examAssigneeId);
+    }
 }

@@ -40,4 +40,18 @@ public class GroupService extends AbstractService {
         }
         return null;
     }
+
+    public List<Group> getGroups(Long disciplineId) {
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
+        List<Group> result = new ArrayList<>();
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        for (GroupReferenceDTO item : groups) {
+            Group group = new Group();
+            group.setId(item.getGroupId());
+            group.setDiscipline(discipline);
+            result.add(group);
+        }
+        return result;
+    }
 }
