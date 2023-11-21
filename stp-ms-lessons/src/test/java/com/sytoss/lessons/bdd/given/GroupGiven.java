@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class GroupGiven extends LessonsIntegrationTest {
 
@@ -18,21 +17,20 @@ public class GroupGiven extends LessonsIntegrationTest {
     public void groupsExist(List<Group> groups) {
         List<Long> groupId = new ArrayList<>();
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
-        for(Group group : groups){
-            DisciplineDTO disciplineDTO = new DisciplineDTO();
-            disciplineDTO.setId(group.getDiscipline().getId());
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(),disciplineDTO);
+        for (Group group : groups) {
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(group.getDiscipline().getName(), 1L);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(), disciplineDTO);
             groupReferenceDTOS.add(groupReferenceDTO);
         }
 
         for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
-            Optional<DisciplineDTO> optionalDisciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId());
-            DisciplineDTO disciplineDTO = optionalDisciplineDTO.orElse(null);
+            DisciplineDTO disciplineDTO = getDisciplineConnector().findById(groupReferenceDTO.getDiscipline().getId()).orElse(null);
             if (disciplineDTO == null) {
                 disciplineDTO = new DisciplineDTO();
                 disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
                 disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
-                getDisciplineConnector().save(disciplineDTO);
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+                groupReferenceDTO.setDiscipline(disciplineDTO);
             }
             GroupReferenceDTO result = getGroupReferenceConnector().findByGroupId(groupReferenceDTO.getGroupId());
             if (result == null) {
@@ -54,7 +52,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         }
 
         if (getTestExecutionContext().getIdMapping().get(disciplineId) != null) {
-            DisciplineDTO disciplineDTO = getDisciplineConnector().getById((Long)getTestExecutionContext().getIdMapping().get(disciplineId));
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getById((Long) getTestExecutionContext().getIdMapping().get(disciplineId));
             getDisciplineConnector().delete(disciplineDTO);
         }
 

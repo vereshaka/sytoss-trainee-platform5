@@ -12,9 +12,9 @@ Feature: Discipline
       | third      |
     And groups exist
       | discipline | group |
-      | 1          | 11    |
-      | 2          | 12    |
-      | 3          | 13    |
+      | first      | 11    |
+      | second     | 12    |
+      | third      | 13    |
     When student receive his disciplines
     Then operation is successful
     And should receive information about discipline of student
