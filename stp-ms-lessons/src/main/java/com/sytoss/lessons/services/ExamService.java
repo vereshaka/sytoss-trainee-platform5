@@ -255,7 +255,7 @@ public class ExamService extends AbstractService {
                     log.error("Could not create a personal exam for student", e);
                 }
             }
-            analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), students);
+            analyticsService.checkOrCreate(examId, examDTO.getDiscipline().getId(), students);
         }
         for (Student student : examAssignee.getStudents()) {
             ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
