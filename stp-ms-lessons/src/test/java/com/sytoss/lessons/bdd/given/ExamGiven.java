@@ -9,6 +9,7 @@ import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.stp.test.cucumber.TestExecutionContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
@@ -80,6 +81,7 @@ public class ExamGiven extends LessonsIntegrationTest {
             dto.setName(item.getName());
             dto.setMaxGrade(Integer.valueOf(item.getMaxGrade()));
             dto.setTasks(new ArrayList<>());
+            dto.setDiscipline(getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId()));
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
             List<String> taskIds = Arrays.stream(item.getTasks().split(",")).map(String::trim).toList();
             List<TopicDTO> topicDTOS = new ArrayList<>();

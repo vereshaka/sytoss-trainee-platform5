@@ -230,50 +230,47 @@ public class ExamService extends AbstractService {
     }
 
     public Exam assign(Long examId, ExamAssignee examAssignee) {
-        ExamDTO examDTO = examConnector.findById(examId).orElse(null);
-        if(examDTO!=null){
-            ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
-            examAssignee.getExam().setId(examId);
-            examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
-            examAssigneeDTO.setExam(examDTO);
-            examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
-            examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-            Exam exam = new Exam();
-            examConvertor.fromDTO(examDTO, exam);
+        ExamDTO examDTO = examConnector.getReferenceById(examId);
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssignee.getExam().setId(examId);
+        examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+        examAssigneeDTO.setExam(examDTO);
+        examAssigneeDTO = examAssigneeConnector.save(examAssigneeDTO);
+        examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+        Exam exam = new Exam();
+        examConvertor.fromDTO(examDTO, exam);
 
-            for (Group group : examAssignee.getGroups()) {
-                ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
-                examToGroupAssigneeDTO.setGroupId(group.getId());
-                examToGroupAssigneeDTO.setParent(examAssigneeDTO);
-                examAssigneeToConnector.save(examToGroupAssigneeDTO);
-                List<Student> students = userConnector.getStudentOfGroup(group.getId());
-                for (Student student : students) {
-                    try {
-                        //TODO: yevgenyv: fix me ASAP
-                        personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
-                    } catch (Exception e) {
-                        //TODO: yevgenyv: need to re think return answer
-                        log.error("Could not create a personal exam for student", e);
-                    }
-                }
-                analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), students);
-            }
-            for (Student student : examAssignee.getStudents()) {
-                ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
-                assigneeToDto.setStudentId(student.getId());
-                assigneeToDto.setParent(examAssigneeDTO);
-                examAssigneeToConnector.save(assigneeToDto);
+        for (Group group : examAssignee.getGroups()) {
+            ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
+            examToGroupAssigneeDTO.setGroupId(group.getId());
+            examToGroupAssigneeDTO.setParent(examAssigneeDTO);
+            examAssigneeToConnector.save(examToGroupAssigneeDTO);
+            List<Student> students = userConnector.getStudentOfGroup(group.getId());
+            for (Student student : students) {
                 try {
+                    //TODO: yevgenyv: fix me ASAP
                     personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
                 } catch (Exception e) {
                     //TODO: yevgenyv: need to re think return answer
                     log.error("Could not create a personal exam for student", e);
                 }
             }
-            analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), examAssignee.getStudents());
-            return exam;
+            analyticsService.checkOrCreate(examId, examDTO.getDiscipline().getId(), students);
         }
-        throw new ExamNotFoundException(examId);
+        for (Student student : examAssignee.getStudents()) {
+            ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
+            assigneeToDto.setStudentId(student.getId());
+            assigneeToDto.setParent(examAssigneeDTO);
+            examAssigneeToConnector.save(assigneeToDto);
+            try {
+                personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
+            } catch (Exception e) {
+                //TODO: yevgenyv: need to re think return answer
+                log.error("Could not create a personal exam for student", e);
+            }
+        }
+        analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), examAssignee.getStudents());
+        return exam;
     }
 
     public List<ExamAssignee> returnExamAssignees(Long examId) {
