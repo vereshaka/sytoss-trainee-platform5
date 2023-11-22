@@ -20,6 +20,8 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
 
     List<AnalyticsDTO> deleteAllByExamId(Long examId);
 
+    List<AnalyticsDTO> deleteAllByDisciplineId(Long disciplineId);
+
     @Query("SELECT new com.sytoss.lessons.dto.AnalyticsAverageDTO(a.studentId, AVG(a.grade), AVG(a.timeSpent)) from ANALYTICS a where a.disciplineId = :disciplineId group by a.studentId order by 2, 3")
     List<AnalyticsAverageDTO> getStudentRatingsByDiscipline(@Param("disciplineId") Long disciplineId);
 

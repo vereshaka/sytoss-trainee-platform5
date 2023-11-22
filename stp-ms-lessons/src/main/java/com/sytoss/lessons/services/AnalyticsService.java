@@ -132,8 +132,11 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.save(dto);
     }
 
-    public void deleteByExamId(Long examId) {
+    public void deleteByExam(long examId){
         analyticsConnector.deleteAllByExamId(examId);
+    }
+    public void deleteByDiscipline(long disciplineId){
+        analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 
     public List<Rating> getAnalyticsElementsByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId) {
