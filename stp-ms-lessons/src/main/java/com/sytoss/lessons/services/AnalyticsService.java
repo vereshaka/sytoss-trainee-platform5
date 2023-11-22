@@ -110,6 +110,9 @@ public class AnalyticsService extends AbstractService {
             log.error("Now elements found");
             //TODO: yevgenyv: correct handling
             dto = new AnalyticsDTO();
+            dto.setDisciplineId(analytic.getDiscipline().getId());
+            dto.setExamId(analytic.getExam().getId());
+            dto.setStudentId(analytic.getStudent().getId());
         }
         AnaliticGrade grade = analytic.getGrade();
         if (dto.getPersonalExamId() == null
@@ -118,6 +121,7 @@ public class AnalyticsService extends AbstractService {
             dto.setPersonalExamId(analytic.getPersonalExam().getId());
             dto.setGrade(analytic.getGrade().getGrade());
             dto.setTimeSpent(analytic.getGrade().getTimeSpent());
+            dto.setStartDate(analytic.getPersonalExam().getStartedDate());
         }
         analyticsConnector.save(dto);
     }
