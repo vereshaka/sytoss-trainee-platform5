@@ -77,15 +77,27 @@ public class DisciplineGiven extends AbstractGiven {
         }
 
         List<DisciplineDTO> disciplineDTOList = getDisciplineConnector().findAll();
+        List<Long> shouldBeDeleted = new ArrayList<>();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             for (DisciplineDTO disciplineDtoFromTable : disciplineDTOS) {
-                if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
-                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                if (disciplineDTO.getName() != null) {
+                    if (!(disciplineDTO.getName().equals(disciplineDtoFromTable.getName()))) {
+                        if (!shouldBeDeleted.contains(disciplineDTO.getId())) {
+                            shouldBeDeleted.add(disciplineDTO.getId());
+                        }
+                    }
                 }
-                if (!(disciplineDTO.getTeacherId().equals(disciplineDtoFromTable.getTeacherId()))) {
-                    getDisciplineConnector().deleteById(disciplineDTO.getId());
+                if (disciplineDTO.getTeacherId() != null) {
+                    if (!(disciplineDTO.getTeacherId().equals(disciplineDtoFromTable.getTeacherId()))) {
+                        if (!shouldBeDeleted.contains(disciplineDTO.getId())) {
+                            shouldBeDeleted.add(disciplineDTO.getId());
+                        }
+                    }
                 }
             }
+        }
+        for (Long idToDelete : shouldBeDeleted) {
+            disciplineService.delete(idToDelete);
         }
         for (DisciplineDTO discipline : disciplineDTOS) {
             DisciplineDTO disciplineResult = getDisciplineConnector().getByNameAndTeacherId(discipline.getName(), discipline.getTeacherId());

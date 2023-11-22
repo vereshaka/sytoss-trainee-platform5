@@ -1,0 +1,74 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-914.xml">
+
+    <changeSet author="YevgenyV" id="ccf-914.2">
+        <createSequence sequenceName="ANALYTICS_SEQ" />
+        <rollback>
+            <dropSequence sequenceName="ANALYTICS_SEQ" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YevgenyV" id="ccf-914.3">
+        <createTable tableName="ANALYTICS">
+            <column name="ID"  type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="DISCIPLINE_ID" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="EXAM_ID" type="BIGINT" >
+                <constraints nullable="false" />
+            </column>
+            <column name="STUDENT_ID" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="PERSONAL_EXAM_ID" type="TEXT" />
+            <column name="GRADE" type="DOUBLE" />
+            <column name="TIME_SPENT" type="BIGINT"/>
+            <column name="START_DATE" type="DATE"/>
+            <column name="CREATED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="CREATED_DATE" type="TIMESTAMP" />
+            <column name="LAST_MODIFIED_BY" type="VARCHAR2(100 BYTE)" />
+            <column name="LAST_MODIFIED_DATE" type="TIMESTAMP" />
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="APPLICANT" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YevgenyV" id="ccf-914.4">
+        <addPrimaryKey tableName="ANALYTICS" columnNames="ID" constraintName="PK_ANALYTICS" />
+        <rollback>
+            <dropPrimaryKey tableName="ANALYTICS" constraintName="PK_ANALYTICS" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YevgenyV" id="ccf-914.5">
+        <addForeignKeyConstraint baseTableName="ANALYTICS" baseColumnNames="DISCIPLINE_ID"
+                                 constraintName="FK_ANALYTICS2DISCIPLINE" referencedTableName="DISCIPLINE"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="ANALYTICS" constraintName="FK_ANALYTICS2DISCIPLINE" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YevgenyV" id="ccf-914.6">
+        <addForeignKeyConstraint baseTableName="ANALYTICS" baseColumnNames="EXAM_ID"
+                                 constraintName="FK_ANALYTICS2EXAM" referencedTableName="EXAM"
+                                 referencedColumnNames="ID" />
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="ANALYTICS" constraintName="FK_ANALYTICS2EXAM" />
+        </rollback>
+    </changeSet>
+
+    <changeSet author="YevgenyV" id="ccf-914.7">
+        <addUniqueConstraint tableName="ANALYTICS" columnNames="DISCIPLINE_ID, EXAM_ID, STUDENT_ID" constraintName="UK_ANALYTICS"/>
+        <rollback>
+            <dropUniqueConstraint  tableName="ANALYTICS" constraintName="UK_ANALYTICS"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

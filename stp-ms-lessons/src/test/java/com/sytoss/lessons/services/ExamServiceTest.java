@@ -14,6 +14,7 @@ import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,6 +27,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -62,14 +64,27 @@ public class ExamServiceTest extends StpUnitTest {
     private TaskConnector taskConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
+    private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(),new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
 
     @Spy
     private ExamAssigneeConvertor examAssigneeConvertor = new ExamAssigneeConvertor();
 
+    @Mock
+    private AnalyticsService analyticsService;
+
+    @Mock
+    private GroupReferenceConnector groupReferenceConnector;
+
+    @Mock
+    private DisciplineConnector disciplineConnector;
+
     @Test
     public void shouldSaveExam() {
+        Teacher teacher = createTeacher("John", "Johns");
+        Discipline discipline = createDiscipline("SQL", teacher);
+        discipline.setId(1L);
+
         Mockito.doAnswer((org.mockito.stubbing.Answer<ExamDTO>) invocation -> {
             final Object[] args = invocation.getArguments();
             ExamDTO result = (ExamDTO) args[0];
@@ -82,7 +97,9 @@ public class ExamServiceTest extends StpUnitTest {
             Long id = (Long) args[0];
             TopicDTO result = new TopicDTO();
             result.setId(id);
-            result.setDiscipline(new DisciplineDTO());
+            DisciplineDTO disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setId(1L);
+            result.setDiscipline(disciplineDTO);
             return result;
         }).when(topicConnector).getReferenceById(anyLong());
 
@@ -96,8 +113,6 @@ public class ExamServiceTest extends StpUnitTest {
             return result;
         }).when(taskConnector).getReferenceById(anyLong());
 
-        Teacher teacher = createTeacher("John", "Johns");
-
         Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", teacher).build();
         Object credential = null;
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
@@ -108,13 +123,23 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setNumberOfTasks(10);
         Topic t1 = new Topic();
         t1.setId(1L);
+        t1.setDiscipline(discipline);
         Topic t2 = new Topic();
         t2.setId(2L);
+        t2.setDiscipline(discipline);
         exam.setTopics(List.of(t1, t2));
         Task task = new Task();
         task.setId(1L);
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));
+
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(1L);
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
+        groupReferenceDTO.setGroupId(1L);
+        groupReferenceDTO.setDiscipline(disciplineDTO);
+        (when(groupReferenceConnector.findByDisciplineId(discipline.getId()))).thenReturn(List.of(groupReferenceDTO));
+        (when(disciplineConnector.getReferenceById(discipline.getId()))).thenReturn(disciplineDTO);
 
         Exam result = examService.save(exam);
         assertEquals(1L, result.getId());
@@ -203,17 +228,23 @@ public class ExamServiceTest extends StpUnitTest {
     public void shouldAssignExamToGroup() {
         Teacher teacher = createTeacher("Teacher", "1");
         Discipline discipline = createDiscipline("SQL", teacher);
+        discipline.setId(1L);
         Group group = createGroup("AT-18", discipline);
 
+        Topic t1 = new Topic();
+        t1.setDiscipline(discipline);
+        Topic t2 = new Topic();
+        t1.setDiscipline(discipline);
         Exam exam = new Exam();
         exam.setId(1L);
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
-        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTopics(List.of(t1, t2));
         exam.setTeacher(teacher);
         Task task = new Task();
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));
+        exam.setDiscipline(discipline);
         ExamDTO examDTO = new ExamDTO();
         examConvertor.toDTO(exam, examDTO);
 
@@ -236,15 +267,22 @@ public class ExamServiceTest extends StpUnitTest {
     @Test
     public void shouldAssignExamToStudents() {
         Teacher teacher = createTeacher("Teacher", "1");
+        Discipline discipline = createDiscipline("SQL", teacher);
+        discipline.setId(1L);
         Student student = new Student();
         student.setId(1L);
 
+        Topic t1 = new Topic();
+        t1.setDiscipline(discipline);
+        Topic t2 = new Topic();
+        t1.setDiscipline(discipline);
         Exam exam = new Exam();
         exam.setId(1L);
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
-        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTopics(List.of(t1,t2));
         exam.setTeacher(teacher);
+        exam.setDiscipline(discipline);
         Task task = new Task();
         task.setTaskDomain(new TaskDomain());
         exam.setTasks(List.of(task));

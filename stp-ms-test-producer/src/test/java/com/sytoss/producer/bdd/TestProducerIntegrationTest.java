@@ -3,10 +3,7 @@ package com.sytoss.producer.bdd;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sytoss.producer.bdd.common.TestProducerDetails;
 import com.sytoss.producer.common.connectors.PersonalExamConnectorTest;
-import com.sytoss.producer.connectors.CheckTaskConnector;
-import com.sytoss.producer.connectors.ImageConnector;
-import com.sytoss.producer.connectors.MetadataConnector;
-import com.sytoss.producer.connectors.UserConnector;
+import com.sytoss.producer.connectors.*;
 import com.sytoss.stp.test.cucumber.StpIntegrationTest;
 import io.cucumber.spring.CucumberContextConfiguration;
 import lombok.Getter;
@@ -49,6 +46,10 @@ public class TestProducerIntegrationTest extends StpIntegrationTest<TestProducer
     @MockBean
     @Autowired
     private MetadataConnector metadataConnector;
+
+    @Autowired
+    @MockBean
+    private LessonsConnector lessonsConnector;
 
     @Override
     protected TestProducerDetails createDetails() {

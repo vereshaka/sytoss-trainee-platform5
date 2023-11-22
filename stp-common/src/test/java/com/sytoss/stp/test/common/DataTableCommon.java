@@ -94,9 +94,9 @@ public class DataTableCommon {
         Group group = new Group();
         group.setId(groupId);
         if (entry.containsKey("discipline")) {
-            Long disciplineId = Long.parseLong(entry.get("discipline"));
+            String disciplineName = entry.get("discipline");
             Discipline discipline = new Discipline();
-            discipline.setId(disciplineId);
+            discipline.setName(disciplineName);
             group.setDiscipline(discipline);
         }
         return group;

@@ -2,6 +2,7 @@ Feature: Discipline
 
   Background:
     Given teacher "Maksym" "Mitkov" with "teacher@domain.com" email exists
+    And analytics is empty
 
   Scenario: receive all discipline of student
     Given disciplines exist
@@ -11,9 +12,9 @@ Feature: Discipline
       | third      |
     And groups exist
       | discipline | group |
-      | 1          | 11    |
-      | 2          | 12    |
-      | 3          | 13    |
+      | first      | 11    |
+      | second     | 12    |
+      | third      | 13    |
     When student receive his disciplines
     Then operation is successful
     And should receive information about discipline of student
@@ -92,7 +93,6 @@ Feature: Discipline
     When receive this discipline's icon
     Then operation is successful
     And discipline's icon should be received
-
 
   Scenario: STP-772 Delete Discipline
     Given "SQL-772" discipline exists with id *d1

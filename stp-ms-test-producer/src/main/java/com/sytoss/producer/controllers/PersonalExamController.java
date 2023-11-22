@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bom.AnswersModel;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
@@ -293,5 +294,14 @@ public class PersonalExamController {
             @RequestBody String capture
     ) {
         personalExamService.makeScreenshot(capture, personalExamId);
+    }
+
+    @Operation(description = "Method to retrieve a list of students personal exams")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/students")
+    public List<PersonalExam> getListOfStudentsPersonalExams(@RequestBody List<Student> students) {
+        return personalExamService.getListOfStudentsPersonalExam(students);
     }
 }
