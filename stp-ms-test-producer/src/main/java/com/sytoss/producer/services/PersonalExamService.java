@@ -1,7 +1,7 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
-import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
+import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
@@ -202,18 +202,18 @@ public class PersonalExamService extends AbstractService {
         personalExam1.setId(personalExam.getId());
         personalExam1.setExamAssigneeId(personalExam.getExamAssigneeId());
         personalExam1.finish();
-        Analytic analytic = new Analytic();
-        analytic.setDiscipline(new Discipline());
-        analytic.getDiscipline().setId(personalExam.getDiscipline().getId());
-        analytic.setPersonalExam(personalExam1);
-        analytic.setExam(new Exam());
+        Analytics analytics = new Analytics();
+        analytics.setDiscipline(new Discipline());
+        analytics.getDiscipline().setId(personalExam.getDiscipline().getId());
+        analytics.setPersonalExam(personalExam1);
+        analytics.setExam(new Exam());
         Exam exam = lessonsConnector.getExamByAssignee(personalExam1.getExamAssigneeId());
-        analytic.getExam().setId(exam.getId());
-        analytic.setStudent(new Student());
-        analytic.getStudent().setId(personalExam.getStudent().getId());
-        analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+        analytics.getExam().setId(exam.getId());
+        analytics.setStudent(new Student());
+        analytics.getStudent().setId(personalExam.getStudent().getId());
+        analytics.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
 
-        lessonsConnector.updateAnalytic(analytic);
+        lessonsConnector.updateAnalytic(analytics);
 
         return result;
     }

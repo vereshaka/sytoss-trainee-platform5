@@ -1,5 +1,5 @@
 package com.sytoss.lessons.bdd.when;
-import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.Analytics;
 
 import com.sytoss.lessons.bdd.given.AbstractGiven;
 import com.sytoss.lessons.dto.AnalyticsDTO;
@@ -14,16 +14,16 @@ public class AnalyticsWhen extends AbstractGiven {
 
     @When("teacher updates analytics element")
     public void teacherUpdatesAnalyticsElement() {
-        Analytic analytic = getTestExecutionContext().getDetails().getAnalytic();
+        Analytics analytics = getTestExecutionContext().getDetails().getAnalytics();
         String url = "/api/analytics";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
-        HttpEntity<?> httpEntity = new HttpEntity<>(analytic, httpHeaders);
-        ResponseEntity<Analytic> responseEntity = doPost(url, httpEntity, Analytic.class);
+        HttpEntity<?> httpEntity = new HttpEntity<>(analytics, httpHeaders);
+        ResponseEntity<Analytics> responseEntity = doPost(url, httpEntity, Analytics.class);
         getTestExecutionContext().setResponse(responseEntity);
-        AnalyticsDTO analyticsDTO = getAnalyticsConnector().getByDisciplineIdAndExamIdAndStudentId(analytic.getDiscipline().getId(), analytic.getExam().getId(), analytic.getStudent().getId());
-        Analytic analytic1 = new Analytic();
-        getAnalyticsConvertor().fromDTO(analyticsDTO,analytic1);
-        getTestExecutionContext().getDetails().setAnalytic(analytic1);
+        AnalyticsDTO analyticsDTO = getAnalyticsConnector().getByDisciplineIdAndExamIdAndStudentId(analytics.getDiscipline().getId(), analytics.getExam().getId(), analytics.getStudent().getId());
+        Analytics analytics1 = new Analytics();
+        getAnalyticsConvertor().fromDTO(analyticsDTO, analytics1);
+        getTestExecutionContext().getDetails().setAnalytics(analytics1);
     }
     @When("^teacher makes a migration for discipline (.*)$")
     public void teacherMakesAMigration(String disciplineStringId) {
@@ -31,7 +31,7 @@ public class AnalyticsWhen extends AbstractGiven {
         String url = "/api/analytics/migrate/" + disciplineId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Analytic>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<Analytics>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
