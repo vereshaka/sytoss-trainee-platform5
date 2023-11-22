@@ -179,14 +179,14 @@ public class AnalyticsService extends AbstractService {
                 Group group = new Group();
                 group.setId(groupId);
                 student.setPrimaryGroup(group);
-                rating.setStudent(student);
             }
+            rating.setStudent(student);
 
             AnalyticGrade analyticGrade = new AnalyticGrade();
             analyticGrade.setGrade(analyticsAverageDTO.getAvgGrade());
             analyticGrade.setTimeSpent(analyticsAverageDTO.getAvgTimeSpent());
             rating.setGrade(analyticGrade);
-            rating.setRank(0);
+            rating.setRank(analyticsAverageDTO.getRank());
             ratings.add(rating);
         }
         return ratings;

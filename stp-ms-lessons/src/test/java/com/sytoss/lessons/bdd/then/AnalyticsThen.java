@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.Analytics;
+import com.sytoss.domain.bom.analytics.Rating;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
@@ -108,6 +109,20 @@ public class AnalyticsThen extends AbstractGiven {
                 assertEquals(analyticsElementFromFeature.getGrade().getTimeSpent(), analyticsElementFromResponse.getGrade().getTimeSpent());
                 assertEquals(analyticsElementFromFeature.getStartDate(), analyticsElementFromResponse.getStartDate());
                 analyticsElementsFromResponse.remove(analyticsElementFromResponse);
+                break;
+            }
+        }
+    }
+
+    @Then("ratings should be")
+    public void ratingModelsShouldBe(List<Rating> ratings) {
+        List<Rating> ratingsListFromResponse = (List<Rating>) getTestExecutionContext().getResponse().getBody();
+        for (Rating rating : ratings) {
+            for (Rating ratingFromResponse : ratingsListFromResponse) {
+                assertEquals(rating.getStudent().getId(), ratingFromResponse.getStudent().getId());
+                assertEquals(rating.getGrade().getGrade(), ratingFromResponse.getGrade().getGrade());
+                assertEquals(rating.getGrade().getTimeSpent(), ratingFromResponse.getGrade().getTimeSpent());
+                ratingsListFromResponse.remove(ratingFromResponse);
                 break;
             }
         }

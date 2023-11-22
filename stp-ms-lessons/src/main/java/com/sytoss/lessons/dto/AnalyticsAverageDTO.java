@@ -11,9 +11,11 @@ public class AnalyticsAverageDTO {
     private Long studentId;
     private Double avgGrade;
     private Long avgTimeSpent;
-    public AnalyticsAverageDTO(Long studentId, Double avgGrade, Double avgTimeSpent) {
+    private Long rank;
+    public AnalyticsAverageDTO(Long studentId, Double avgGrade, Double avgTimeSpent, Long rank) {
         this.studentId = studentId;
         this.avgGrade = avgGrade;
         this.avgTimeSpent = Math.round(avgTimeSpent);
+        this.rank = rank;
     }
 }

@@ -39,3 +39,70 @@ Feature: Analytics
       | *d11         | *ex11  | 3         | *pe13          | 11    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 4         | *pe14          | 20    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 5         | *pe15          | 21    | *ea11          | 30-11-2023T11:55:00 |
+
+  Scenario: get ratings by id
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
+      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         |
+    When teacher gets ratings by discipline *d1, by exam null and by group null
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 2         | 5        | 3            |
+      | 1         | 6        | 1            |
+
+  Scenario: get ratings by id and exam id
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
+      | *d2          | *ex1   | 2         | *pe1           | 6     | 2         |
+    When teacher gets ratings by discipline *d1, by exam *ex1 and by group null
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 2         | 5        | 3            |
+      | 1         | 6        | 1            |
+
+  Scenario: get ratings by id and group id
+    Given discipline with id *d1 exists
+    And groups with specific id exist
+      | discipline | group |
+      | *d1        | 1     |
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | 2       |
+      | *d1          | *ex4   | 1         | *pe2           | 5     | 4         | 1       |
+      | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       |
+    When teacher gets ratings by discipline *d1, by exam null and by group 1
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 1         | 7        | 3            |
+
+  Scenario: get ratings by id, exam id and group id
+    Given discipline with id *d1 exists
+    And groups with specific id exist
+      | discipline | group |
+      | *d1        | 1     |
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | 1       |
+      | *d1          | *ex1   | 3         | *pe1           | 5     | 4         | 2       |
+      | *d1          | *ex1   | 4         | *pe1           | 6     | 2         | 2       |
+      | *d1          | *ex2   | 1         | *pe2           | 10    | 3         | 1       |
+      | *d1          | *ex2   | 2         | *pe2           | 5     | 3         | 1       |
+      | *d1          | *ex2   | 3         | *pe2           | 5     | 4         | 2       |
+      | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       |
+    When teacher gets ratings by discipline *d1, by exam *ex1 and by group 1
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent |
+      | 2         | 5        | 3            |
+      | 1         | 10       | 3            |

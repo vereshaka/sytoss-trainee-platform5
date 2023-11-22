@@ -208,4 +208,24 @@ public class DisciplineGiven extends AbstractGiven {
         getEntityManager().clear();
         getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
     }
+
+    @Given("^discipline with id (.*) exists$")
+    public void disciplineWithSpecificIdExists(String disciplineStringId) {
+        String newDisciplineKey = disciplineStringId;
+        if (getTestExecutionContext().replaceId(disciplineStringId) != null) {
+            newDisciplineKey = getTestExecutionContext().replaceId(disciplineStringId).toString();
+        }
+        long disciplineId;
+        DisciplineDTO disciplineDTO;
+        if (!disciplineStringId.equals(newDisciplineKey)) {
+            disciplineId = Long.parseLong(newDisciplineKey);
+            disciplineDTO = getDisciplineConnector().findById(disciplineId).orElse(null);
+            if (disciplineDTO == null) {
+                disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            }
+        }
+    }
 }
