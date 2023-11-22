@@ -27,9 +27,6 @@ public interface PersonalExamConnector {
     @PostMapping("personal-exam/task/update")
     void updateTask(Task task);
 
-    @GetMapping("personal-exam/assignee/{examAssigneeId}")
-    List<PersonalExam> getListOfPersonalExamByExamAssigneeId(@PathVariable(name = "examAssigneeId") Long examAssigneeId);
-
     @GetMapping("personal-exam/students")
     List<PersonalExam> getListOfPersonalExamByStudents(@RequestBody List<Student> students);
 }

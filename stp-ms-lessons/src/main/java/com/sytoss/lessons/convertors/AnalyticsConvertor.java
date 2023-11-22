@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AnalyticsConvertor {
+
     public void fromDTO(AnalyticsDTO source, Analytic destination) {
         Discipline discipline = new Discipline();
         discipline.setId(source.getDisciplineId());
@@ -33,13 +34,11 @@ public class AnalyticsConvertor {
     }
 
     public void toDTO(Analytic source, AnalyticsDTO destination) {
-        if (source != null) {
-            destination.setDisciplineId(source.getDiscipline().getId());
-            destination.setExamId(source.getExam().getId());
-            destination.setStudentId(source.getStudent().getId());
-            destination.setPersonalExamId(source.getPersonalExam().getId());
-            destination.setGrade(source.getGrade().getGrade());
-            destination.setTimeSpent(source.getGrade().getTimeSpent());
-        }
+        destination.setDisciplineId(source.getDiscipline().getId());
+        destination.setExamId(source.getExam().getId());
+        destination.setStudentId(source.getStudent().getId());
+        destination.setPersonalExamId(source.getPersonalExam().getId());
+        destination.setGrade(source.getGrade().getGrade());
+        destination.setTimeSpent(source.getGrade().getTimeSpent());
     }
 }
