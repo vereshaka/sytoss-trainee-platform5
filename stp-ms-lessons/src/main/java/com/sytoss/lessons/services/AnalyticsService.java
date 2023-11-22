@@ -125,4 +125,11 @@ public class AnalyticsService extends AbstractService {
         }
         analyticsConnector.save(dto);
     }
+
+    public void deleteByExam(long examId){
+        analyticsConnector.deleteAllByExamId(examId);
+    }
+    public void deleteByDiscipline(long disciplineId){
+        analyticsConnector.deleteAllByD
+    }
 }

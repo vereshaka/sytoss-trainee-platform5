@@ -57,6 +57,8 @@ public class DisciplineService extends AbstractService {
 
     private final TaskDomainConnector taskDomainConnector;
 
+    private final AnalyticsService analyticsService;
+
     public Discipline getById(Long id) {
         try {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
@@ -222,6 +224,7 @@ public class DisciplineService extends AbstractService {
     @Transactional
     public Discipline delete(Long disciplineId) {
         Discipline discipline = getById(disciplineId);
+        analyticsService.deleteByDiscipline(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
         for (Exam exam: examList) {
             examService.delete(exam.getId());
