@@ -130,6 +130,6 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.deleteAllByExamId(examId);
     }
     public void deleteByDiscipline(long disciplineId){
-        analyticsConnector.deleteAllByD
+        analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 }
