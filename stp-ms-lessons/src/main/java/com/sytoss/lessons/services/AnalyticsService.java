@@ -63,7 +63,13 @@ public class AnalyticsService extends AbstractService {
     public void migrateAll(){
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
         for(DisciplineDTO disciplineDTO : disciplineDTOS){
-            migrate(disciplineDTO.getId());
+            try {
+                log.info("Migration of discipline #" + disciplineDTO.getId() + " started");
+                migrate(disciplineDTO.getId());
+                log.info("Migration of discipline #" + disciplineDTO.getId() + " finished");
+            }catch(Exception e) {
+                log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
+            }
         }
     }
 
