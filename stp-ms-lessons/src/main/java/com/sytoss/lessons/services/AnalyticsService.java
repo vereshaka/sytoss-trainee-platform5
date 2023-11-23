@@ -60,6 +60,13 @@ public class AnalyticsService extends AbstractService {
         return analyticsElementDTOS;
     }
 
+    public void migrateAll(){
+        List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
+        for(DisciplineDTO disciplineDTO : disciplineDTOS){
+            migrate(disciplineDTO.getId());
+        }
+    }
+
     public List<Analytics> migrate(Long disciplineId) {
         List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
         List<Student> students = new ArrayList<>();

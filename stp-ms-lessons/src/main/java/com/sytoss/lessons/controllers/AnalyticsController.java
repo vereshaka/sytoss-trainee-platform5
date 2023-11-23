@@ -58,4 +58,13 @@ public class AnalyticsController {
         }
         return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId, groupId, examId);
     }
+
+    @Operation(description = "Method that migrate old tests to analytics elements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @PostMapping("/migrate/all")
+    public void migrateAll() {
+        analyticsService.migrateAll();
+    }
 }
