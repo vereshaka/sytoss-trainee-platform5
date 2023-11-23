@@ -108,6 +108,11 @@ public class AnalyticsService extends AbstractService {
             Analytics analytic = new Analytics();
             analytic.setDiscipline(discipline);
             analytic.setExam(new Exam());
+            ExamDTO examDto = examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId());
+            if (examDto == null) {
+                log.warn("Exam not found. Personal exam: " + personalExam.getExamAssigneeId());
+                continue;
+            }
             analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
@@ -131,8 +136,6 @@ public class AnalyticsService extends AbstractService {
                 analytics.getExam().getId(),
                 analytics.getStudent().getId());
         if (dto == null) {
-            log.error("Now elements found");
-            //TODO: yevgenyv: correct handling
             dto = new AnalyticsDTO();
             dto.setDisciplineId(analytics.getDiscipline().getId());
             dto.setExamId(analytics.getExam().getId());
