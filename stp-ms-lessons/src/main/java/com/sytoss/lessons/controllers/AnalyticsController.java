@@ -1,7 +1,6 @@
 package com.sytoss.lessons.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;

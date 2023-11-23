@@ -1,4 +1,5 @@
 package com.sytoss.lessons.bdd.when;
+import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.Analytics;
 
 import com.sytoss.domain.bom.analytics.Rating;

@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
+import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;

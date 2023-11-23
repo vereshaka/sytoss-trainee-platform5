@@ -14,6 +14,7 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.dto.AnalyticsAverageDTO;
 import com.sytoss.lessons.dto.AnalyticsDTO;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -123,7 +124,6 @@ public class AnalyticsService extends AbstractService {
         }
         return analytics;
     }
-
 
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, long groupId) {
         List<Student> students = userConnector.getStudentOfGroup(groupId);
