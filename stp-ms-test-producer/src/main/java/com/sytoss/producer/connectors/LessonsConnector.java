@@ -1,6 +1,6 @@
 package com.sytoss.producer.connectors;
 
-import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ExamReportModel;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,7 +16,7 @@ public interface LessonsConnector {
     ExamReportModel getReportInfo(@PathVariable Long examAssigneeId);
 
     @PostMapping("analytics")
-    void updateAnalytic(@RequestBody Analytic newItem);
+    void updateAnalytic(@RequestBody Analytics newItem);
 
     @GetMapping("exam/assignee/{examAssigneeId}")
     Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId);

@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class Analytic extends AnalyticDrop {
+public class Analytics extends AnalyticDrop {
 
     private Exam exam;
 
