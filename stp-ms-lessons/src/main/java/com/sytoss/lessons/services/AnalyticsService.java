@@ -97,7 +97,7 @@ public class AnalyticsService extends AbstractService {
         List<Analytics> analytics = new ArrayList<>();
 
         for (ExamDTO examDTO : exams) {
-            checkOrCreate(disciplineId, examDTO.getId(), students);
+            checkOrCreate(examDTO.getId(), disciplineId, students);
         }
 
         List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(students);
