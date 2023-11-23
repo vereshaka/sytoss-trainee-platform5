@@ -1,7 +1,7 @@
 package com.sytoss.lessons.convertors;
 
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
-import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AnalyticsConvertor {
 
-    public void fromDTO(AnalyticsDTO source, Analytic destination) {
+    public void fromDTO(AnalyticsDTO source, Analytics destination) {
         Discipline discipline = new Discipline();
         discipline.setId(source.getDisciplineId());
         destination.setDiscipline(discipline);
@@ -33,7 +33,7 @@ public class AnalyticsConvertor {
         destination.setGrade(analyticGrade);
     }
 
-    public void toDTO(Analytic source, AnalyticsDTO destination) {
+    public void toDTO(Analytics source, AnalyticsDTO destination) {
         destination.setDisciplineId(source.getDiscipline().getId());
         destination.setExamId(source.getExam().getId());
         destination.setStudentId(source.getStudent().getId());

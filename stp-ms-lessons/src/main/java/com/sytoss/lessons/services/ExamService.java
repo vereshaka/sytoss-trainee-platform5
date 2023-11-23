@@ -179,7 +179,7 @@ public class ExamService extends AbstractService {
     }
 
     public List<Exam> getExamsByDiscipline(Long disciplineId) {
-        List<ExamDTO> examDTOList = examConnector.findByTopics_Discipline_Id(disciplineId);
+        List<ExamDTO> examDTOList = examConnector.findByDiscipline_Id(disciplineId);
 
         if (Objects.isNull(examDTOList)) {
             throw new DisciplineNotFoundException(disciplineId);

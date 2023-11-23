@@ -1,7 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
-import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
@@ -194,41 +193,41 @@ public class AnalyticsGiven extends AbstractGiven {
     @Given("^teacher changes grade to$")
     public void teacherChangeGradeTo(DataTable dataTable) {
         Map<String, String> analyticsMap = dataTable.asMaps().get(0);
-        Analytic analytic = new Analytic();
+        Analytics analytics = new Analytics();
         Long disciplineId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("disciplineId"));
         Long examId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("examId"));
         Long studentId = Long.parseLong(analyticsMap.get("studentId"));
         String personalExamId = analyticsMap.get("personalExamId").trim().replace("*", "");
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
-        analytic.setDiscipline(discipline);
+        analytics.setDiscipline(discipline);
         Exam exam = new Exam();
         exam.setId(examId);
-        analytic.setExam(exam);
+        analytics.setExam(exam);
         Student student = new Student();
         student.setId(studentId);
-        analytic.setStudent(student);
+        analytics.setStudent(student);
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId(personalExamId);
-        analytic.setPersonalExam(personalExam);
+        analytics.setPersonalExam(personalExam);
         if (analyticsMap.get("examAssigneeId") != null) {
             Long examAssigneeId = (Long) getTestExecutionContext().replaceId(analyticsMap.get("examAssigneeId"));
             ExamAssignee examAssignee = new ExamAssignee();
             examAssignee.setId(examAssigneeId);
-            analytic.getExam().getExamAssignees().add(examAssignee);
+            analytics.getExam().getExamAssignees().add(examAssignee);
         }
         AnalyticGrade analyticGrade = new AnalyticGrade();
         if (analyticsMap.get("grade") != null) {
             Double grade = Double.parseDouble(analyticsMap.get("grade"));
             analyticGrade.setGrade(grade);
-            analytic.setGrade(analyticGrade);
+            analytics.setGrade(analyticGrade);
         }
         if (analyticsMap.get("timeSpent") != null) {
             Long timeSpent = Long.parseLong(analyticsMap.get("timeSpent"));
             analyticGrade.setTimeSpent(timeSpent);
-            analytic.setGrade(analyticGrade);
+            analytics.setGrade(analyticGrade);
         }
-        getTestExecutionContext().getDetails().setAnalytic(analytic);
+        getTestExecutionContext().getDetails().setAnalytics(analytics);
     }
 
     @Given("^analytics is empty$")

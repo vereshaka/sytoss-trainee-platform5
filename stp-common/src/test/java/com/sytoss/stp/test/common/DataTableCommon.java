@@ -1,5 +1,8 @@
 package com.sytoss.stp.test.common;
 
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
+import com.sytoss.domain.bom.analytics.Analytics;
+import com.sytoss.domain.bom.analytics.Rating;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
@@ -205,5 +208,20 @@ public class DataTableCommon {
         student.setFirstName(entry.get("firstName"));
         student.setLastName(entry.get("lastName"));
         return student;
+    }
+
+    @DataTableType
+    public Rating mapRating(Map<String, String> entry) {
+        Student student = new Student();
+        student.setId(Long.parseLong(entry.get("studentId")));
+
+        AnalyticGrade analyticGrade = new AnalyticGrade();
+        analyticGrade.setGrade(Double.parseDouble(entry.get("avgGrade")));
+        analyticGrade.setTimeSpent(Long.parseLong(entry.get("avgTimeSpent")));
+
+        Rating rating = new Rating();
+        rating.setStudent(student);
+        rating.setGrade(analyticGrade);
+        return rating;
     }
 }

@@ -300,7 +300,7 @@ public class PersonalExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/students")
+    @PostMapping("/students")
     public List<PersonalExam> getListOfStudentsPersonalExams(@RequestBody List<Student> students) {
         return personalExamService.getListOfStudentsPersonalExam(students);
     }

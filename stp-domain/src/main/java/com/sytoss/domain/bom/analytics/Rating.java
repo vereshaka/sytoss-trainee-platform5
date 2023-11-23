@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class Rating extends AnalyticDrop {
 
-    private int rank;
+    private Long rank;
 }

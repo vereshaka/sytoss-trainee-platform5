@@ -4,12 +4,15 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
+import com.sytoss.lessons.dto.GroupReferencePK;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GroupGiven extends LessonsIntegrationTest {
 
@@ -71,5 +74,28 @@ public class GroupGiven extends LessonsIntegrationTest {
         }
 
         getTestExecutionContext().registerId(disciplineId, disciplineDTO.getId());
+    }
+
+    @Given("^groups with specific id exist$")
+    public void groupsExist(DataTable groups) {
+        List<Map<String, String>> groupsMap = groups.asMaps();
+        for (Map<String, String> groupMap : groupsMap) {
+            String groupKey = groupMap.get("discipline");
+            String groupStringDiscipline = (String) getTestExecutionContext().replaceId(groupKey);
+            if (groupKey != null && !groupKey.equals(groupStringDiscipline)) {
+                Long disciplineId = Long.parseLong(groupKey);
+                Long groupId = Long.valueOf(groupMap.get("group"));
+                DisciplineDTO disciplineDTO = getDisciplineConnector().findById(disciplineId).orElse(null);
+                if (disciplineDTO != null) {
+                    GroupReferencePK groupReferencePK = new GroupReferencePK(groupId,disciplineId);
+                    if(!getGroupReferenceConnector().existsById(groupReferencePK)){
+                        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
+                        groupReferenceDTO.setDiscipline(disciplineDTO);
+                        groupReferenceDTO.setGroupId(groupId);
+                        getGroupReferenceConnector().save(groupReferenceDTO);
+                    }
+                }
+            }
+        }
     }
 }

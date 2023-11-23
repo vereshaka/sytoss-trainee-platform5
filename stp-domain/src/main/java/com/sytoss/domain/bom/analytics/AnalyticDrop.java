@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 public abstract class AnalyticDrop {
 
-    private Discipline discipline;
-    private Student student;
-
-    private AnalyticGrade grade;
+    protected Discipline discipline;
+    protected Student student;
+    protected AnalyticGrade grade;
 }
