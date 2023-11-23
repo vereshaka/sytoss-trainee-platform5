@@ -36,7 +36,7 @@
         </createTable>
 
         <rollback>
-            <dropTable tableName="ANALYTICS" />
+            <dropTable tableName="APPLICANT" />
         </rollback>
     </changeSet>
 
