@@ -1,6 +1,6 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.exceptions.business.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
@@ -211,7 +211,7 @@ public class PersonalExamService extends AbstractService {
         analytic.getExam().setId(exam.getId());
         analytic.setStudent(new Student());
         analytic.getStudent().setId(personalExam.getStudent().getId());
-        analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+        analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
 
         lessonsConnector.updateAnalytic(analytic);
 

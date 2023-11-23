@@ -1,6 +1,6 @@
 package com.sytoss.lessons.bdd.given;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
@@ -217,16 +217,16 @@ public class AnalyticsGiven extends AbstractGiven {
             examAssignee.setId(examAssigneeId);
             analytic.getExam().getExamAssignees().add(examAssignee);
         }
-        AnaliticGrade analiticGrade = new AnaliticGrade();
+        AnalyticGrade analyticGrade = new AnalyticGrade();
         if (analyticsMap.get("grade") != null) {
             Double grade = Double.parseDouble(analyticsMap.get("grade"));
-            analiticGrade.setGrade(grade);
-            analytic.setGrade(analiticGrade);
+            analyticGrade.setGrade(grade);
+            analytic.setGrade(analyticGrade);
         }
         if (analyticsMap.get("timeSpent") != null) {
             Long timeSpent = Long.parseLong(analyticsMap.get("timeSpent"));
-            analiticGrade.setTimeSpent(timeSpent);
-            analytic.setGrade(analiticGrade);
+            analyticGrade.setTimeSpent(timeSpent);
+            analytic.setGrade(analyticGrade);
         }
         getTestExecutionContext().getDetails().setAnalytic(analytic);
     }

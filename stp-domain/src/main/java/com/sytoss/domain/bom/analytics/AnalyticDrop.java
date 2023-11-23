@@ -12,5 +12,5 @@ public abstract class AnalyticDrop {
     private Discipline discipline;
     private Student student;
 
-    private AnaliticGrade grade;
+    private AnalyticGrade grade;
 }

@@ -1,6 +1,6 @@
 package com.sytoss.lessons.convertors;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
@@ -27,10 +27,10 @@ public class AnalyticsConvertor {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId(source.getPersonalExamId());
         destination.setPersonalExam(personalExam);
-        AnaliticGrade analiticGrade = new AnaliticGrade();
-        analiticGrade.setGrade(source.getGrade());
-        analiticGrade.setTimeSpent(source.getTimeSpent());
-        destination.setGrade(analiticGrade);
+        AnalyticGrade analyticGrade = new AnalyticGrade();
+        analyticGrade.setGrade(source.getGrade());
+        analyticGrade.setTimeSpent(source.getTimeSpent());
+        destination.setGrade(analyticGrade);
     }
 
     public void toDTO(Analytic source, AnalyticsDTO destination) {

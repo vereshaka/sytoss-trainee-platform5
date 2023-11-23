@@ -1,13 +1,12 @@
 package com.sytoss.lessons.bdd.then;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
 import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.Test;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
-import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
@@ -47,7 +46,7 @@ public class AnalyticsThen extends AbstractGiven {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId(personalExamId);
 
-        AnaliticGrade grade = new AnaliticGrade();
+        AnalyticGrade grade = new AnalyticGrade();
         if (analyticsMap.get("grade") != null) {
             grade.setGrade(Double.parseDouble(analyticsMap.get("grade").trim()));
         }
@@ -89,7 +88,7 @@ public class AnalyticsThen extends AbstractGiven {
                 examAssignee.setId(Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("examAssigneeId").trim()).toString()));
                 analytic.getExam().getExamAssignees().add(examAssignee);
             }
-            AnaliticGrade grade = new AnaliticGrade();
+            AnalyticGrade grade = new AnalyticGrade();
             if (analyticsMap.get("grade") != null) {
                 grade.setGrade(Double.parseDouble(analyticsMap.get("grade").trim()));
             }

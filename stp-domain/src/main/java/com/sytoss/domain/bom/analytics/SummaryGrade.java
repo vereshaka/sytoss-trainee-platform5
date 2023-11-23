@@ -9,9 +9,9 @@ import lombok.Setter;
 public class SummaryGrade {
 
     @JsonView({AnalyticFull.AnalyticFullView.class})
-    private AnaliticGrade average;
+    private AnalyticGrade average;
 
     @JsonView({AnalyticFull.AnalyticFullView.class})
-    private AnaliticGrade max;
+    private AnalyticGrade max;
 
 }

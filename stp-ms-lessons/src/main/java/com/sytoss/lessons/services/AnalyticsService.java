@@ -85,7 +85,7 @@ public class AnalyticsService extends AbstractService {
             analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
-            analytic.setGrade(new AnaliticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+            analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
             analytic.setStartDate(personalExam.getStartedDate());
             updateAnalytic(analytic);
             analytics.add(analytic);
@@ -112,7 +112,7 @@ public class AnalyticsService extends AbstractService {
             dto.setExamId(analytic.getExam().getId());
             dto.setStudentId(analytic.getStudent().getId());
         }
-        AnaliticGrade grade = analytic.getGrade();
+        AnalyticGrade grade = analytic.getGrade();
         if (dto.getPersonalExamId() == null
                 || grade.getGrade() > dto.getGrade()
                 || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
@@ -182,8 +182,8 @@ public class AnalyticsService extends AbstractService {
         analyticFull.setDiscipline(discipline);
         analyticFull.setStudent(student);
 
-        AnaliticGrade averageGrade = analyticsConnector.getAverageGrade(disciplineId, studentId);
-        AnaliticGrade maxGrade = analyticsConnector.getMaxGrade(disciplineId, studentId);
+        AnalyticGrade averageGrade = analyticsConnector.getAverageGrade(disciplineId, studentId);
+        AnalyticGrade maxGrade = analyticsConnector.getMaxGrade(disciplineId, studentId);
 
         SummaryGrade summaryGrade = new SummaryGrade();
         summaryGrade.setAverage(averageGrade);

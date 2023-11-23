@@ -1,6 +1,6 @@
 package com.sytoss.lessons.bdd.common;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.analytics.Test;
@@ -38,12 +38,12 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
 
         SummaryGrade summaryGrade = new SummaryGrade();
 
-        AnaliticGrade averageGrade = new AnaliticGrade();
+        AnalyticGrade averageGrade = new AnalyticGrade();
         averageGrade.setGrade(Double.parseDouble(row.get("average grade")));
         averageGrade.setTimeSpent(Long.parseLong(row.get("average spent time")));
         summaryGrade.setAverage(averageGrade);
 
-        AnaliticGrade maxGrade = new AnaliticGrade();
+        AnalyticGrade maxGrade = new AnalyticGrade();
         maxGrade.setGrade(Double.parseDouble(row.get("max grade")));
         maxGrade.setTimeSpent(Long.parseLong(row.get("max spent time")));
         summaryGrade.setMax(maxGrade);

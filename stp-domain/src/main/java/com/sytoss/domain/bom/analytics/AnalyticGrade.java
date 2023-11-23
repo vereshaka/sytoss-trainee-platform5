@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnaliticGrade {
+public class AnalyticGrade {
 
     @JsonView({AnalyticFull.AnalyticFullView.class})
     private double grade;
