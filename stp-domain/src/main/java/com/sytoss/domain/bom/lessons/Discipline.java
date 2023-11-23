@@ -1,6 +1,7 @@
 package com.sytoss.domain.bom.lessons;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
@@ -15,7 +16,7 @@ import java.sql.Timestamp;
 @Builder
 public class Discipline {
 
-    @JsonView({PersonalExam.Public.class,Group.TeacherGroups.class})
+    @JsonView({PersonalExam.Public.class, Group.TeacherGroups.class, AnalyticFull.AnalyticFullView.class})
     private Long id;
 
     @JsonView({PersonalExam.Public.class,Group.TeacherGroups.class})

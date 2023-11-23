@@ -39,3 +39,23 @@ Feature: Analytics
       | *d11         | *ex11  | 3         | *pe13          | 11    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 4         | *pe14          | 20    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 5         | *pe15          | 21    | *ea11          | 30-11-2023T11:55:00 |
+
+  Scenario: When teacher requests students analytics then response with detailed information has to be returned
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d12         | *ex12  | 1         | *pe16           | 1     | 1         |
+      | *d12         | *ex13  | 1         | *pe17           | 5     | 4         |
+      | *d12         | *ex14  | 1         | *pe18           | 15    | 5         |
+      | *d12         | *ex12  | 2         | *pe19           | 3     | 1         |
+      | *d12         | *ex13  | 2         | *pe21           | 6     | 4         |
+      | *d12         | *ex14  | 2         | *pe22           | 12    | 5         |
+    When teacher requests analytics for discipline *d12 and student 1
+    Then operation is successful
+    And AnalyticFull object has to be returned
+      | disciplineId | studentId | average grade | average spent time | max grade | max spent time |
+      | *d12         | 1         | 7             | 3                  | 15        | 5              |
+    And AnalyticFull should has tests
+      | examId | examName | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
+      | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16           |
+      | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17           |
+      | *ex14  | Exam 1   | 15           | 15                | 5                     | *pe18           |

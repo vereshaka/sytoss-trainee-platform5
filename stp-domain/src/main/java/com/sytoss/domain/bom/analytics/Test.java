@@ -1,20 +1,19 @@
 package com.sytoss.domain.bom.analytics;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.AllArgsConstructor;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class AnaliticGrade {
+public class Test {
 
     @JsonView({AnalyticFull.AnalyticFullView.class})
-    private double grade;
+    private Exam exam;
 
     @JsonView({AnalyticFull.AnalyticFullView.class})
-    private long timeSpent;
+    private PersonalExam personalExam;
+
 }

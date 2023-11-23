@@ -1,6 +1,9 @@
 package com.sytoss.lessons.connectors;
 
+import com.sytoss.domain.bom.analytics.AnaliticGrade;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.lessons.dto.AnalyticsDTO;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +21,28 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
     List<AnalyticsDTO> deleteAllByExamId(Long examId);
 
     List<AnalyticsDTO> deleteAllByDisciplineId(Long disciplineId);
+
+    @Query("SELECT new com.sytoss.domain.bom.analytics.AnaliticGrade(avg(a.grade), cast(avg(a.timeSpent) as long)) " +
+            "from ANALYTICS a " +
+            "where a.disciplineId = :disciplineId " +
+            "and a.studentId = :studentId " +
+            "and a.personalExamId is not null ")
+    AnaliticGrade getAverageGrade(Long disciplineId, Long studentId);
+
+    @Query("SELECT new com.sytoss.domain.bom.analytics.AnaliticGrade(max(a.grade), max(a.timeSpent)) " +
+            "from ANALYTICS a " +
+            "where a.disciplineId = :disciplineId " +
+            "and a.studentId = :studentId " +
+            "and a.personalExamId is not null ")
+    AnaliticGrade getMaxGrade(Long disciplineId, Long studentId);
+
+    @Query("SELECT new com.sytoss.domain.bom.lessons.Exam(e.id, e.name, cast(max(a.grade) as int)) " +
+            "from ANALYTICS a, EXAM e " +
+            "where e.id = :examId " +
+            "and a.examId = e.id " +
+            "and a.personalExamId is not null " +
+            "group by e.id, e.name")
+    Exam getExamInfo(Long examId);
 
 /*
     @Query("SELECT new com.sytoss.domain.bom.lessons.analytics.RatingModel(a.studentId, AVG(a.grade), AVG(a.timeSpent)) from ANALYTICS a where a.disciplineId = :disciplineId group by a.studentId order by 2, 3")

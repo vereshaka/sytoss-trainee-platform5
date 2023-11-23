@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.when;
 import com.sytoss.domain.bom.analytics.Analytic;
 
+import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
 import com.sytoss.lessons.dto.AnalyticsDTO;
 import io.cucumber.java.en.When;
@@ -33,6 +34,16 @@ public class AnalyticsWhen extends AbstractGiven {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Analytic>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
         });
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher requests analytics for discipline (.*) and student (.*)")
+    public void teacherRequestsAnalyticsForDisciplineAndStudent(String scenarionDisciplineId, String studentId){
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarionDisciplineId).toString());
+        String url = "/api/analytics/discipline/" + disciplineId + "/student/" + studentId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<AnalyticFull> responseEntity = doGet(url, httpEntity, AnalyticFull.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

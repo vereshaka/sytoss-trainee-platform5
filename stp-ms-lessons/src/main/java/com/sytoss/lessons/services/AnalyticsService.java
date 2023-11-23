@@ -1,7 +1,6 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.analytics.AnaliticGrade;
-import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.*;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -9,7 +8,6 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.dto.AnalyticsDTO;
-import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -132,4 +130,67 @@ public class AnalyticsService extends AbstractService {
     public void deleteByDiscipline(long disciplineId){
         analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
+
+    public AnalyticFull getStudentAnalyticsByLoggedStudent(Long disciplineId) {
+
+        Long studentId = getCurrentUser().getId();
+
+        return getStudentAnalyticsByStudentId(disciplineId, studentId);
+    }
+
+    public AnalyticFull getStudentAnalyticsByStudentId(Long disciplineId, Long studentId) {
+
+        AnalyticFull analyticFull = createAnalyticFull(disciplineId, studentId);
+
+        List<Test> tests = new ArrayList<>();
+        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.getByDisciplineIdAndStudentId(disciplineId, studentId);
+
+        for (AnalyticsDTO analyticsDTO : analyticsDTOS) {
+            Test test = new Test();
+            test.setExam(getExam(analyticsDTO));
+            test.setPersonalExam(getPersonalExam(analyticsDTO));
+            tests.add(test);
+        }
+
+        analyticFull.setTests(tests);
+
+        return analyticFull;
+    }
+
+    private Exam getExam(AnalyticsDTO analyticsDTO) {
+        return analyticsConnector.getExamInfo(analyticsDTO.getExamId());
+    }
+
+    private PersonalExam getPersonalExam(AnalyticsDTO analyticsDTO) {
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.setId(analyticsDTO.getPersonalExamId());
+        personalExam.setSpentTime(analyticsDTO.getTimeSpent());
+        personalExam.setMaxGrade(analyticsDTO.getGrade());
+        personalExam.setStartedDate(analyticsDTO.getStartDate());
+        return personalExam;
+    }
+
+    private AnalyticFull createAnalyticFull(Long disciplineId, Long studentId) {
+        AnalyticFull analyticFull = new AnalyticFull();
+
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+
+        Student student = new Student();
+        student.setId(studentId);
+
+        analyticFull.setDiscipline(discipline);
+        analyticFull.setStudent(student);
+
+        AnaliticGrade averageGrade = analyticsConnector.getAverageGrade(disciplineId, studentId);
+        AnaliticGrade maxGrade = analyticsConnector.getMaxGrade(disciplineId, studentId);
+
+        SummaryGrade summaryGrade = new SummaryGrade();
+        summaryGrade.setAverage(averageGrade);
+        summaryGrade.setMax(maxGrade);
+        analyticFull.setStudentGrade(summaryGrade);
+
+        return analyticFull;
+    }
+
 }

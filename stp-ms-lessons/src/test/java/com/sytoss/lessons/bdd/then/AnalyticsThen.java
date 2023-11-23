@@ -2,6 +2,8 @@ package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.analytics.AnaliticGrade;
 import com.sytoss.domain.bom.analytics.Analytic;
+import com.sytoss.domain.bom.analytics.AnalyticFull;
+import com.sytoss.domain.bom.analytics.Test;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
@@ -17,8 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnalyticsThen extends AbstractGiven {
     @Then("^updated analytic element should be$")
@@ -113,4 +117,38 @@ public class AnalyticsThen extends AbstractGiven {
             }
         }
     }
+
+    @Then("AnalyticFull object has to be returned")
+    public void analyticFullObjectHasToBeReturned(AnalyticFull expectedAnalyticFull){
+
+        AnalyticFull analyticFull = (AnalyticFull) getTestExecutionContext().getResponse().getBody();
+
+        assert analyticFull != null;
+        assertEquals(expectedAnalyticFull.getDiscipline().getId(), analyticFull.getDiscipline().getId());
+        assertEquals(expectedAnalyticFull.getStudent().getId(), analyticFull.getStudent().getId());
+        assertEquals(expectedAnalyticFull.getStudentGrade().getAverage().getGrade(), analyticFull.getStudentGrade().getAverage().getGrade());
+        assertEquals(expectedAnalyticFull.getStudentGrade().getAverage().getTimeSpent(), analyticFull.getStudentGrade().getAverage().getTimeSpent());
+        assertEquals(expectedAnalyticFull.getStudentGrade().getMax().getGrade(), analyticFull.getStudentGrade().getMax().getGrade());
+        assertEquals(expectedAnalyticFull.getStudentGrade().getMax().getTimeSpent(), analyticFull.getStudentGrade().getMax().getTimeSpent());
+    }
+
+    @Then("AnalyticFull should has tests")
+    public void analyticFullShouldHasTests(List<Test> expectedTests) {
+        AnalyticFull analyticFull = (AnalyticFull) getTestExecutionContext().getResponse().getBody();
+
+        assert analyticFull != null;
+        assertEquals(expectedTests.size(), analyticFull.getTests().size());
+
+        for (Test expectedTest : expectedTests) {
+            Optional<Test> testOptional = analyticFull.getTests().stream()
+                    .filter(test -> test.getExam().getId().equals(expectedTest.getExam().getId())
+                            && test.getExam().getName().equals(expectedTest.getExam().getName())
+                            && test.getExam().getMaxGrade().equals(expectedTest.getExam().getMaxGrade())
+                            && (test.getPersonalExam().getMaxGrade() == expectedTest.getPersonalExam().getMaxGrade())
+                            && test.getPersonalExam().getSpentTime().equals(expectedTest.getPersonalExam().getSpentTime())
+                    ).findFirst();
+            assertTrue(testOptional.isPresent());
+        }
+    }
+
 }
