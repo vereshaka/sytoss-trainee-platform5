@@ -100,7 +100,7 @@ public class AnalyticsService extends AbstractService {
             analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
-            analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+            analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
             analytic.setStartDate(personalExam.getStartedDate());
             updateAnalytic(analytic);
             analytics.add(analytic);
