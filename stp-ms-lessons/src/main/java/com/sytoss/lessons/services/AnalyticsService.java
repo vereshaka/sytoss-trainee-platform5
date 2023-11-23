@@ -64,9 +64,14 @@ public class AnalyticsService extends AbstractService {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
         for(DisciplineDTO disciplineDTO : disciplineDTOS){
             try {
-                log.info("Migration of discipline #" + disciplineDTO.getId() + " started");
-                migrate(disciplineDTO.getId());
-                log.info("Migration of discipline #" + disciplineDTO.getId() + " finished");
+                DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
+                if (dto != null) {
+                    log.info("Migration of discipline #" + disciplineDTO.getId() + " started");
+                    migrate(disciplineDTO.getId());
+                    log.info("Migration of discipline #" + disciplineDTO.getId() + " finished");
+                } else {
+                    log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
+                }
             }catch(Exception e) {
                 log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
             }
