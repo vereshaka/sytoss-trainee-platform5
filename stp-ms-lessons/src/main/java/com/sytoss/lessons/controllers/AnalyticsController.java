@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
+import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
 import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,6 +88,15 @@ public class AnalyticsController {
     @GetMapping("/discipline/{disciplineId}/student")
     public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId){
         return analyticsService.getStudentAnalyticsByLoggedStudent(disciplineId);
+    }
+
+    @Operation(description = "Method returns summary for discipline")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/summary")
+    public DisciplineSummary getDisciplineSummary(@PathVariable Long disciplineId){
+        return analyticsService.getDisciplineSummary(disciplineId);
     }
 
 }

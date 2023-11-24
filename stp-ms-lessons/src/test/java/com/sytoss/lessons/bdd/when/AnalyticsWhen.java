@@ -3,6 +3,7 @@ package com.sytoss.lessons.bdd.when;
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
+import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
 import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
 import com.sytoss.lessons.dto.AnalyticsDTO;
@@ -62,12 +63,22 @@ public class AnalyticsWhen extends AbstractGiven {
     }
 
     @When("^teacher requests analytics for discipline (.*) and student (.*)")
-    public void teacherRequestsAnalyticsForDisciplineAndStudent(String scenarionDisciplineId, String studentId){
-        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarionDisciplineId).toString());
+    public void teacherRequestsAnalyticsForDisciplineAndStudent(String scenarioDisciplineId, String studentId){
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarioDisciplineId).toString());
         String url = "/api/analytics/discipline/" + disciplineId + "/student/" + studentId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<StudentDisciplineStatistic> responseEntity = doGet(url, httpEntity, StudentDisciplineStatistic.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher requests discipline summary for discipline (.*)")
+    public void teacherDequestsDisciplineSummaryForDiscipline(String scenarioDisciplineId){
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarioDisciplineId).toString());
+        String url = "/api/analytics/discipline/" + disciplineId + "/summary";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<DisciplineSummary> responseEntity = doGet(url, httpEntity, DisciplineSummary.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

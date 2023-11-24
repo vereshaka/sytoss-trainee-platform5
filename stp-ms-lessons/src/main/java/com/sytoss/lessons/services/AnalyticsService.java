@@ -12,10 +12,7 @@ import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
-import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
-import com.sytoss.lessons.controllers.viewModel.PersonalExamSummaryStatistic;
-import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
-import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
+import com.sytoss.lessons.controllers.viewModel.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -281,4 +278,44 @@ public class AnalyticsService extends AbstractService {
         return studentDisciplineStatistic;
     }
 
+    public DisciplineSummary getDisciplineSummary(Long disciplineId) {
+        DisciplineSummary disciplineSummary = new DisciplineSummary();
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        disciplineSummary.setDiscipline(discipline);
+        disciplineSummary.setStudentsGrade(getStudentsGradeByDiscipline(disciplineId));
+        disciplineSummary.setTests(getDisciplineSummaryTests(disciplineId));
+        return disciplineSummary;
+    }
+
+    private List<ExamSummary> getDisciplineSummaryTests(Long disciplineId) {
+        ExamSummary examSummary = new ExamSummary();
+
+        Exam exam = new Exam();
+        exam.setId(1l);
+        exam.setName("exam");
+        exam.setMaxGrade(10);
+        SummaryGrade studentsGrade = getStudentsGradeByDiscipline(disciplineId);
+
+        examSummary.setExam(exam);
+        examSummary.setStudentsGrade(studentsGrade);
+
+        return List.of(examSummary);
+    }
+
+    private SummaryGrade getStudentsGradeByDiscipline(Long disciplineId) {
+        SummaryGrade studentsGrade = new SummaryGrade();
+
+        AnalyticGrade maxGrade = new AnalyticGrade();
+        maxGrade.setGrade(3.0);
+        maxGrade.setTimeSpent(10);
+        AnalyticGrade avgGrade = new AnalyticGrade();
+        avgGrade.setGrade(2.5);
+        avgGrade.setTimeSpent(4);
+
+        studentsGrade.setMax(maxGrade);
+        studentsGrade.setAverage(avgGrade);
+
+        return studentsGrade;
+    }
 }
