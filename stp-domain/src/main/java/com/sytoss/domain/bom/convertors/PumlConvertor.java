@@ -2,6 +2,7 @@ package com.sytoss.domain.bom.convertors;
 
 import com.sytoss.domain.bom.convertors.common.*;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
+import com.sytoss.domain.bom.exceptions.business.ScriptIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskDomainCouldNotCreateImageException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import java.util.*;
 public class PumlConvertor {
 
     public List<Table> parse(String pumlScript) {
-        String boundary = UUID.randomUUID().toString();
+        String boundary = UUID.randomUUID().toString() + "-";
         String workedScript = pumlScript
                 .replaceAll("table", boundary + "table")
                 .replaceAll("data", boundary + "data");
@@ -87,8 +88,13 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
+        if (tableName.startsWith("ble")) {
+            log.error("Im here!!");
+        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
+
         if (result == null) {
+            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
@@ -125,6 +131,10 @@ public class PumlConvertor {
         List<String> createTableScripts = tables.stream().map(this::returnCreateTableLiquibaseGroup).toList();
         List<String> initTableScripts = tables.stream().map(this::returnInitTableLiquibaseGroup).toList();
         List<String> initForeignKeysScripts = tables.stream().map(this::returnInitForeignKeys).toList();
+
+        if (createTableScripts.isEmpty()) {
+            throw new ScriptIsNotValidException("Script is not valid");
+        }
 
         createTableStringBuilder.append(String.join("", createTableScripts));
         initTableStringBuilder.append(String.join("", initTableScripts));

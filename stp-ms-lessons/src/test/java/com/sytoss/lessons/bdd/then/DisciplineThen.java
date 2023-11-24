@@ -7,6 +7,7 @@ import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.Then;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,9 +29,14 @@ public class DisciplineThen extends LessonsIntegrationTest {
 
     @Then("^disciplines should be received$")
     public void disciplinesShouldBeReceived(List<Discipline> disciplines) {
-        //TODO: remove this
-        ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
-        List<Discipline> disciplineList = responseObject.getData();
+        List<Discipline> disciplineList;
+        if(getTestExecutionContext().getResponse().getBody() instanceof ArrayList){
+            disciplineList = (List<Discipline>) getTestExecutionContext().getResponse().getBody();
+        }
+        else{
+            ResponseObject responseObject = (ResponseObject) getTestExecutionContext().getResponse().getBody();
+            disciplineList = responseObject.getData();
+        }
         assertEquals(disciplines.size(), disciplineList.size());
         assertTrue(
                 disciplines.stream().allMatch(discipline -> disciplineList.stream().anyMatch(

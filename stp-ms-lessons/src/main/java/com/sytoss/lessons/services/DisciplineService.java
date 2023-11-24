@@ -24,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -56,6 +57,8 @@ public class DisciplineService extends AbstractService {
 
     private final TaskDomainConnector taskDomainConnector;
 
+    private final AnalyticsService analyticsService;
+
     public Discipline getById(Long id) {
         try {
             DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(id);
@@ -85,7 +88,7 @@ public class DisciplineService extends AbstractService {
         }
     }
 
-    public Page<Discipline> findDisciplines(int pageNo, int pageSize, List<FilterItem> filters) {
+    public Page<Discipline> findDisciplinesWithPaging(int pageNo, int pageSize, List<FilterItem> filters) {
         Specification<DisciplineDTO> teacherSpec = (root, query, builder) ->
                 builder.equal(root.get("teacherId"), getCurrentUser().getId());
 
@@ -106,8 +109,20 @@ public class DisciplineService extends AbstractService {
         return page;
     }
 
+
+    public List<Discipline> findDisciplines() {
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
+        List<Discipline> result = new ArrayList<>();
+        for (DisciplineDTO disciplineDTO : disciplineDTOList) {
+            Discipline discipline = new Discipline();
+            disciplineConvertor.fromDTO(disciplineDTO, discipline);
+            result.add(discipline);
+        }
+        return result;
+    }
+
     public List<Task> findTasksByDisciplineId(Long id) {
-        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineId(id);
+        List<TaskDTO> tasks = taskConnector.getByTaskDomainDisciplineIdOrderByCode(id);
         List<Task> result = new ArrayList<>();
         for (TaskDTO taskDTO : tasks) {
             Task task = new Task();
@@ -206,12 +221,16 @@ public class DisciplineService extends AbstractService {
         return examService.getExamsByDiscipline(disciplineId);
     }
 
+    @Transactional
     public Discipline delete(Long disciplineId) {
         Discipline discipline = getById(disciplineId);
-        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineId(disciplineId);
-        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
+        analyticsService.deleteByDiscipline(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
+        for (Exam exam: examList) {
+            examService.delete(exam.getId());
+        }
 
+        List<TaskDomainDTO> taskDomainDTOList = taskDomainConnector.findByDisciplineId(disciplineId);
         taskDomainDTOList.forEach(taskDomainDTO -> {
             List<TaskDTO> taskDTOList = taskConnector.findByTaskDomainIdOrderByCodeAscCreateDateDesc(taskDomainDTO.getId());
             taskDTOList.forEach(examService::deleteAssignTaskToExam);
@@ -220,9 +239,8 @@ public class DisciplineService extends AbstractService {
 
         taskDomainConnector.deleteAll(taskDomainDTOList);
 
+        List<TopicDTO> topicDTOList = topicConnector.findByDisciplineIdOrderByName(disciplineId);
         topicConnector.deleteAll(topicDTOList);
-
-        examList.forEach(exam -> examService.delete(exam.getId()));
 
         disciplineConnector.deleteById(disciplineId);
         return discipline;

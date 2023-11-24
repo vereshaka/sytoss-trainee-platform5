@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: ${DB_URI:jdbc:postgresql://localhost:7432/lessons}
+    url: ${DB_URI:jdbc:postgresql://192.168.160.26:7432/lessons}
     username: ${DB_USER:admin}
     password: ${DB_PASSWORD:password}
   jpa:
@@ -17,7 +17,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: ${JWK_URI:http://localhost:9080/realms/stp/protocol/openid-connect/certs}
+          jwk-set-uri: ${JWK_URI:https://stp.sytoss.intra/realms/stp/protocol/openid-connect/certs}
+  jackson:
+    default-property-inclusion: non_null
 feign:
   client:
     config:
@@ -26,10 +28,10 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         request-interceptors[0]: com.sytoss.lessons.controllers.TokenRequestInterceptor
-users-url: ${USER_URI:http://localhost:9102/api}
-test-producer-url: ${TEST_PRODUCER_URI:http://localhost:9103/api}
-check-task-url: ${CHECK_TASK_URI:http://localhost:9010/api}
-image-provider-url: ${IMAGE_PROVIDER_URL:http://localhost:9204/api}
+users-url: ${USER_URI:https://stp.sytoss.intra/api}
+test-producer-url: ${TEST_PRODUCER_URI:https://stp.sytoss.intra/api}
+check-task-url: ${CHECK_TASK_URI:https://stp.sytoss.intra/api}
+image-provider-url: ${IMAGE_PROVIDER_URL:https://stp.sytoss.intra/api}
 logging:
   level:
     root: ${APP_LOG:INFO}

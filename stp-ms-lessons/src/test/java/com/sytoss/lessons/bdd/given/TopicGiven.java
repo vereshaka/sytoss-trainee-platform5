@@ -8,31 +8,32 @@ import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.time.Instant;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 public class TopicGiven extends AbstractGiven {
 
-
-    @Autowired
-    private DataSource dataSource;
-
     @Given("^topic with specific id (.*) exists")
     public void topicWithIdExists(Long topicId) {
         try {
-            Connection connection = dataSource.getConnection();
+            Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TOPIC WHERE ID = " + topicId);
             statement.execute("INSERT INTO TOPIC (ID, NAME, DISCIPLINE_ID) VALUES(" + topicId + ", 'Generic Topic#" + topicId + "', " +
                     getTestExecutionContext().getDetails().getDisciplineId() + ")");
+            while (true) {
+                ResultSet rs = statement.executeQuery("select TOPIC_SEQ.nextVal from Dual");
+                rs.next();
+                int id = rs.getInt(1);
+                if (id >= topicId) {
+                    break;
+                }
+            }
             statement.close();
             connection.commit();
             statement = connection.createStatement();
@@ -44,12 +45,13 @@ public class TopicGiven extends AbstractGiven {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        getEntityManager().clear();
     }
 
     @Given("^topic with id (.*) contains the following tasks:")
     public void topicContainsTasks(String topicKey, DataTable tasksData) {
         TopicDTO topic = getTopicConnector().getReferenceById((Long) getTestExecutionContext().getIdMapping().get(topicKey));
-        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsId(topic.getId());
+        List<TaskDTO> existsTasks = getTaskConnector().findByTopicsIdOrderByCode(topic.getId());
 
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
 
@@ -57,12 +59,14 @@ public class TopicGiven extends AbstractGiven {
 
         for (int i = 1; i < tasksData.height(); i++) {
             String taskName = tasksData.row(i).get(0).trim();
+            String taskCode = tasksData.row(i).get(1).trim();
             tasks.add(taskName);
             TaskDTO result = existsTasks.stream().filter(item -> item.getQuestion().equalsIgnoreCase(taskName)).findFirst().orElse(null);
             if (result == null) {
                 result = new TaskDTO();
                 result.setQuestion(taskName);
                 result.setTopics(List.of(topic));
+                result.setCode(taskCode);
                 result.setTaskDomain(taskDomain);
                 getTaskConnector().save(result);
             }
@@ -74,7 +78,7 @@ public class TopicGiven extends AbstractGiven {
     public void thisExamHasAnswers(List<Topic> topics) {
         Long teacherId = getTestExecutionContext().getDetails().getTeacherId();
         List<TopicDTO> topicDTOS = new ArrayList<>();
-        for(Topic topic : topics){
+        for (Topic topic : topics) {
             TopicDTO topicDTO = new TopicDTO();
             topicDTO.setName(topic.getName());
             DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -99,6 +103,7 @@ public class TopicGiven extends AbstractGiven {
                 topicResult.setName(topic.getName());
                 topicResult.setDiscipline(disciplineDTO);
                 topicResult = getTopicConnector().save(topicResult);
+
             }
             List<Long> topicIds = finalTopics.get(disciplineDTO.getId());
             if (topicIds == null) {
@@ -108,7 +113,7 @@ public class TopicGiven extends AbstractGiven {
             topicIds.add(topicResult.getId());
         }
         for (Map.Entry<Long, List<Long>> entry : finalTopics.entrySet()) {
-            List<TopicDTO> topicDTOSFromConnector = getTopicConnector().findByDisciplineId(entry.getKey());
+            List<TopicDTO> topicDTOSFromConnector = getTopicConnector().findByDisciplineIdOrderByName(entry.getKey());
             Iterator<TopicDTO> iTopic = topicDTOSFromConnector.iterator();
             while (iTopic.hasNext()) {
                 TopicDTO t = iTopic.next();

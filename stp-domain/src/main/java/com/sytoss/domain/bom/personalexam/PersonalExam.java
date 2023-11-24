@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.*;
@@ -36,8 +35,10 @@ public class PersonalExam {
     @Deprecated
     private Long examAId;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Discipline discipline;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Teacher teacher;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -55,10 +56,13 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Student student;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    @JsonView({PersonalExam.TeacherOnly.class})
     private List<Answer> answers = new ArrayList<>();
 
     private Integer time;
+
+    @Setter(AccessLevel.NONE)
+    private Long spentTime;
 
     private Integer amountOfTasks;
 
@@ -68,6 +72,9 @@ public class PersonalExam {
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double summaryGrade;
+
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
+    private double systemGrade;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
@@ -87,10 +94,17 @@ public class PersonalExam {
 
     public void summary() {
         summaryGrade = 0;
+        systemGrade = 0;
+        spentTime = 0L;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
+                systemGrade += answer.getGrade().getValue();
+                if(answer.getTeacherGrade()==null){
+                    answer.setTeacherGrade(new Grade());
+                }
                 summaryGrade += answer.getTeacherGrade().getValue();
+                spentTime += answer.getTimeSpent();
             }
         });
     }
@@ -158,6 +172,6 @@ public class PersonalExam {
     public static class Public {
     }
 
-    public static class TeacherOnly {
+    public static class TeacherOnly extends Public {
     }
 }

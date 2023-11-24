@@ -19,6 +19,7 @@ public class UserConvertor {
         teacher.setFirstName((String) source.get("firstName"));
         teacher.setLastName((String) source.get("lastName"));
         teacher.setEmail((String) source.get("email"));
+        teacher.setUid(((String) source.get("uid")));
     }
 
     public void toStudent(Map<String, Object> source, Student student) {
@@ -26,6 +27,7 @@ public class UserConvertor {
         student.setFirstName((String) source.get("firstName"));
         student.setLastName((String) source.get("lastName"));
         student.setEmail((String) source.get("email"));
+        student.setUid(((String) source.get("uid")));
         Group group = new Group();
         toGroup((Map<String, Object>) source.get("primaryGroup"), group);
         student.setPrimaryGroup(group);

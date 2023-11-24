@@ -1,5 +1,6 @@
 package com.sytoss.producer.connectors;
 
+import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Student;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,4 +19,7 @@ public interface UserConnector {
 
     @GetMapping("group/{groupId}/students")
     List<Student> getStudentOfGroup(@PathVariable("groupId") Long groupId);
+
+    @GetMapping("user/{uid}")
+    AbstractUser getByUid(@PathVariable("uid") String uid);
 }

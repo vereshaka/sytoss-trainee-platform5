@@ -30,7 +30,7 @@ public class TaskConditionService {
         }
     }
 
-    public void deleteById(Long id) {
+    public void delete(Long id) {
         try {
             taskConditionConnector.deleteById(id);
         } catch (Exception e) {

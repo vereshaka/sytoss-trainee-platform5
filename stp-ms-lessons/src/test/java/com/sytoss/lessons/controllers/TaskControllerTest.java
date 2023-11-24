@@ -1,8 +1,8 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.exceptions.business.TaskExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.Topic;
@@ -119,5 +119,14 @@ public class TaskControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Task> result = doGet("/api/task/5", httpEntity, Task.class);
         assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldUpdateTask() {
+        when(taskService.updateTask(any())).thenReturn(new Task());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Task> httpEntity = new HttpEntity<>(new Task(), httpHeaders);
+        ResponseEntity<Task> response = doPut("/api/task", httpEntity, Task.class);
+        assertEquals(200, response.getStatusCode().value());
     }
 }

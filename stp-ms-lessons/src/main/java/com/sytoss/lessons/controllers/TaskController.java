@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/task")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 public class TaskController {
 
     private final TaskService taskService;
@@ -122,7 +122,6 @@ public class TaskController {
     ) {
         return taskService.getTopics(taskId);
     }
-
 
     @Operation(description = "Method that retrieve exams by task id")
     @ApiResponses(value = {

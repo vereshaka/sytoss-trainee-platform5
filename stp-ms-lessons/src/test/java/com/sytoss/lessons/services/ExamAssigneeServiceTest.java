@@ -4,7 +4,10 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.lessons.connectors.ExamAssigneeConnector;
 import com.sytoss.lessons.connectors.ExamConnector;
 import com.sytoss.lessons.convertors.*;
-import com.sytoss.lessons.dto.*;
+import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
+import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
@@ -18,9 +21,8 @@ import org.mockito.Spy;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 public class ExamAssigneeServiceTest extends StpUnitTest {
 
@@ -34,7 +36,7 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
     private ExamAssigneeConnector examAssigneeConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new TopicConvertor(new DisciplineConvertor()),
+    private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(),new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
 
     @Spy
@@ -45,8 +47,8 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
         ExamDTO exam = createExamDTO();
         when(examConnector.getReferenceById(any())).thenReturn(exam);
         List<ExamAssignee> examAssignees = examAssigneeService.returnExamAssignees(1L);
-        assertEquals(exam.getExamAssignees().size(),examAssignees.size());
-        assertEquals(exam.getExamAssignees().get(0).getId(),examAssignees.get(0).getId());
+        assertEquals(exam.getExamAssignees().size(), examAssignees.size());
+        assertEquals(exam.getExamAssignees().get(0).getId(), examAssignees.get(0).getId());
     }
 
     @Test
@@ -54,13 +56,13 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
         ExamDTO exam = createExamDTO();
         ExamAssigneeDTO expectedExamAssigneeDTO = exam.getExamAssignees().get(0);
         ExamAssignee expectedExamAssignee = new ExamAssignee();
-        examAssigneeConvertor.fromDTO(expectedExamAssigneeDTO,expectedExamAssignee);
+        examAssigneeConvertor.fromDTO(expectedExamAssigneeDTO, expectedExamAssignee);
         when(examAssigneeConnector.getReferenceById(any())).thenReturn(exam.getExamAssignees().get(0));
         ExamAssignee examAssigneeActual = examAssigneeService.returnExamAssigneeById(1L);
-        assertEquals(expectedExamAssignee.getId(),examAssigneeActual.getId());
+        assertEquals(expectedExamAssignee.getId(), examAssigneeActual.getId());
     }
 
-    private ExamDTO createExamDTO(){
+    private ExamDTO createExamDTO() {
         ExamDTO exam = new ExamDTO();
         exam.setId(1L);
         DisciplineDTO disciplineDTO = new DisciplineDTO();
@@ -79,7 +81,7 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
         exam.setTasks(List.of(taskDTO));
         ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
         examAssigneeDTO.setId(1L);
-        examAssigneeDTO.setExamAssigneeToDTOList(List.of(new ExamToStudentAssigneeDTO(),new ExamToStudentAssigneeDTO()));
+        examAssigneeDTO.setExamAssigneeToDTOList(List.of(new ExamToStudentAssigneeDTO(), new ExamToStudentAssigneeDTO()));
         exam.getExamAssignees().add(examAssigneeDTO);
         return exam;
     }

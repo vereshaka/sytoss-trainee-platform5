@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface TopicConnector extends JpaRepository<TopicDTO, Long> {
 
-    List<TopicDTO> findByDisciplineId(Long disciplineId);
+    List<TopicDTO> findByDisciplineIdOrderByName(Long disciplineId);
 
     @Query("SELECT SUM(t.duration) FROM TOPIC t WHERE t.discipline.id = :#{#disciplineId}")
     Double countDurationByDisciplineId(@Param("disciplineId")Long disciplineId);

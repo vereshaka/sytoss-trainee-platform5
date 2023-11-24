@@ -2,7 +2,10 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
-import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.ExamReportModel;
+import com.sytoss.domain.bom.lessons.ScheduleModel;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.users.AbstractUser;
@@ -12,6 +15,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
 import com.sytoss.lessons.convertors.ExamConvertor;
+import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
@@ -24,7 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +55,13 @@ public class ExamService extends AbstractService {
 
     private final ExamAssigneeToConnector examAssigneeToConnector;
 
-    private final ExamAssigneeService examAssigneeService;
-
     private final TopicConnector topicConnector;
 
     private final TaskConnector taskConnector;
+
+    private final AnalyticsService analyticsService;
+
+    private final GroupReferenceConnector groupReferenceConnector;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -86,6 +95,12 @@ public class ExamService extends AbstractService {
         }
         ExamDTO result = examConnector.save(examDTO);
         examConvertor.fromDTO(result, exam);
+
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(exam.getDiscipline().getId());
+        for (GroupReferenceDTO group: groups) {
+            analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
+        }
+
         return exam;
     }
 
@@ -164,7 +179,7 @@ public class ExamService extends AbstractService {
     }
 
     public List<Exam> getExamsByDiscipline(Long disciplineId) {
-        List<ExamDTO> examDTOList = examConnector.findByTopics_Discipline_Id(disciplineId);
+        List<ExamDTO> examDTOList = examConnector.findByDiscipline_Id(disciplineId);
 
         if (Objects.isNull(examDTOList)) {
             throw new DisciplineNotFoundException(disciplineId);
@@ -195,10 +210,23 @@ public class ExamService extends AbstractService {
 
     public Exam delete(Long examId) {
         Exam exam = getById(examId);
-        List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-        examAssigneeService.deleteAllByExamId(examId);
-        personalExamConnector.deletePersonalExamsByExamAssigneeId(examAssigneeDTOS.stream().map(ExamAssigneeDTO::getId).toList());
-        examConnector.deleteById(exam.getId());
+        analyticsService.deleteByExam(examId);
+        personalExamConnector.deletePersonalExamsByExamAssigneeId(exam.getExamAssignees().stream().map(ExamAssignee::getId).toList());
+
+        ExamDTO dto = examConnector.getReferenceById(examId);
+        dto.getExamAssignees().forEach(item -> {
+            item.getExamAssigneeToDTOList().forEach(ea2item -> examAssigneeToConnector.delete(ea2item));
+            item.setExamAssigneeToDTOList(new ArrayList<>());
+            examAssigneeConnector.delete(item);
+        });
+
+        dto.setExamAssignees(new ArrayList<>());
+        dto.setTopics(new ArrayList<>());
+        dto.setTasks(new ArrayList<>());
+
+        examConnector.save(dto);
+
+        examConnector.deleteById(examId);
         return exam;
     }
 
@@ -228,6 +256,7 @@ public class ExamService extends AbstractService {
                     log.error("Could not create a personal exam for student", e);
                 }
             }
+            analyticsService.checkOrCreate(examId, examDTO.getDiscipline().getId(), students);
         }
         for (Student student : examAssignee.getStudents()) {
             ExamToStudentAssigneeDTO assigneeToDto = new ExamToStudentAssigneeDTO();
@@ -241,6 +270,7 @@ public class ExamService extends AbstractService {
                 log.error("Could not create a personal exam for student", e);
             }
         }
+        analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), examAssignee.getStudents());
         return exam;
     }
 
@@ -278,21 +308,15 @@ public class ExamService extends AbstractService {
 
     public List<ExamAssignee> findExamAssignees() {
         AbstractUser abstractUser = getCurrentUser();
-
         if (abstractUser instanceof Teacher) {
             List<ExamDTO> examDTOList = examConnector.findByTeacherIdOrderByCreationDateDesc(abstractUser.getId());
-            List<ExamAssignee> examAssignees = new ArrayList<>();
-            for (Long examId : examDTOList.stream().map(ExamDTO::getId).toList()) {
-                List<ExamAssigneeDTO> examAssigneeDTOS = examAssigneeConnector.getAllByExam_Id(examId);
-                examAssignees.addAll(examAssigneeDTOS.stream().map(examAssigneeDTO -> {
-                    ExamAssignee examAssignee = new ExamAssignee();
-                    examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
-                    return examAssignee;
-                }).toList());
-            }
-            Comparator<ExamAssignee> dateComparator = (obj1, obj2) -> obj2.getRelevantTo().compareTo(obj1.getRelevantTo());
-            examAssignees.sort(dateComparator);
-            return examAssignees;
+            List<Long> examDTOIds = examDTOList.stream().map(ExamDTO::getId).toList();
+            List<ExamAssigneeDTO> examAssigneeDTOList = examAssigneeConnector.findByExam_IdInOrderByRelevantFromDesc(examDTOIds);
+            return examAssigneeDTOList.stream().map(examAssigneeDTO -> {
+                ExamAssignee examAssignee = new ExamAssignee();
+                examAssigneeConvertor.fromDTO(examAssigneeDTO, examAssignee);
+                return examAssignee;
+            }).toList();
         } else {
             log.warn("User type was not valid when try to get exams by teacher id!");
             throw new UserNotIdentifiedException("User type not teacher!");
@@ -307,16 +331,7 @@ public class ExamService extends AbstractService {
             examReportModel.setRelevantTo(examAssigneeDTO.getRelevantTo());
 
             ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
-            List<TaskReportModel> tasks = examDTO.getTasks().stream().map(taskDTO -> {
-                TaskReportModel task = new TaskReportModel();
-                task.setId(taskDTO.getId());
-                task.setQuestion(taskDTO.getQuestion());
-                task.setCode(taskDTO.getCode());
-                return task;
-            }).toList();
-
             examReportModel.setExamName(examDTO.getName());
-            examReportModel.setTasks(tasks);
             examReportModel.setAmountOfTasks(examDTO.getNumberOfTasks());
             examReportModel.setMaxGrade(examDTO.getMaxGrade());
             return examReportModel;
@@ -335,5 +350,15 @@ public class ExamService extends AbstractService {
             examConvertor.fromDTO(examDTO, exam);
             return exam;
         }).toList();
+    }
+
+    public Exam getExamByExamAssignee(Long examAssigneeId) {
+        ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
+        if(examDTO !=null){
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO,exam);
+            return exam;
+        }
+        throw new ExamNotFoundException("examAssigneeId: " + examAssigneeId);
     }
 }

@@ -6,6 +6,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.util.Date;
+import java.util.Objects;
+
 @Getter(AccessLevel.PROTECTED)
 public abstract class BaseExcelWriter {
 
@@ -63,5 +66,29 @@ public abstract class BaseExcelWriter {
             cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         }
         return cellStyle;
+    }
+
+    protected Cell writeCell(
+            Row row, Integer cellIndex,
+            CellStyle cellStyle, Object value
+    ) {
+        Cell cell = row.createCell(cellIndex);
+        cell.setCellStyle(cellStyle);
+
+        if (value instanceof Integer) {
+            cell.setCellValue((Integer) value);
+        } else if (value instanceof Double) {
+            cell.setCellValue((Double) value);
+        } else if (value instanceof Float) {
+            cell.setCellValue((Float) value);
+        } else if (value instanceof Date) {
+            cell.setCellValue((Date) value);
+        } else if (Objects.isNull(value)) {
+            cell.setCellValue("");
+        } else {
+            cell.setCellValue(value.toString());
+        }
+
+        return cell;
     }
 }

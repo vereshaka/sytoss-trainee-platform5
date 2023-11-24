@@ -10,6 +10,7 @@ import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.Question;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.http.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -33,10 +35,13 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
                                               String studentId, String relevantFrom, String relevantTo) throws ParseException {
         String[] tasks = getTestExecutionContext().getDetails().getTaskMapping().get(topicName).split(", ");
         List<Task> taskList = new ArrayList<>();
+        Topic topic = new Topic();
+        topic.setId(1L);
         for (String task : tasks) {
             Task newTask = new Task();
             newTask.setCoef(1d);
             newTask.setQuestion(task);
+            newTask.setTopics(List.of(topic));
             taskList.add(newTask);
         }
 
@@ -45,20 +50,27 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         student.setUid(studentId);
         examConfiguration.setStudent(student);
 
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setRelevantTo(new Date());
+        examAssignee.setRelevantFrom(new Date());
+        examAssignee.setExam(examConfiguration.getExam());
         examConfiguration.setExamAssignee(new ExamAssignee());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         examConfiguration.getExamAssignee().setRelevantFrom(dateFormat.parse(relevantFrom));
         examConfiguration.getExamAssignee().setRelevantTo(dateFormat.parse(relevantTo));
+
+        Teacher teacher = new Teacher();
+        teacher.setFirstName("Teacher");
 
         examConfiguration.setExam(new Exam());
         examConfiguration.getExam().setName(examName);
         examConfiguration.getExam().setNumberOfTasks(numberOfTasks);
         examConfiguration.getExam().setTopics(new ArrayList<>());
         examConfiguration.getExam().setMaxGrade(maxGrade);
+        examConfiguration.getExam().setTeacher(teacher);
 
         examConfiguration.getExam().setTasks(taskList);
 
-        Topic topic = new Topic();
         topic.setId(getTopicId(topicName));
         examConfiguration.getExam().getTopics().add(topic);
 
@@ -73,7 +85,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
 
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(examConfiguration, httpHeaders);
         String url = getBaseUrl() + URI + "personal-exam/create";
@@ -87,7 +99,18 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
     public void theExamIsDoneOnTask(String examId) {
         String url = URI + "personal-exam/" + examId + "/summary";
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "teacher"));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
+        getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
+    @When("^student path to summary to exam with id (.*)$")
+    public void studentPathToSummary(String personalExamId) {
+        String url = URI + "personal-exam/" + personalExamId + "/summary";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Student"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<PersonalExam> responseEntity = doGet(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
@@ -181,6 +204,17 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         getTestExecutionContext().getDetails().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
+    @When("^the exam with id (.*) is reviewed$")
+    public void theExamWithIdIsReviewed(String id) {
+        String url = "/api/personal-exam/review";
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
+        HttpEntity<PersonalExam> requestEntity = new HttpEntity<>(getTestExecutionContext().getDetails().getPersonalExam(), httpHeaders);
+        ResponseEntity<PersonalExam> responseEntity = doPost(url, requestEntity, PersonalExam.class);
+        getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 }

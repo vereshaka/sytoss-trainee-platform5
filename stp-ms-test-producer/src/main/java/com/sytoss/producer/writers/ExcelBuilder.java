@@ -18,13 +18,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @Slf4j
 @Scope("prototype")
 public class ExcelBuilder extends BaseExcelWriter {
+
+    private static final String MINUTES = "min";
+    private static final String SECONDS = "s";
+    private static final String FORMATTED_DATE_DELIMITER = " ";
 
     private final Integer labelStartIndex = 0;
 
@@ -32,111 +37,25 @@ public class ExcelBuilder extends BaseExcelWriter {
 
     private Integer tableValueStartIndex = 0;
 
-    private final Integer groupTableStartIndex = 1;
-
     private final String sheetName = "Exam result";
 
-    private final List<String> groupTableLabels = List.of("Group", "StudentName");
-
-    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary");
+    private final List<String> tableLabels = List.of("Name", "Group", "Student name", "Email", "Summary", "Total Answer Time");
 
     public Workbook createExcelReportByExamAssignee(
             ExamReportModel examReportModel, List<PersonalExamReportModel> personalExams
     ) {
         init();
         XSSFSheet sheet = (XSSFSheet) getWb().createSheet(sheetName);
-        writeHeader(sheet, examReportModel);
+        writeHeader(examReportModel);
         autoSizeHeader(sheet);
-        writeTable(sheet, examReportModel, personalExams);
+        writeTable(examReportModel, personalExams);
         return getWb();
-    }
-
-    public Workbook createExcelReportByGroup(List<PersonalExamReportModel> reportModels) {
-        init();
-        getWb().createSheet(sheetName);
-
-        Map<String, List<PersonalExamReportModel>> examsByName = reportModels.stream().collect(Collectors.groupingBy(PersonalExamReportModel::getExamName));
-        Map<Long, List<PersonalExamReportModel>> examsByStudent = reportModels.stream().collect(Collectors.groupingBy(PersonalExamReportModel::getStudentId));
-
-        writeGroupTable(examsByName, examsByStudent);
-        return getWb();
-    }
-
-    private void writeGroupTable(
-            Map<String, List<PersonalExamReportModel>> examsByName,
-            Map<Long, List<PersonalExamReportModel>> examsByStudent
-    ) {
-        writeGroupTableHeader(examsByName);
-        writeGroupTableContent(examsByName, examsByStudent);
-    }
-
-    private void writeGroupTableHeader(Map<String, List<PersonalExamReportModel>> examsByName) {
-        XSSFSheet sheet = (XSSFSheet) getWb().getSheet(sheetName);
-        Row headerRow = sheet.createRow(groupTableStartIndex);
-        Row headerSubRow = sheet.createRow(groupTableStartIndex + 1);
-        int cellIndex = 0;
-        for (; cellIndex < groupTableLabels.size(); cellIndex++) {
-            writeCell(headerRow, cellIndex, getTableHeader(), groupTableLabels.get(cellIndex));
-            sheet.autoSizeColumn(cellIndex);
-            CellRangeAddress cellAddresses = new CellRangeAddress(groupTableStartIndex, groupTableStartIndex + 1, cellIndex, cellIndex);
-            sheet.addMergedRegion(cellAddresses);
-        }
-
-        for (String examName : examsByName.keySet()) {
-            writeCell(headerRow, cellIndex, getValue(), examName);
-            CellRangeAddress cellAddresses = new CellRangeAddress(groupTableStartIndex, groupTableStartIndex, cellIndex, cellIndex + 1);
-            sheet.addMergedRegion(cellAddresses);
-            writeCell(headerSubRow, cellIndex, getTableHeader(), "Summary grade");
-            writeCell(headerSubRow, cellIndex + 1, getTableHeader(), "Start date");
-            sheet.autoSizeColumn(cellIndex);
-            sheet.autoSizeColumn(cellIndex + 1);
-            cellIndex += 2;
-        }
-
-        writeCell(headerSubRow, cellIndex, getTableHeader(), "Summary");
-        sheet.autoSizeColumn(cellIndex);
-    }
-
-    private void writeGroupTableContent(
-            Map<String, List<PersonalExamReportModel>> examsByName,
-            Map<Long, List<PersonalExamReportModel>> examsByStudent
-    ) {
-        XSSFSheet sheet = (XSSFSheet) getWb().getSheet(sheetName);
-        int tableStartIndex = groupTableStartIndex + 2;
-        for (Long studentId: examsByStudent.keySet()) {
-            int contentValueIndex = 0;
-            Row contentRow = sheet.createRow(tableStartIndex++);
-            List<PersonalExamReportModel> reportModels = examsByStudent.get(studentId);
-            writeCell(contentRow, contentValueIndex, getValue(), reportModels.get(0).getGroupName());
-            sheet.autoSizeColumn(contentValueIndex++);
-            writeCell(contentRow, contentValueIndex, getValue(), reportModels.get(0).getStudentName());
-            sheet.autoSizeColumn(contentValueIndex++);
-            float summary = 0f;
-            for (String examName : examsByName.keySet()) {
-                Optional<PersonalExamReportModel> reportModel = reportModels.stream().filter(personalExamReportModel -> Objects.equals(personalExamReportModel.getExamName(), examName)).findFirst();
-
-                if (reportModel.isPresent()) {
-                    writeCell(contentRow, contentValueIndex, getValue(), reportModel.get().getSummary());
-                    summary += reportModel.get().getSummary();
-                    if (reportModel.get().getStartDate() != null) {
-                        writeCell(contentRow, contentValueIndex + 1, getDate(), reportModel.get().getStartDate());
-                    } else {
-                        writeCell(contentRow, contentValueIndex + 1, getDate(), "Not started");
-                    }
-
-                    sheet.autoSizeColumn(contentValueIndex + 1);
-                }
-
-                contentValueIndex += 2;
-            }
-            writeCell(contentRow, contentValueIndex, getValue(), summary);
-        }
     }
 
     private void writeHeader(
-            XSSFSheet sheet,
             ExamReportModel report
     ) {
+        XSSFSheet sheet = (XSSFSheet) getWb().getSheet(sheetName);
         int startHeaderIndex = 1;
 
         Row row = sheet.createRow(startHeaderIndex++);
@@ -153,15 +72,15 @@ public class ExcelBuilder extends BaseExcelWriter {
     }
 
     private void writeTable(
-            XSSFSheet sheet,
             ExamReportModel report,
             List<PersonalExamReportModel> personalExams
     ) {
-        writeTableHeader(sheet, report);
-        writeTableContent(sheet, report.getTasks(), personalExams);
+        writeTableHeader(report);
+        writeTableContent(report.getTasks(), personalExams);
     }
 
-    private void writeTableHeader(XSSFSheet sheet, ExamReportModel report) {
+    private void writeTableHeader(ExamReportModel report) {
+        XSSFSheet sheet = (XSSFSheet) getWb().getSheet(sheetName);
         Row tableRow = sheet.createRow(tableStartIndex);
         Row tableSubRow = sheet.createRow(tableStartIndex + 1);
         int cellIndex = labelStartIndex;
@@ -190,7 +109,8 @@ public class ExcelBuilder extends BaseExcelWriter {
         }
     }
 
-    private void writeTableContent(XSSFSheet sheet, List<TaskReportModel> tasksInExam, List<PersonalExamReportModel> personalExams) {
+    private void writeTableContent(List<TaskReportModel> tasksInExam, List<PersonalExamReportModel> personalExams) {
+        XSSFSheet sheet = (XSSFSheet) getWb().getSheet(sheetName);
         int tableContentStartIndex = tableStartIndex + 2;
 
         for (PersonalExamReportModel personalExam : personalExams) {
@@ -204,9 +124,35 @@ public class ExcelBuilder extends BaseExcelWriter {
             sheet.autoSizeColumn(tableValueStartIndex++);
             writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getEmail());
             sheet.autoSizeColumn(tableValueStartIndex++);
-            writeCell(contentRow, tableValueStartIndex++, getValue(), personalExam.getSummary());
+            writeCell(contentRow, tableValueStartIndex, getValue(), personalExam.getSummary());
+            sheet.autoSizeColumn(tableValueStartIndex++);
+            writeCell(contentRow, tableValueStartIndex++, getValue(), formatSeconds(personalExam.getSpentTime()));
             writePersonalExamGrades(personalExam, tasksInExam, contentRow, sheet);
         }
+    }
+
+    private String formatSeconds(long seconds) {
+        if (seconds == 0) {
+            return 0 + SECONDS;
+        }
+
+        long minutes = seconds / 60;
+        long remainingSeconds = seconds % 60;
+        StringBuilder result = new StringBuilder();
+
+        if (minutes != 0) {
+            result.append(minutes).append(MINUTES);
+        }
+
+        if (remainingSeconds != 0) {
+            if (minutes != 0) {
+                result.append(FORMATTED_DATE_DELIMITER);
+            }
+
+            result.append(remainingSeconds).append(SECONDS);
+        }
+
+        return result.toString();
     }
 
     private void writePersonalExamGrades(
@@ -214,12 +160,12 @@ public class ExcelBuilder extends BaseExcelWriter {
             Row contentRow, XSSFSheet sheet
     ) {
         if (personalExam.getPersonalExamStatus() == PersonalExamStatus.FINISHED
-            || personalExam.getPersonalExamStatus() == PersonalExamStatus.REVIEWED
+                || personalExam.getPersonalExamStatus() == PersonalExamStatus.REVIEWED
         ) {
             for (TaskReportModel task : tasksInExam) {
                 Optional<AnswerReportModel> findAnswer = personalExam.getAnswers().stream().filter(answer -> Objects.equals(answer.getTask().getId(), task.getId())).findFirst();
                 if (findAnswer.isPresent() && findAnswer.get().getAnswerStatus() == AnswerStatus.GRADED) {
-                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + "s");
+                    writeCell(contentRow, tableValueStartIndex, getValue(), findAnswer.get().getTimeSpent() + SECONDS);
                     Cell cell = writeCell(contentRow, tableValueStartIndex + 1, getValue(), findAnswer.get().getSystemGrade().getValue());
 
                     if (!Objects.equals(findAnswer.get().getSystemGrade().getComment(), "") && !Objects.equals(findAnswer.get().getSystemGrade().getComment(), "ok")) {
@@ -250,30 +196,6 @@ public class ExcelBuilder extends BaseExcelWriter {
     ) {
         writeCell(row, labelStartIndex, getLabel(), label);
         writeCell(row, labelStartIndex + 1, valueStyle, value);
-    }
-
-    private Cell writeCell(
-            Row row, Integer cellIndex,
-            CellStyle cellStyle, Object value
-    ) {
-        Cell cell = row.createCell(cellIndex);
-        cell.setCellStyle(cellStyle);
-
-        if (value instanceof Integer) {
-            cell.setCellValue((Integer) value);
-        } else if (value instanceof Double) {
-            cell.setCellValue((Double) value);
-        } else if (value instanceof Float) {
-            cell.setCellValue((Float) value);
-        } else if (value instanceof Date) {
-            cell.setCellValue((Date) value);
-        } else if (Objects.isNull(value)) {
-            cell.setCellValue("");
-        } else {
-            cell.setCellValue(value.toString());
-        }
-
-        return cell;
     }
 
     public void write(String path, Workbook workbook) {

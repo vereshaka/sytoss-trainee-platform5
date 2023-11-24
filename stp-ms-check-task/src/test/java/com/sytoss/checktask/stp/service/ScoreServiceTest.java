@@ -2,6 +2,7 @@ package com.sytoss.checktask.stp.service;
 
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
 import com.sytoss.stp.test.StpUnitTest;
@@ -146,5 +147,17 @@ class ScoreServiceTest extends StpUnitTest {
 
         Assertions.assertEquals(0, score.getValue());
         Assertions.assertEquals("ID columns are absent in the answer", score.getComment());
+    }
+
+    @Test
+    void checkForInsert() {
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+
+        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+        checkRequestParameters.setRequest("insert into Authors(id,name) values (100,'Author 2')");
+        checkRequestParameters.setCheckAnswer("select * from Authors");
+        checkRequestParameters.setScript(readFromFile("task-domain/script1.json"));
+
+        scoreService.checkRequest(checkRequestParameters);
     }
 }

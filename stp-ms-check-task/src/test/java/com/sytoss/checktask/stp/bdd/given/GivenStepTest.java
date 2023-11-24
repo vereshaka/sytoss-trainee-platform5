@@ -51,4 +51,9 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
     public void givenAnswerScript(String answer) {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
     }
+
+    @Given("^check SQL is$")
+    public void givenAnswerMultiLineScript(String answer) {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
+    }
 }

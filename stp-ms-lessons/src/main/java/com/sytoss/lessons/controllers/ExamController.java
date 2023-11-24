@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("hasRole('Teacher')")
 @RestController
 @RequestMapping("/api/exam")
 @RequiredArgsConstructor
@@ -98,5 +98,14 @@ public class ExamController {
     @PostMapping("/{examId}/assign")
     public Exam assignGroupsToExam(@PathVariable Long examId, @RequestBody ExamAssignee examAssignee) {
         return examService.assign(examId, examAssignee);
+    }
+
+    @Operation(description = "Method that returns exam by exam assignee id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/assignee/{examAssigneeId}")
+    public Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId) {
+        return examService.getExamByExamAssignee(examAssigneeId);
     }
 }

@@ -1,25 +1,17 @@
 package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.convertors.CheckConvertor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
-import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.exceptions.business.notfound.TopicNotFoundException;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskCondition;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.connectors.CheckTaskConnector;
-import com.sytoss.lessons.connectors.TaskConnector;
-import com.sytoss.lessons.connectors.TaskDomainConnector;
-import com.sytoss.lessons.connectors.TopicConnector;
+import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskConditionConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
 import com.sytoss.lessons.dto.TaskConditionDTO;
@@ -58,6 +50,8 @@ public class TaskService {
     private final PumlConvertor pumlConvertor;
 
     private final ExamService examService;
+
+    private final PersonalExamConnector personalExamConnector;
 
     public Task getById(Long id) {
         try {
@@ -121,7 +115,7 @@ public class TaskService {
     }
 
     public List<Task> findByTopicId(Long topicId) {
-        List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+        List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
         List<Task> tasksList = new ArrayList<>();
         for (TaskDTO taskDTO : taskDTOList) {
             Task task = new Task();
@@ -162,7 +156,8 @@ public class TaskService {
             String script = taskDomainDTO.getDatabaseScript() + "\n\n" + taskDomainDTO.getDataScript();
             String liquibaseScript = pumlConvertor.convertToLiquibase(script);
             CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-            checkRequestParameters.setRequest(CheckConvertor.formatTaskAnswer(taskDomainRequestParameters.getRequest()));
+            checkRequestParameters.setRequest(taskDomainRequestParameters.getRequest());
+            checkRequestParameters.setCheckAnswer(taskDomainRequestParameters.getCheckAnswer());
             checkRequestParameters.setScript(liquibaseScript);
             try {
                 QueryResult queryResult = checkTaskConnector.checkRequest(checkRequestParameters);
@@ -204,11 +199,17 @@ public class TaskService {
             updateTaskDTO.setCode(task.getCode());
         }
 
-        updateTaskDTO.setConditions(getTaskConditionsForUpdate(task));
+        if (Objects.nonNull(task.getCheckAnswer())) {
+            updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
+        }
+
+        updateTaskDTO.getConditions().clear();
+        updateTaskDTO.getConditions().addAll(getTaskConditionsForUpdate(task));
 
         updateTaskDTO = taskConnector.save(updateTaskDTO);
         taskConvertor.fromDTO(updateTaskDTO, task);
 
+        personalExamConnector.updateTask(task);
         return task;
     }
 
@@ -232,12 +233,12 @@ public class TaskService {
         Task oldTask = new Task();
         taskConvertor.fromDTO(oldTaskDTO, oldTask);
         List<TaskCondition> newTaskConditions = task.getTaskConditions();
-        List<TaskCondition> oldTaskConditions = oldTask.getTaskConditions();
 
         List<TaskConditionDTO> newTaskConditionsDTO = new ArrayList<>();
 
-        List<Long> idForDelete = oldTaskConditions.stream().map(TaskCondition::getId).toList();
-        idForDelete.forEach(conditionService::deleteById);
+        for (TaskConditionDTO oldTaskCondition : oldTaskDTO.getConditions()) {
+            conditionService.delete(oldTaskCondition.getId());
+        }
 
         for (TaskCondition taskCondition : newTaskConditions) {
             TaskConditionDTO taskConditionDTO = new TaskConditionDTO();
@@ -278,7 +279,7 @@ public class TaskService {
         try {
             TopicDTO topicDTO = topicConnector.getReferenceById(topicId);
 
-            List<TaskDTO> taskDTOList = taskConnector.findByTopicsId(topicId);
+            List<TaskDTO> taskDTOList = taskConnector.findByTopicsIdOrderByCode(topicId);
             taskDTOList.forEach(taskDTO -> {
                 taskDTO.getTopics().remove(topicDTO);
                 taskConnector.save(taskDTO);

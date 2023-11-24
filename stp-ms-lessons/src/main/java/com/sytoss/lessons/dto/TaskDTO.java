@@ -39,7 +39,7 @@ public class TaskDTO extends Auditable {
             inverseJoinColumns = @JoinColumn(name = "TOPIC_ID"))
     private List<TopicDTO> topics;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "TASK_ID", referencedColumnName = "ID")
     private List<TaskConditionDTO> conditions = new ArrayList<>();
 
@@ -48,4 +48,7 @@ public class TaskDTO extends Auditable {
 
     @Column(name = "CREATE_DATE")
     private Date createDate;
+
+    @Column(name = "CHECK_ANSWER")
+    private String checkAnswer;
 }

@@ -32,21 +32,21 @@ Feature: Task
       | topicId | topicName |
       | *5      | Join      |
     And topic with id *2 contains the following tasks:
-      | taskName            |
-      | What is Join?       |
-      | What is Inner Join? |
+      | taskName            | code |
+      | What is Join?       | 2    |
+      | What is Inner Join? | 1    |
     And topic with id *3 contains the following tasks:
-      | taskName      |
-      | What is Join? |
+      | taskName      | code |
+      | What is Join? | 2    |
     And topic with id *5 contains the following tasks:
-      | taskName      |
-      | What is Join? |
+      | taskName      | code |
+      | What is Join? | 2    |
     When retrieve information about tasks of topic with id *2
     Then operation is successful
     And tasks of topic with id *2 should be received
-      | discipline | topic | task                |
-      | SQL        | Join  | What is Join?       |
-      | SQL        | Join  | What is Inner Join? |
+      | discipline | topic | task                | code |
+      | SQL        | Join  | What is Inner Join? | 1    |
+      | SQL        | Join  | What is Join?       | 2    |
 
   Scenario: Link task to topic
     Given task with question "What is Join?" exists
@@ -75,7 +75,6 @@ Feature: Task
     Then operation is successful
     And "Select" condition with CONTAINS type should be in task with question "What are the different subsets of SQL?"
 
-    @Bug
   Scenario: Check current correct student's answer
     Given "First Domain" task domain exists
     When request is "select * from Discipline" sent to check this request for this task domain
@@ -90,3 +89,12 @@ Feature: Task
     When delete task
     Then operation is successful
     And should return task with "What are the different subsets of SQL?" question
+
+  Scenario: Update information about task
+    Given task with question "What are the different subsets of SQL2?" exists
+    And task with question "What are the different subsets of SQL2?" has condition "Join" with type CONTAINS
+    When teacher updates this task with question "What are the different subsets of SQL2?" question to "What are the different subsets of Mongo?"
+    Then operation is successful
+    And should return task with "What are the different subsets of Mongo?" question
+
+

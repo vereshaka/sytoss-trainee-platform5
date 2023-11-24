@@ -15,6 +15,8 @@ public class QueryResult {
     private final List<Map<Integer, Object>> resultMapList = new ArrayList<>();
     @Setter
     private List<String> header = new ArrayList<>();
+    @Setter
+    private int affectedRowsCount = 0;
 
     public void addValues(Map<String, Object> row) {
         Map<Integer, Object> tableRow = new HashMap<>();
@@ -36,9 +38,9 @@ public class QueryResult {
         return result;
     }
 
-    public List<Exception> compareWithEtalon(QueryResult etalon){
+    public List<Exception> compareWithEtalon(QueryResult etalon) {
         List<Exception> result = new ArrayList<>();
-        if (etalon.getResultMapList().size() != this.getResultMapList().size()){
+        if (etalon.getResultMapList().size() != this.getResultMapList().size()) {
             result.add(new DifferentRowsAmountException());  // case #2
         } else {
             Map<Integer, Integer> columnIndexMapping = new HashMap<>();
@@ -59,7 +61,7 @@ public class QueryResult {
                     }
                 }
             }
-            if (absentColumns.size() == etalon.getHeader().size()){
+            if (absentColumns.size() == etalon.getHeader().size()) {
                 result.add(new WrongDataException()); // case #3
             } else {
                 if (absentColumns.size() > 0) {
@@ -73,13 +75,14 @@ public class QueryResult {
                 }
             }
         }
+
         return result;
     }
 
-    private int containsColumnByValue( List<Object> etalonColumn){
-        for (int i=0;i<getHeader().size();i++){
+    private int containsColumnByValue(List<Object> etalonColumn) {
+        for (int i = 0; i < getHeader().size(); i++) {
             List<Object> valueColumn = getColumnValue(i);
-            if (CollectionUtils.containsAll(etalonColumn, valueColumn)){
+            if (CollectionUtils.containsAll(etalonColumn, valueColumn)) {
                 return i;
             }
         }

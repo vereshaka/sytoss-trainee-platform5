@@ -1,6 +1,10 @@
 package com.sytoss.producer.bdd.given;
 
+import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.Answer;
+import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.Student;
@@ -15,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.mockito.Mockito.when;
 
 public class PersonalExamGiven extends TestProducerIntegrationTest {
 
@@ -45,19 +52,35 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         personalExam.setId(examId);
         personalExam.setName(examName);
         Student student = new Student();
-        student.setId(studentId);
+        student.setUid(String.valueOf(studentId));
         personalExam.setStudent(student);
-
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        personalExam.setDiscipline(discipline);
+        personalExam.setExamAssigneeId(1L);
+        Exam exam = new Exam();
+        exam.setId(1L);
+        when(getLessonsConnector().getExamByAssignee(personalExam.getExamAssigneeId())).thenReturn(exam);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         try {
             personalExam.setAssignedDate(dateFormat.parse(date));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
+        long i=0;
+        for(Answer answer : answers){
+            answer.setId(i++);
+            answer.setTeacherGrade(answer.getGrade());
+            answer.setTimeSpent(1L);
+        }
+       // answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
 
         personalExam.setAnswers(answers);
+
+        personalExam.finish();
         getPersonalExamConnector().save(personalExam);
+
+        getTestExecutionContext().getDetails().setStudentUid(student.getUid());
     }
 
     @Given("^this student has \"(.*)\" personal exam and (.*) status exist and time (.*) and amountOfTasks (.*)$")
@@ -110,5 +133,24 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         }
         personalExam.setAnswers(answers);
         getPersonalExamConnector().save(personalExam);
+    }
+
+    @Given("^this teacher review personal exam with id (.*) and exam name (.*) with such grades")
+    public void thisTeacherReviewPersonalExamWithIdAbcAndExamNameAndDate(String id, String examName, DataTable grades) {
+        String studentUid = getTestExecutionContext().getDetails().getStudentUid();
+        PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentUid);
+        personalExam.finish();
+        List<Answer> answers = personalExam.getAnswers();
+        List<Map<String,String>> gradesMaps = grades.asMaps();
+        for(Map<String,String> map : gradesMaps){
+            Long taskId = Long.parseLong(map.get("taskId"));
+            Grade newTeacherGrade = new Grade();
+            newTeacherGrade.setValue(Double.parseDouble(map.get("teacherGrade")));
+            answers.stream().filter(answer -> Objects.equals(answer.getTask().getId(), taskId)).toList().get(0).setTeacherGrade(newTeacherGrade);
+        }
+        personalExam.setAnswers(answers);
+        personalExam.review();
+
+        getTestExecutionContext().getDetails().setPersonalExam(personalExam);
     }
 }
