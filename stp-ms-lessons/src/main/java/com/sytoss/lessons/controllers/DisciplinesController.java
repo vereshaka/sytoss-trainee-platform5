@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/disciplines")
@@ -28,6 +27,7 @@ public class DisciplinesController {
 
     private final DisciplineService disciplineService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve list of disciplines")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -37,7 +37,7 @@ public class DisciplinesController {
         return disciplineService.findAllDisciplines();
     }
 
-
+    @PreAuthorize("hasRole('Student')")
     @Operation(description = "Method that retrieve list of my disciplines")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -47,6 +47,7 @@ public class DisciplinesController {
         return disciplineService.findAllMyDiscipline();
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve list tasks by discipline id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -56,6 +57,7 @@ public class DisciplinesController {
         return disciplineService.findTasksByDisciplineId(id);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve list of disciplines by group id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
