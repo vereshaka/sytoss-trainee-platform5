@@ -490,4 +490,8 @@ public class PersonalExamService extends AbstractService {
         }
         return personalExams;
     }
+
+    public List<PersonalExam> getStudentPersonalExams() {
+        return getByStudentId(getCurrentUser().getId());
+    }
 }
