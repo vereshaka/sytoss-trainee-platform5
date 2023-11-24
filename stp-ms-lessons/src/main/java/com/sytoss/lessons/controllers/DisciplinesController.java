@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/disciplines")
