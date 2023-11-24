@@ -51,8 +51,8 @@ Feature: Analytics
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent |
-      | 2         | 5        | 3            |
       | 1         | 6        | 1            |
+      | 2         | 5        | 3            |
 
   Scenario: get ratings by id and exam id
     Given analytics elements exist
@@ -65,8 +65,8 @@ Feature: Analytics
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent |
-      | 2         | 5        | 3            |
       | 1         | 6        | 1            |
+      | 2         | 5        | 3            |
 
   Scenario: get ratings by id and group id
     Given discipline with id *d1 exists
@@ -104,8 +104,9 @@ Feature: Analytics
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent |
-      | 2         | 5        | 3            |
       | 1         | 10       | 3            |
+      | 2         | 5        | 3            |
+
 
   Scenario: When teacher requests students analytics then response with detailed information has to be returned
     Given analytics elements exist
