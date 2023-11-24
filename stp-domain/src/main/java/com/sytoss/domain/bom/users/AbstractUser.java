@@ -1,7 +1,6 @@
 package com.sytoss.domain.bom.users;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 public abstract class AbstractUser {
 
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     private Long id;
 
     @JsonView({PersonalExam.Public.class})

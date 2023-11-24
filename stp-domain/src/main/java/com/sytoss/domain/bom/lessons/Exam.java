@@ -1,7 +1,5 @@
 package com.sytoss.domain.bom.lessons;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Teacher;
 import lombok.Getter;
@@ -16,15 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 public class Exam {
 
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     private Long id;
 
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     private String name;
 
     private Integer numberOfTasks;
 
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     private Integer maxGrade;
 
     private List<Topic> topics;

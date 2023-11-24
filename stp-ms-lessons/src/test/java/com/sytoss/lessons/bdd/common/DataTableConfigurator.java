@@ -1,14 +1,14 @@
 package com.sytoss.lessons.bdd.common;
 
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
-import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.SummaryGrade;
-import com.sytoss.domain.bom.analytics.Test;
 import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
+import com.sytoss.lessons.controllers.viewModel.PersonalExamSummaryStatistic;
+import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
+import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
@@ -27,14 +27,14 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public AnalyticFull mapAnalyticFull(Map<String, String> row) {
-        AnalyticFull analyticFull = new AnalyticFull();
+    public StudentDisciplineStatistic mapAnalyticFull(Map<String, String> row) {
+        StudentDisciplineStatistic studentDisciplineStatistic = new StudentDisciplineStatistic();
         Discipline discipline = new Discipline();
         discipline.setId((Long) getTestExecutionContext().replaceId(row.get("disciplineId")));
-        analyticFull.setDiscipline(discipline);
+        studentDisciplineStatistic.setDiscipline(discipline);
         Student student = new Student();
         student.setId(Long.parseLong((String) getTestExecutionContext().replaceId(row.get("studentId"))));
-        analyticFull.setStudent(student);
+        studentDisciplineStatistic.setStudent(student);
 
         SummaryGrade summaryGrade = new SummaryGrade();
 
@@ -45,28 +45,28 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
 
         AnalyticGrade maxGrade = new AnalyticGrade();
         maxGrade.setGrade(Double.parseDouble(row.get("max grade")));
-        maxGrade.setTimeSpent(Long.parseLong(row.get("max spent time")));
+        maxGrade.setTimeSpent(Long.parseLong(row.get("min spent time")));
         summaryGrade.setMax(maxGrade);
 
-        analyticFull.setStudentGrade(summaryGrade);
+        studentDisciplineStatistic.setSummaryGrade(summaryGrade);
 
-        return analyticFull;
+        return studentDisciplineStatistic;
     }
 
     @DataTableType
-    public Test mapTest(Map<String, String> row){
+    public StudentTestExecutionSummary mapTest(Map<String, String> row){
 
-        Test test = new Test();
+        StudentTestExecutionSummary test = new StudentTestExecutionSummary();
 
-        Exam exam = new Exam();
+        ExamSummaryStatistic exam = new ExamSummaryStatistic();
         exam.setId((Long) getTestExecutionContext().replaceId(row.get("examId")));
         exam.setName(row.get("examName"));
-        exam.setMaxGrade(Integer.parseInt(row.get("examMaxGrade")));
+        exam.setStudentMaxGrade(Integer.parseInt(row.get("examMaxGrade")));
 
-        PersonalExam personalExam = new PersonalExam();
-        personalExam.setMaxGrade(Double.parseDouble(row.get("personalExamGrade")));
+        PersonalExamSummaryStatistic personalExam = new PersonalExamSummaryStatistic();
+        personalExam.setGrade(Double.parseDouble(row.get("personalExamGrade")));
         personalExam.setSpentTime(Long.parseLong(row.get("personalExamSpentTime")));
-        personalExam.setId((String) getTestExecutionContext().replaceId(row.get("personalExamId")));
+        personalExam.setPersonalExamId((String) getTestExecutionContext().replaceId(row.get("personalExamId")));
 
         test.setPersonalExam(personalExam);
         test.setExam(exam);

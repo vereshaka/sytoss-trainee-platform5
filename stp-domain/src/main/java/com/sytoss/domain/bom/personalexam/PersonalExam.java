@@ -2,7 +2,6 @@ package com.sytoss.domain.bom.personalexam;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIsFinishedException;
 import com.sytoss.domain.bom.lessons.Discipline;
@@ -24,7 +23,7 @@ import java.util.Objects;
 public class PersonalExam {
 
     @MongoId
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class, AnalyticFull.AnalyticFullView.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private String id;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -45,7 +44,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date assignedDate;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class, AnalyticFull.AnalyticFullView.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private Date startedDate;
 
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
@@ -62,7 +61,6 @@ public class PersonalExam {
 
     private Integer time;
 
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     private Long spentTime;
 
     private Integer amountOfTasks;
@@ -77,7 +75,7 @@ public class PersonalExam {
     @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double systemGrade;
 
-    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class, AnalyticFull.AnalyticFullView.class})
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     private double maxGrade;
 
     private double sumOfCoef;

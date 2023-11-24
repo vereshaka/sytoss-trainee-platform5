@@ -1,9 +1,8 @@
 package com.sytoss.lessons.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.sytoss.domain.bom.analytics.AnalyticFull;
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
+import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -76,9 +75,8 @@ public class AnalyticsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     @GetMapping("/discipline/{disciplineId}/student/{studentId}")
-    public AnalyticFull getStudentAnalytics(@PathVariable Long disciplineId, @PathVariable Long studentId){
+    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId, @PathVariable Long studentId){
         return analyticsService.getStudentAnalyticsByStudentId(disciplineId, studentId);
     }
 
@@ -86,9 +84,8 @@ public class AnalyticsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @JsonView({AnalyticFull.AnalyticFullView.class})
     @GetMapping("/discipline/{disciplineId}/student")
-    public AnalyticFull getStudentAnalytics(@PathVariable Long disciplineId){
+    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId){
         return analyticsService.getStudentAnalyticsByLoggedStudent(disciplineId);
     }
 

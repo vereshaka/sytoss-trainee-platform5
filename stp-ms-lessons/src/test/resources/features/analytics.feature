@@ -118,10 +118,10 @@ Feature: Analytics
       | *d12         | *ex14  | 2         | *pe22           | 12    | 5         |
     When teacher requests analytics for discipline *d12 and student 1
     Then operation is successful
-    And AnalyticFull object has to be returned
-      | disciplineId | studentId | average grade | average spent time | max grade | max spent time |
-      | *d12         | 1         | 7             | 3                  | 15        | 5              |
-    And AnalyticFull should has tests
+    And StudentDisciplineStatistic object has to be returned
+      | disciplineId | studentId | average grade | average spent time | max grade | min spent time |
+      | *d12         | 1         | 7             | 3                  | 15        | 1              |
+    And StudentDisciplineStatistic should has tests
       | examId | examName | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
       | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16           |
       | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17           |
