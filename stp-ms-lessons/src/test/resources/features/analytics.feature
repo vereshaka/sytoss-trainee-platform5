@@ -50,9 +50,9 @@ Feature: Analytics
     When teacher gets ratings by discipline *d1, by exam null and by group null
     Then operation is successful
     And ratings should be
-      | studentId | avgGrade | avgTimeSpent |
-      | 1         | 6        | 1            |
-      | 2         | 5        | 3            |
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 6        | 1            | 1    |
+      | 2         | 5        | 3            | 2    |
 
   Scenario: get ratings by id and exam id
     Given analytics elements exist
@@ -64,9 +64,9 @@ Feature: Analytics
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group null
     Then operation is successful
     And ratings should be
-      | studentId | avgGrade | avgTimeSpent |
-      | 1         | 6        | 1            |
-      | 2         | 5        | 3            |
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 6        | 1            | 1    |
+      | 2         | 5        | 3            | 2    |
 
   Scenario: get ratings by id and group id
     Given discipline with id *d1 exists
@@ -82,8 +82,8 @@ Feature: Analytics
     When teacher gets ratings by discipline *d1, by exam null and by group 1
     Then operation is successful
     And ratings should be
-      | studentId | avgGrade | avgTimeSpent |
-      | 1         | 7        | 3            |
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 7        | 3            | 1    |
 
   Scenario: get ratings by id, exam id and group id
     Given discipline with id *d1 exists
@@ -103,20 +103,20 @@ Feature: Analytics
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group 1
     Then operation is successful
     And ratings should be
-      | studentId | avgGrade | avgTimeSpent |
-      | 1         | 10       | 3            |
-      | 2         | 5        | 3            |
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 10       | 3            | 1    |
+      | 2         | 5        | 3            | 2    |
 
 
   Scenario: When teacher requests students analytics then response with detailed information has to be returned
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d12         | *ex12  | 1         | *pe16           | 1     | 1         |
-      | *d12         | *ex13  | 1         | *pe17           | 5     | 4         |
-      | *d12         | *ex14  | 1         | *pe18           | 15    | 5         |
-      | *d12         | *ex12  | 2         | *pe19           | 3     | 1         |
-      | *d12         | *ex13  | 2         | *pe21           | 6     | 4         |
-      | *d12         | *ex14  | 2         | *pe22           | 12    | 5         |
+      | *d12         | *ex12  | 1         | *pe16          | 1     | 1         |
+      | *d12         | *ex13  | 1         | *pe17          | 5     | 4         |
+      | *d12         | *ex14  | 1         | *pe18          | 15    | 5         |
+      | *d12         | *ex12  | 2         | *pe19          | 3     | 1         |
+      | *d12         | *ex13  | 2         | *pe21          | 6     | 4         |
+      | *d12         | *ex14  | 2         | *pe22          | 12    | 5         |
     When teacher requests analytics for discipline *d12 and student 1
     Then operation is successful
     And StudentDisciplineStatistic object has to be returned
@@ -124,18 +124,18 @@ Feature: Analytics
       | *d12         | 1         | 7             | 3                  | 15        | 1              |
     And StudentDisciplineStatistic should has tests
       | examId | examName | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
-      | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16           |
-      | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17           |
-      | *ex14  | Exam 1   | 15           | 15                | 5                     | *pe18           |
+      | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16          |
+      | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17          |
+      | *ex14  | Exam 1   | 15           | 15                | 5                     | *pe18          |
 
   Scenario: When teacher requests summary by discipline then response with detailed information has to be returned
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d13         | *ex12  | 1         | *pe16           | 1     | 1         |
-      | *d13         | *ex13  | 1         | *pe17           | 5     | 4         |
-      | *d13         | *ex14  | 1         | *pe18           | 15    | 5         |
-      | *d13         | *ex12  | 2         | *pe19           | 3     | 1         |
-      | *d13         | *ex13  | 2         | *pe21           | 6     | 4         |
-      | *d13         | *ex14  | 2         | *pe22           | 12    | 5         |
+      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         |
+      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         |
+      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         |
+      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         |
+      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         |
+      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         |
     When teacher requests discipline summary for discipline *d13
     Then operation is successful
