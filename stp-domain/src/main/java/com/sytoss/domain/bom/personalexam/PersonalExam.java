@@ -61,6 +61,7 @@ public class PersonalExam {
 
     private Integer time;
 
+    @Setter(AccessLevel.NONE)
     private Long spentTime;
 
     private Integer amountOfTasks;
