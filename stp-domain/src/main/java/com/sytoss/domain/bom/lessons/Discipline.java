@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 @Builder
 public class Discipline {
 
-    @JsonView({PersonalExam.Public.class,Group.TeacherGroups.class})
+    @JsonView({PersonalExam.Public.class, Group.TeacherGroups.class})
     private Long id;
 
     @JsonView({PersonalExam.Public.class,Group.TeacherGroups.class})

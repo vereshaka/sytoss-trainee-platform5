@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnalyticGrade {
+
     private double grade;
+
     private long timeSpent;
 }

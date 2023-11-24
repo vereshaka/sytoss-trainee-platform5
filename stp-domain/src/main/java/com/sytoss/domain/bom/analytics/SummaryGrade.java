@@ -6,6 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SummaryGrade {
+
     private AnalyticGrade average;
+
     private AnalyticGrade max;
+
 }

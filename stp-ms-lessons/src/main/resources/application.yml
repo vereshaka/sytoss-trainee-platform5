@@ -18,6 +18,8 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${JWK_URI:https://stp.sytoss.intra/realms/stp/protocol/openid-connect/certs}
+  jackson:
+    default-property-inclusion: non_null
 feign:
   client:
     config:

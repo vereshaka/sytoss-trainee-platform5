@@ -1,14 +1,17 @@
 package com.sytoss.lessons.bdd.when;
-import com.sytoss.domain.bom.analytics.Analytics;
 
+import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
+import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
+import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
 import com.sytoss.lessons.dto.AnalyticsDTO;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -55,6 +58,16 @@ public class AnalyticsWhen extends AbstractGiven {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Rating>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher requests analytics for discipline (.*) and student (.*)")
+    public void teacherRequestsAnalyticsForDisciplineAndStudent(String scenarionDisciplineId, String studentId){
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarionDisciplineId).toString());
+        String url = "/api/analytics/discipline/" + disciplineId + "/student/" + studentId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<StudentDisciplineStatistic> responseEntity = doGet(url, httpEntity, StudentDisciplineStatistic.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

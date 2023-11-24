@@ -107,3 +107,23 @@ Feature: Analytics
       | 1         | 10       | 3            |
       | 2         | 5        | 3            |
 
+
+  Scenario: When teacher requests students analytics then response with detailed information has to be returned
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
+      | *d12         | *ex12  | 1         | *pe16           | 1     | 1         |
+      | *d12         | *ex13  | 1         | *pe17           | 5     | 4         |
+      | *d12         | *ex14  | 1         | *pe18           | 15    | 5         |
+      | *d12         | *ex12  | 2         | *pe19           | 3     | 1         |
+      | *d12         | *ex13  | 2         | *pe21           | 6     | 4         |
+      | *d12         | *ex14  | 2         | *pe22           | 12    | 5         |
+    When teacher requests analytics for discipline *d12 and student 1
+    Then operation is successful
+    And StudentDisciplineStatistic object has to be returned
+      | disciplineId | studentId | average grade | average spent time | max grade | min spent time |
+      | *d12         | 1         | 7             | 3                  | 15        | 1              |
+    And StudentDisciplineStatistic should has tests
+      | examId | examName | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
+      | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16           |
+      | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17           |
+      | *ex14  | Exam 1   | 15           | 15                | 5                     | *pe18           |

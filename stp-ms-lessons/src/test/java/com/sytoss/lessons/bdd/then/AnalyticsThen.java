@@ -9,16 +9,21 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
+import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
+import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AnalyticsThen extends AbstractGiven {
     @Then("^updated analytic element should be$")
@@ -127,4 +132,38 @@ public class AnalyticsThen extends AbstractGiven {
             }
         }
     }
+
+    @Then("StudentDisciplineStatistic object has to be returned")
+    public void analyticFullObjectHasToBeReturned(StudentDisciplineStatistic expectedDisciplineStatistic){
+
+        StudentDisciplineStatistic disciplineStatistic = (StudentDisciplineStatistic) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineStatistic != null;
+        assertEquals(expectedDisciplineStatistic.getDiscipline().getId(), disciplineStatistic.getDiscipline().getId());
+        assertEquals(expectedDisciplineStatistic.getStudent().getId(), disciplineStatistic.getStudent().getId());
+        assertEquals(expectedDisciplineStatistic.getSummaryGrade().getAverage().getGrade(), disciplineStatistic.getSummaryGrade().getAverage().getGrade());
+        assertEquals(expectedDisciplineStatistic.getSummaryGrade().getAverage().getTimeSpent(), disciplineStatistic.getSummaryGrade().getAverage().getTimeSpent());
+        assertEquals(expectedDisciplineStatistic.getSummaryGrade().getMax().getGrade(), disciplineStatistic.getSummaryGrade().getMax().getGrade());
+        assertEquals(expectedDisciplineStatistic.getSummaryGrade().getMax().getTimeSpent(), disciplineStatistic.getSummaryGrade().getMax().getTimeSpent());
+    }
+
+    @Then("StudentDisciplineStatistic should has tests")
+    public void analyticFullShouldHasTests(List<StudentTestExecutionSummary> expectedTests) {
+        StudentDisciplineStatistic studentDisciplineStatistic = (StudentDisciplineStatistic) getTestExecutionContext().getResponse().getBody();
+
+        assert studentDisciplineStatistic != null;
+        assertEquals(expectedTests.size(), studentDisciplineStatistic.getTests().size());
+
+        for (StudentTestExecutionSummary expectedTest : expectedTests) {
+            Optional<StudentTestExecutionSummary> testOptional = studentDisciplineStatistic.getTests().stream()
+                    .filter(test -> test.getExam().getId().equals(expectedTest.getExam().getId())
+                            && test.getExam().getName().equals(expectedTest.getExam().getName())
+                            && test.getExam().getStudentMaxGrade().equals(expectedTest.getExam().getStudentMaxGrade())
+                            && test.getPersonalExam().getGrade().equals(expectedTest.getPersonalExam().getGrade())
+                            && test.getPersonalExam().getSpentTime().equals(expectedTest.getPersonalExam().getSpentTime())
+                    ).findFirst();
+            assertTrue(testOptional.isPresent());
+        }
+    }
+
 }

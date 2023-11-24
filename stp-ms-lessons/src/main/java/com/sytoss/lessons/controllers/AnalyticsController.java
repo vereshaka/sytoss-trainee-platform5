@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
+import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Objects;
 
-@PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/analytics")
@@ -23,6 +23,7 @@ public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that update information about student's analytics element")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -32,6 +33,7 @@ public class AnalyticsController {
         analyticsService.updateAnalytic(analytics);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that migrate old tests to analytics elements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -67,4 +69,24 @@ public class AnalyticsController {
     public void migrateAll() {
         analyticsService.migrateAll();
     }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method returns analytics for teacher about certain student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/student/{studentId}")
+    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId, @PathVariable Long studentId){
+        return analyticsService.getStudentAnalyticsByStudentId(disciplineId, studentId);
+    }
+
+    @Operation(description = "Method returns analytics for currently logged student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/student")
+    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId){
+        return analyticsService.getStudentAnalyticsByLoggedStudent(disciplineId);
+    }
+
 }
