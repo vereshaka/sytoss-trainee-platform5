@@ -222,6 +222,11 @@ public class DataTableCommon {
         Rating rating = new Rating();
         rating.setStudent(student);
         rating.setGrade(analyticGrade);
+
+        if(entry.get("rank")!=null){
+            rating.setRank(Long.parseLong(entry.get("rank")));
+        }
+
         return rating;
     }
 }
