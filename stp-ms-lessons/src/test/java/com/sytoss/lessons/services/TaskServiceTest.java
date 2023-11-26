@@ -19,7 +19,6 @@ import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -198,10 +197,10 @@ public class TaskServiceTest extends StpUnitTest {
         taskDTO2.setTaskDomain(taskDomainDTO);
         taskDTO2.setTopics(List.of(topicDTO));
 
-        when(taskConnector.findByTopicsIdOrderByCode(anyLong())).thenReturn(List.of(taskDTO,taskDTO2));
+        when(taskConnector.findByTopicsIdOrderByCode(anyLong())).thenReturn(List.of(taskDTO, taskDTO2));
 
         List<Task> result = taskService.findByTopicId(1L);
-        Assertions.assertEquals(2,result.size());
+        Assertions.assertEquals(2, result.size());
         Assertions.assertEquals(1L, result.get(0).getId());
         Assertions.assertEquals("Question", result.get(0).getQuestion());
         Assertions.assertEquals("Answer", result.get(0).getEtalonAnswer());
@@ -302,7 +301,6 @@ public class TaskServiceTest extends StpUnitTest {
     }
 
     @Test
-    @Disabled
     public void shouldReturnTopics() {
         when(taskConnector.getReferenceById(1L)).thenReturn(createTaskDTO());
         List<Topic> topics = taskService.getTopics(1L);

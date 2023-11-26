@@ -81,7 +81,7 @@ Feature: PersonalExam
       | Exam1 |
       | Exam2 |
 
-  Scenario: retrieve all personal exams by examId
+  Scenario: retrieve all personal exams by userId
     Given personal "Exam1" exam with examId 1 for student with 3 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
