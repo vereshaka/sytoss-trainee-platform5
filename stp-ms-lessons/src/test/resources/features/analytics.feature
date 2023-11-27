@@ -155,12 +155,12 @@ Feature: Analytics
   Scenario: When teacher requests students analytics then response with detailed information has to be returned
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d12         | *ex12  | 1         | *pe16          | 1     | 1         |*ea1           |
-      | *d12         | *ex13  | 1         | *pe17          | 5     | 4         |*ea2           |
-      | *d12         | *ex14  | 1         | *pe18          | 15    | 5         |*ea3           |
-      | *d12         | *ex12  | 2         | *pe19          | 3     | 1         |*ea1           |
-      | *d12         | *ex13  | 2         | *pe21          | 6     | 4         |*ea2           |
-      | *d12         | *ex14  | 2         | *pe22          | 12    | 5         |*ea3           |
+      | *d12         | *ex12  | 1         | *pe16          | 1     | 1         | *ea1           |
+      | *d12         | *ex13  | 1         | *pe17          | 5     | 4         | *ea2           |
+      | *d12         | *ex14  | 1         | *pe18          | 15    | 5         | *ea3           |
+      | *d12         | *ex12  | 2         | *pe19          | 3     | 1         | *ea1           |
+      | *d12         | *ex13  | 2         | *pe21          | 6     | 4         | *ea2           |
+      | *d12         | *ex14  | 2         | *pe22          | 12    | 5         | *ea3           |
     When teacher requests analytics for discipline *d12 and student 1
     Then operation is successful
     And StudentDisciplineStatistic object has to be returned
@@ -175,12 +175,12 @@ Feature: Analytics
   Scenario: When teacher requests summary by discipline then response with detailed information has to be returned
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         |*ea1           |
-      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         |*ea2           |
-      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         |*ea3           |
-      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         |*ea1           |
-      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         |*ea2           |
-      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         |*ea3           |
+      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         | *ea1           |
+      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         | *ea2           |
+      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         | *ea3           |
+      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         | *ea1           |
+      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         | *ea2           |
+      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         | *ea3           |
     When teacher requests discipline summary for discipline *d13
     Then operation is successful
     And discipline summary should has values

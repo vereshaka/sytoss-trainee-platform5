@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.given;
 
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -24,8 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class PersonalExamGiven extends LessonsIntegrationTest {
@@ -39,12 +39,16 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
         List<ExamAssigneeDTO> examAssigneeDTOS = new ArrayList<>();
         List<Group> groups = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
+        String firstDisciplineKey = null;
         for (Map<String, String> personalExamMap : personalExamMaps) {
             PersonalExam personalExam = new PersonalExam();
 
             Discipline discipline = new Discipline();
             DisciplineDTO disciplineDTO = new DisciplineDTO();
             String disciplineKey = getTestExecutionContext().replaceId(personalExamMap.get("disciplineId")).toString();
+            if(firstDisciplineKey==null){
+                firstDisciplineKey=disciplineKey;
+            }
             if (disciplineKey == getTestExecutionContext().replaceId(personalExamMap.get("disciplineId"))) {
                 disciplineDTO.setName(disciplineKey);
                 disciplineDTO.setTeacherId(1L);
@@ -136,8 +140,15 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
         for (Long disciplineId : disciplineIds) {
             List<Long> examAssigneeIds = examAssigneeDTOS.stream().filter(examAssigneeDTO -> Objects.equals(examAssigneeDTO.getExam().getDiscipline().getId(), disciplineId)).map(ExamAssigneeDTO::getId).toList();
             if (!examAssigneeIds.isEmpty()) {
-                when(getPersonalExamConnector().getListOfPersonalExamByStudents(eq(disciplineId), anyList(), anyList()))
-                        .thenReturn(personalExams.stream().filter(personalExam -> examAssigneeIds.contains(personalExam.getExamAssigneeId())).toList());
+                PersonalExamByStudentsModel personalExamByStudentsModel = new PersonalExamByStudentsModel();
+                personalExamByStudentsModel.setDisciplineId(disciplineId);
+                personalExamByStudentsModel.setExamAssignees(examAssigneeIds);
+                personalExamByStudentsModel.setStudents(students.stream().filter(student -> groups.stream().map(Group::getId).toList().contains(student.getPrimaryGroup().getId())).toList());
+                if(disciplineId==Long.parseLong(getTestExecutionContext().replaceId(firstDisciplineKey).toString())){
+                    when(getPersonalExamConnector().getListOfPersonalExamByStudents(any(PersonalExamByStudentsModel.class)))
+                            .thenReturn(personalExams.stream().filter(personalExam -> examAssigneeIds.contains(personalExam.getExamAssigneeId())).toList());
+
+                }
             }
         }
         for (Group group : groups) {

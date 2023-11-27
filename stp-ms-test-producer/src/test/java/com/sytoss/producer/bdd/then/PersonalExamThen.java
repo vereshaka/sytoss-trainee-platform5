@@ -2,19 +2,20 @@ package com.sytoss.producer.bdd.then;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.personalexam.Question;
+import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -121,7 +122,7 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
         List<String> examNames = personalExams.stream().map(PersonalExam::getName).toList();
         List<String> compareWithExamNames = dataTable.asList();
 
-        if(!examNames.containsAll(compareWithExamNames)){
+        if (!examNames.containsAll(compareWithExamNames)) {
             fail("Invalid exam names were retrieved");
         }
     }
@@ -130,5 +131,49 @@ public class PersonalExamThen extends TestProducerIntegrationTest {
     public void systemGrade(Double systemGrade) {
         PersonalExam personalExam = getTestExecutionContext().getDetails().getPersonalExamResponse().getBody();
         assertEquals(systemGrade, personalExam.getSystemGrade());
+    }
+
+    @Then("personal exams are")
+    public void personalExamsAre(DataTable dataTable) throws ParseException {
+        List<Map<String, String>> personalExamsMaps = dataTable.asMaps();
+        List<PersonalExam> personalExams = new ArrayList<>();
+        List<PersonalExam> personalExamsFromResponse = getTestExecutionContext().getDetails().getPersonalExams();
+        for (Map<String, String> personalExamMap : personalExamsMaps) {
+            PersonalExam personalExam = new PersonalExam();
+
+            Discipline discipline = new Discipline();
+            String disciplineKey = getTestExecutionContext().replaceId(personalExamMap.get("disciplineId")).toString();
+            discipline.setId(Long.parseLong(disciplineKey));
+
+            personalExam.setDiscipline(discipline);
+
+            String examAssigneeKey = getTestExecutionContext().replaceId(personalExamMap.get("examAssigneeId")).toString();
+            personalExam.setExamAssigneeId(Long.parseLong(examAssigneeKey));
+            personalExam.setId(personalExamMap.get("personalExamId"));
+            personalExam.setName(personalExamMap.get("personalExamId").replace("*pe",""));
+
+            Student student = new Student();
+            student.setId(Long.parseLong(personalExamMap.get("studentId")));
+            personalExam.setStudent(student);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
+            personalExam.setStartedDate(sdf.parse(personalExamMap.get("startDate").trim()));
+            personalExam.setSystemGrade(Double.parseDouble(personalExamMap.get("summaryGrade").trim()));
+            personalExams.add(personalExam);
+        }
+
+        assertEquals(personalExams.size(),personalExamsFromResponse.size());
+        for (PersonalExam personalExam : personalExams) {
+            for (PersonalExam personalExamFromResponse : personalExamsFromResponse) {
+                assertEquals(personalExam.getDiscipline().getId(), personalExamFromResponse.getDiscipline().getId());
+                assertEquals(personalExam.getExamAssigneeId(), personalExamFromResponse.getExamAssigneeId());
+                assertEquals(personalExam.getStudent().getId(), personalExamFromResponse.getStudent().getId());
+                assertEquals(personalExam.getId(), personalExamFromResponse.getId());
+                assertEquals(personalExam.getSummaryGrade(), personalExamFromResponse.getSummaryGrade());
+                assertEquals(personalExam.getStartedDate(), personalExamFromResponse.getStartedDate());
+                personalExamsFromResponse.remove(personalExamFromResponse);
+                break;
+            }
+        }
     }
 }
