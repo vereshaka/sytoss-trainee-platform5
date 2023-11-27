@@ -232,7 +232,7 @@ public class AnalyticsService extends AbstractService {
         StudentDisciplineStatistic analyticFull = createStudentDisciplineStatistic(disciplineId, studentId);
 
         List<StudentTestExecutionSummary> tests = new ArrayList<>();
-        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.getByDisciplineIdAndStudentIdAndPersonalExamIdIsNull(disciplineId, studentId);
+        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.getByDisciplineIdAndStudentIdAndPersonalExamIdIsNotNull(disciplineId, studentId);
 
         for (AnalyticsDTO analyticsDTO : analyticsDTOS) {
             StudentTestExecutionSummary testExecutionSummary = new StudentTestExecutionSummary();
