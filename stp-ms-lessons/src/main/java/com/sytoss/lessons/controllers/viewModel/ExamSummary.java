@@ -13,8 +13,4 @@ public class ExamSummary {
 
     private SummaryGrade studentsGrade;
 
-    public ExamSummary(){
-
-    }
-
 }
