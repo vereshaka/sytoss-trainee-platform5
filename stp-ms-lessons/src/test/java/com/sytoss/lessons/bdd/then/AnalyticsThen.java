@@ -9,6 +9,8 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
+import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
+import com.sytoss.lessons.controllers.viewModel.ExamSummary;
 import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
 import io.cucumber.datatable.DataTable;
@@ -167,4 +169,27 @@ public class AnalyticsThen extends AbstractGiven {
         }
     }
 
+    @Then("discipline summary should has values")
+    public void disciplineSummaryShouldHasValues(DisciplineSummary expectedDisciplineSummary) {
+        DisciplineSummary disciplineSummary = (DisciplineSummary) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineSummary != null;
+
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getMax().getGrade(), disciplineSummary.getStudentsGrade().getMax().getGrade());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getMax().getTimeSpent(), disciplineSummary.getStudentsGrade().getMax().getTimeSpent());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getAverage().getGrade(), disciplineSummary.getStudentsGrade().getAverage().getGrade());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getAverage().getTimeSpent(), disciplineSummary.getStudentsGrade().getAverage().getTimeSpent());
+    }
+
+    @Then("exam summaries should be")
+    public void examSummariesShouldBe(List<ExamSummary> expectedExamSummaries){
+        DisciplineSummary disciplineSummary = (DisciplineSummary) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineSummary != null;
+
+        for (ExamSummary expectedExamSummary: expectedExamSummaries){
+
+        }
+
+    }
 }
