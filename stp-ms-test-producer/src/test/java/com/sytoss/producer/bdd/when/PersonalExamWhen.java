@@ -212,7 +212,7 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         String url = "/api/personal-exam/student/" + userId;
         log.info("Send request to " + url);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", ""));
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Teacher"));
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
         ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
         getTestExecutionContext().getDetails().setResponse(responseEntity);

@@ -9,14 +9,11 @@ import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
-import com.sytoss.stp.test.cucumber.TestExecutionContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ExamGiven extends LessonsIntegrationTest {
 
@@ -104,6 +101,26 @@ public class ExamGiven extends LessonsIntegrationTest {
             }
             dto = getExamConnector().save(dto);
             getTestExecutionContext().registerId(item.getId(), dto.getId());
+        }
+    }
+
+    @Given("exams with specific id exist")
+    public void examsWithSpecificIdsExist(DataTable dataTable) {
+        List<Map<String, String>> exams = dataTable.asMaps();
+        for (Map<String, String> exam : exams) {
+            String examKey = getTestExecutionContext().replaceId(exam.get("id")).toString();
+            Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(exam.get("disciplineId")).toString());
+            if (Objects.equals(examKey, getTestExecutionContext().replaceId(exam.get("id")).toString())) {
+                ExamDTO examDTO = new ExamDTO();
+                examDTO.setName(exam.get("name"));
+                examDTO.setTeacherId(1L);
+                DisciplineDTO disciplineDTO = getDisciplineConnector().findById(disciplineId).orElse(null);
+                if (disciplineDTO != null) {
+                    examDTO.setDiscipline(disciplineDTO);
+                }
+                examDTO = getExamConnector().save(examDTO);
+                getTestExecutionContext().registerId(examKey, examDTO.getId());
+            }
         }
     }
 }

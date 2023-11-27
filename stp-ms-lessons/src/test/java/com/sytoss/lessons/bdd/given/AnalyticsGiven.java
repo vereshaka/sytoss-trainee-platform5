@@ -41,7 +41,7 @@ public class AnalyticsGiven extends AbstractGiven {
         Long studentId;
         for(Map<String, String> analytics : analyticsList){
             if (analytics.get("groupId") != null) {
-                groupId = Long.valueOf(analytics.get("groupId"));
+                groupId = Long.valueOf(getTestExecutionContext().replaceId(analytics.get("groupId")).toString());
             }
             final Long finalGroupId = groupId;
             Group group = new Group();
@@ -64,10 +64,13 @@ public class AnalyticsGiven extends AbstractGiven {
             String disciplineKey = analytics.get("disciplineId").trim();
 
             if (analytics.get("groupId") != null) {
-                groupId = Long.valueOf(analytics.get("groupId"));
+                groupId = Long.valueOf(getTestExecutionContext().replaceId(analytics.get("groupId")).toString());
             }
             final Long finalGroupId = groupId;
-            String examKey = analytics.get("examId").trim();
+            String examKey = analytics.get("examId");
+            if(examKey!=null){
+                examKey = examKey.trim();
+            }
             String examAssigneeKey = analytics.get("examAssigneeId");
             if (examAssigneeKey != null) {
                 examAssigneeKey = examAssigneeKey.trim();
@@ -98,45 +101,52 @@ public class AnalyticsGiven extends AbstractGiven {
                 getTestExecutionContext().registerId(disciplineKey, disciplineDTO.getId());
                 disciplineId = (Long) getTestExecutionContext().replaceId(disciplineKey);
             }
-            String newExamKey = examKey;
-            if (getTestExecutionContext().replaceId(examKey) != null) {
-                newExamKey = getTestExecutionContext().replaceId(examKey).toString();
-            }
-            Long examId;
-            ExamDTO examDTO;
-            if (!Objects.equals(newExamKey, examKey)) {
-                examId = Long.parseLong(newExamKey);
-                examDTO = getExamConnector().findById(examId).orElse(null);
-            } else {
-                examDTO = new ExamDTO();
-                examDTO.setName("Exam 1");
-                TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId("Topic1", disciplineDTO.getId());
-                if (topicDTO == null) {
-                    topicDTO = new TopicDTO();
-                    topicDTO.setName("Topic1");
-                    topicDTO.setDiscipline(disciplineDTO);
-                    getTopicConnector().save(topicDTO);
-                    examDTO.setTopics(List.of(topicDTO));
+            ExamDTO examDTO = null;
+            if(examKey!=null){
+                String newExamKey = examKey;
+                if (getTestExecutionContext().replaceId(examKey) != null) {
+                    newExamKey = getTestExecutionContext().replaceId(examKey).toString();
                 }
-                examDTO.setDiscipline(disciplineDTO);
-                examDTO.setTeacherId(1L);
-                examDTO.setCreationDate(Timestamp.from(Instant.now()));
-                examDTO = getExamConnector().save(examDTO);
-                getTestExecutionContext().registerId(examKey, examDTO.getId());
-                examId = (Long) getTestExecutionContext().replaceId(examKey);
+                Long examId;
+
+                if (!Objects.equals(newExamKey, examKey)) {
+                    examId = Long.parseLong(newExamKey);
+                    examDTO = getExamConnector().findById(examId).orElse(null);
+                } else {
+                    examDTO = new ExamDTO();
+                    examDTO.setName("Exam 1");
+                    TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId("Topic1", disciplineDTO.getId());
+                    if (topicDTO == null) {
+                        topicDTO = new TopicDTO();
+                        topicDTO.setName("Topic1");
+                        topicDTO.setDiscipline(disciplineDTO);
+                        getTopicConnector().save(topicDTO);
+                        examDTO.setTopics(List.of(topicDTO));
+                    }
+                    examDTO.setDiscipline(disciplineDTO);
+                    examDTO.setTeacherId(1L);
+                    examDTO.setCreationDate(Timestamp.from(Instant.now()));
+                    examDTO = getExamConnector().save(examDTO);
+                    getTestExecutionContext().registerId(examKey, examDTO.getId());
+                    examId = (Long) getTestExecutionContext().replaceId(examKey);
+                }
             }
+
 
             studentId = Long.valueOf(analytics.get("studentId"));
-
+            ExamAssigneeDTO examAssigneeDTO=new ExamAssigneeDTO();
             if (examAssigneeKey != null) {
                 String newExamAssigneeKey = examAssigneeKey;
                 if (getTestExecutionContext().replaceId(examAssigneeKey) != null) {
                     newExamAssigneeKey = getTestExecutionContext().replaceId(examAssigneeKey).toString();
                 }
-                ExamAssigneeDTO examAssigneeDTO;
+
                 if (Objects.equals(examAssigneeKey, newExamAssigneeKey)) {
                     examAssigneeDTO = new ExamAssigneeDTO();
-                    examAssigneeDTO.setExam(examDTO);
+                    if(examDTO!=null){
+                        examAssigneeDTO.setExam(examDTO);
+                    }
+
                     List<ExamAssigneeToDTO> examAssigneeToDTOS = new ArrayList<>();
                     examAssigneeDTO = getExamAssigneeConnector().save(examAssigneeDTO);
                     if(groups.isEmpty()){
@@ -161,15 +171,18 @@ public class AnalyticsGiven extends AbstractGiven {
                     examAssigneeDTO.setExamAssigneeToDTOList(examAssigneeToDTOS);
                     getTestExecutionContext().registerId(examAssigneeKey, examAssigneeDTO.getId());
                 }
+                else{
+                    examAssigneeDTO = getExamAssigneeConnector().getReferenceById(Long.parseLong(newExamAssigneeKey));
+                }
             }
 
-            AnalyticsDTO analyticsDTO = getAnalyticsConnector().getByDisciplineIdAndExamIdAndStudentId(disciplineId, examId, studentId);
+            AnalyticsDTO analyticsDTO = getAnalyticsConnector().getByDisciplineIdAndExamIdAndStudentId(disciplineId, examAssigneeDTO.getExam().getId(), studentId);
             if (analyticsDTO != null) {
                 getAnalyticsConnector().deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, studentId);
             }
             analyticsDTO = new AnalyticsDTO();
             analyticsDTO.setDisciplineId(disciplineId);
-            analyticsDTO.setExamId(examId);
+            analyticsDTO.setExamId(examAssigneeDTO.getExam().getId());
             analyticsDTO.setStudentId(studentId);
             analyticsDTO.setPersonalExamId(personalExamId);
             String grade = analytics.get("grade");
