@@ -13,6 +13,8 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.viewModel.*;
+import com.sytoss.lessons.convertors.SummaryGradeByExamConvertor;
+import com.sytoss.lessons.convertors.SummaryGradeConvertor;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,6 +45,10 @@ public class AnalyticsService extends AbstractService {
     private final PersonalExamConnector personalExamConnector;
 
     private final DisciplineConnector disciplineConnector;
+
+    private final SummaryGradeConvertor summaryGradeConvertor;
+
+    private final SummaryGradeByExamConvertor summaryGradeByExamConvertor;
 
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, List<Student> students) {
         List<AnalyticsDTO> analyticsElementDTOS = new ArrayList<>();
@@ -263,16 +272,7 @@ public class AnalyticsService extends AbstractService {
         studentDisciplineStatistic.setStudent(student);
 
         SummaryGradeDTO summaryGradeDTO = analyticsConnector.getSummaryGrade(disciplineId, studentId);
-        AnalyticGrade averageGrade = new AnalyticGrade();
-        averageGrade.setGrade(summaryGradeDTO.getAvgGrade());
-        averageGrade.setTimeSpent(summaryGradeDTO.getAvgTimeSpent());
-        AnalyticGrade maxGrade = new AnalyticGrade();
-        maxGrade.setGrade(summaryGradeDTO.getMaxGrade());
-        maxGrade.setTimeSpent(summaryGradeDTO.getMaxTimeSpent());
-
-        SummaryGrade summaryGrade = new SummaryGrade();
-        summaryGrade.setAverage(averageGrade);
-        summaryGrade.setMax(maxGrade);
+        SummaryGrade summaryGrade = summaryGradeConvertor.fromDto(summaryGradeDTO);
         studentDisciplineStatistic.setSummaryGrade(summaryGrade);
 
         return studentDisciplineStatistic;
@@ -283,39 +283,34 @@ public class AnalyticsService extends AbstractService {
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
         disciplineSummary.setDiscipline(discipline);
-        disciplineSummary.setStudentsGrade(getStudentsGradeByDiscipline(disciplineId));
-        disciplineSummary.setTests(getDisciplineSummaryTests(disciplineId));
+
+        List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
+        Set<Long> studentIds = new HashSet<>();
+        for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
+            List<Student> students = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+            studentIds.addAll(students.stream()
+                    .map(AbstractUser::getId)
+                    .collect(Collectors.toSet())
+            );
+        }
+
+        disciplineSummary.setStudentsGrade(getStudentsGradeByDiscipline(disciplineId, studentIds));
+        disciplineSummary.setTests(getDisciplineSummaryTests(disciplineId, studentIds));
+
         return disciplineSummary;
     }
 
-    private List<ExamSummary> getDisciplineSummaryTests(Long disciplineId) {
-        ExamSummary examSummary = new ExamSummary();
-
-        Exam exam = new Exam();
-        exam.setId(1l);
-        exam.setName("exam");
-        exam.setMaxGrade(10);
-        SummaryGrade studentsGrade = getStudentsGradeByDiscipline(disciplineId);
-
-        examSummary.setExam(exam);
-        examSummary.setStudentsGrade(studentsGrade);
-
-        return List.of(examSummary);
+    private SummaryGrade getStudentsGradeByDiscipline(Long disciplineId, Set<Long> studentIds) {
+        SummaryGradeDTO summaryGradeDTO = analyticsConnector.getStudentsGradeByDiscipline(disciplineId, studentIds);
+        return summaryGradeConvertor.fromDto(summaryGradeDTO);
     }
 
-    private SummaryGrade getStudentsGradeByDiscipline(Long disciplineId) {
-        SummaryGrade studentsGrade = new SummaryGrade();
+    private List<ExamSummary> getDisciplineSummaryTests(Long disciplineId, Set<Long> studentIds) {
+        List<SummaryGradeByExamDTO> studentsGradeByExam = analyticsConnector.getStudentsGradeByExam(disciplineId, studentIds);
 
-        AnalyticGrade maxGrade = new AnalyticGrade();
-        maxGrade.setGrade(3.0);
-        maxGrade.setTimeSpent(10);
-        AnalyticGrade avgGrade = new AnalyticGrade();
-        avgGrade.setGrade(2.5);
-        avgGrade.setTimeSpent(4);
-
-        studentsGrade.setMax(maxGrade);
-        studentsGrade.setAverage(avgGrade);
-
-        return studentsGrade;
+        return studentsGradeByExam.stream()
+                .map(summaryGradeByExamConvertor::fromDto)
+                .toList();
     }
+
 }
