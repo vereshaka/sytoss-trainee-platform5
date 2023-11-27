@@ -2,9 +2,9 @@ package com.sytoss.producer.controllers;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.bom.AnswersModel;
 import com.sytoss.producer.services.AnswerService;
 import com.sytoss.producer.services.PersonalExamService;
@@ -313,9 +313,9 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/students")
-    public List<PersonalExam> getListOfPersonalExamByStudents(@RequestParam Long disciplineId,
-                                                              @RequestParam List<Long> examAssignees,
-                                                              @RequestParam List<Student> students){
-        return personalExamService.getListOfStudentsPersonalExam(disciplineId,examAssignees,students);
+    public List<PersonalExam> getListOfPersonalExamByStudents(@RequestBody PersonalExamByStudentsModel personalExamByStudentsModel) {
+        return personalExamService.getListOfStudentsPersonalExam(personalExamByStudentsModel.getDisciplineId(),
+                personalExamByStudentsModel.getExamAssignees(),
+                personalExamByStudentsModel.getStudents());
     }
 }

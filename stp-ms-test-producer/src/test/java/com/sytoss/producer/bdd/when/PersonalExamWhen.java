@@ -1,10 +1,7 @@
 package com.sytoss.producer.bdd.when;
 
 import com.nimbusds.jose.JOSEException;
-import com.sytoss.domain.bom.lessons.Discipline;
-import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.Topic;
+import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -14,11 +11,13 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -227,6 +226,28 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         HttpEntity<PersonalExam> requestEntity = new HttpEntity<>(getTestExecutionContext().getDetails().getPersonalExam(), httpHeaders);
         ResponseEntity<PersonalExam> responseEntity = doPost(url, requestEntity, PersonalExam.class);
         getTestExecutionContext().getDetails().setPersonalExamResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
+    @When("^the teacher gets personal exam by discipline (.*), exam assignees (.*) and students (.*)$")
+    public void theTeacherGetsPersonalExamByDisciplineExamAssigneesAndStudents(String disciplineId, String examAssignees, String students) throws JOSEException {
+        String url = "/api/personal-exam/students";
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        PersonalExamByStudentsModel personalExamByStudentsModel = new PersonalExamByStudentsModel();
+        personalExamByStudentsModel.setDisciplineId(Long.parseLong(getTestExecutionContext().replaceId(disciplineId).toString()));
+        personalExamByStudentsModel.setExamAssignees(Arrays.stream(examAssignees.split(","))
+                .map(el -> Long.parseLong(getTestExecutionContext().replaceId(el).toString())).toList());
+        personalExamByStudentsModel.setStudents(Arrays.stream(students.split(",")).map(el -> {
+            Student student = new Student();
+            student.setId(Long.parseLong(el));
+            return student;
+        }).toList());
+        HttpEntity<PersonalExamByStudentsModel> requestEntity = new HttpEntity<>(personalExamByStudentsModel, httpHeaders);
+        ResponseEntity<List<PersonalExam>> responseEntity = doPost(url, requestEntity, new ParameterizedTypeReference<>() {
+        });
+        getTestExecutionContext().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setPersonalExams(responseEntity.getBody());
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 }

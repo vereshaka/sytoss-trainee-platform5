@@ -2,7 +2,6 @@ package com.sytoss.producer.bdd.given;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.Grade;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
@@ -16,10 +15,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -42,7 +38,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
 
     @Given("^this student has personal exam with id (.*) and exam name (.*) and date (.*)")
     public void thisExamHasAnswers(String examId, String examName, String date, List<Answer> answers) {
-       thisExamHasAnswers(getTestExecutionContext().getDetails().getStudentId(), examId, examName, date, answers);
+        thisExamHasAnswers(getTestExecutionContext().getDetails().getStudentId(), examId, examName, date, answers);
     }
 
     @Given("^student (.*) has personal exam with id (.*) and exam name (.*) and date (.*)")
@@ -67,13 +63,13 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        long i=0;
-        for(Answer answer : answers){
+        long i = 0;
+        for (Answer answer : answers) {
             answer.setId(i++);
             answer.setTeacherGrade(answer.getGrade());
             answer.setTimeSpent(1L);
         }
-       // answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
+        // answers.stream().forEach(item -> item.setTeacherGrade(item.getGrade()));
 
         personalExam.setAnswers(answers);
 
@@ -127,7 +123,7 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
             personalExam.setTime(Integer.valueOf(time));
             personalExam.setAmountOfTasks(Integer.valueOf(amountOfTasks));
             personalExam.start();
-            if(StringUtils.isNotEmpty(examAssigneeId)) {
+            if (StringUtils.isNotEmpty(examAssigneeId)) {
                 personalExam.setExamAssigneeId(Long.valueOf(examAssigneeId));
             }
         }
@@ -141,8 +137,8 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         PersonalExam personalExam = getPersonalExamConnector().getByNameAndStudentUid(examName, studentUid);
         personalExam.finish();
         List<Answer> answers = personalExam.getAnswers();
-        List<Map<String,String>> gradesMaps = grades.asMaps();
-        for(Map<String,String> map : gradesMaps){
+        List<Map<String, String>> gradesMaps = grades.asMaps();
+        for (Map<String, String> map : gradesMaps) {
             Long taskId = Long.parseLong(map.get("taskId"));
             Grade newTeacherGrade = new Grade();
             newTeacherGrade.setValue(Double.parseDouble(map.get("teacherGrade")));
@@ -152,5 +148,44 @@ public class PersonalExamGiven extends TestProducerIntegrationTest {
         personalExam.review();
 
         getTestExecutionContext().getDetails().setPersonalExam(personalExam);
+    }
+
+    @Given("personal exams exist")
+    public void personalExamsExist(DataTable dataTable) throws ParseException {
+        List<Map<String, String>> personalExamsMaps = dataTable.asMaps();
+        List<PersonalExam> personalExams = new ArrayList<>();
+        for (Map<String, String> personalExamMap : personalExamsMaps) {
+            PersonalExam personalExam = new PersonalExam();
+
+            Discipline discipline = new Discipline();
+            String disciplineKey = getTestExecutionContext().replaceId(personalExamMap.get("disciplineId")).toString();
+            if (Objects.equals(disciplineKey, personalExamMap.get("disciplineId"))) {
+                discipline.setId(Long.parseLong(personalExamMap.get("disciplineId").replace("*d", "")));
+                getTestExecutionContext().registerId(personalExamMap.get("disciplineId"), discipline.getId());
+            } else {
+                discipline.setId(Long.parseLong(disciplineKey));
+            }
+
+            personalExam.setDiscipline(discipline);
+
+            String examAssigneeKey = getTestExecutionContext().replaceId(personalExamMap.get("examAssigneeId")).toString();
+            if (Objects.equals(examAssigneeKey, personalExamMap.get("examAssigneeId"))) {
+                personalExam.setExamAssigneeId(Long.parseLong(personalExamMap.get("examAssigneeId").replace("*ea", "")));
+                getTestExecutionContext().registerId(personalExamMap.get("examAssigneeId"), personalExam.getExamAssigneeId());
+            } else {
+                personalExam.setExamAssigneeId(Long.parseLong(examAssigneeKey));
+            }
+            personalExam.setId(personalExamMap.get("personalExamId"));
+            personalExam.setName(personalExamMap.get("personalExamId").replace("*pe", ""));
+
+            Student student = new Student();
+            student.setId(Long.parseLong(personalExamMap.get("studentId")));
+            personalExam.setStudent(student);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
+            personalExam.setStartedDate(sdf.parse(personalExamMap.get("startDate").trim()));
+            personalExam.setSystemGrade(Double.parseDouble(personalExamMap.get("summaryGrade").trim()));
+            getPersonalExamConnector().save(personalExam);
+        }
     }
 }

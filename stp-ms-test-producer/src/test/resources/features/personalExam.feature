@@ -124,3 +124,20 @@ Feature: PersonalExam
     Then operation is successful
     And system grade should be 3
     And teacher grade should be 6
+
+  Scenario: get personalExam by discipline id,exam assignees and students list
+    Given personal exams exist
+      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           |
+      | *pe1           | *d1          | *ea1           | 11         | *g1     | 6            | 30-11-2023T11:55:00 |
+      | *pe2           | *d1          | *ea2           | 12         | *g2     | 7            | 30-11-2023T11:55:00 |
+      | *pe3           | *d1          | *ea1           | 13         | *g1     | 11           | 30-11-2023T11:55:00 |
+      | *pe4           | *d1          | *ea2           | 14         | *g2     | 20           | 30-11-2023T11:55:00 |
+      | *pe5           | *d2          | *ea3           | 14         | *g3     | 21           | 30-11-2023T11:55:00 |
+      | *pe6           | *d2          | *ea3           | 15         | *g3     | 11           | 30-11-2023T11:55:00 |
+    When the teacher gets personal exam by discipline *d1, exam assignees *ea1,*ea2 and students 11,12,14
+    Then operation is successful
+    And personal exams are
+      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           |
+      | *pe1           | *d1          | *ea1           | 11         | *g1     | 6            | 30-11-2023T11:55:00 |
+      | *pe2           | *d1          | *ea2           | 12         | *g2     | 7            | 30-11-2023T11:55:00 |
+      | *pe4           | *d1          | *ea2           | 14         | *g2     | 20           | 30-11-2023T11:55:00 |

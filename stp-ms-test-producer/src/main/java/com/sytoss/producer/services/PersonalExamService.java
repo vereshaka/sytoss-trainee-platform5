@@ -486,11 +486,13 @@ public class PersonalExamService extends AbstractService {
     public List<PersonalExam> getListOfStudentsPersonalExam(Long disciplineId, List<Long> examAssignees, List<Student> students) {
         List<PersonalExam> personalExams = new ArrayList<>();
         for(Student student : students){
-            personalExamConnector.getAllByStudent_Id(student.getId()).forEach(personalExam -> {
-                if(Objects.equals(personalExam.getDiscipline().getId(), disciplineId) && examAssignees.contains(personalExam.getExamAssigneeId())){
+            List<PersonalExam> personalExamsByStudent = personalExamConnector.getAllByStudent_Id(student.getId());
+            for(PersonalExam personalExam : personalExamsByStudent){
+                if(personalExam.getDiscipline()!=null && Objects.equals(personalExam.getDiscipline().getId(), disciplineId)
+                        && examAssignees.contains(personalExam.getExamAssigneeId())){
                     personalExams.add(personalExam);
                 }
-            });
+            }
         }
         return personalExams;
     }

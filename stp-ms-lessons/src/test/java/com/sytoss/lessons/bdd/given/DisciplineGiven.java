@@ -229,7 +229,7 @@ public class DisciplineGiven extends AbstractGiven {
         }
     }
 
-    @Given("disciplines with specific id exist")
+    @Given("^disciplines with specific id exist$")
     public void disciplinesWithSpecificIdExist(DataTable dataTable) {
         List<Map<String,String>> disciplines = dataTable.asMaps();
         for(Map<String,String> discipline : disciplines){

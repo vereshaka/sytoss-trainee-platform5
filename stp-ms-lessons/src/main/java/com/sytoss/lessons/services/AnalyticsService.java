@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
+import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
@@ -116,7 +117,11 @@ public class AnalyticsService extends AbstractService {
             });
         }
 
-        List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(disciplineId, examAssigneesIds, students);
+        PersonalExamByStudentsModel personalExamByStudentsModel = new PersonalExamByStudentsModel();
+        personalExamByStudentsModel.setDisciplineId(disciplineId);
+        personalExamByStudentsModel.setExamAssignees(examAssigneesIds);
+        personalExamByStudentsModel.setStudents(students);
+        List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(personalExamByStudentsModel);
 
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
