@@ -182,14 +182,21 @@ public class AnalyticsThen extends AbstractGiven {
     }
 
     @Then("exam summaries should be")
-    public void examSummariesShouldBe(List<ExamSummary> expectedExamSummaries){
+    public void examSummariesShouldBe(List<ExamSummary> expectedExamSummaries) {
         DisciplineSummary disciplineSummary = (DisciplineSummary) getTestExecutionContext().getResponse().getBody();
 
         assert disciplineSummary != null;
 
-        for (ExamSummary expectedExamSummary: expectedExamSummaries){
-
+        for (ExamSummary expectedExamSummary : expectedExamSummaries) {
+            Optional<ExamSummary> examSummary = disciplineSummary.getTests().stream().filter(test ->
+                            test.getExam().getId().equals(expectedExamSummary.getExam().getId())
+                                    && test.getStudentsGrade().getMax().getGrade() == expectedExamSummary.getStudentsGrade().getMax().getGrade()
+                                    && test.getStudentsGrade().getMax().getTimeSpent() == expectedExamSummary.getStudentsGrade().getMax().getTimeSpent()
+                                    && test.getStudentsGrade().getAverage().getGrade() == expectedExamSummary.getStudentsGrade().getAverage().getGrade()
+                                    && test.getStudentsGrade().getAverage().getTimeSpent() == expectedExamSummary.getStudentsGrade().getAverage().getTimeSpent()
+                    )
+                    .findFirst();
+            assertTrue(examSummary.isPresent());
         }
-
     }
 }
