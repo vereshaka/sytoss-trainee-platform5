@@ -70,9 +70,9 @@ public class AnalyticsService extends AbstractService {
         return analyticsElementDTOS;
     }
 
-    public void migrateAll(){
+    public void migrateAll() {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
-        for(DisciplineDTO disciplineDTO : disciplineDTOS){
+        for (DisciplineDTO disciplineDTO : disciplineDTOS) {
             try {
                 DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
                 if (dto != null) {
@@ -82,7 +82,7 @@ public class AnalyticsService extends AbstractService {
                 } else {
                     log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
             }
         }
@@ -168,10 +168,11 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.save(dto);
     }
 
-    public void deleteByExam(long examId){
+    public void deleteByExam(long examId) {
         analyticsConnector.deleteAllByExamId(examId);
     }
-    public void deleteByDiscipline(long disciplineId){
+
+    public void deleteByDiscipline(long disciplineId) {
         analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 
