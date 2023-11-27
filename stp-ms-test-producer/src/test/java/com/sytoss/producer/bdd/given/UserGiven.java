@@ -12,9 +12,13 @@ import static org.mockito.Mockito.when;
 
 public class UserGiven extends TestProducerIntegrationTest {
 
-    @Given("^(student|teacher) \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
-    public void teacherExists(String userType, String firstName, String lastName, String email) {
-        Long userId = 123L;
+    @Given("^(Student|Teacher) \"(.*)\" \"(.*)\" with \"(.*)\" email exists$")
+    public void userExists(String userType, String firstName, String lastName, String email) {
+       userExistsWithId(userType, firstName, lastName, email, 123L);
+    }
+
+    @Given("^(Student|Teacher) \"(.*)\" \"(.*)\" with \"(.*)\" email exists with id (.*)$")
+    public void userExistsWithId(String userType, String firstName, String lastName, String email, long userId) {
         String userUid ="111-222-333";
         getTestExecutionContext().getDetails().setStudentId(userId);
         getTestExecutionContext().getDetails().setStudentUid(userUid);

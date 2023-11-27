@@ -3,6 +3,7 @@ package com.sytoss.lessons.connectors;
 import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
 import com.sytoss.lessons.dto.AnalyticsAverageDTO;
 import com.sytoss.lessons.dto.AnalyticsDTO;
+import com.sytoss.lessons.dto.SummaryGradeByExamDTO;
 import com.sytoss.lessons.dto.SummaryGradeDTO;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
@@ -50,5 +52,21 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "and a.personalExamId is not null " +
             "group by e.id, e.name")
     ExamSummaryStatistic getExamInfo(Long examId);
+
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long)) " +
+            "from ANALYTICS a " +
+            "where a.disciplineId = :disciplineId " +
+            "and a.studentId in (:studentIds) " +
+            "and a.personalExamId is not null ")
+    SummaryGradeDTO getStudentsGradeByDiscipline(Long disciplineId, Set<Long> studentIds);
+
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeByExamDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long), e.id, e.maxGrade, e.name) " +
+            "from ANALYTICS a, EXAM e " +
+            "where e.id = a.examId " +
+            "and a.disciplineId = :disciplineId " +
+            "and a.studentId in (:studentIds) " +
+            "and a.personalExamId is not null " +
+            "group by e.id, e.maxGrade, e.name")
+    List<SummaryGradeByExamDTO> getStudentsGradeByExam(Long disciplineId, Set<Long> studentIds);
 
 }

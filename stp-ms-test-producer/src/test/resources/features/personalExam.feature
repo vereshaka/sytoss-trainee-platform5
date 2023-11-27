@@ -1,8 +1,8 @@
 Feature: PersonalExam
 
   Background:
-    Given student "John" "Do" with "student@domain.com" email exists
-    And teacher "John" "Teacher" with "sytoss@gmail.com" email exists
+    Given Student "John" "Do" with "student@domain.com" email exists
+    And Teacher "John" "Teacher" with "sytoss@gmail.com" email exists
 
   Scenario: system create personal exam
     Given tasks exist
@@ -81,7 +81,21 @@ Feature: PersonalExam
       | Exam1 |
       | Exam2 |
 
-  Scenario: retrieve all personal exams by userId
+  Scenario: retrieve all personal exams by examId
+    Given Student "John" "Doo" with "student2@domain.com" email exists with id 13
+    And personal "Exam1" exam with examId 1 for student with 13 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
+    And personal "Exam2" exam with examId 1 for student with 13 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
+      | task                                   | task status | script |
+      | What are the different subsets of SQL? | NOT_STARTED | .uml   |
+    When operation for retrieving personal exams for this student
+    Then operation is successful
+    And operation should return 2 personal exams
+      | Exam1 |
+      | Exam2 |
+
+  Scenario: Should receive error when student retrieve all personal exams by studentId
     Given personal "Exam1" exam with examId 1 for student with 3 id and NOT_STARTED status exist and time 10 and amountOfTasks 1
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
@@ -89,10 +103,7 @@ Feature: PersonalExam
       | task                                   | task status | script |
       | What are the different subsets of SQL? | NOT_STARTED | .uml   |
     When operation for retrieving personal exams for userId 3 was called
-    Then operation is successful
-    And operation should return 2 personal exams
-      | Exam1 |
-      | Exam2 |
+    Then operation should be finished with 403 "<null>" error
 
   Scenario: teacher gets system and teacher grade
     Given student 1 has personal exam with id 123abc123 and exam name "SQL exam" and date 11.05.2023

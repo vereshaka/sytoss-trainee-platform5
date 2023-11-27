@@ -139,3 +139,11 @@ Feature: Analytics
       | *d13         | *ex14  | 2         | *pe22          | 12    | 5         |
     When teacher requests discipline summary for discipline *d13
     Then operation is successful
+    And discipline summary should has values
+      | average grade | average spent time | max grade | min spent time |
+      | 7             | 3                  | 15        | 1              |
+    And exam summaries should be
+      | exam id | max grade | students average grade | students average spent time | max students grade | min students spent time |
+      | *ex12   | 3         | 2                      | 1                           | 3                  | 1                       |
+      | *ex13   | 6         | 5.5                    | 4                           | 6                  | 4                       |
+      | *ex14   | 15        | 13.5                   | 5                           | 15                 | 5                       |
