@@ -313,7 +313,9 @@ public class PersonalExamController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/students")
-    public List<PersonalExam> getListOfStudentsPersonalExams(@RequestBody List<Student> students) {
-        return personalExamService.getListOfStudentsPersonalExam(students);
+    public List<PersonalExam> getListOfPersonalExamByStudents(@RequestParam Long disciplineId,
+                                                              @RequestParam List<Long> examAssignees,
+                                                              @RequestParam List<Student> students){
+        return personalExamService.getListOfStudentsPersonalExam(disciplineId,examAssignees,students);
     }
 }

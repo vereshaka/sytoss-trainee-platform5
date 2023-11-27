@@ -41,6 +41,8 @@ public class AnalyticsService extends AbstractService {
 
     private final DisciplineConnector disciplineConnector;
 
+    private final ExamAssigneeConnector examAssigneeConnector;
+
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, List<Student> students) {
         List<AnalyticsDTO> analyticsElementDTOS = new ArrayList<>();
         for (Student student : students) {
@@ -59,9 +61,9 @@ public class AnalyticsService extends AbstractService {
         return analyticsElementDTOS;
     }
 
-    public void migrateAll(){
+    public void migrateAll() {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
-        for(DisciplineDTO disciplineDTO : disciplineDTOS){
+        for (DisciplineDTO disciplineDTO : disciplineDTOS) {
             try {
                 DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
                 if (dto != null) {
@@ -71,7 +73,7 @@ public class AnalyticsService extends AbstractService {
                 } else {
                     log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
                 }
-            }catch(Exception e) {
+            } catch (Exception e) {
                 log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
             }
         }
@@ -92,14 +94,20 @@ public class AnalyticsService extends AbstractService {
         for (Student student : students) {
             analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
         }
-        List<ExamDTO> exams = examConnector.findByTopics_Discipline_Id(disciplineId);
+        List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
         List<Analytics> analytics = new ArrayList<>();
 
+        List<Long> examAssigneesIds = new ArrayList<>();
         for (ExamDTO examDTO : exams) {
             checkOrCreate(examDTO.getId(), disciplineId, students);
+            examAssigneeConnector.getAllByExam_Id(examDTO.getId()).forEach(examAssigneeDTO -> {
+                if (!examAssigneesIds.contains(examAssigneeDTO.getId())) {
+                    examAssigneesIds.add(examAssigneeDTO.getId());
+                }
+            });
         }
 
-        List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(students);
+        List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(disciplineId, examAssigneesIds, students);
 
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
@@ -151,10 +159,11 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.save(dto);
     }
 
-    public void deleteByExam(long examId){
+    public void deleteByExam(long examId) {
         analyticsConnector.deleteAllByExamId(examId);
     }
-    public void deleteByDiscipline(long disciplineId){
+
+    public void deleteByDiscipline(long disciplineId) {
         analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 

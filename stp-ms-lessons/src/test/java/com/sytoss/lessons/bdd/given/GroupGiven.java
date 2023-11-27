@@ -80,19 +80,32 @@ public class GroupGiven extends LessonsIntegrationTest {
     public void groupsExist(DataTable groups) {
         List<Map<String, String>> groupsMap = groups.asMaps();
         for (Map<String, String> groupMap : groupsMap) {
-            String groupKey = groupMap.get("discipline");
-            String groupStringDiscipline = (String) getTestExecutionContext().replaceId(groupKey);
-            if (groupKey != null && !groupKey.equals(groupStringDiscipline)) {
-                Long disciplineId = Long.parseLong(groupKey);
-                Long groupId = Long.valueOf(groupMap.get("group"));
+            String disciplineKey = groupMap.get("discipline");
+            String groupStringDiscipline = getTestExecutionContext().replaceId(disciplineKey).toString();
+            String groupKey = groupMap.get("group");
+            if (disciplineKey != null && !disciplineKey.equals(groupStringDiscipline)) {
+                Long disciplineId = Long.parseLong(groupStringDiscipline);
+                Long groupId;
+                if (groupMap.get("group").contains("*")) {
+                    groupKey = getTestExecutionContext().replaceId(groupMap.get("group")).toString();
+                    if (!groupKey.contains("*")) {
+                        groupId = Long.valueOf(groupKey);
+                    } else {
+                        groupId = Long.valueOf(groupKey.replace("*g", ""));
+                    }
+                } else {
+                    groupId = Long.valueOf(groupMap.get("group"));
+                }
+
                 DisciplineDTO disciplineDTO = getDisciplineConnector().findById(disciplineId).orElse(null);
                 if (disciplineDTO != null) {
-                    GroupReferencePK groupReferencePK = new GroupReferencePK(groupId,disciplineId);
-                    if(!getGroupReferenceConnector().existsById(groupReferencePK)){
+                    GroupReferencePK groupReferencePK = new GroupReferencePK(groupId, disciplineId);
+                    if (!getGroupReferenceConnector().existsById(groupReferencePK)) {
                         GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
                         groupReferenceDTO.setDiscipline(disciplineDTO);
                         groupReferenceDTO.setGroupId(groupId);
                         getGroupReferenceConnector().save(groupReferenceDTO);
+                        getTestExecutionContext().registerId(groupKey, groupId);
                     }
                 }
             }

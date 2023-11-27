@@ -5,16 +5,16 @@ Feature: Analytics
 
   Scenario: update analytics
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 1         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 1         | *ea1           |
     And teacher changes grade to
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         | *ea1           |
     When teacher updates analytics element
     Then operation is successful
     And updated analytic element should be
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         | *ea1           |
 
   Scenario: migration
     Given analytics elements exist
@@ -24,12 +24,13 @@ Feature: Analytics
       | *d11         | *ex11  | 3         | *pe13          | 11    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 4         | *pe14          | 8     | *ea11          | 30-11-2023T11:55:00 |
     And personal exams for migration exist
-      | personalExamId | examAssigneeId | studentId | summaryGrade | disciplineId | startDate           |
-      | *pe11          | *ea11          | 1         | 6            | *d11         | 30-11-2023T11:55:00 |
-      | *pe12          | *ea11          | 2         | 7            | *d11         | 30-11-2023T11:55:00 |
-      | *pe13          | *ea11          | 3         | 11           | *d11         | 30-11-2023T11:55:00 |
-      | *pe14          | *ea11          | 4         | 20           | *d11         | 30-11-2023T11:55:00 |
-      | *pe15          | *ea11          | 5         | 21           | *d11         | 30-11-2023T11:55:00 |
+      | personalExamId | examAssigneeId | studentId | summaryGrade | disciplineId | startDate           | examId |
+      | *pe11          | *ea11          | 1         | 6            | *d11         | 30-11-2023T11:55:00 | *ex11  |
+      | *pe12          | *ea11          | 2         | 7            | *d11         | 30-11-2023T11:55:00 | *ex11  |
+      | *pe13          | *ea11          | 3         | 11           | *d11         | 30-11-2023T11:55:00 | *ex11  |
+      | *pe14          | *ea11          | 4         | 20           | *d11         | 30-11-2023T11:55:00 | *ex11  |
+      | *pe15          | *ea11          | 5         | 21           | *d11         | 30-11-2023T11:55:00 | *ex11  |
+      | *pe16          | *ea12          | 5         | 11           | *d12         | 30-11-2023T11:55:00 | *ex12  |
     When teacher makes a migration for discipline *d11
     Then operation is successful
     And analytics elements should be
@@ -40,13 +41,56 @@ Feature: Analytics
       | *d11         | *ex11  | 4         | *pe14          | 20    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 5         | *pe15          | 21    | *ea11          | 30-11-2023T11:55:00 |
 
+  Scenario: migration2
+    Given disciplines with specific id exist
+      | id  | name |
+      | *d1 | d1   |
+      | *d2 | d2   |
+    And groups with specific id exist
+      | group | discipline |
+      | *g1   | *d1        |
+      | *g2   | *d1        |
+      | *g3   | *d2        |
+    And exams with specific id exist
+      | id   | name | disciplineId |
+      | *ex1 | ex1  | *d1          |
+      | *ex2 | ex3  | *d1          |
+      | *ex3 | ex3  | *d2          |
+    And this exams have assignees
+      | id   | examId | relevantFrom               | relevantTo                 |
+      | *ea1 | *ex1   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea2 | *ex2   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea3 | *ex3   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+    And analytics elements exist
+      | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
+      | *d1          | *ex1   | *ea1           | *pe1           | 10    | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex1   | *ea1           | *pe2           | 12    | 30-11-2023T11:55:00 | 2         | *g2     |
+      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex1   | *ea2           | *pe4           | 8     | 30-11-2023T11:55:00 | 4         | *g1     |
+    And personal exams for migration exist
+      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           |
+      | *pe1           | *d1          | *ea1           | 1         | *g1     | 6            | 30-11-2023T11:55:00 |
+      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 |
+      | *pe3           | *d1          | *ea1           | 3         | *g1     | 11           | 30-11-2023T11:55:00 |
+      | *pe4           | *d1          | *ea2           | 4         | *g2     | 20           | 30-11-2023T11:55:00 |
+      | *pe5           | *d2          | *ea3           | 4         | *g3     | 21           | 30-11-2023T11:55:00 |
+      | *pe6           | *d2          | *ea3           | 5         | *g3     | 11           | 30-11-2023T11:55:00 |
+    When teacher makes a migration for discipline *d1
+    Then operation is successful
+    And analytics elements should be
+      | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
+      | *d1          | *ex1   | *ea1           | *pe1           | 6     | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex2   | *ea2           | *pe2           | 7     | 30-11-2023T11:55:00 | 2         | *g2     |
+      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex2   | *ea2           | *pe4           | 20    | 30-11-2023T11:55:00 | 4         | *g2     |
+
   Scenario: get ratings by id
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
-      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         |
-      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
-      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | *ea2           |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         | *ea1           |
+      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         | *ea2           |
     When teacher gets ratings by discipline *d1, by exam null and by group null
     Then operation is successful
     And ratings should be
@@ -56,11 +100,11 @@ Feature: Analytics
 
   Scenario: get ratings by id and exam id
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         |
-      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         |
-      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         |
-      | *d2          | *ex1   | 2         | *pe1           | 6     | 2         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | *ea1           |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         | *ea2           |
+      | *d2          | *ex1   | 2         | *pe1           | 6     | 2         | *ea2           |
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group null
     Then operation is successful
     And ratings should be
@@ -74,11 +118,11 @@ Feature: Analytics
       | discipline | group |
       | *d1        | 1     |
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       |
-      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | 2       |
-      | *d1          | *ex4   | 1         | *pe2           | 5     | 4         | 1       |
-      | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | 2       | *ea2           |
+      | *d1          | *ex4   | 1         | *pe2           | 5     | 4         | 1       | *ea4           |
+      | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       | *ea3           |
     When teacher gets ratings by discipline *d1, by exam null and by group 1
     Then operation is successful
     And ratings should be
@@ -91,15 +135,15 @@ Feature: Analytics
       | discipline | group |
       | *d1        | 1     |
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       |
-      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | 1       |
-      | *d1          | *ex1   | 3         | *pe1           | 5     | 4         | 2       |
-      | *d1          | *ex1   | 4         | *pe1           | 6     | 2         | 2       |
-      | *d1          | *ex2   | 1         | *pe2           | 10    | 3         | 1       |
-      | *d1          | *ex2   | 2         | *pe2           | 5     | 3         | 1       |
-      | *d1          | *ex2   | 3         | *pe2           | 5     | 4         | 2       |
-      | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | 1       | *ea1           |
+      | *d1          | *ex1   | 3         | *pe1           | 5     | 4         | 2       | *ea1           |
+      | *d1          | *ex1   | 4         | *pe1           | 6     | 2         | 2       | *ea1           |
+      | *d1          | *ex2   | 1         | *pe2           | 10    | 3         | 1       | *ea2           |
+      | *d1          | *ex2   | 2         | *pe2           | 5     | 3         | 1       | *ea2           |
+      | *d1          | *ex2   | 3         | *pe2           | 5     | 4         | 2       | *ea2           |
+      | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       | *ea2           |
     When teacher gets ratings by discipline *d1, by exam *ex1 and by group 1
     Then operation is successful
     And ratings should be
@@ -110,13 +154,13 @@ Feature: Analytics
 
   Scenario: When teacher requests students analytics then response with detailed information has to be returned
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d12         | *ex12  | 1         | *pe16          | 1     | 1         |
-      | *d12         | *ex13  | 1         | *pe17          | 5     | 4         |
-      | *d12         | *ex14  | 1         | *pe18          | 15    | 5         |
-      | *d12         | *ex12  | 2         | *pe19          | 3     | 1         |
-      | *d12         | *ex13  | 2         | *pe21          | 6     | 4         |
-      | *d12         | *ex14  | 2         | *pe22          | 12    | 5         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d12         | *ex12  | 1         | *pe16          | 1     | 1         |*ea1           |
+      | *d12         | *ex13  | 1         | *pe17          | 5     | 4         |*ea2           |
+      | *d12         | *ex14  | 1         | *pe18          | 15    | 5         |*ea3           |
+      | *d12         | *ex12  | 2         | *pe19          | 3     | 1         |*ea1           |
+      | *d12         | *ex13  | 2         | *pe21          | 6     | 4         |*ea2           |
+      | *d12         | *ex14  | 2         | *pe22          | 12    | 5         |*ea3           |
     When teacher requests analytics for discipline *d12 and student 1
     Then operation is successful
     And StudentDisciplineStatistic object has to be returned
@@ -130,12 +174,12 @@ Feature: Analytics
 
   Scenario: When teacher requests summary by discipline then response with detailed information has to be returned
     Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent |
-      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         |
-      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         |
-      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         |
-      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         |
-      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         |
-      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         |
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         |*ea1           |
+      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         |*ea2           |
+      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         |*ea3           |
+      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         |*ea1           |
+      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         |*ea2           |
+      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         |*ea3           |
     When teacher requests discipline summary for discipline *d13
     Then operation is successful
