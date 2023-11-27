@@ -30,6 +30,7 @@ public class DisciplinesControllerTest extends LessonsControllerTest {
     public void shouldFindDisciplinesByStudent() {
         when(disciplineService.findAllMyDiscipline()).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Student"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> result = doGet("/api/disciplines/my", httpEntity, new ParameterizedTypeReference<>() {
         });
@@ -40,6 +41,7 @@ public class DisciplinesControllerTest extends LessonsControllerTest {
     public void shouldFindTasksByDisciplineId() {
         when(disciplineService.findTasksByDisciplineId(any(Long.class))).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Student"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Discipline>> result = doGet("/api/disciplines/my", httpEntity, new ParameterizedTypeReference<>() {
         });

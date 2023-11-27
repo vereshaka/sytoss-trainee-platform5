@@ -16,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -118,6 +119,8 @@ public class DisciplineWhen extends LessonsIntegrationTest {
     public void studentReceiveHisDisciplines() {
         String url = "/api/disciplines/my";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        //TODO: yevgenyv: we should take token from execution context
+        httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Student"));
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         when(getUserConnector().findMyGroupId()).thenReturn(getTestExecutionContext().getDetails().getGroupId());
         ResponseEntity<List<Discipline>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {

@@ -150,8 +150,20 @@ public class PersonalExamController {
     })
     @GetMapping("/student/{userId}")
     @JsonView(PersonalExam.Public.class)
+    @PreAuthorize("hasRole('Teacher')")
     public List<PersonalExam> getByStudentId(@PathVariable(value = "userId") Long userId) {
         return personalExamService.getByStudentId(userId);
+    }
+
+    @Operation(description = "Method that return personal exams by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK")
+    })
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('Student')")
+    @JsonView(PersonalExam.Public.class)
+    public List<PersonalExam> getMyPersonalExam() {
+        return personalExamService.getStudentPersonalExams();
     }
 
     @PreAuthorize("hasRole('Teacher')")

@@ -102,6 +102,7 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
 
     @Override
     protected String getToken() {
+        //TODO: yevgenyv: we should take token from execution context
         return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Teacher");
     }
 }

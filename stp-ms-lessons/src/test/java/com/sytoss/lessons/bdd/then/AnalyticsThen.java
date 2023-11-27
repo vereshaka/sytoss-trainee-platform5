@@ -129,6 +129,7 @@ public class AnalyticsThen extends AbstractGiven {
                 assertEquals(rating.getStudent().getId(), ratingFromResponse.getStudent().getId());
                 assertEquals(rating.getGrade().getGrade(), ratingFromResponse.getGrade().getGrade());
                 assertEquals(rating.getGrade().getTimeSpent(), ratingFromResponse.getGrade().getTimeSpent());
+                assertEquals(rating.getRank(), ratingFromResponse.getRank());
                 ratingsListFromResponse.remove(ratingFromResponse);
                 break;
             }
