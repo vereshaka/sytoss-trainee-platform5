@@ -3,12 +3,10 @@ package com.sytoss.lessons.bdd.common;
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
-import com.sytoss.lessons.controllers.viewModel.PersonalExamSummaryStatistic;
-import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
-import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
+import com.sytoss.lessons.controllers.viewModel.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
@@ -72,6 +70,49 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
         test.setExam(exam);
 
         return test;
+    }
+
+    @DataTableType
+    public DisciplineSummary mapDisciplineSummary(Map<String, String> row){
+        DisciplineSummary disciplineSummary = new DisciplineSummary();
+
+        SummaryGrade studentsGrade = new SummaryGrade();
+        AnalyticGrade averageGrade = new AnalyticGrade();
+        averageGrade.setGrade(Double.parseDouble(row.get("average grade")));
+        averageGrade.setTimeSpent(Long.parseLong(row.get("average spent time")));
+        studentsGrade.setAverage(averageGrade);
+
+        AnalyticGrade maxGrade = new AnalyticGrade();
+        maxGrade.setGrade(Double.parseDouble(row.get("max grade")));
+        maxGrade.setTimeSpent(Long.parseLong(row.get("min spent time")));
+        studentsGrade.setMax(maxGrade);
+
+        disciplineSummary.setStudentsGrade(studentsGrade);
+
+        return disciplineSummary;
+    }
+
+    @DataTableType
+    public ExamSummary mapExamSummary(Map<String, String> row){
+        ExamSummary examSummary = new ExamSummary();
+        Exam exam = new Exam();
+        exam.setId((Long) getTestExecutionContext().replaceId(row.get("exam id")));
+
+        SummaryGrade studentsGrade = new SummaryGrade();
+        AnalyticGrade averageGrade = new AnalyticGrade();
+        averageGrade.setGrade(Double.parseDouble(row.get("students average grade")));
+        averageGrade.setTimeSpent(Long.parseLong(row.get("students average spent time")));
+        studentsGrade.setAverage(averageGrade);
+
+        AnalyticGrade maxGrade = new AnalyticGrade();
+        maxGrade.setGrade(Double.parseDouble(row.get("max students grade")));
+        maxGrade.setTimeSpent(Long.parseLong(row.get("min students spent time")));
+        studentsGrade.setMax(maxGrade);
+
+        examSummary.setExam(exam);
+        examSummary.setStudentsGrade(studentsGrade);
+
+        return examSummary;
     }
 
 }

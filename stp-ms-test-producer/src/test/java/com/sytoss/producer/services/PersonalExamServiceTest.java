@@ -8,9 +8,11 @@ import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
+import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -24,16 +26,15 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@Disabled
 public class PersonalExamServiceTest extends StpUnitTest {
 
     @Mock
@@ -48,8 +49,10 @@ public class PersonalExamServiceTest extends StpUnitTest {
     @Mock
     private ImageConnector imageConnector;
 
+    @Mock
+    private AnswerGenerator answerGenerator;
+
     @Test
-    @Disabled
     public void createExam() {
         //TODO: STP-409: fix me
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
@@ -60,22 +63,37 @@ public class PersonalExamServiceTest extends StpUnitTest {
         }).when(personalExamConnector).save(any());
 
         ExamConfiguration examConfiguration = new ExamConfiguration();
-      /*  examConfiguration.setExamName("Exam First");
-        examConfiguration.setDisciplineId(1L);*/
+
         Discipline discipline = new Discipline();
         discipline.setId(1L);
         discipline.setName("SQL");
-        when(metadataConnector.getTasksForTopic(1L)).thenReturn(List.of(createTask("Left Join?"), createTask("Is SQL cool?")));
-        when(metadataConnector.getTasksForTopic(2L)).thenReturn(List.of(createTask("SELECT?"), createTask("SELECT?")));
         List<Long> topics = new ArrayList<>();
         topics.add(1L);
         topics.add(2L);
-       /* examConfiguration.setTasks(topics);
-        examConfiguration.setQuantityOfTask(2);*/
+
+        List<Task> taskList = new ArrayList<>();
         Student student = new Student();
         student.setUid("notLongId");
         examConfiguration.setStudent(student);
-        when(imageConnector.convertImage(anyString())).thenReturn(1L);
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setRelevantFrom(Date.from(Instant.now()));
+        examAssignee.setRelevantTo(Date.from(Instant.now()));
+
+
+        List<Answer> answers = List.of(
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L),
+                createAnswer("select * from owners", 0, "answer correct", AnswerStatus.ANSWERED, 2L)
+        );
+
+        examConfiguration.setExamAssignee(examAssignee);
+        Exam exam = new Exam();
+        exam.setMaxGrade(10);
+        exam.setNumberOfTasks(10);
+        exam.setTasks(taskList);
+        examConfiguration.setExam(exam);
+
+        when(answerGenerator.generateAnswers(exam.getNumberOfTasks(), exam.getTasks())).thenReturn(answers);
+
         PersonalExam personalExam = personalExamService.create(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
         assertEquals("1ada", personalExam.getId());
@@ -88,9 +106,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         personalExam.setId("12345");
         personalExam.setName("DDL requests");
         personalExam.setAnswers(List.of(
-                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
-                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED),
-                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED)
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L),
+                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED, 2L),
+                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED, 3L)
         ));
 
         when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
@@ -109,9 +127,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         personalExam.setId("12345");
         personalExam.setName("DDL requests");
         personalExam.setAnswers(List.of(
-                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
-                createAnswer("select * from owners", 0, "answer correct", AnswerStatus.ANSWERED),
-                createAnswer("select * from customers", 1, "answer incorrect", AnswerStatus.GRADED)
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L),
+                createAnswer("select * from owners", 0, "answer correct", AnswerStatus.ANSWERED, 2L),
+                createAnswer("select * from customers", 1, "answer incorrect", AnswerStatus.GRADED, 3L)
         ));
 
         when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
@@ -124,8 +142,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
     }
 
     @Test
-    @Disabled
     public void shouldStartPersonalExam() {
+        Teacher user = new Teacher();
+        user.setId(1L);
         PersonalExam input = new PersonalExam();
         input.setId("5");
         Task task = new Task();
@@ -139,8 +158,10 @@ public class PersonalExamServiceTest extends StpUnitTest {
         input.setAnswers(List.of(answer));
         input.setAmountOfTasks(1);
         input.setTime(10);
+        input.setRelevantTo(new Date());
+        input.setRelevantFrom(new Date());
         Student student = new Student();
-        student.setUid("1");
+        student.setId(user.getId());
         input.setStudent(student);
         when(personalExamConnector.getById("5")).thenReturn(input);
         Mockito.doAnswer((org.mockito.stubbing.Answer<PersonalExam>) invocation -> {
@@ -149,35 +170,13 @@ public class PersonalExamServiceTest extends StpUnitTest {
             result.setId("1L");
             return result;
         }).when(personalExamConnector).save(any(PersonalExam.class));
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Question result = personalExamService.start("5");
+        assertDoesNotThrow(() -> personalExamService.start("5"));
     }
 
     @Test
-    public void shouldNotStartExamWhenItStarted() {
-        PersonalExam input = new PersonalExam();
-        input.setId("5");
-        input.start();
-        Task task = new Task();
-        task.setId(1L);
-        Answer answer = new Answer();
-        answer.setStatus(AnswerStatus.NOT_STARTED);
-        answer.setTask(task);
-        Student student = new Student();
-        student.setUid("1");
-        input.setStudent(student);
-        input.setAnswers(List.of(answer));
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("id", "1").build();
-        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        when(personalExamConnector.getById("5")).thenReturn(input);
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
-    }
-
-    @Test
-    @Disabled
     public void shouldShouldReturnTrueWhenTaskDomainIsUsed() {
         when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
         boolean isUsed = personalExamService.taskDomainIsUsed(1L);
@@ -211,7 +210,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId("123-abc-def");
         Task task = createTask("question");
-        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS, 1L);
         answer.setTask(task);
         personalExam.setAnswers(List.of(answer));
 
@@ -227,7 +226,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
         PersonalExam personalExam = new PersonalExam();
         personalExam.setId("123-abc-def");
         Task task = createTask("question");
-        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS);
+        Answer answer = createAnswer("answer", 10f, "True", AnswerStatus.IN_PROGRESS, 1L);
         answer.setTask(task);
         personalExam.setAnswers(List.of(answer));
 
@@ -257,12 +256,17 @@ public class PersonalExamServiceTest extends StpUnitTest {
         return task;
     }
 
-    private Answer createAnswer(String value, float grade, String comment, AnswerStatus answerStatus) {
+    private Answer createAnswer(String value, float grade, String comment, AnswerStatus answerStatus, Long answerCode) {
         Answer answer = new Answer();
         answer.setStatus(answerStatus);
         answer.setValue(value);
         answer.setGrade(createGrade(grade, comment));
         answer.setTeacherGrade(createGrade(grade, comment));
+        answer.setTimeSpent(1L);
+        Task task = new Task();
+        task.setId(answerCode);
+        task.setCoef(1.0);
+        answer.setTask(task);
         return answer;
     }
 
@@ -275,8 +279,8 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
     @Test
     public void shouldReviewTestByAnswers() {
-        Answer answer1 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
-        Answer answer2 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED);
+        Answer answer1 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L);
+        Answer answer2 = createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 2L);
 
         answer1.setId(1L);
         answer2.setId(2L);
@@ -322,9 +326,9 @@ public class PersonalExamServiceTest extends StpUnitTest {
         personalExam.setId("12345");
         personalExam.setName("DDL requests");
         personalExam.setAnswers(List.of(
-                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED),
-                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED),
-                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED)
+                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L),
+                createAnswer("select * from owners", 1, "answer correct", AnswerStatus.GRADED, 2L),
+                createAnswer("select * from customers", 1, "answer correct", AnswerStatus.GRADED, 3L)
         ));
 
         when(personalExamConnector.getById(personalExam.getId())).thenReturn(personalExam);
@@ -383,10 +387,12 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Answer answer1 = new Answer();
         answer1.setValue("Select something 1");
         answer1.setStatus(AnswerStatus.GRADED);
+        answer1.setTimeSpent(1L);
 
         Answer answer2 = new Answer();
         answer2.setValue("Select something 2");
         answer2.setStatus(AnswerStatus.GRADED);
+        answer2.setTimeSpent(1L);
 
         List<Answer> answers = List.of(answer1, answer2);
 

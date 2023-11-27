@@ -13,6 +13,8 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.viewModel.*;
+import com.sytoss.lessons.convertors.SummaryGradeByExamConvertor;
+import com.sytoss.lessons.convertors.SummaryGradeConvertor;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,6 +45,10 @@ public class AnalyticsService extends AbstractService {
     private final PersonalExamConnector personalExamConnector;
 
     private final DisciplineConnector disciplineConnector;
+
+    private final SummaryGradeConvertor summaryGradeConvertor;
+
+    private final SummaryGradeByExamConvertor summaryGradeByExamConvertor;
 
     private final ExamAssigneeConnector examAssigneeConnector;
 
@@ -61,9 +70,9 @@ public class AnalyticsService extends AbstractService {
         return analyticsElementDTOS;
     }
 
-    public void migrateAll() {
+    public void migrateAll(){
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
-        for (DisciplineDTO disciplineDTO : disciplineDTOS) {
+        for(DisciplineDTO disciplineDTO : disciplineDTOS){
             try {
                 DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
                 if (dto != null) {
@@ -73,7 +82,7 @@ public class AnalyticsService extends AbstractService {
                 } else {
                     log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
                 }
-            } catch (Exception e) {
+            }catch(Exception e) {
                 log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
             }
         }
@@ -124,7 +133,7 @@ public class AnalyticsService extends AbstractService {
             analytic.setStudent(personalExam.getStudent());
             analytic.setPersonalExam(personalExam);
             analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
-            analytic.setStartDate(personalExam.getStartedDate());
+            analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
             updateAnalytic(analytic);
             analytics.add(analytic);
         }
@@ -159,11 +168,10 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.save(dto);
     }
 
-    public void deleteByExam(long examId) {
+    public void deleteByExam(long examId){
         analyticsConnector.deleteAllByExamId(examId);
     }
-
-    public void deleteByDiscipline(long disciplineId) {
+    public void deleteByDiscipline(long disciplineId){
         analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 
@@ -232,7 +240,7 @@ public class AnalyticsService extends AbstractService {
         StudentDisciplineStatistic analyticFull = createStudentDisciplineStatistic(disciplineId, studentId);
 
         List<StudentTestExecutionSummary> tests = new ArrayList<>();
-        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.getByDisciplineIdAndStudentId(disciplineId, studentId);
+        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.getByDisciplineIdAndStudentIdAndPersonalExamIdIsNull(disciplineId, studentId);
 
         for (AnalyticsDTO analyticsDTO : analyticsDTOS) {
             StudentTestExecutionSummary testExecutionSummary = new StudentTestExecutionSummary();
@@ -272,16 +280,7 @@ public class AnalyticsService extends AbstractService {
         studentDisciplineStatistic.setStudent(student);
 
         SummaryGradeDTO summaryGradeDTO = analyticsConnector.getSummaryGrade(disciplineId, studentId);
-        AnalyticGrade averageGrade = new AnalyticGrade();
-        averageGrade.setGrade(summaryGradeDTO.getAvgGrade());
-        averageGrade.setTimeSpent(summaryGradeDTO.getAvgTimeSpent());
-        AnalyticGrade maxGrade = new AnalyticGrade();
-        maxGrade.setGrade(summaryGradeDTO.getMaxGrade());
-        maxGrade.setTimeSpent(summaryGradeDTO.getMaxTimeSpent());
-
-        SummaryGrade summaryGrade = new SummaryGrade();
-        summaryGrade.setAverage(averageGrade);
-        summaryGrade.setMax(maxGrade);
+        SummaryGrade summaryGrade = summaryGradeConvertor.fromDto(summaryGradeDTO);
         studentDisciplineStatistic.setSummaryGrade(summaryGrade);
 
         return studentDisciplineStatistic;
@@ -292,39 +291,34 @@ public class AnalyticsService extends AbstractService {
         Discipline discipline = new Discipline();
         discipline.setId(disciplineId);
         disciplineSummary.setDiscipline(discipline);
-        disciplineSummary.setStudentsGrade(getStudentsGradeByDiscipline(disciplineId));
-        disciplineSummary.setTests(getDisciplineSummaryTests(disciplineId));
+
+        List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
+        Set<Long> studentIds = new HashSet<>();
+        for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
+            List<Student> students = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+            studentIds.addAll(students.stream()
+                    .map(AbstractUser::getId)
+                    .collect(Collectors.toSet())
+            );
+        }
+
+        disciplineSummary.setStudentsGrade(getStudentsGradeByDiscipline(disciplineId, studentIds));
+        disciplineSummary.setTests(getDisciplineSummaryTests(disciplineId, studentIds));
+
         return disciplineSummary;
     }
 
-    private List<ExamSummary> getDisciplineSummaryTests(Long disciplineId) {
-        ExamSummary examSummary = new ExamSummary();
-
-        Exam exam = new Exam();
-        exam.setId(1l);
-        exam.setName("exam");
-        exam.setMaxGrade(10);
-        SummaryGrade studentsGrade = getStudentsGradeByDiscipline(disciplineId);
-
-        examSummary.setExam(exam);
-        examSummary.setStudentsGrade(studentsGrade);
-
-        return List.of(examSummary);
+    private SummaryGrade getStudentsGradeByDiscipline(Long disciplineId, Set<Long> studentIds) {
+        SummaryGradeDTO summaryGradeDTO = analyticsConnector.getStudentsGradeByDiscipline(disciplineId, studentIds);
+        return summaryGradeConvertor.fromDto(summaryGradeDTO);
     }
 
-    private SummaryGrade getStudentsGradeByDiscipline(Long disciplineId) {
-        SummaryGrade studentsGrade = new SummaryGrade();
+    private List<ExamSummary> getDisciplineSummaryTests(Long disciplineId, Set<Long> studentIds) {
+        List<SummaryGradeByExamDTO> studentsGradeByExam = analyticsConnector.getStudentsGradeByExam(disciplineId, studentIds);
 
-        AnalyticGrade maxGrade = new AnalyticGrade();
-        maxGrade.setGrade(3.0);
-        maxGrade.setTimeSpent(10);
-        AnalyticGrade avgGrade = new AnalyticGrade();
-        avgGrade.setGrade(2.5);
-        avgGrade.setTimeSpent(4);
-
-        studentsGrade.setMax(maxGrade);
-        studentsGrade.setAverage(avgGrade);
-
-        return studentsGrade;
+        return studentsGradeByExam.stream()
+                .map(summaryGradeByExamConvertor::fromDto)
+                .toList();
     }
+
 }

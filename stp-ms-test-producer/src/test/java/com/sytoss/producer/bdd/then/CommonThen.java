@@ -3,8 +3,7 @@ package com.sytoss.producer.bdd.then;
 import com.sytoss.producer.bdd.TestProducerIntegrationTest;
 import io.cucumber.java.en.Then;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommonThen extends TestProducerIntegrationTest {
 
@@ -17,6 +16,10 @@ public class CommonThen extends TestProducerIntegrationTest {
     public void raiseError(Integer status, String error) {
         assertNotNull(getTestExecutionContext().getDetails().getResponse());
         assertEquals(status, getTestExecutionContext().getDetails().getResponse().getStatusCode().value());
-        assertEquals(error, getTestExecutionContext().getDetails().getResponse().getBody());
+        if ("<null>".equals(error)){
+            assertNull(getTestExecutionContext().getDetails().getResponse().getBody());
+        }else {
+            assertEquals(error, getTestExecutionContext().getDetails().getResponse().getBody());
+        }
     }
 }
