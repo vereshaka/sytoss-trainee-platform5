@@ -1,7 +1,5 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.domain.bom.analytics.AnalyticGrade;
-import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
 import com.sytoss.lessons.dto.AnalyticsAverageDTO;
 import com.sytoss.lessons.dto.AnalyticsDTO;
@@ -20,7 +18,7 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
 
     AnalyticsDTO getByDisciplineIdAndExamIdAndStudentId(Long disciplineId, Long examId, Long studentId);
 
-    List<AnalyticsDTO> getByDisciplineIdAndStudentId(Long disciplineId, Long studentId);
+    List<AnalyticsDTO> getByDisciplineIdAndStudentIdAndPersonalExamIdIsNull(Long disciplineId, Long studentId);
 
     List<AnalyticsDTO> deleteAnalyticsDTOByDisciplineIdAndStudentId(Long disciplineId, Long studentId);
 
