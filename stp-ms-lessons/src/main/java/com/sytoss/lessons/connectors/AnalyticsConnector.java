@@ -1,7 +1,5 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.domain.bom.analytics.AnalyticGrade;
-import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
 import com.sytoss.lessons.dto.AnalyticsAverageDTO;
 import com.sytoss.lessons.dto.AnalyticsDTO;
@@ -47,7 +45,7 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "and a.personalExamId is not null ")
     SummaryGradeDTO getSummaryGrade(Long disciplineId, Long studentId);
 
-    @Query("SELECT new com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic(e.id, e.name, e.maxGrade, cast(max(a.grade) as int)) " +
+    @Query("SELECT new com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic(e.id, e.name, e.maxGrade, cast(max(a.grade) as Integer)) " +
             "from ANALYTICS a, EXAM e " +
             "where e.id = :examId " +
             "and a.examId = e.id " +
