@@ -28,8 +28,8 @@ public interface PersonalExamConnector {
     void updateTask(Task task);
 
     @PostMapping("personal-exam/students")
-    List<PersonalExam> getListOfPersonalExamByStudents(@RequestParam Long disciplineId,
-                                                       @RequestParam List<Long> examAssignees,
-                                                       @RequestParam List<Student> students);
+    List<PersonalExam> getListOfPersonalExamByStudents(Long disciplineId,
+                                                       List<Long> examAssignees,
+                                                       List<Student> students);
 }
 
