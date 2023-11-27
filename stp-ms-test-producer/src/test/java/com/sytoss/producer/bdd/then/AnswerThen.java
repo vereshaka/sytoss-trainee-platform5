@@ -22,7 +22,7 @@ public class AnswerThen extends TestProducerIntegrationTest {
     }
 
     @Then("^status of first answer of \"(.*)\" exam for this student should be \"(.*)\"$")
-    public void answerShouldHaveStatus(String examName,  String answerStatus) {
+    public void answerShouldHaveStatus(String examName, String answerStatus) {
         answerShouldHaveStatus(examName, getTestExecutionContext().getDetails().getStudentUid(), answerStatus);
     }
 
