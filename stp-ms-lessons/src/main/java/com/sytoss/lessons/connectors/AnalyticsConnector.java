@@ -62,7 +62,7 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "and a.personalExamId is not null ")
     SummaryGradeDTO getStudentsGradeByDiscipline(Long disciplineId, Set<Long> studentIds);
 
-    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeByExamDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long), a.examId, e.maxGrade, e.name) " +
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeByExamDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long), e.id, e.maxGrade, e.name) " +
             "from ANALYTICS a, EXAM e " +
             "where e.id = a.examId " +
             "and a.disciplineId = :disciplineId " +
