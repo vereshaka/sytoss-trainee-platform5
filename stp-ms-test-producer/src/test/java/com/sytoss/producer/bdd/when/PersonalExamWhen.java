@@ -195,6 +195,18 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
     }
 
+    @When("operation for retrieving personal exams for this student")
+    public void retrievePersonalExamsForStudent() {
+        String url = "/api/personal-exam/me";
+        log.info("Send request to " + url);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(getTestExecutionContext().getToken());
+        HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
+        ResponseEntity<String> responseEntity = doGet(url, requestEntity, String.class);
+        getTestExecutionContext().getDetails().setResponse(responseEntity);
+        getTestExecutionContext().getDetails().setStatusCode(responseEntity.getStatusCode().value());
+    }
+
     @When("operation for retrieving personal exams for userId {} was called")
     public void retrievePersonalExamsByUserId(Long userId) {
         String url = "/api/personal-exam/student/" + userId;
