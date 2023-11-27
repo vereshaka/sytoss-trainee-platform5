@@ -177,36 +177,6 @@ public class PersonalExamServiceTest extends StpUnitTest {
     }
 
     @Test
-    @Disabled
-    public void shouldNotStartExamWhenItStarted() {
-        //todo ivanl is this test  needed?
-        PersonalExam input = new PersonalExam();
-        input.setId("5");
-        input.setName("SQL");
-        Task task = new Task();
-        task.setId(1L);
-        Answer answer = new Answer();
-        answer.setStatus(AnswerStatus.NOT_STARTED);
-        answer.setTask(task);
-        Student student = new Student();
-        student.setId(1L);
-        input.setStudent(student);
-        input.setAnswers(List.of(answer));
-        Teacher user = new Teacher();
-        user.setId(1L);
-        input.setRelevantTo(new Date());
-        input.setRelevantFrom(new Date());
-        input.start();
-        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", user).build();
-        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, null);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        when(personalExamConnector.getById(any())).thenReturn(input);
-        when(personalExamConnector.save(input)).thenReturn(input);
-        personalExamService.start("5");
-        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.start("5"));
-    }
-
-    @Test
     public void shouldShouldReturnTrueWhenTaskDomainIsUsed() {
         when(personalExamConnector.countByAnswersTaskTaskDomainIdAndStatusNotLike(1L, PersonalExamStatus.FINISHED)).thenReturn(1);
         boolean isUsed = personalExamService.taskDomainIsUsed(1L);
