@@ -191,3 +191,23 @@ Feature: Analytics
       | *ex12   | 3         | 2                      | 1                           | 3                  | 1                       |
       | *ex13   | 6         | 5.5                    | 4                           | 6                  | 4                       |
       | *ex14   | 15        | 13.5                   | 5                           | 15                 | 5                       |
+
+  Scenario: When teacher requests summary by discipline and group then response with detailed information has to be returned
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d13         | *ex12  | 1         | *pe16          | 1     | 1         | *ea1           |
+      | *d13         | *ex13  | 1         | *pe17          | 5     | 4         | *ea2           |
+      | *d13         | *ex14  | 1         | *pe18          | 15    | 5         | *ea3           |
+      | *d13         | *ex12  | 2         | *pe19          | 3     | 1         | *ea1           |
+      | *d13         | *ex13  | 2         | *pe21          | 6     | 4         | *ea2           |
+      | *d13         | *ex14  | 2         | *pe22          | 12    | 5         | *ea3           |
+    When teacher requests discipline summary for group with id 1 and discipline with id *d13
+    Then operation is successful
+    And discipline summary should has values
+      | average grade | average spent time | max grade | min spent time |
+      | 7             | 3                  | 15        | 1              |
+    And exam summaries should be
+      | exam id | max grade | students average grade | students average spent time | max students grade | min students spent time |
+      | *ex12   | 3         | 2                      | 1                           | 3                  | 1                       |
+      | *ex13   | 6         | 5.5                    | 4                           | 6                  | 4                       |
+      | *ex14   | 15        | 13.5                   | 5                           | 15                 | 5                       |
