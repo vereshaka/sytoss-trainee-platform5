@@ -99,4 +99,13 @@ public class AnalyticsController {
         return analyticsService.getDisciplineSummary(disciplineId);
     }
 
+    @Operation(description = "Method returns summary for discipline by certain group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/summary/group/{groupId}")
+    public DisciplineSummary getDisciplineSummaryByGroup(@PathVariable Long disciplineId, @PathVariable Long groupId){
+        return analyticsService.getDisciplineSummaryByGroup(disciplineId, groupId);
+    }
+
 }
