@@ -77,17 +77,28 @@ public class AnalyticsController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/discipline/{disciplineId}/student/{studentId}")
-    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId, @PathVariable Long studentId){
+    public StudentDisciplineStatistic getStudentAnalyticsForTeacher(@PathVariable Long disciplineId, @PathVariable Long studentId){
         return analyticsService.getStudentAnalyticsByStudentId(disciplineId, studentId);
     }
 
+    @PreAuthorize("hasRole('Student')")
     @Operation(description = "Method returns analytics for currently logged student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/discipline/{disciplineId}/student")
-    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId){
+    public StudentDisciplineStatistic getStudentAnalyticsForStudent(@PathVariable Long disciplineId){
         return analyticsService.getStudentAnalyticsByLoggedStudent(disciplineId);
+    }
+
+    @PreAuthorize("hasRole('Student')")
+    @Operation(description = "Method returns statistics for currently logged student by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/student/group/primary")
+    public DisciplineSummary getStudentAnalyticsByGroup(@PathVariable Long disciplineId){
+        return analyticsService.getDisciplineSummaryByGroupForStudent(disciplineId);
     }
 
     @Operation(description = "Method returns summary for discipline")
@@ -99,6 +110,7 @@ public class AnalyticsController {
         return analyticsService.getDisciplineSummary(disciplineId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method returns summary for discipline by certain group")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
