@@ -57,14 +57,23 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "group by e.id, e.name")
     ExamSummaryStatistic getExamInfo(Long examId);
 
-    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long)) " +
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeDTO(" +
+            "COALESCE(max(a.grade),0), " +
+            "COALESCE(min(a.timeSpent),0), " +
+            "COALESCE(avg(a.grade),0), " +
+            "cast(COALESCE(avg(a.timeSpent),0) as Long)" +
+            ") " +
             "from ANALYTICS a " +
             "where a.disciplineId = :disciplineId " +
             "and a.studentId in (:studentIds) " +
             "and a.personalExamId is not null ")
     SummaryGradeDTO getStudentsGradeByDiscipline(Long disciplineId, Set<Long> studentIds);
 
-    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeByExamDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long), e.id, e.maxGrade, e.name) " +
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeByExamDTO(" +
+            "COALESCE(max(a.grade),0), " +
+            "COALESCE(min(a.timeSpent),0), " +
+            "COALESCE(avg(a.grade),0), " +
+            "cast(COALESCE(avg(a.timeSpent), 0) as Long), e.id, e.maxGrade, e.name) " +
             "from ANALYTICS a, EXAM e " +
             "where e.id = a.examId " +
             "and a.disciplineId = :disciplineId " +
