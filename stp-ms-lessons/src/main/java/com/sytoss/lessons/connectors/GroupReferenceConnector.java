@@ -11,6 +11,7 @@ import java.util.List;
 public interface GroupReferenceConnector extends JpaRepository<GroupReferenceDTO, GroupReferencePK> {
 
     List<GroupReferenceDTO> findByDisciplineId(Long discipline_id);
+    void deleteAllByDisciplineId(Long discipline_id);
 
     GroupReferenceDTO findByGroupId(Long groupId);
 

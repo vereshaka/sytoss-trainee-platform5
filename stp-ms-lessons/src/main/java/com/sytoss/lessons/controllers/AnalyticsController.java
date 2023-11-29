@@ -40,8 +40,8 @@ public class AnalyticsController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @PostMapping("/migrate/{disciplineId}")
-    public List<Analytics> migrate(@PathVariable Long disciplineId) {
-        return analyticsService.migrate(disciplineId);
+    public void migrate(@PathVariable Long disciplineId) {
+        analyticsService.migrate(disciplineId);
     }
 
     @Operation(description = "Method that retrieves analytics elements by discipline id, group id, exam id")

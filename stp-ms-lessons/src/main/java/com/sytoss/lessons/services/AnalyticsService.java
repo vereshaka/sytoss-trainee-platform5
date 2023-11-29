@@ -90,6 +90,7 @@ public class AnalyticsService extends AbstractService {
     }
 
     public List<Analytics> migrate(Long disciplineId) {
+        groupReferenceConnector.deleteAllByDisciplineId(disciplineId);
         List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
         List<Student> students = new ArrayList<>();
         for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
