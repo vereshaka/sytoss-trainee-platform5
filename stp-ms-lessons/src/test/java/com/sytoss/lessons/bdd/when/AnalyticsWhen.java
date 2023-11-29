@@ -39,7 +39,7 @@ public class AnalyticsWhen extends AbstractGiven {
         String url = "/api/analytics/migrate/" + disciplineId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Analytics>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Void> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
