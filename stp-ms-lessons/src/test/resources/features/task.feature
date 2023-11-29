@@ -97,4 +97,18 @@ Feature: Task
     Then operation is successful
     And should return task with "What are the different subsets of Mongo?" question
 
+  Scenario: STP-942 system create new task with task conditions
+    Given task with question "What are the different subsets of SQL?" doesnt exist
+    When system create task with a question "What are the different subsets of SQL?" and required command "!NULL, DISTINCT, JOIN, !IN, !EXISTS"
+    Then operation is successful
+    And task with question "What are the different subsets of SQL?" should be created
+    And task conditions should be
+      | value    | type         |
+      | NULL     | NOT_CONTAINS |
+      | DISTINCT | CONTAINS     |
+      | JOIN     | CONTAINS     |
+      | IN       | NOT_CONTAINS |
+      | EXISTS   | NOT_CONTAINS |
+    And required command should be "!NULL,DISTINCT,JOIN,!IN,!EXISTS"
+
 

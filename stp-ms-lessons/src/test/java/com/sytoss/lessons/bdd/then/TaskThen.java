@@ -29,9 +29,10 @@ public class TaskThen extends LessonsIntegrationTest {
 
     @Then("^task with question \"(.*)\" should be created$")
     public void taskShouldBe(String question) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId());
-        assertNotNull(taskDTO);
-        assertEquals(question, taskDTO.getQuestion());
+        Task task = (Task) getTestExecutionContext().getResponse().getBody();
+        assertNotNull(task);
+        assertEquals(question, task.getQuestion());
+        getTestExecutionContext().getDetails().setTaskConditions(task.getTaskConditions());
     }
 
     @Then("^tasks of topic with id (.*) should be received$")
@@ -44,11 +45,11 @@ public class TaskThen extends LessonsIntegrationTest {
                     item.getQuestion().equals(columns.get("task")) &&
                             (item.getTopics().size() == 1 && item.getTopics().get(0).getName().equals(columns.get("topic")) &&
                                     item.getTopics().get(0).getDiscipline().getName().equals(columns.get("discipline"))
-                            && item.getCode().equals(columns.get("code")))).toList();
+                                    && item.getCode().equals(columns.get("code")))).toList();
             if (foundTasks.size() == 0) {
                 fail("Task with question " + columns.get("task") + " and topic " + columns.get("topic") + " and discipline " + columns.get("discipline") + " and code " + columns.get("code") + " not found");
             }
-            TopicDTO topic = getTopicConnector().getReferenceById((Long)getTestExecutionContext().getIdMapping().get(topicKey));
+            TopicDTO topic = getTopicConnector().getReferenceById((Long) getTestExecutionContext().getIdMapping().get(topicKey));
             List<TaskDTO> taskDTOS = getTaskConnector().findByTopicsIdOrderByCode(topic.getId());
             for (TaskDTO taskDTO : taskDTOS) {
                 getTaskConnector().delete(taskDTO);
@@ -108,5 +109,33 @@ public class TaskThen extends LessonsIntegrationTest {
     @Then("task should be deleted")
     public void taskShouldBeDeleted() {
 
+    }
+
+    @Then("task conditions should be")
+    public void taskConditionsShouldBe(DataTable conditionsDataTable) {
+        List<TaskCondition> taskConditionsFromResponse = getTestExecutionContext().getDetails().getTaskConditions();
+        List<Map<String, String>> conditionsMaps = conditionsDataTable.asMaps();
+        List<TaskCondition> taskConditions = new ArrayList<>();
+        for (Map<String, String> conditionMap : conditionsMaps) {
+            TaskCondition taskCondition = new TaskCondition();
+            taskCondition.setValue(conditionMap.get("value"));
+            taskCondition.setType(ConditionType.valueOf(conditionMap.get("type")));
+            taskConditions.add(taskCondition);
+        }
+
+        for (TaskCondition taskCondition : taskConditions) {
+            for (TaskCondition taskConditionFromResponse : taskConditionsFromResponse) {
+                assertEquals(taskCondition.getValue(), taskConditionFromResponse.getValue());
+                assertEquals(taskCondition.getType(), taskConditionFromResponse.getType());
+                taskConditionsFromResponse.remove(taskConditionFromResponse);
+                break;
+            }
+        }
+    }
+
+    @Then("^required command should be \"(.*)\"$")
+    public void requiredCommandShouldBe(String requiredCommandEtalon) {
+        String requiredCommand = ((Task) getTestExecutionContext().getResponse().getBody()).getRequiredCommand();
+        assertEquals(requiredCommandEtalon,requiredCommand);
     }
 }
