@@ -34,12 +34,21 @@ public class AnalyticsController {
         analyticsService.updateAnalytic(analytics);
     }
 
+    @Operation(description = "Method that migrate old tests to analytics elements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/migrate/all")
+    public void migrateAll() {
+        analyticsService.migrateAll();
+    }
+
     @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that migrate old tests to analytics elements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/migrate/{disciplineId}")
+    @GetMapping("/migrate/{disciplineId}")
     public void migrate(@PathVariable Long disciplineId) {
         analyticsService.migrate(disciplineId);
     }
@@ -60,15 +69,6 @@ public class AnalyticsController {
             examId = Long.parseLong(examStringId);
         }
         return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId, groupId, examId);
-    }
-
-    @Operation(description = "Method that migrate old tests to analytics elements")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/migrate/all")
-    public void migrateAll() {
-        analyticsService.migrateAll();
     }
 
     @PreAuthorize("hasRole('Teacher')")

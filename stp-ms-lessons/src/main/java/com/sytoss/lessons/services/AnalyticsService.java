@@ -74,76 +74,81 @@ public class AnalyticsService extends AbstractService {
     public void migrateAll() {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findAll();
         for (DisciplineDTO disciplineDTO : disciplineDTOS) {
-            try {
-                DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
-                if (dto != null) {
-                    log.info("Migration of discipline #" + disciplineDTO.getId() + " started");
-                    migrate(disciplineDTO.getId());
-                    log.info("Migration of discipline #" + disciplineDTO.getId() + " finished");
-                } else {
-                    log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
-                }
-            } catch (Exception e) {
-                log.error("Migration of discipline #" + disciplineDTO.getId() + " failed", e);
+            DisciplineDTO dto = disciplineConnector.findById(disciplineDTO.getId()).orElse(null);
+            if (dto != null) {
+                migrate(disciplineDTO.getId());
+                log.info("Migration of discipline #" + disciplineDTO.getId() + " finished");
+            } else {
+                log.warn("Migration of discipline #" + disciplineDTO.getId() + " not started. Is ABSENT!");
             }
+
         }
     }
 
-    public List<Analytics> migrate(Long disciplineId) {
-        analyticsConnector.deleteAllByDisciplineId(disciplineId);
-        List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
-        List<Student> students = new ArrayList<>();
-        for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
-            List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
-            studentsOfGroup.forEach(student -> {
-                if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
-                    students.add(student);
-                }
-            });
-        }
-
-        for (Student student : students) {
-            analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
-        }
-        List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
-        List<Analytics> analytics = new ArrayList<>();
-
-        List<Long> examAssigneesIds = new ArrayList<>();
-        for (ExamDTO examDTO : exams) {
-            checkOrCreate(examDTO.getId(), disciplineId, students);
-            examAssigneeConnector.getAllByExam_Id(examDTO.getId()).forEach(examAssigneeDTO -> {
-                if (!examAssigneesIds.contains(examAssigneeDTO.getId())) {
-                    examAssigneesIds.add(examAssigneeDTO.getId());
-                }
-            });
-        }
-
-        PersonalExamByStudentsModel personalExamByStudentsModel = new PersonalExamByStudentsModel();
-        personalExamByStudentsModel.setDisciplineId(disciplineId);
-        personalExamByStudentsModel.setExamAssignees(examAssigneesIds);
-        personalExamByStudentsModel.setStudents(students);
-        List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(personalExamByStudentsModel);
-
-        Discipline discipline = new Discipline();
-        discipline.setId(disciplineId);
-        for (PersonalExam personalExam : personalExams) {
-            Analytics analytic = new Analytics();
-            analytic.setDiscipline(discipline);
-            analytic.setExam(new Exam());
-            ExamDTO examDto = examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId());
-            if (examDto == null) {
-                log.warn("Exam not found. Personal exam: " + personalExam.getExamAssigneeId());
-                continue;
+    public void migrate(Long disciplineId) {
+        try {
+            log.info("Migration of discipline #" + disciplineId + " started");
+            log.info("Migration of discipline #" + disciplineId + ". Loading of students started");
+            //analyticsConnector.deleteAllByDisciplineId(disciplineId);
+            List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
+            List<Student> students = new ArrayList<>();
+            for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
+                List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+                studentsOfGroup.forEach(student -> {
+                    if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
+                        students.add(student);
+                    }
+                });
             }
-            analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
-            analytic.setStudent(personalExam.getStudent());
-            analytic.setPersonalExam(personalExam);
-            analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
-            analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
-            updateAnalytic(analytic);
-            analytics.add(analytic);
+            log.info("Migration of discipline #" + disciplineId + ". Loading of students finished");
+            for (Student student : students) {
+                analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
+            }
+            log.info("Migration of discipline #" + disciplineId + ". Old analytics for these students clear");
+            List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
+            List<Analytics> analytics = new ArrayList<>();
+
+            List<Long> examAssigneesIds = new ArrayList<>();
+            for (ExamDTO examDTO : exams) {
+                checkOrCreate(examDTO.getId(), disciplineId, students);
+                examAssigneeConnector.getAllByExam_Id(examDTO.getId()).forEach(examAssigneeDTO -> {
+                    if (!examAssigneesIds.contains(examAssigneeDTO.getId())) {
+                        examAssigneesIds.add(examAssigneeDTO.getId());
+                    }
+                });
+            }
+            log.info("Migration of discipline #" + disciplineId + ". Initial analytics data inserted");
+
+            PersonalExamByStudentsModel personalExamByStudentsModel = new PersonalExamByStudentsModel();
+            personalExamByStudentsModel.setDisciplineId(disciplineId);
+            personalExamByStudentsModel.setExamAssignees(examAssigneesIds);
+            personalExamByStudentsModel.setStudents(students);
+            List<PersonalExam> personalExams = personalExamConnector.getListOfPersonalExamByStudents(personalExamByStudentsModel);
+
+            Discipline discipline = new Discipline();
+            discipline.setId(disciplineId);
+            for (PersonalExam personalExam : personalExams) {
+                Analytics analytic = new Analytics();
+                analytic.setDiscipline(discipline);
+                analytic.setExam(new Exam());
+                ExamDTO examDto = examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId());
+                if (examDto == null) {
+                    log.warn("Exam not found. Personal exam: " + personalExam.getExamAssigneeId());
+                    continue;
+                }
+                analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
+                analytic.setStudent(personalExam.getStudent());
+                analytic.setPersonalExam(personalExam);
+                analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
+                analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
+                updateAnalytic(analytic);
+                analytics.add(analytic);
+            }
+            log.info("Migration of discipline #" + disciplineId + ". Personal Exam data updated");
+            log.info("Migration of discipline #" + disciplineId + " finished");
+        } catch (Exception e) {
+            log.error("Migration of discipline #" + disciplineId + " failed", e);
         }
-        return analytics;
     }
 
     public List<AnalyticsDTO> checkOrCreate(long examId, long disciplineId, long groupId) {
@@ -169,7 +174,7 @@ public class AnalyticsService extends AbstractService {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
             dto.setGrade(analytics.getGrade().getGrade());
             dto.setTimeSpent(analytics.getGrade().getTimeSpent());
-            dto.setStartDate(analytics.getPersonalExam().getStartedDate());
+            dto.setStartDate(analytics.getStartDate());
         }
         analyticsConnector.save(dto);
     }
