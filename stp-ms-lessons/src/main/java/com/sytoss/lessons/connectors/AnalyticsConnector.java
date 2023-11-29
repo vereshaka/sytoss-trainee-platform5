@@ -38,7 +38,11 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
     @Query("SELECT new com.sytoss.lessons.dto.AnalyticsAverageDTO(a.studentId, AVG(a.grade), AVG(a.timeSpent),  row_number() over (order by AVG(a.grade) desc , AVG(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.studentId in :studentIds and a.examId = :examId group by a.studentId order by 2 desc, 3 asc")
     List<AnalyticsAverageDTO> getStudentRatingsByDisciplineAndGroupIdAndExamId(Long disciplineId, @Param("studentIds") List<Long> studentsIds, Long examId);
 
-    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeDTO(max(a.grade), min(a.timeSpent), avg(a.grade), cast(avg(a.timeSpent) as Long)) " +
+    @Query("SELECT new com.sytoss.lessons.dto.SummaryGradeDTO(" +
+            "COALESCE(max(a.grade),0), " +
+            "COALESCE(min(a.timeSpent),0), " +
+            "COALESCE(avg(a.grade),0), " +
+            "cast(COALESCE(avg(a.timeSpent),0) as Long)) " +
             "from ANALYTICS a " +
             "where a.disciplineId = :disciplineId " +
             "and a.studentId = :studentId " +
