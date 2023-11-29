@@ -109,4 +109,30 @@ public class TaskThen extends LessonsIntegrationTest {
     public void taskShouldBeDeleted() {
 
     }
+
+    @Then("task conditions should be")
+    public void taskConditionsShouldBe(DataTable conditionsDataTable) {
+        List<TaskCondition> taskConditionsFromResponse = getTestExecutionContext().getDetails().getTaskConditions();
+        List<Map<String, String>> conditionsMaps = conditionsDataTable.asMaps();
+        List<TaskCondition> taskConditions = new ArrayList<>();
+        for (Map<String, String> conditionMap : conditionsMaps) {
+            TaskCondition taskCondition = new TaskCondition();
+            taskCondition.setValue(conditionMap.get("value"));
+            taskCondition.setType(ConditionType.valueOf(conditionMap.get("type")));
+            taskConditions.add(taskCondition);
+        }
+        for (TaskCondition taskCondition : taskConditions) {
+            for (TaskCondition taskConditionFromResponse : taskConditionsFromResponse) {
+                assertEquals(taskCondition.getValue(), taskConditionFromResponse.getValue());
+                assertEquals(taskCondition.getType(), taskConditionFromResponse.getType());
+                taskConditionsFromResponse.remove(taskConditionFromResponse);
+                break;
+            }
+        }
+    }
+    @Then("^required command should be \"(.*)\"$")
+    public void requiredCommandShouldBe(String requiredCommandEtalon) {
+        String requiredCommand = ((Task) getTestExecutionContext().getResponse().getBody()).getRequiredCommand();
+        assertEquals(requiredCommandEtalon,requiredCommand);
+    }
 }

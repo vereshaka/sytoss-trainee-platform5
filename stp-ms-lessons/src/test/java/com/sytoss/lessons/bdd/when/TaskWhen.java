@@ -178,4 +178,34 @@ public class TaskWhen extends LessonsIntegrationTest {
         ResponseEntity<Task> responseEntity = doPut(url, httpEntity, Task.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
+
+
+    @When("^system create task with a question \"(.*)\" and required command \"(.*)\"$")
+    public void requestSendCreateTaskWithRequiredCommand(String question,String requiredCommand) {
+        String url = "/api/task";
+        Task task = new Task();
+        task.setQuestion(question);
+        TaskDomain taskDomain = new TaskDomain();
+        taskDomain.setId(getTestExecutionContext().getDetails().getTaskDomainId());
+        task.setTaskDomain(taskDomain);
+        Topic topic = new Topic();
+        topic.setId(getTestExecutionContext().getDetails().getTopicId());
+        Discipline discipline = new Discipline();
+        discipline.setId(getTestExecutionContext().getDetails().getDisciplineId());
+        Teacher teacher = new Teacher();
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+        discipline.setTeacher(teacher);
+        topic.setDiscipline(discipline);
+        task.setTopics(List.of(topic));
+        task.setRequiredCommand(requiredCommand);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
+        if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
+            ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
+            getTestExecutionContext().setResponse(responseEntity);
+        } else {
+            ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+            getTestExecutionContext().setResponse(responseEntity);
+        }
+    }
 }

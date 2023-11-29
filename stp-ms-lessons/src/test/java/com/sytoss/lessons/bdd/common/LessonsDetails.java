@@ -1,6 +1,7 @@
 package com.sytoss.lessons.bdd.common;
 
 import com.sytoss.domain.bom.analytics.Analytics;
+import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.lessons.dto.TaskDomainDTO;
@@ -26,4 +27,5 @@ public class LessonsDetails {
     private List<PersonalExam> personalExams = new ArrayList<>();
     private CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
     private Analytics analytics;
+    private List<TaskCondition> taskConditions = new ArrayList<>();
 }

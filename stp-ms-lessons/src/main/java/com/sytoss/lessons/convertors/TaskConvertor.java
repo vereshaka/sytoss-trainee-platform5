@@ -46,12 +46,7 @@ public class TaskConvertor {
             });
             destination.setTaskConditions(taskConditionList);
 
-            taskConditionList.forEach(el -> {
-                if (el.getType().equals(ConditionType.NOT_CONTAINS)) {
-                    el.setValue("!" + el.getValue());
-                }
-            });
-            destination.setRequiredCommand(String.join(",", taskConditionList.stream().map(TaskCondition::getValue).toList()));
+            destination.setRequiredCommand("");
         }
 
         if (source.getTopics() != null) {
