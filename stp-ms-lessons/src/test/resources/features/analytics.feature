@@ -80,9 +80,13 @@ Feature: Analytics
     And analytics elements should be
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
       | *d1          | *ex1   | *ea1           | *pe1           | 6     | 30-11-2023T11:55:00 | 1         | *g1     |
-      | *d1          | *ex2   | *ea2           | *pe2           | 7     | 30-11-2023T11:55:00 | 2         | *g2     |
       | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex1   | *ea1           |                |       |                     | 2         | *g2     |
+      | *d1          | *ex1   | *ea1           |                |       |                     | 4         | *g2     |
+      | *d1          | *ex2   | *ea2           | *pe2           | 7     | 30-11-2023T11:55:00 | 2         | *g2     |
       | *d1          | *ex2   | *ea2           | *pe4           | 20    | 30-11-2023T11:55:00 | 4         | *g2     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |
 
   Scenario: get ratings by id
     Given analytics elements exist

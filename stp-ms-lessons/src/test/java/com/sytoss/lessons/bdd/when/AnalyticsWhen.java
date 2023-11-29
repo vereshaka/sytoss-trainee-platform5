@@ -35,6 +35,7 @@ public class AnalyticsWhen extends AbstractGiven {
     @When("^teacher makes a migration for discipline (.*)$")
     public void teacherMakesAMigration(String disciplineStringId) {
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(disciplineStringId).toString());
+        getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
         String url = "/api/analytics/migrate/" + disciplineId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
