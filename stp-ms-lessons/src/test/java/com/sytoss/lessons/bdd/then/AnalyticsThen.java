@@ -13,6 +13,7 @@ import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
 import com.sytoss.lessons.controllers.viewModel.ExamSummary;
 import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
+import com.sytoss.lessons.dto.AnalyticsDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
@@ -64,7 +65,7 @@ public class AnalyticsThen extends AbstractGiven {
 
     @Then("analytics elements should be")
     public void analyticsShouldBe(DataTable dataTable) throws ParseException {
-        List<Analytics> analyticsElementsFromResponse = (List<Analytics>) getTestExecutionContext().getResponse().getBody();
+        List<AnalyticsDTO> result = getAnalyticsConnector().findAllByDisciplineId(getTestExecutionContext().getDetails().getDisciplineId());
         List<Map<String, String>> analyticsMapList = dataTable.asMaps();
         List<Analytics> analyticsElementList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
@@ -105,17 +106,17 @@ public class AnalyticsThen extends AbstractGiven {
             analytics.setGrade(grade);
             analyticsElementList.add(analytics);
         }
-        assertEquals(analyticsElementList.size(), analyticsElementsFromResponse.size());
+        assertEquals(analyticsElementList.size(), result.size());
         for (Analytics analyticsElementFromFeature : analyticsElementList) {
-            for (Analytics analyticsElementFromResponse : analyticsElementsFromResponse) {
-                assertEquals(analyticsElementFromFeature.getDiscipline().getId(), analyticsElementFromResponse.getDiscipline().getId());
-                assertEquals(analyticsElementFromFeature.getExam().getId(), analyticsElementFromResponse.getExam().getId());
-                assertEquals(analyticsElementFromFeature.getStudent().getId(), analyticsElementFromResponse.getStudent().getId());
-                assertEquals(analyticsElementFromFeature.getPersonalExam().getId(), analyticsElementFromResponse.getPersonalExam().getId());
-                assertEquals(analyticsElementFromFeature.getGrade().getGrade(), analyticsElementFromResponse.getGrade().getGrade());
-                assertEquals(analyticsElementFromFeature.getGrade().getTimeSpent(), analyticsElementFromResponse.getGrade().getTimeSpent());
-                assertEquals(analyticsElementFromFeature.getStartDate(), analyticsElementFromResponse.getStartDate());
-                analyticsElementsFromResponse.remove(analyticsElementFromResponse);
+            for (AnalyticsDTO dto : result) {
+                assertEquals(analyticsElementFromFeature.getDiscipline().getId(), dto.getDisciplineId());
+                assertEquals(analyticsElementFromFeature.getExam().getId(), dto.getExamId());
+                assertEquals(analyticsElementFromFeature.getStudent().getId(), dto.getStudentId());
+                assertEquals(analyticsElementFromFeature.getPersonalExam().getId(), dto.getPersonalExamId());
+                assertEquals(analyticsElementFromFeature.getGrade().getGrade(), dto.getGrade());
+                assertEquals(analyticsElementFromFeature.getGrade().getTimeSpent(), dto.getTimeSpent());
+                assertEquals(analyticsElementFromFeature.getStartDate(), dto.getStartDate());
+                result.remove(dto);
                 break;
             }
         }
