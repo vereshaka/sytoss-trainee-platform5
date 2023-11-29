@@ -241,6 +241,13 @@ public class AnalyticsService extends AbstractService {
         return getStudentAnalyticsByStudentId(disciplineId, studentId);
     }
 
+    public DisciplineSummary getDisciplineSummaryByGroupForStudent(Long disciplineId) {
+
+        Student student = (Student) getCurrentUser();
+
+        return getDisciplineSummaryByGroup(disciplineId, student.getPrimaryGroup().getId());
+    }
+
     public StudentDisciplineStatistic getStudentAnalyticsByStudentId(Long disciplineId, Long studentId) {
 
         StudentDisciplineStatistic analyticFull = createStudentDisciplineStatistic(disciplineId, studentId);
@@ -347,5 +354,4 @@ public class AnalyticsService extends AbstractService {
 
         return studentDisciplineStatistic;
     }
-
 }
