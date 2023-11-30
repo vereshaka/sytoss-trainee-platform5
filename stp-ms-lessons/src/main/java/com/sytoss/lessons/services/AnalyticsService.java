@@ -9,6 +9,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -138,7 +139,9 @@ public class AnalyticsService extends AbstractService {
                 }
                 analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
                 analytic.setStudent(personalExam.getStudent());
-                analytic.setPersonalExam(personalExam);
+                if(!personalExam.getStatus().equals(PersonalExamStatus.NOT_STARTED) && !personalExam.getStatus().equals(PersonalExamStatus.IN_PROGRESS)){
+                    analytic.setPersonalExam(personalExam);
+                }
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
                 updateAnalytic(analytic);
@@ -168,9 +171,9 @@ public class AnalyticsService extends AbstractService {
             dto.setStudentId(analytics.getStudent().getId());
         }
         AnalyticGrade grade = analytics.getGrade();
-        if (dto.getPersonalExamId() == null
+        if (analytics.getPersonalExam()!=null && (dto.getPersonalExamId() == null
                 || grade.getGrade() > dto.getGrade()
-                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
+                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent()))) {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
             dto.setGrade(analytics.getGrade().getGrade());
             dto.setTimeSpent(analytics.getGrade().getTimeSpent());

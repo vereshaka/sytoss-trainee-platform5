@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.Answer;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -129,6 +130,16 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
             if (startDate != null) {
                 personalExam.setStartedDate(sdf.parse(startDate));
             }
+
+            String personalExamStatus = personalExamMap.get("status");
+            if(personalExamStatus.equals(PersonalExamStatus.IN_PROGRESS.toString())){
+                personalExam.start();
+            }else if(personalExamStatus.equals(PersonalExamStatus.FINISHED.toString())){
+                personalExam.finish();
+            }else if(personalExamStatus.equals(PersonalExamStatus.REVIEWED.toString())){
+                personalExam.review();
+            }
+
 
             personalExams.add(personalExam);
             if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {

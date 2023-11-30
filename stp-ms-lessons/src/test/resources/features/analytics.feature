@@ -68,23 +68,23 @@ Feature: Analytics
       | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
       | *d1          | *ex1   | *ea2           | *pe4           | 8     | 30-11-2023T11:55:00 | 4         | *g1     |
     And personal exams for migration exist
-      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           |
-      | *pe1           | *d1          | *ea1           | 1         | *g1     | 6            | 30-11-2023T11:55:00 |
-      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 |
-      | *pe3           | *d1          | *ea1           | 3         | *g1     | 11           | 30-11-2023T11:55:00 |
-      | *pe4           | *d1          | *ea2           | 4         | *g2     | 20           | 30-11-2023T11:55:00 |
-      | *pe5           | *d2          | *ea3           | 4         | *g3     | 21           | 30-11-2023T11:55:00 |
-      | *pe6           | *d2          | *ea3           | 5         | *g3     | 11           | 30-11-2023T11:55:00 |
+      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           | status      |
+      | *pe1           | *d1          | *ea1           | 1         | *g1     | 0            | 30-11-2023T11:55:00 | NOT_STARTED |
+      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 | FINISHED    |
+      | *pe3           | *d1          | *ea1           | 3         | *g1     | 11           | 30-11-2023T11:55:00 | FINISHED    |
+      | *pe4           | *d1          | *ea2           | 4         | *g2     | 0            | 30-11-2023T11:55:00 | IN_PROGRESS |
+      | *pe5           | *d2          | *ea3           | 4         | *g3     | 21           | 30-11-2023T11:55:00 | FINISHED    |
+      | *pe6           | *d2          | *ea3           | 5         | *g3     | 11           | 30-11-2023T11:55:00 | REVIEWED    |
     When teacher makes a migration for discipline *d1
     Then operation is successful
     And analytics elements should be
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
-      | *d1          | *ex1   | *ea1           | *pe1           | 6     | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex1   | *ea1           |                |       |                     | 1         | *g1     |
       | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
       | *d1          | *ex1   | *ea1           |                |       |                     | 2         | *g2     |
       | *d1          | *ex1   | *ea1           |                |       |                     | 4         | *g2     |
       | *d1          | *ex2   | *ea2           | *pe2           | 7     | 30-11-2023T11:55:00 | 2         | *g2     |
-      | *d1          | *ex2   | *ea2           | *pe4           | 20    | 30-11-2023T11:55:00 | 4         | *g2     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 4         | *g2     |
       | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
       | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |
 
@@ -215,3 +215,18 @@ Feature: Analytics
       | *ex12   | 3         | 2                      | 1                           | 3                  | 1                       |
       | *ex13   | 6         | 5.5                    | 4                           | 6                  | 4                       |
       | *ex14   | 15        | 13.5                   | 5                           | 15                 | 5                       |
+
+  Scenario: get ratings by id when personal exam id is null
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
+      | *d1          | *ex2   | 1         | *pe2           | 5     | 3         | *ea2           |
+      | *d1          | *ex1   | 3         |                | 0     | 0         | *ea1           |
+      | *d1          | *ex2   | 4         | *pe3           | 6     | 2         | *ea2           |
+    When teacher gets ratings by discipline *d1, by exam null and by group null
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 4         | 6        | 2            | 1    |
+      | 1         | 5.5      | 2            | 2    |
+

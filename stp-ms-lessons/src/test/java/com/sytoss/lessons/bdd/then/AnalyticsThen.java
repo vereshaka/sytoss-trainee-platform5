@@ -92,9 +92,14 @@ public class AnalyticsThen extends AbstractGiven {
             AnalyticGrade grade = new AnalyticGrade();
             if (analyticsMap.get("grade") != null) {
                 grade.setGrade(Double.parseDouble(analyticsMap.get("grade").trim()));
+            }else{
+                grade.setGrade(0);
             }
             if (analyticsMap.get("timeSpent") != null) {
                 grade.setTimeSpent(Long.parseLong(analyticsMap.get("timeSpent").trim()));
+            }
+            else{
+                grade.setTimeSpent(0L);
             }
             if (analyticsMap.get("startDate") != null) {
                 analytics.setStartDate(sdf.parse(analyticsMap.get("startDate").trim()));
@@ -104,15 +109,13 @@ public class AnalyticsThen extends AbstractGiven {
         }
         assertEquals(analyticsElementList.size(), result.size());
         for (Analytics analyticsElementFromFeature : analyticsElementList) {
-            List<AnalyticsDTO> filterResult = result.stream().filter(dto -> {
-                return Objects.equals(analyticsElementFromFeature.getDiscipline().getId(), dto.getDisciplineId()) &&
-                        Objects.equals(analyticsElementFromFeature.getExam().getId(), dto.getExamId()) &&
-                        Objects.equals(analyticsElementFromFeature.getStudent().getId(), dto.getStudentId()) &&
-                        Objects.equals(analyticsElementFromFeature.getPersonalExam().getId(), dto.getPersonalExamId()) &&
-                        Objects.equals(analyticsElementFromFeature.getGrade().getGrade(), dto.getGrade()) &&
-                        Objects.equals(analyticsElementFromFeature.getGrade().getTimeSpent(), dto.getTimeSpent()) &&
-                        Objects.equals(analyticsElementFromFeature.getStartDate(), dto.getStartDate());
-            }).toList();
+            List<AnalyticsDTO> filterResult = result.stream().filter(dto -> Objects.equals(analyticsElementFromFeature.getDiscipline().getId(), dto.getDisciplineId()) &&
+                    Objects.equals(analyticsElementFromFeature.getExam().getId(), dto.getExamId()) &&
+                    Objects.equals(analyticsElementFromFeature.getStudent().getId(), dto.getStudentId()) &&
+                    Objects.equals(analyticsElementFromFeature.getPersonalExam().getId(), dto.getPersonalExamId()) &&
+                    Objects.equals(analyticsElementFromFeature.getGrade().getGrade(), dto.getGrade()) &&
+                    Objects.equals(analyticsElementFromFeature.getGrade().getTimeSpent(), dto.getTimeSpent()) &&
+                    Objects.equals(analyticsElementFromFeature.getStartDate(), dto.getStartDate())).toList();
             assertEquals(1, filterResult.size(), "Item# " + (analyticsElementList.size() - result.size()));
             result.remove(filterResult.get(0));
         }
@@ -121,6 +124,7 @@ public class AnalyticsThen extends AbstractGiven {
     @Then("ratings should be")
     public void ratingModelsShouldBe(List<Rating> ratings) {
         List<Rating> ratingsListFromResponse = (List<Rating>) getTestExecutionContext().getResponse().getBody();
+        assertEquals(ratings.size(),ratingsListFromResponse.size());
         for (Rating rating : ratings) {
             for (Rating ratingFromResponse : ratingsListFromResponse) {
                 assertEquals(rating.getStudent().getId(), ratingFromResponse.getStudent().getId());
