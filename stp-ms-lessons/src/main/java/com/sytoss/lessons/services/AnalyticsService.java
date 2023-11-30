@@ -9,6 +9,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -141,7 +142,9 @@ public class AnalyticsService extends AbstractService {
                 analytic.setPersonalExam(personalExam);
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
-                updateAnalytic(analytic);
+                if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                    updateAnalytic(analytic);
+                }
                 analytics.add(analytic);
             }
             log.info("Migration of discipline #" + disciplineId + ". Personal Exam data updated");
