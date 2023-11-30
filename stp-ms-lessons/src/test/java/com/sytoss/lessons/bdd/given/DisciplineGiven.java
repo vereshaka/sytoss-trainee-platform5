@@ -228,4 +228,20 @@ public class DisciplineGiven extends AbstractGiven {
             }
         }
     }
+
+    @Given("^disciplines with specific id exist$")
+    public void disciplinesWithSpecificIdExist(DataTable dataTable) {
+        List<Map<String,String>> disciplines = dataTable.asMaps();
+        for(Map<String,String> discipline : disciplines){
+            String disciplineKey = getTestExecutionContext().replaceId(discipline.get("id")).toString();
+            if(Objects.equals(disciplineKey, getTestExecutionContext().replaceId(discipline.get("id")).toString())){
+                DisciplineDTO disciplineDTO = new DisciplineDTO();
+                disciplineDTO.setName(discipline.get("name"));
+                disciplineDTO.setTeacherId(1L);
+                disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+                disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+                getTestExecutionContext().registerId(disciplineKey,disciplineDTO.getId());
+            }
+        }
+    }
 }

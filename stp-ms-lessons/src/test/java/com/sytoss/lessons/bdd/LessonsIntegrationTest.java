@@ -95,7 +95,7 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     private DataSource dataSource;
 
     @Autowired
-    private AnalyticsConnector analyticsConnector;
+    private TestAnalyticsConnector analyticsConnector;
 
     @Autowired
     private AnalyticsConvertor analyticsConvertor;

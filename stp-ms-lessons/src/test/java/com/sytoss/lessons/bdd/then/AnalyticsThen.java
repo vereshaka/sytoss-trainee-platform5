@@ -9,18 +9,17 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
+import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
+import com.sytoss.lessons.controllers.viewModel.ExamSummary;
 import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
 import com.sytoss.lessons.controllers.viewModel.StudentTestExecutionSummary;
+import com.sytoss.lessons.dto.AnalyticsDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,7 +61,7 @@ public class AnalyticsThen extends AbstractGiven {
 
     @Then("analytics elements should be")
     public void analyticsShouldBe(DataTable dataTable) throws ParseException {
-        List<Analytics> analyticsElementsFromResponse = (List<Analytics>) getTestExecutionContext().getResponse().getBody();
+        List<AnalyticsDTO> result = getAnalyticsConnector().findAllByDisciplineId(getTestExecutionContext().getDetails().getDisciplineId());
         List<Map<String, String>> analyticsMapList = dataTable.asMaps();
         List<Analytics> analyticsElementList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
@@ -71,7 +70,7 @@ public class AnalyticsThen extends AbstractGiven {
             Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("disciplineId").trim()).toString());
             Long examId = Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("examId").trim()).toString());
             Long studentId = Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("studentId").trim()).toString());
-            String personalExamId = analyticsMap.get("personalExamId").trim().replace("*", "");
+            String personalExamId = analyticsMap.get("personalExamId") == null ? null : analyticsMap.get("personalExamId").trim().replace("*", "");
             Exam exam = new Exam();
             exam.setId(examId);
             analytics.setExam(exam);
@@ -103,19 +102,19 @@ public class AnalyticsThen extends AbstractGiven {
             analytics.setGrade(grade);
             analyticsElementList.add(analytics);
         }
-        assertEquals(analyticsElementList.size(), analyticsElementsFromResponse.size());
+        assertEquals(analyticsElementList.size(), result.size());
         for (Analytics analyticsElementFromFeature : analyticsElementList) {
-            for (Analytics analyticsElementFromResponse : analyticsElementsFromResponse) {
-                assertEquals(analyticsElementFromFeature.getDiscipline().getId(), analyticsElementFromResponse.getDiscipline().getId());
-                assertEquals(analyticsElementFromFeature.getExam().getId(), analyticsElementFromResponse.getExam().getId());
-                assertEquals(analyticsElementFromFeature.getStudent().getId(), analyticsElementFromResponse.getStudent().getId());
-                assertEquals(analyticsElementFromFeature.getPersonalExam().getId(), analyticsElementFromResponse.getPersonalExam().getId());
-                assertEquals(analyticsElementFromFeature.getGrade().getGrade(), analyticsElementFromResponse.getGrade().getGrade());
-                assertEquals(analyticsElementFromFeature.getGrade().getTimeSpent(), analyticsElementFromResponse.getGrade().getTimeSpent());
-                assertEquals(analyticsElementFromFeature.getStartDate(), analyticsElementFromResponse.getStartDate());
-                analyticsElementsFromResponse.remove(analyticsElementFromResponse);
-                break;
-            }
+            List<AnalyticsDTO> filterResult = result.stream().filter(dto -> {
+                return Objects.equals(analyticsElementFromFeature.getDiscipline().getId(), dto.getDisciplineId()) &&
+                        Objects.equals(analyticsElementFromFeature.getExam().getId(), dto.getExamId()) &&
+                        Objects.equals(analyticsElementFromFeature.getStudent().getId(), dto.getStudentId()) &&
+                        Objects.equals(analyticsElementFromFeature.getPersonalExam().getId(), dto.getPersonalExamId()) &&
+                        Objects.equals(analyticsElementFromFeature.getGrade().getGrade(), dto.getGrade()) &&
+                        Objects.equals(analyticsElementFromFeature.getGrade().getTimeSpent(), dto.getTimeSpent()) &&
+                        Objects.equals(analyticsElementFromFeature.getStartDate(), dto.getStartDate());
+            }).toList();
+            assertEquals(1, filterResult.size(), "Item# " + (analyticsElementList.size() - result.size()));
+            result.remove(filterResult.get(0));
         }
     }
 
@@ -167,4 +166,34 @@ public class AnalyticsThen extends AbstractGiven {
         }
     }
 
+    @Then("discipline summary should has values")
+    public void disciplineSummaryShouldHasValues(DisciplineSummary expectedDisciplineSummary) {
+        DisciplineSummary disciplineSummary = (DisciplineSummary) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineSummary != null;
+
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getMax().getGrade(), disciplineSummary.getStudentsGrade().getMax().getGrade());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getMax().getTimeSpent(), disciplineSummary.getStudentsGrade().getMax().getTimeSpent());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getAverage().getGrade(), disciplineSummary.getStudentsGrade().getAverage().getGrade());
+        assertEquals(expectedDisciplineSummary.getStudentsGrade().getAverage().getTimeSpent(), disciplineSummary.getStudentsGrade().getAverage().getTimeSpent());
+    }
+
+    @Then("exam summaries should be")
+    public void examSummariesShouldBe(List<ExamSummary> expectedExamSummaries) {
+        DisciplineSummary disciplineSummary = (DisciplineSummary) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineSummary != null;
+
+        for (ExamSummary expectedExamSummary : expectedExamSummaries) {
+            Optional<ExamSummary> examSummary = disciplineSummary.getTests().stream().filter(test ->
+                            test.getExam().getId().equals(expectedExamSummary.getExam().getId())
+                                    && test.getStudentsGrade().getMax().getGrade() == expectedExamSummary.getStudentsGrade().getMax().getGrade()
+                                    && test.getStudentsGrade().getMax().getTimeSpent() == expectedExamSummary.getStudentsGrade().getMax().getTimeSpent()
+                                    && test.getStudentsGrade().getAverage().getGrade() == expectedExamSummary.getStudentsGrade().getAverage().getGrade()
+                                    && test.getStudentsGrade().getAverage().getTimeSpent() == expectedExamSummary.getStudentsGrade().getAverage().getTimeSpent()
+                    )
+                    .findFirst();
+            assertTrue(examSummary.isPresent());
+        }
+    }
 }

@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -20,6 +22,8 @@ public class TestProducerDetails {
 
     private ResponseEntity<PersonalExam> personalExamResponse;
 
+    private ResponseEntity<List<PersonalExam>> responseEntity;
+
     private Long studentId;
 
     private String studentUid;
@@ -28,4 +32,6 @@ public class TestProducerDetails {
     @Getter
     @Setter
     private Map<String, String> taskMapping = new HashMap<>();
+
+    private List<PersonalExam> personalExams = new ArrayList<>();
 }

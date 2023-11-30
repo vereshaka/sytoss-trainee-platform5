@@ -1,7 +1,7 @@
 Feature: Answer
 
   Background:
-    Given student "John" "Do" with "student@domain.com" email exists
+    Given Student "John" "Do" with "student@domain.com" email exists
 
   Scenario: student answers on task
     Given this student has personal exam with id *1 with 60 max grade and sum of coef 30 exist

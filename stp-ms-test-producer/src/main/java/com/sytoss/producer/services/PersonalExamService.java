@@ -483,10 +483,16 @@ public class PersonalExamService extends AbstractService {
         screenshotConnector.save(screenshotModel);
     }
 
-    public List<PersonalExam> getListOfStudentsPersonalExam(List<Student> students) {
+    public List<PersonalExam> getListOfStudentsPersonalExam(Long disciplineId, List<Long> examAssignees, List<Student> students) {
         List<PersonalExam> personalExams = new ArrayList<>();
         for(Student student : students){
-            personalExams.addAll(personalExamConnector.getAllByStudent_Id(student.getId()));
+            List<PersonalExam> personalExamsByStudent = personalExamConnector.getAllByStudent_Id(student.getId());
+            for(PersonalExam personalExam : personalExamsByStudent){
+                if(personalExam.getDiscipline()!=null && Objects.equals(personalExam.getDiscipline().getId(), disciplineId)
+                        && examAssignees.contains(personalExam.getExamAssigneeId())){
+                    personalExams.add(personalExam);
+                }
+            }
         }
         return personalExams;
     }

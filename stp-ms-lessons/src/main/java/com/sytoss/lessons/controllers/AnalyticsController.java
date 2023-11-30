@@ -34,14 +34,23 @@ public class AnalyticsController {
         analyticsService.updateAnalytic(analytics);
     }
 
+    @Operation(description = "Method that migrate old tests to analytics elements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/migrate/all")
+    public void migrateAll() {
+        analyticsService.migrateAll();
+    }
+
     @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that migrate old tests to analytics elements")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @PostMapping("/migrate/{disciplineId}")
-    public List<Analytics> migrate(@PathVariable Long disciplineId) {
-        return analyticsService.migrate(disciplineId);
+    @GetMapping("/migrate/{disciplineId}")
+    public void migrate(@PathVariable Long disciplineId) {
+        analyticsService.migrate(disciplineId);
     }
 
     @Operation(description = "Method that retrieves analytics elements by discipline id, group id, exam id")
@@ -62,32 +71,34 @@ public class AnalyticsController {
         return analyticsService.getAnalyticsElementsByDisciplineGroupExam(disciplineId, groupId, examId);
     }
 
-    @Operation(description = "Method that migrate old tests to analytics elements")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @PostMapping("/migrate/all")
-    public void migrateAll() {
-        analyticsService.migrateAll();
-    }
-
     @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method returns analytics for teacher about certain student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/discipline/{disciplineId}/student/{studentId}")
-    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId, @PathVariable Long studentId){
+    public StudentDisciplineStatistic getStudentAnalyticsForTeacher(@PathVariable Long disciplineId, @PathVariable Long studentId){
         return analyticsService.getStudentAnalyticsByStudentId(disciplineId, studentId);
     }
 
+    @PreAuthorize("hasRole('Student')")
     @Operation(description = "Method returns analytics for currently logged student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/discipline/{disciplineId}/student")
-    public StudentDisciplineStatistic getStudentAnalytics(@PathVariable Long disciplineId){
+    public StudentDisciplineStatistic getStudentAnalyticsForStudent(@PathVariable Long disciplineId){
         return analyticsService.getStudentAnalyticsByLoggedStudent(disciplineId);
+    }
+
+    @PreAuthorize("hasRole('Student')")
+    @Operation(description = "Method returns statistics for currently logged student by group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/student/group/primary")
+    public DisciplineSummary getStudentAnalyticsByGroup(@PathVariable Long disciplineId){
+        return analyticsService.getDisciplineSummaryByGroupForStudent(disciplineId);
     }
 
     @Operation(description = "Method returns summary for discipline")
@@ -97,6 +108,16 @@ public class AnalyticsController {
     @GetMapping("/discipline/{disciplineId}/summary")
     public DisciplineSummary getDisciplineSummary(@PathVariable Long disciplineId){
         return analyticsService.getDisciplineSummary(disciplineId);
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method returns summary for discipline by certain group")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/discipline/{disciplineId}/summary/group/{groupId}")
+    public DisciplineSummary getDisciplineSummaryByGroup(@PathVariable Long disciplineId, @PathVariable Long groupId){
+        return analyticsService.getDisciplineSummaryByGroup(disciplineId, groupId);
     }
 
 }

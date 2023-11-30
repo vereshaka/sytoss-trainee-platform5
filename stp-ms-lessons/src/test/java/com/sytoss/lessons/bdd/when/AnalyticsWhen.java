@@ -35,10 +35,11 @@ public class AnalyticsWhen extends AbstractGiven {
     @When("^teacher makes a migration for discipline (.*)$")
     public void teacherMakesAMigration(String disciplineStringId) {
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(disciplineStringId).toString());
+        getTestExecutionContext().getDetails().setDisciplineId(disciplineId);
         String url = "/api/analytics/migrate/" + disciplineId;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Analytics>> responseEntity = doPost(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<Void> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -62,7 +63,7 @@ public class AnalyticsWhen extends AbstractGiven {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("^teacher requests analytics for discipline (.*) and student (.*)")
+    @When("^teacher requests analytics for discipline (.*) and student (.*)$")
     public void teacherRequestsAnalyticsForDisciplineAndStudent(String scenarioDisciplineId, String studentId){
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarioDisciplineId).toString());
         String url = "/api/analytics/discipline/" + disciplineId + "/student/" + studentId;
@@ -72,8 +73,8 @@ public class AnalyticsWhen extends AbstractGiven {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("^teacher requests discipline summary for discipline (.*)")
-    public void teacherDequestsDisciplineSummaryForDiscipline(String scenarioDisciplineId){
+    @When("^teacher requests discipline summary for discipline (.*)$")
+    public void teacherRequestsDisciplineSummaryForDiscipline(String scenarioDisciplineId){
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarioDisciplineId).toString());
         String url = "/api/analytics/discipline/" + disciplineId + "/summary";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
@@ -81,4 +82,15 @@ public class AnalyticsWhen extends AbstractGiven {
         ResponseEntity<DisciplineSummary> responseEntity = doGet(url, httpEntity, DisciplineSummary.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
+
+    @When("^teacher requests discipline summary for group with id (.*) and discipline with id (.*)$")
+    public void teacherRequestsDisciplineSummaryForDisciplineAndGroup(String groupId, String scenarioDisciplineId){
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(scenarioDisciplineId).toString());
+        String url = "/api/analytics/discipline/" + disciplineId + "/summary/group/" + groupId;
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<DisciplineSummary> responseEntity = doGet(url, httpEntity, DisciplineSummary.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
 }
