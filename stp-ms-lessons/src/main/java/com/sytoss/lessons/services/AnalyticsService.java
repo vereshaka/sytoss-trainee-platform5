@@ -139,12 +139,12 @@ public class AnalyticsService extends AbstractService {
                 }
                 analytic.getExam().setId(examConnector.findByExamAssignees_Id(personalExam.getExamAssigneeId()).getId());
                 analytic.setStudent(personalExam.getStudent());
-                if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)){
-                    analytic.setPersonalExam(personalExam);
-                }
+                analytic.setPersonalExam(personalExam);
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
-                updateAnalytic(analytic);
+                if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                    updateAnalytic(analytic);
+                }
                 analytics.add(analytic);
             }
             log.info("Migration of discipline #" + disciplineId + ". Personal Exam data updated");
@@ -171,9 +171,9 @@ public class AnalyticsService extends AbstractService {
             dto.setStudentId(analytics.getStudent().getId());
         }
         AnalyticGrade grade = analytics.getGrade();
-        if (analytics.getPersonalExam()!=null && (dto.getPersonalExamId() == null
+        if (dto.getPersonalExamId() == null
                 || grade.getGrade() > dto.getGrade()
-                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent()))) {
+                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
             dto.setGrade(analytics.getGrade().getGrade());
             dto.setTimeSpent(analytics.getGrade().getTimeSpent());
