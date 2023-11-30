@@ -42,6 +42,8 @@ public class DatabaseHelperService {
 
     private Connection connection;
 
+    private final Random databaseGenerator = new Random();
+
     private Connection getConnection() {
         if (connection == null) {
             try {
@@ -87,11 +89,11 @@ public class DatabaseHelperService {
 
     private String generateDatabaseName() {
         int databaseNameLength = 30;
-        Random r = new Random();
+
         char letter;
         StringBuilder name = new StringBuilder();
         for (int i = 0; i < databaseNameLength; i++) {
-            letter = (char) (r.nextInt(26) + 'a');
+            letter = (char) (databaseGenerator.nextInt(26) + 'a');
             name.append(letter);
         }
         return name.toString();
