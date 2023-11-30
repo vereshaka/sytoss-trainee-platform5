@@ -24,13 +24,13 @@ Feature: Analytics
       | *d11         | *ex11  | 3         | *pe13          | 11    | *ea11          | 30-11-2023T11:55:00 |
       | *d11         | *ex11  | 4         | *pe14          | 8     | *ea11          | 30-11-2023T11:55:00 |
     And personal exams for migration exist
-      | personalExamId | examAssigneeId | studentId | summaryGrade | disciplineId | startDate           | examId |
-      | *pe11          | *ea11          | 1         | 6            | *d11         | 30-11-2023T11:55:00 | *ex11  |
-      | *pe12          | *ea11          | 2         | 7            | *d11         | 30-11-2023T11:55:00 | *ex11  |
-      | *pe13          | *ea11          | 3         | 11           | *d11         | 30-11-2023T11:55:00 | *ex11  |
-      | *pe14          | *ea11          | 4         | 20           | *d11         | 30-11-2023T11:55:00 | *ex11  |
-      | *pe15          | *ea11          | 5         | 21           | *d11         | 30-11-2023T11:55:00 | *ex11  |
-      | *pe16          | *ea12          | 5         | 11           | *d12         | 30-11-2023T11:55:00 | *ex12  |
+      | personalExamId | examAssigneeId | studentId | summaryGrade | disciplineId | startDate           | examId | status   |
+      | *pe11          | *ea11          | 1         | 6            | *d11         | 30-11-2023T11:55:00 | *ex11  | REVIEWED |
+      | *pe12          | *ea11          | 2         | 7            | *d11         | 30-11-2023T11:55:00 | *ex11  | REVIEWED |
+      | *pe13          | *ea11          | 3         | 11           | *d11         | 30-11-2023T11:55:00 | *ex11  | REVIEWED |
+      | *pe14          | *ea11          | 4         | 20           | *d11         | 30-11-2023T11:55:00 | *ex11  | REVIEWED |
+      | *pe15          | *ea11          | 5         | 21           | *d11         | 30-11-2023T11:55:00 | *ex11  | REVIEWED |
+      | *pe16          | *ea12          | 5         | 11           | *d12         | 30-11-2023T11:55:00 | *ex12  | REVIEWED |
     When teacher makes a migration for discipline *d11
     Then operation is successful
     And analytics elements should be
@@ -70,7 +70,7 @@ Feature: Analytics
     And personal exams for migration exist
       | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           | status      |
       | *pe1           | *d1          | *ea1           | 1         | *g1     | 0            | 30-11-2023T11:55:00 | NOT_STARTED |
-      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 | FINISHED    |
+      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 | REVIEWED    |
       | *pe3           | *d1          | *ea1           | 3         | *g1     | 11           | 30-11-2023T11:55:00 | FINISHED    |
       | *pe4           | *d1          | *ea2           | 4         | *g2     | 0            | 30-11-2023T11:55:00 | IN_PROGRESS |
       | *pe5           | *d2          | *ea3           | 4         | *g3     | 21           | 30-11-2023T11:55:00 | FINISHED    |
@@ -80,7 +80,7 @@ Feature: Analytics
     And analytics elements should be
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
       | *d1          | *ex1   | *ea1           |                |       |                     | 1         | *g1     |
-      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex1   | *ea1           |                |       |                     | 3         | *g1     |
       | *d1          | *ex1   | *ea1           |                |       |                     | 2         | *g2     |
       | *d1          | *ex1   | *ea1           |                |       |                     | 4         | *g2     |
       | *d1          | *ex2   | *ea2           | *pe2           | 7     | 30-11-2023T11:55:00 | 2         | *g2     |
