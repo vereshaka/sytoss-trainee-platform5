@@ -42,7 +42,7 @@ public class DatabaseHelperService {
 
     private Connection connection;
 
-    private final Random databaseGenerator = new Random();
+    private final static Random DATABASE_GENERATOR = new Random();
 
     private Connection getConnection() {
         if (connection == null) {
@@ -93,7 +93,7 @@ public class DatabaseHelperService {
         char letter;
         StringBuilder name = new StringBuilder();
         for (int i = 0; i < databaseNameLength; i++) {
-            letter = (char) (databaseGenerator.nextInt(26) + 'a');
+            letter = (char) (DATABASE_GENERATOR.nextInt(26) + 'a');
             name.append(letter);
         }
         return name.toString();
