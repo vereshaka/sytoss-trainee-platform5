@@ -127,7 +127,6 @@ public class AnalyticsService extends AbstractService {
             Discipline discipline = new Discipline();
             discipline.setId(disciplineId);
             for (PersonalExam personalExam : personalExams) {
-                personalExam.summary();
                 Analytics analytic = new Analytics();
                 analytic.setDiscipline(discipline);
                 analytic.setExam(new Exam());
@@ -142,6 +141,10 @@ public class AnalyticsService extends AbstractService {
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
                 if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                    double summaryGrade = personalExam.getSummaryGrade();
+                    if (summaryGrade == 0.0){
+                        personalExam.summary();
+                    }
                     updateAnalytic(analytic);
                 }
             }
