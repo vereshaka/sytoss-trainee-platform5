@@ -93,12 +93,16 @@ public class AnalyticsService extends AbstractService {
             List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
             List<Student> students = new ArrayList<>();
             for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
-                List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
-                studentsOfGroup.forEach(student -> {
-                    if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
-                        students.add(student);
-                    }
-                });
+                try {
+                    List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+                    studentsOfGroup.forEach(student -> {
+                        if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
+                            students.add(student);
+                        }
+                    });
+                } catch (Exception e) {
+                    log.error("Fail to load group info. GroupId: " + groupReferenceDTO.getGroupId(), e);
+                }
             }
             log.info("Migration of discipline #" + disciplineId + ". Loading of students finished");
             for (Student student : students) {
@@ -141,10 +145,7 @@ public class AnalyticsService extends AbstractService {
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
                 if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
-                    double summaryGrade = personalExam.getSummaryGrade();
-                    if (summaryGrade == 0.0){
-                        personalExam.summary();
-                    }
+                    personalExam.summary();
                     updateAnalytic(analytic);
                 }
             }
