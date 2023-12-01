@@ -90,7 +90,6 @@ public class AnalyticsService extends AbstractService {
         try {
             log.info("Migration of discipline #" + disciplineId + " started");
             log.info("Migration of discipline #" + disciplineId + ". Loading of students started");
-            //analyticsConnector.deleteAllByDisciplineId(disciplineId);
             List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
             List<Student> students = new ArrayList<>();
             for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
@@ -107,7 +106,6 @@ public class AnalyticsService extends AbstractService {
             }
             log.info("Migration of discipline #" + disciplineId + ". Old analytics for these students clear");
             List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
-            List<Analytics> analytics = new ArrayList<>();
 
             List<Long> examAssigneesIds = new ArrayList<>();
             for (ExamDTO examDTO : exams) {
@@ -129,6 +127,7 @@ public class AnalyticsService extends AbstractService {
             Discipline discipline = new Discipline();
             discipline.setId(disciplineId);
             for (PersonalExam personalExam : personalExams) {
+                personalExam.summary();
                 Analytics analytic = new Analytics();
                 analytic.setDiscipline(discipline);
                 analytic.setExam(new Exam());
@@ -145,7 +144,6 @@ public class AnalyticsService extends AbstractService {
                 if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
                     updateAnalytic(analytic);
                 }
-                analytics.add(analytic);
             }
             log.info("Migration of discipline #" + disciplineId + ". Personal Exam data updated");
             log.info("Migration of discipline #" + disciplineId + " finished");
@@ -172,6 +170,7 @@ public class AnalyticsService extends AbstractService {
         }
         AnalyticGrade grade = analytics.getGrade();
         if (dto.getPersonalExamId() == null
+                || (dto.getPersonalExamId().equals(analytics.getPersonalExam().getId()))
                 || grade.getGrade() > dto.getGrade()
                 || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
