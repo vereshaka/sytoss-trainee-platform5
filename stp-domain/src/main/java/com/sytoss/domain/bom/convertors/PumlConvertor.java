@@ -88,13 +88,9 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
-        if (tableName.startsWith("ble")) {
-            log.error("Im here!!");
-        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
 
         if (result == null) {
-            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
@@ -153,6 +149,15 @@ public class PumlConvertor {
         for (Column column : table.getColumns()) {
             String name = column.getName();
             String datatype = column.getDatatype();
+            if (datatype.equalsIgnoreCase("long")) {
+                datatype = "BIGINT";
+            }
+            if (datatype.startsWith("string")) {
+                datatype = datatype.replace("string", "varchar");
+                if (!datatype.contains("(")){
+                    datatype += "(1000)";
+                }
+            }
             StringBuilder constraintStringBuilder = null;
             if (column.isPrimary() || column.isNullable()) {
                 constraintStringBuilder = new StringBuilder();

@@ -36,7 +36,7 @@ public class QueryResultConvertor {
         }
 
         destination.setHeader(header);
-        source.beforeFirst();
+        //TODO: yevgenyv: hsqldb: source.beforeFirst();
 
         while (source.next()) {
             HashMap<String, Object> row = new HashMap<>();

@@ -4,11 +4,11 @@ import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +56,6 @@ class DatabaseHelperServiceTest extends StpUnitTest {
     void dropDatabase() {
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         databaseHelperService.dropDatabase();
-        Assertions.assertThrows(JdbcSQLSyntaxErrorException.class, () -> databaseHelperService.getExecuteQueryResult("select * from discipline",null));
+        Assertions.assertThrows(SQLSyntaxErrorException.class, () -> databaseHelperService.getExecuteQueryResult("select * from discipline",null));
     }
 }

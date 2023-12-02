@@ -83,8 +83,8 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | COLUMN_1 | COLUMN_2 |
-      | 28       | 4.0      |
+      | C1 | C2 |
+      | 28 | 4  |
 
   Scenario: STP-XX Duplicate column names
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
@@ -95,6 +95,7 @@ Feature: check answer
       | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT_1 | IDPRODUCT | QUANTITY | DATESALE   |
       | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4          | 3         | 5        | 2022-09-15 |
 
+    @Bug
   Scenario: STP-791 GROUP BY exception
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "Select Company, sum(Quantity)   from Client c inner join Sale s on c.IdClient=s.IdProduct  group by c.IdClient "

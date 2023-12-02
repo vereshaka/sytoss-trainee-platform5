@@ -8,26 +8,26 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   constraints:
                     primaryKey: true
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(1000)(100)
         - createTable:
             tableName: Topic
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   constraints:
                     primaryKey: true
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: discipline_id
-                  type: long
+                  type: BIGINT
             foreignKeyConstraints:
               - foreignKeyConstraint:
                   baseTableName: Topic
@@ -40,18 +40,18 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: BIGINT
                   constraints:
                     primaryKey: true
               - column:
                   name: question
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: answer
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: discipline_id
-                  type: long
+                  type: BIGINT
             foreignKeyConstraints:
               - foreignKeyConstraint:
                   baseTableName: Task
@@ -64,12 +64,12 @@ databaseChangeLog:
             columns:
               - column:
                   name: task_id
-                  type: long
+                  type: BIGINT
                   constraints:
                     primaryKey: true
               - column:
                   name: topic_id
-                  type: long
+                  type: BIGINT
                   constraints:
                     primaryKey: true
   - changeSet:

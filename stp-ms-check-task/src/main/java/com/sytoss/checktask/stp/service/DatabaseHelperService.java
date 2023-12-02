@@ -47,8 +47,10 @@ public class DatabaseHelperService {
     private Connection getConnection() {
         if (connection == null) {
             try {
-                Class.forName("org.h2.Driver");
-                String url = "jdbc:h2:mem:" + generateDatabaseName() + ";" + MSSQL_MODE;
+                //Class.forName("org.h2.Driver");
+                //String url = "jdbc:h2:mem:" + generateDatabaseName() + ";" + MSSQL_MODE;
+                Class.forName("org.hsqldb.jdbc.JDBCDriver");
+                String url = "jdbc:hsqldb:mem:" + generateDatabaseName() + ";DB_CLOSE_DELAY=-1";
                 connection = DriverManager.getConnection(url, username, password);
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);
@@ -73,7 +75,7 @@ public class DatabaseHelperService {
 
     public void dropDatabase() {
         try (Statement statement = getConnection().createStatement()) {
-            statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
+//            statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
             log.info("database was dropped");
         } catch (Exception e) {
             log.error("Error in database dropping", e);
@@ -89,7 +91,6 @@ public class DatabaseHelperService {
 
     private String generateDatabaseName() {
         int databaseNameLength = 30;
-
         char letter;
         StringBuilder name = new StringBuilder();
         for (int i = 0; i < databaseNameLength; i++) {

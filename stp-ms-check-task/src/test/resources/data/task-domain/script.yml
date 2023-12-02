@@ -8,54 +8,54 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(1000)
         - createTable:
             tableName: Topic
             columns:
               - column:
                   name: id
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: name
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: discipline_id
-                  type: long
+                  type: bigint
         - createTable:
             tableName: Task
             columns:
               - column:
                   name: id
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: question
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: answer
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: discipline_id
-                  type: long
+                  type: bigint
         - createTable:
             tableName: TopicToTask
             columns:
               - column:
                   name: task_id
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: topic_id
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
   - changeSet:
