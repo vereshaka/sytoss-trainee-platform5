@@ -41,8 +41,9 @@ public class QueryResultConvertor {
         while (source.next()) {
             HashMap<String, Object> row = new HashMap<>();
             for(int i = 1; i<=columns; i++){
-                String columnName = header.get(i-1);
-                row.put(columnName,source.getObject(i));
+                String columnName = header.get(i - 1);
+                Object value = source.getObject(i);
+                row.put(columnName, value == null ? "" : value);
             }
             destination.addValues(row);
         }

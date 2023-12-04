@@ -142,3 +142,10 @@ Feature: check answer
     """
     When request sent to check
     Then request should be processed successfully
+
+
+  Scenario: STP-975 GROUP BY grouping set
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is "Select idclient, idproduct, count(*) as cnt from sale group by grouping sets (idclient, idproduct) "
+    When request sent to check
+    Then request should be processed successfully
