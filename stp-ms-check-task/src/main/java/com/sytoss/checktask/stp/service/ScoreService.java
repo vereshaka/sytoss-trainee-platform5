@@ -57,10 +57,10 @@ public class ScoreService {
             List<TaskCondition> failedCondition = new ArrayList<>();
             for (TaskCondition condition : data.getConditions()) {
                 if ((condition.getType().equals(ConditionType.CONTAINS)
-                        && !StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
+                        && !data.getRequest().matches("(?i).*\\b"+condition.getValue()+"\\b.*")
                         || (condition.getType().equals(ConditionType.NOT_CONTAINS)
-                        && StringUtils.containsIgnoreCase(data.getRequest(), condition.getValue()))
-                ) {
+                        && data.getRequest().matches("(?i).*\\b"+condition.getValue()+"\\b.*")
+                ))) {
                     failedCondition.add(condition);
                 }
             }

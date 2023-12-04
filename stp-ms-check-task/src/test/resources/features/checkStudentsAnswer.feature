@@ -142,3 +142,17 @@ Feature: check answer
     """
     When request sent to check
     Then request should be processed successfully
+
+  Scenario: STP-966 Check incorrect student's answer with with task conditions
+    Given Request contains database script as in "task-domain/script_v1.yml"
+    And etalon SQL is "SELECT DISTINCT C.IdClient, FName FROM Client C INNER JOIN Sale S ON C.IdClient= S.IdProduct"
+    And check SQL is "Select distinct Client.IdClient, FName from Client LEFT JOIN Sale on Client.IdClient = Sale.IdClient where Sale.IdClient IS NOT NULL"
+    And answer should contains "DISTINCT" condition with "CONTAINS" type
+    And answer should contains "JOIN" condition with "CONTAINS" type
+    And answer should contains "IN" condition with "NOT_CONTAINS" type
+    And answer should contains "EXISTS" condition with "NOT_CONTAINS" type
+    And answer should contains "NULL" condition with "NOT_CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 0.7
+    And Grade message is ""!NULL" condition are failed to check"
