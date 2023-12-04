@@ -16,6 +16,7 @@ public class TaskCondition {
     @JsonView({PersonalExam.TeacherOnly.class})
     private String value;
 
+    @JsonView({PersonalExam.TeacherOnly.class})
     private ConditionType type;
 
     @Override
