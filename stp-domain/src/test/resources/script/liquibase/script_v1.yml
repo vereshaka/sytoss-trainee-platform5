@@ -1,4 +1,5 @@
 databaseChangeLog:
+  - objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
   - changeSet:
       id: create-tables
       author: compiled
@@ -478,7 +479,7 @@ databaseChangeLog:
                   valueNumeric: 10
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-08-11' as DateTime)
+                  valueComputed: CAST(N'2022-08-11' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -496,7 +497,7 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-08-13' as DateTime)
+                  valueComputed: CAST(N'2022-08-13' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -514,7 +515,7 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-08-23' as DateTime)
+                  valueComputed: CAST(N'2022-08-23' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -532,7 +533,7 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-08-29' as DateTime)
+                  valueComputed: CAST(N'2022-08-29' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -550,7 +551,7 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-08-30' as DateTime)
+                  valueComputed: CAST(N'2022-08-30' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -568,7 +569,7 @@ databaseChangeLog:
                   valueNumeric: 5
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-09-15' as DateTime)
+                  valueComputed: CAST(N'2022-09-15' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -586,7 +587,7 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2022-09-15' as DateTime)
+                  valueComputed: CAST(N'2022-09-15' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -604,7 +605,7 @@ databaseChangeLog:
                   valueNumeric: 2
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2023-09-16' as DateTime)
+                  valueComputed: CAST(N'2023-09-16' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -622,7 +623,7 @@ databaseChangeLog:
                   valueNumeric: 3
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2023-09-16' as DateTime)
+                  valueComputed: CAST(N'2023-09-16' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -640,7 +641,7 @@ databaseChangeLog:
                   valueNumeric: 4
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2023-10-17' as DateTime)
+                  valueComputed: CAST(N'2023-10-17' as timestamp)
             tableName: Sale
         - insert:
             columns:
@@ -658,7 +659,7 @@ databaseChangeLog:
                   valueNumeric: 5
               - column:
                   name: DateSale
-                  valueComputed: CAST(N'2023-10-18' as DateTime)
+                  valueComputed: CAST(N'2023-10-18' as timestamp)
             tableName: Sale
   - changeSet:
       id: init-foreign-keys

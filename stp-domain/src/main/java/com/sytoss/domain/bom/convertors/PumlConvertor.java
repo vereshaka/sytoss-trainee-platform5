@@ -135,7 +135,7 @@ public class PumlConvertor {
         createTableStringBuilder.append(String.join("", createTableScripts));
         initTableStringBuilder.append(String.join("", initTableScripts));
         foreignKeyStringBuilder.append(String.join("", initForeignKeysScripts));
-        return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder + foreignKeyStringBuilder;
+        return "databaseChangeLog:\n  - objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS\n" + createTableStringBuilder + initTableStringBuilder + foreignKeyStringBuilder;
     }
 
     private String returnCreateTableLiquibaseGroup(Table table) {
@@ -200,12 +200,12 @@ public class PumlConvertor {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
                     if (rows.getValue().matches("\\d{4}-\\d{2}-\\d{2}")) {
-                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as DateTime)").append(StringUtils.LF);
+                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as timestamp)").append(StringUtils.LF);
                     } else if (rows.getValue().matches("\\d{2}.\\d{2}.\\d{4}")) {
                         String[] dates = rows.getValue().split("\\.");
                         object.append(columnsIndent).append("valueComputed: CAST(N'").append(dates[2]).append("-")
                                 .append(dates[1]).append("-")
-                                .append(dates[0]).append("' as DateTime)").append(StringUtils.LF);
+                                .append(dates[0]).append("' as timestamp)").append(StringUtils.LF);
                     }
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);

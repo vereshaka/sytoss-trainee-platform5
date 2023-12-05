@@ -94,13 +94,15 @@ public class ScoreService {
             try {
                 helperServiceProviderObject.generateDatabase(data.getScript());
                 return helperServiceProviderObject.getExecuteQueryResult(data.getRequest(), data.getCheckAnswer());
+            } catch (SQLException e) {
+                log.error("check query failed", e);
+                throw e;
             } finally {
                 helperServiceProviderObject.dropDatabase();
             }
         } else{
             throw new CheckAnswerIsNotValidException(data.getCheckAnswer()+" is not valid");
         }
-
     }
 
     public IsCheckEtalon checkEtalon(CheckRequestParameters data) {

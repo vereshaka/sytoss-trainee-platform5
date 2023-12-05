@@ -84,7 +84,7 @@ Feature: check answer
     Then request should be processed successfully
     And query result should be
       | C1 | C2 |
-      | 28 | 4  |
+      | 28 | 4.0 |
 
   Scenario: STP-XX Duplicate column names
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
@@ -92,7 +92,7 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT_1 | IDPRODUCT | QUANTITY | DATESALE   |
+      | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT1 | IDPRODUCT | QUANTITY | DATESALE   |
       | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4          | 3         | 5        | 2022-09-15 |
 
     @Bug
@@ -158,8 +158,21 @@ Feature: check answer
     And Grade message is ""!NULL" condition are failed to check"
 
 
+  @Bug
   Scenario: STP-975 GROUP BY grouping set
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "Select idclient, idproduct, count(*) as cnt from sale group by grouping sets (idclient, idproduct) "
+    When request sent to check
+    Then request should be processed successfully
+
+  @Bug
+  Scenario: STP-975 GROUP BY grouping set #3
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is
+    """
+ SELECT IdClient, EXTRACT(year FROM DateSale) as YearClient, IdProduct, count(*) as QuantitySAle_Сделок
+  FROM Sale
+  group by GROUPING sets ((IdClient, EXTRACT(year FROM DateSale)), (IdProduct, IdClient))
+    """
     When request sent to check
     Then request should be processed successfully

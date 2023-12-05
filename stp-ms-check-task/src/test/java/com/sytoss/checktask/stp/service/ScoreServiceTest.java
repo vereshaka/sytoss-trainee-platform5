@@ -1,5 +1,6 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.checktask.stp.service.db.H2Executor;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
@@ -26,7 +27,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeCorrectAnswer() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Authors");
@@ -41,7 +45,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeCorrectAnswerWithDifferentColumnsOrder() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select id,name from Authors");
@@ -56,7 +63,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeWrongAnswer() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Books");
@@ -72,7 +82,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     public void checkAndGradeWithoutConditions() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Authors");
@@ -91,7 +104,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeCorrectAnswerWithDifferentColumnsNumber() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select id,book_name,author_id from Books");
@@ -106,7 +122,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeWrongData() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select count(*) from Authors");
@@ -121,7 +140,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeWrongData2() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select name from Authors");
@@ -136,7 +158,10 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkAndGradeEtalonColumnsNotFound() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
+                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
+        );
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select name from Authors");
@@ -151,7 +176,7 @@ class ScoreServiceTest extends StpUnitTest {
 
     @Test
     void checkForInsert() {
-        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor()));
+        when(objectProvider.getObject()).thenReturn(new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()));
 
         CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
         checkRequestParameters.setRequest("insert into Authors(id,name) values (100,'Author 2')");
