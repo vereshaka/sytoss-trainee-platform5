@@ -1,10 +1,7 @@
 package com.sytoss.lessons.connectors;
 
 import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
-import com.sytoss.lessons.dto.AnalyticsAverageDTO;
-import com.sytoss.lessons.dto.AnalyticsDTO;
-import com.sytoss.lessons.dto.SummaryGradeByExamDTO;
-import com.sytoss.lessons.dto.SummaryGradeDTO;
+import com.sytoss.lessons.dto.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -81,5 +78,17 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "and a.personalExamId is not null " +
             "group by e.id, e.maxGrade, e.name")
     List<SummaryGradeByExamDTO> getStudentsGradeByExam(Long disciplineId, Set<Long> studentIds);
+
+    @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent), row_number() over (order by SUM(a.grade) desc, SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId group by a.studentId order by 2 desc, 3 asc")
+    List<AnalyticsSummaryDTO> getSumStudentRatingsByDiscipline(@Param("disciplineId") Long disciplineId);
+
+    @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent),  row_number() over (order by SUM(a.grade) desc, SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.studentId in :studentIds group by a.studentId order by 2 desc, 3 asc")
+    List<AnalyticsSummaryDTO> getSumStudentRatingsByDisciplineAndGroupId(@Param("disciplineId") Long disciplineId, @Param("studentIds") List<Long> studentsIds);
+
+    @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent),  row_number() over (order by SUM(a.grade) desc , SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.examId = :examId group by a.studentId order by 2 desc, 3 asc")
+    List<AnalyticsSummaryDTO> getSumStudentRatingsByDisciplineAndExamId(@Param("disciplineId") Long disciplineId, @Param("examId") Long examId);
+
+    @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent),  row_number() over (order by SUM(a.grade) desc , SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.studentId in :studentIds and a.examId = :examId group by a.studentId order by 2 desc, 3 asc")
+    List<AnalyticsSummaryDTO> getSumStudentRatingsByDisciplineAndGroupIdAndExamId(Long disciplineId, @Param("studentIds") List<Long> studentsIds, Long examId);
 
 }

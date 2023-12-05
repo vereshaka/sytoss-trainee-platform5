@@ -120,4 +120,22 @@ public class AnalyticsController {
         return analyticsService.getDisciplineSummaryByGroup(disciplineId, groupId);
     }
 
+    @PreAuthorize("hasRole('Student')")
+    @Operation(description = "Method that retrieves analytics elements by discipline id, group id, exam id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/rating/student/discipline/{disciplineId}/group/{groupId}/exam/{examId}")
+    public List<Rating> returnStudentSummaryRatingByDisciplineGroupExam(@PathVariable Long disciplineId,
+                                                                     @PathVariable(name = "groupId", required = false) String groupStringId,
+                                                                     @PathVariable(name = "examId", required = false) String examStringId) {
+        Long examId = null, groupId = null;
+        if (!Objects.equals(groupStringId, "null")) {
+            groupId = Long.parseLong(groupStringId);
+        }
+        if (!Objects.equals(examStringId, "null")) {
+            examId = Long.parseLong(examStringId);
+        }
+        return analyticsService.getStudentSummaryRatingByDisciplineGroupExam(disciplineId, groupId, examId);
+    }
 }

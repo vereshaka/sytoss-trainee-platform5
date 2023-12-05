@@ -93,4 +93,24 @@ public class AnalyticsWhen extends AbstractGiven {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
+    @When("^student gets ratings by discipline (.*), by exam (.*) and by group (.*)$")
+    public void studentGetsRatingsByDisciplineId(String disciplineStringId,String examStringId,String groupStringId) {
+        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(disciplineStringId).toString());
+        Long examId = null;
+        Long groupId = null;
+        if(!Objects.equals(examStringId, "null")){
+            examId = Long.parseLong(getTestExecutionContext().replaceId(examStringId).toString());
+        }
+        if(!Objects.equals(groupStringId, "null")){
+            groupId = Long.parseLong(getTestExecutionContext().replaceId(groupStringId).toString());
+        }
+        String url = "/api/analytics/rating/student/discipline/" + disciplineId+"/group/"+groupId+"/exam/"+examId;
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Student"));
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<List<Rating>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        });
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
 }
