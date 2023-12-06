@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 @Component
 public class AnswerGenerator implements GenerateAnswersStrategy {
 
+    private final Random ANSWER_GENERATOR = new Random();
 
     @Override
     public List<Answer> generateAnswers(int numberOfTasks, List<Task> tasks) {
-        Random random = new Random();
         Map<Long, List<Task>> map = tasks.stream()
                 .flatMap(task -> task.getTopics().stream().map(topic -> new AbstractMap.SimpleEntry<>(topic.getId(), task)))
                 .collect(Collectors.groupingBy(
@@ -42,7 +42,7 @@ public class AnswerGenerator implements GenerateAnswersStrategy {
                 if (totalTasks >= numberOfTasks) break;
                 List<Task> currentTasks = map.get(topicId);
                 if (!currentTasks.isEmpty()) {
-                    int randomTaskIndex = random.nextInt(currentTasks.size());
+                    int randomTaskIndex = ANSWER_GENERATOR.nextInt(currentTasks.size());
                     Task selectedTask = currentTasks.remove(randomTaskIndex);
                     selectedTasks.add(selectedTask);
                     totalTasks++;
