@@ -1,14 +1,15 @@
 package com.sytoss.checktask.stp.service;
 
+import com.sytoss.checktask.stp.service.db.H2Executor;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.stp.test.FileUtils;
 import com.sytoss.stp.test.StpUnitTest;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.jdbc.JdbcSQLSyntaxErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -16,16 +17,16 @@ import java.util.Objects;
 @Slf4j
 class DatabaseHelperServiceTest extends StpUnitTest {
 
-    private final DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor());
-
     @Test
     void generateDatabase() {
+        DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor(), new H2Executor());
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script_v1.yml"));
         Assertions.assertDoesNotThrow(() -> databaseHelperService.getExecuteQueryResult("select * from Client",null));
     }
 
     @Test
     void getExecuteQueryResult() throws SQLException {
+        DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor(), new H2Executor());
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         HashMap<String, Object> map = new HashMap<>();
         map.put("ID", 1L);
@@ -54,8 +55,9 @@ class DatabaseHelperServiceTest extends StpUnitTest {
 
     @Test
     void dropDatabase() {
+        DatabaseHelperService databaseHelperService = new DatabaseHelperService(new QueryResultConvertor(), new H2Executor());
         databaseHelperService.generateDatabase(FileUtils.readFromFile("task-domain/script1.yml"));
         databaseHelperService.dropDatabase();
-        Assertions.assertThrows(JdbcSQLSyntaxErrorException.class, () -> databaseHelperService.getExecuteQueryResult("select * from discipline",null));
+        Assertions.assertThrows(SQLException.class, () -> databaseHelperService.getExecuteQueryResult("select * from discipline",null));
     }
 }

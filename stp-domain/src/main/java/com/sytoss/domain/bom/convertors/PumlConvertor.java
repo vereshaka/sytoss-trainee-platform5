@@ -88,13 +88,9 @@ public class PumlConvertor {
             throw new RuntimeException("Unexpected format: #1");
         }
         String tableName = definitions[0].replaceAll("data", "").trim();
-        if (tableName.startsWith("ble")) {
-            log.error("Im here!!");
-        }
         Table result = tables.stream().filter(item -> item.getName().equalsIgnoreCase(tableName)).findFirst().orElse(null);
 
         if (result == null) {
-            log.error("Investigate me!!", new RuntimeException());
             throw new RuntimeException("Table not found for data. Table name: " + tableName);
         }
         List<String> lines = Arrays.stream(definitions[1].trim().split("\n")).filter(item -> !item.trim().isEmpty() && !item.trim().equals("}")).toList();
@@ -139,7 +135,7 @@ public class PumlConvertor {
         createTableStringBuilder.append(String.join("", createTableScripts));
         initTableStringBuilder.append(String.join("", initTableScripts));
         foreignKeyStringBuilder.append(String.join("", initForeignKeysScripts));
-        return "databaseChangeLog:\n" + createTableStringBuilder + initTableStringBuilder + foreignKeyStringBuilder;
+        return "databaseChangeLog:\n  - objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS\n" + createTableStringBuilder + initTableStringBuilder + foreignKeyStringBuilder;
     }
 
     private String returnCreateTableLiquibaseGroup(Table table) {
@@ -153,6 +149,15 @@ public class PumlConvertor {
         for (Column column : table.getColumns()) {
             String name = column.getName();
             String datatype = column.getDatatype();
+            if (datatype.equalsIgnoreCase("long")) {
+                datatype = "BIGINT";
+            }
+            if (datatype.startsWith("string")) {
+                datatype = datatype.replace("string", "varchar");
+                if (!datatype.contains("(")){
+                    datatype += "(1000)";
+                }
+            }
             StringBuilder constraintStringBuilder = null;
             if (column.isPrimary() || column.isNullable()) {
                 constraintStringBuilder = new StringBuilder();
@@ -195,12 +200,12 @@ public class PumlConvertor {
                     object.append(columnsIndent).append("valueBoolean: ").append(rows.getValue()).append(StringUtils.LF);
                 } else if (currentColumn.isDate()) {
                     if (rows.getValue().matches("\\d{4}-\\d{2}-\\d{2}")) {
-                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as DateTime)").append(StringUtils.LF);
+                        object.append(columnsIndent).append("valueComputed: CAST(N'").append(rows.getValue()).append("' as timestamp)").append(StringUtils.LF);
                     } else if (rows.getValue().matches("\\d{2}.\\d{2}.\\d{4}")) {
                         String[] dates = rows.getValue().split("\\.");
                         object.append(columnsIndent).append("valueComputed: CAST(N'").append(dates[2]).append("-")
                                 .append(dates[1]).append("-")
-                                .append(dates[0]).append("' as DateTime)").append(StringUtils.LF);
+                                .append(dates[0]).append("' as timestamp)").append(StringUtils.LF);
                     }
                 } else if (currentColumn.isNumber()) {
                     object.append(columnsIndent).append("valueNumeric: ").append(rows.getValue()).append(StringUtils.LF);

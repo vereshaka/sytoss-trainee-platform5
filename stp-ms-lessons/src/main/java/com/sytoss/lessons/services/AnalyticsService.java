@@ -9,6 +9,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.PersonalExamByStudentsModel;
 import com.sytoss.domain.bom.personalexam.PersonalExam;
+import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -89,16 +90,19 @@ public class AnalyticsService extends AbstractService {
         try {
             log.info("Migration of discipline #" + disciplineId + " started");
             log.info("Migration of discipline #" + disciplineId + ". Loading of students started");
-            //analyticsConnector.deleteAllByDisciplineId(disciplineId);
             List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
             List<Student> students = new ArrayList<>();
             for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
-                List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
-                studentsOfGroup.forEach(student -> {
-                    if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
-                        students.add(student);
-                    }
-                });
+                try {
+                    List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+                    studentsOfGroup.forEach(student -> {
+                        if (!students.stream().map(AbstractUser::getId).toList().contains(student.getId())) {
+                            students.add(student);
+                        }
+                    });
+                } catch (Exception e) {
+                    log.error("Fail to load group info. GroupId: " + groupReferenceDTO.getGroupId(), e);
+                }
             }
             log.info("Migration of discipline #" + disciplineId + ". Loading of students finished");
             for (Student student : students) {
@@ -106,7 +110,6 @@ public class AnalyticsService extends AbstractService {
             }
             log.info("Migration of discipline #" + disciplineId + ". Old analytics for these students clear");
             List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
-            List<Analytics> analytics = new ArrayList<>();
 
             List<Long> examAssigneesIds = new ArrayList<>();
             for (ExamDTO examDTO : exams) {
@@ -141,8 +144,10 @@ public class AnalyticsService extends AbstractService {
                 analytic.setPersonalExam(personalExam);
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
-                updateAnalytic(analytic);
-                analytics.add(analytic);
+                if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                    personalExam.summary();
+                    updateAnalytic(analytic);
+                }
             }
             log.info("Migration of discipline #" + disciplineId + ". Personal Exam data updated");
             log.info("Migration of discipline #" + disciplineId + " finished");
@@ -169,6 +174,7 @@ public class AnalyticsService extends AbstractService {
         }
         AnalyticGrade grade = analytics.getGrade();
         if (dto.getPersonalExamId() == null
+                || (dto.getPersonalExamId().equals(analytics.getPersonalExam().getId()))
                 || grade.getGrade() > dto.getGrade()
                 || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());

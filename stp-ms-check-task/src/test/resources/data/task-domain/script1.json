@@ -22,7 +22,7 @@
                 {
                   "column": {
                     "name": "Name",
-                    "type": "varchar",
+                    "type": "varchar(1000)",
                     "constraints": {
                       "nullable": false
                     }
@@ -49,7 +49,7 @@
                 {
                   "column": {
                     "name": "Book_name",
-                    "type": "varchar",
+                    "type": "varchar(1000)",
                     "constraints": {
                       "nullable": false
                     }

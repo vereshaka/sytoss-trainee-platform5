@@ -75,7 +75,11 @@ public class AnalyticsGiven extends AbstractGiven {
             if (examAssigneeKey != null) {
                 examAssigneeKey = examAssigneeKey.trim();
             }
-            String personalExamId = analytics.get("personalExamId").trim().replace("*", "");
+            String personalExamId =null;
+            if( analytics.get("personalExamId")!=null){
+                personalExamId = analytics.get("personalExamId").trim().replace("*", "");
+            }
+
             String newDisciplineKey = disciplineKey;
             if (getTestExecutionContext().replaceId(disciplineKey) != null) {
                 newDisciplineKey = getTestExecutionContext().replaceId(disciplineKey).toString();

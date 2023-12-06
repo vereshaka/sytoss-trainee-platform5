@@ -8,70 +8,70 @@ databaseChangeLog:
             columns:
               - column:
                   name: IdClient
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: LName
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: FName
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: MName
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: Company
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: CityClient
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: phone
-                  type: varchar
+                  type: varchar(1000)
         - createTable:
             tableName: Product
             columns:
               - column:
                   name: IdProduct
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: NameProduct
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: Type
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: Sort
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: Price
-                  type: long
+                  type: bigint
               - column:
                   name: Stock
-                  type: varchar
+                  type: varchar(1000)
               - column:
                   name: CityProduct
-                  type: varchar
+                  type: varchar(1000)
         - createTable:
             tableName: Sale
             columns:
               - column:
                   name: IdSale
-                  type: long
+                  type: bigint
                   constraints:
                     primaryKey: true
               - column:
                   name: IdClient
-                  type: long
+                  type: bigint
               - column:
                   name: IdProduct
-                  type: long
+                  type: bigint
               - column:
                   name: Quantity
-                  type: long
+                  type: bigint
               - column:
                   name: DateSale
                   type: date

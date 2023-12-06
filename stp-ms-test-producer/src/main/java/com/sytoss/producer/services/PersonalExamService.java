@@ -490,6 +490,7 @@ public class PersonalExamService extends AbstractService {
             for(PersonalExam personalExam : personalExamsByStudent){
                 if(personalExam.getDiscipline()!=null && Objects.equals(personalExam.getDiscipline().getId(), disciplineId)
                         && examAssignees.contains(personalExam.getExamAssigneeId())){
+                    personalExam.summary();
                     personalExams.add(personalExam);
                 }
             }

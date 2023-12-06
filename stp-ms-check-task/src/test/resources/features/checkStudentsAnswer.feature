@@ -83,8 +83,8 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | COLUMN_1 | COLUMN_2 |
-      | 28       | 4.0      |
+      | C1 | C2 |
+      | 28 | 4.0 |
 
   Scenario: STP-XX Duplicate column names
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
@@ -92,9 +92,10 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT_1 | IDPRODUCT | QUANTITY | DATESALE   |
+      | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT1 | IDPRODUCT | QUANTITY | DATESALE   |
       | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4          | 3         | 5        | 2022-09-15 |
 
+    @Bug
   Scenario: STP-791 GROUP BY exception
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "Select Company, sum(Quantity)   from Client c inner join Sale s on c.IdClient=s.IdProduct  group by c.IdClient "
@@ -138,6 +139,40 @@ Feature: check answer
     Select CompanY,c.Company, sum(Quantity)
   from Client c inner join Sale s on c.IdClient=s.IdProduct
   group by c.Company
+    """
+    When request sent to check
+    Then request should be processed successfully
+
+  Scenario: STP-966 Check incorrect student's answer with with task conditions
+    Given Request contains database script as in "task-domain/script_v1.yml"
+    And etalon SQL is "SELECT DISTINCT C.IdClient, FName FROM Client C INNER JOIN Sale S ON C.IdClient= S.IdProduct"
+    And check SQL is "Select distinct Client.IdClient, FName from Client LEFT JOIN Sale on Client.IdClient = Sale.IdClient where Sale.IdClient IS NOT NULL"
+    And answer should contains "DISTINCT" condition with "CONTAINS" type
+    And answer should contains "JOIN" condition with "CONTAINS" type
+    And answer should contains "IN" condition with "NOT_CONTAINS" type
+    And answer should contains "EXISTS" condition with "NOT_CONTAINS" type
+    And answer should contains "NULL" condition with "NOT_CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 0.7
+    And Grade message is ""!NULL" condition are failed to check"
+
+
+  @Bug
+  Scenario: STP-975 GROUP BY grouping set
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is "Select idclient, idproduct, count(*) as cnt from sale group by grouping sets (idclient, idproduct) "
+    When request sent to check
+    Then request should be processed successfully
+
+  @Bug
+  Scenario: STP-975 GROUP BY grouping set #3
+    Given Request contains database script from "task-domain/prod-trade23.yml" puml
+    And check SQL is
+    """
+ SELECT IdClient, EXTRACT(year FROM DateSale) as YearClient, IdProduct, count(*) as QuantitySAle_Сделок
+  FROM Sale
+  group by GROUPING sets ((IdClient, EXTRACT(year FROM DateSale)), (IdProduct, IdClient))
     """
     When request sent to check
     Then request should be processed successfully

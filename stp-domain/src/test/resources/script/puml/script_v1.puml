@@ -3,7 +3,7 @@ table Client {
   FName: string <<NULLABLE>>
   MName: string
   LName: string
-  Company: string
+  Company: string(20)
   CityClient: string
   phone: string
 }

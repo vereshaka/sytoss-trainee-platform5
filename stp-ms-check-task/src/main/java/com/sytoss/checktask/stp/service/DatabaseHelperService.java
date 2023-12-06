@@ -1,6 +1,7 @@
 package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
+import com.sytoss.checktask.stp.service.db.Executor;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.Liquibase;
 import liquibase.ThreadLocalScopeManager;
@@ -9,8 +10,13 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -25,18 +31,12 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Scope(value = "prototype")
+@Setter
 public class DatabaseHelperService {
 
     static {
         liquibase.Scope.setScopeManager(new ThreadLocalScopeManager());
     }
-
-    private static final String username = "SA";
-
-    private static final String password = "~";
-
-    private static final String ORACLE_MODE = "MODE=Oracle";
-    private static final String MSSQL_MODE = "MODE=MSSQLServer";
 
     private final QueryResultConvertor queryResultConvertor;
 
@@ -44,12 +44,21 @@ public class DatabaseHelperService {
 
     private final static Random DATABASE_GENERATOR = new Random();
 
+    private final Executor executor;
+
+    @Value("${custom.executor.username}")
+    private String username;
+
+    @Value("${custom.executor.password}")
+    private String password;
+
+    @Value("${custom.executor.serverPath}")
+    private String serverPath;
+
     private Connection getConnection() {
         if (connection == null) {
             try {
-                Class.forName("org.h2.Driver");
-                String url = "jdbc:h2:mem:" + generateDatabaseName() + ";" + MSSQL_MODE;
-                connection = DriverManager.getConnection(url, username, password);
+              connection = executor.createConnection(username, password, serverPath, generateDatabaseName());
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);
             }
@@ -72,31 +81,32 @@ public class DatabaseHelperService {
     }
 
     public void dropDatabase() {
-        try (Statement statement = getConnection().createStatement()) {
-            statement.executeUpdate("DROP ALL OBJECTS DELETE FILES;");
+        try {
+            executor.dropDatabase(getConnection());
             log.info("database was dropped");
         } catch (Exception e) {
             log.error("Error in database dropping", e);
         } finally {
+            connection = null;
             try {
-                getConnection().close();
+                if (!getConnection().isClosed()) {
+                    getConnection().close();
+                }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            connection = null;
         }
     }
 
     private String generateDatabaseName() {
-        int databaseNameLength = 30;
-
+        int databaseNameLength = 25;
         char letter;
         StringBuilder name = new StringBuilder();
         for (int i = 0; i < databaseNameLength; i++) {
             letter = (char) (DATABASE_GENERATOR.nextInt(26) + 'a');
             name.append(letter);
         }
-        return name.toString();
+        return "delme" + name.toString();
     }
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
