@@ -176,3 +176,14 @@ Feature: check answer
     """
     When request sent to check
     Then request should be processed successfully
+
+  Scenario: STP-981 Check correct student's answer with in condition
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    And answer should contains "IN" condition with "CONTAINS" type
+    And answer should contains "JOIN" condition with "NOT_CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""
