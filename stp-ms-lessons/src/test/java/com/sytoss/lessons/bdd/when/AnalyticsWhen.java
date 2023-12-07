@@ -44,8 +44,8 @@ public class AnalyticsWhen extends AbstractGiven {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("^teacher gets ratings by discipline (.*), by exam (.*) and by group (.*)$")
-    public void teacherGetsRatingsByDisciplineD(String disciplineStringId,String examStringId,String groupStringId) {
+    @When("^user gets ratings by discipline (.*), by exam (.*) and by group (.*) and grade type (.*)$")
+    public void teacherGetsRatingsByDisciplineExamGroupGrade(String disciplineStringId,String examStringId,String groupStringId, String gradeType) {
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(disciplineStringId).toString());
         Long examId = null;
         Long groupId = null;
@@ -55,7 +55,7 @@ public class AnalyticsWhen extends AbstractGiven {
         if(!Objects.equals(groupStringId, "null")){
             groupId = Long.parseLong(getTestExecutionContext().replaceId(groupStringId).toString());
         }
-        String url = "/api/analytics/rating/discipline/" + disciplineId+"/group/"+groupId+"/exam/"+examId;
+        String url = "/api/analytics/rating/discipline/" + disciplineId+"/group/"+groupId+"/exam/"+examId+"/grade/"+gradeType;
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Rating>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
@@ -92,25 +92,4 @@ public class AnalyticsWhen extends AbstractGiven {
         ResponseEntity<DisciplineSummary> responseEntity = doGet(url, httpEntity, DisciplineSummary.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
-
-    @When("^student gets ratings by discipline (.*), by exam (.*) and by group (.*)$")
-    public void studentGetsRatingsByDisciplineId(String disciplineStringId,String examStringId,String groupStringId) {
-        Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(disciplineStringId).toString());
-        Long examId = null;
-        Long groupId = null;
-        if(!Objects.equals(examStringId, "null")){
-            examId = Long.parseLong(getTestExecutionContext().replaceId(examStringId).toString());
-        }
-        if(!Objects.equals(groupStringId, "null")){
-            groupId = Long.parseLong(getTestExecutionContext().replaceId(groupStringId).toString());
-        }
-        String url = "/api/analytics/rating/student/discipline/" + disciplineId+"/group/"+groupId+"/exam/"+examId;
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(generateJWT(List.of("123"), "", "", "", "Student"));
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<List<Rating>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
-        });
-        getTestExecutionContext().setResponse(responseEntity);
-    }
-
 }
