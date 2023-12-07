@@ -24,10 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -193,27 +190,43 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.deleteAllByDisciplineId(disciplineId);
     }
 
-    public List<Rating> getAnalyticsElementsByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId) {
+    public List<Rating> getAnalyticsElementsByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId, String gradeType) {
         if (disciplineId == null) {
             throw new DisciplineNotFoundException(disciplineId);
         }
-        List<AnalyticsAverageDTO> analyticsAverageDTOS;
+        List<AbstractAnalyticsDTO> analyticsDTOS = new ArrayList<>();
         List<Long> students = new ArrayList<>();
         if (groupId != null) {
             students = userConnector.getStudentOfGroup(groupId).stream().map(AbstractUser::getId).toList();
         }
-        if (examId == null && groupId == null) {
-            analyticsAverageDTOS = analyticsConnector.getStudentRatingsByDiscipline(disciplineId);
-        } else if (groupId == null) {
-            analyticsAverageDTOS = analyticsConnector.getStudentRatingsByDisciplineAndExamId(disciplineId, examId);
-        } else if (examId == null) {
-            analyticsAverageDTOS = analyticsConnector.getStudentRatingsByDisciplineAndGroupId(disciplineId, students);
+        if(Objects.equals(gradeType, "summary")){
+            List<AnalyticsSummaryDTO> analyticsSummaryDTOS;
+            if (examId == null && groupId == null) {
+                analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDiscipline(disciplineId);
+            } else if (groupId == null) {
+                analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndExamId(disciplineId, examId);
+            } else if (examId == null) {
+                analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupId(disciplineId, students);
+            } else {
+                analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
+            }
+            analyticsDTOS.addAll(analyticsSummaryDTOS);
         } else {
-            analyticsAverageDTOS = analyticsConnector.getStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
+            List<AnalyticsAverageDTO> analyticsAverageDTOS;
+            if (examId == null && groupId == null) {
+                analyticsAverageDTOS = analyticsConnector.getAvgStudentRatingsByDiscipline(disciplineId);
+            } else if (groupId == null) {
+                analyticsAverageDTOS = analyticsConnector.getAvgStudentRatingsByDisciplineAndExamId(disciplineId, examId);
+            } else if (examId == null) {
+                analyticsAverageDTOS = analyticsConnector.getAvgStudentRatingsByDisciplineAndGroupId(disciplineId, students);
+            } else {
+                analyticsAverageDTOS = analyticsConnector.getAvgStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
+            }
+            analyticsDTOS.addAll(analyticsAverageDTOS);
         }
 
         List<Rating> ratings = new ArrayList<>();
-        for (AnalyticsAverageDTO analyticsAverageDTO : analyticsAverageDTOS) {
+        for (AbstractAnalyticsDTO analyticsDTO : analyticsDTOS) {
             DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElse(null);
 
             Rating rating = new Rating();
@@ -228,7 +241,7 @@ public class AnalyticsService extends AbstractService {
             }
 
             Student student = new Student();
-            student.setId(analyticsAverageDTO.getStudentId());
+            student.setId(analyticsDTO.getStudentId());
             if (groupId != null) {
                 Group group = new Group();
                 group.setId(groupId);
@@ -237,10 +250,16 @@ public class AnalyticsService extends AbstractService {
             rating.setStudent(student);
 
             AnalyticGrade analyticGrade = new AnalyticGrade();
-            analyticGrade.setGrade(analyticsAverageDTO.getAvgGrade());
-            analyticGrade.setTimeSpent(analyticsAverageDTO.getAvgTimeSpent());
+            if(analyticsDTO instanceof AnalyticsAverageDTO){
+                analyticGrade.setGrade(((AnalyticsAverageDTO) analyticsDTO).getAvgGrade());
+                analyticGrade.setTimeSpent(((AnalyticsAverageDTO) analyticsDTO).getAvgTimeSpent());
+            } else {
+                analyticGrade.setGrade(((AnalyticsSummaryDTO) analyticsDTO).getSumGrade());
+                analyticGrade.setTimeSpent(((AnalyticsSummaryDTO) analyticsDTO).getSumTimeSpent());
+            }
+
             rating.setGrade(analyticGrade);
-            rating.setRank(analyticsAverageDTO.getRank());
+            rating.setRank(analyticsDTO.getRank());
             ratings.add(rating);
         }
         return ratings;
@@ -365,58 +384,5 @@ public class AnalyticsService extends AbstractService {
         studentDisciplineStatistic.setSummaryGrade(summaryGrade);
 
         return studentDisciplineStatistic;
-    }
-
-    public List<Rating> getStudentSummaryRatingByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId) {
-        if (disciplineId == null) {
-            throw new DisciplineNotFoundException(disciplineId);
-        }
-        List<AnalyticsSummaryDTO> analyticsSummaryDTOS;
-        List<Long> students = new ArrayList<>();
-        if (groupId != null) {
-            students = userConnector.getStudentOfGroup(groupId).stream().map(AbstractUser::getId).toList();
-        }
-        if (examId == null && groupId == null) {
-            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDiscipline(disciplineId);
-        } else if (groupId == null) {
-            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndExamId(disciplineId, examId);
-        } else if (examId == null) {
-            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupId(disciplineId, students);
-        } else {
-            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
-        }
-
-        List<Rating> ratings = new ArrayList<>();
-        for (AnalyticsSummaryDTO analyticsAverageDTO : analyticsSummaryDTOS) {
-            DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElse(null);
-
-            Rating rating = new Rating();
-
-            if (disciplineDTO != null) {
-                Discipline discipline = new Discipline();
-                discipline.setId(disciplineDTO.getId());
-                discipline.setName(disciplineDTO.getName());
-                rating.setDiscipline(discipline);
-            } else {
-                throw new DisciplineNotFoundException(disciplineId);
-            }
-
-            Student student = new Student();
-            student.setId(analyticsAverageDTO.getStudentId());
-            if (groupId != null) {
-                Group group = new Group();
-                group.setId(groupId);
-                student.setPrimaryGroup(group);
-            }
-            rating.setStudent(student);
-
-            AnalyticGrade analyticGrade = new AnalyticGrade();
-            analyticGrade.setGrade(analyticsAverageDTO.getSumGrade());
-            analyticGrade.setTimeSpent(analyticsAverageDTO.getSumTimeSpent());
-            rating.setGrade(analyticGrade);
-            rating.setRank(analyticsAverageDTO.getRank());
-            ratings.add(rating);
-        }
-        return ratings;
     }
 }

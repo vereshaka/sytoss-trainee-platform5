@@ -1,17 +1,18 @@
 package com.sytoss.lessons.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class AnalyticsSummaryDTO {
-    private Long studentId;
+public class AnalyticsSummaryDTO extends AbstractAnalyticsDTO {
     private Double sumGrade;
     private Long sumTimeSpent;
-    private Long rank;
+
+    public AnalyticsSummaryDTO(Long studentId, Double sumGrade, Long sumTimeSpent, Long rank) {
+        this.studentId = studentId;
+        this.sumGrade = sumGrade;
+        this.sumTimeSpent = sumTimeSpent;
+        this.rank = rank;
+    }
 }

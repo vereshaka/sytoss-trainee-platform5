@@ -88,75 +88,6 @@ Feature: Analytics
       | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
       | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |
 
-  Scenario: get ratings by id
-    Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
-      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | *ea2           |
-      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         | *ea1           |
-      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         | *ea2           |
-    When teacher gets ratings by discipline *d1, by exam null and by group null
-    Then operation is successful
-    And ratings should be
-      | studentId | avgGrade | avgTimeSpent | rank |
-      | 1         | 6        | 1            | 1    |
-      | 2         | 5        | 3            | 2    |
-
-  Scenario: get ratings by id and exam id
-    Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d3          | *ex5   | 1         | *pe1           | 6     | 1         | *ea1           |
-      | *d3          | *ex5   | 2         | *pe2           | 10    | 3         | *ea1           |
-      | *d4          | *ex5   | 1         | *pe1           | 7     | 4         | *ea2           |
-      | *d4          | *ex5   | 2         | *pe2           | 6     | 2         | *ea2           |
-    When teacher gets ratings by discipline *d3, by exam *ex5 and by group null
-    Then operation is successful
-    And ratings should be
-      | studentId | avgGrade | avgTimeSpent | rank |
-      | 2         | 10       | 3            | 1    |
-      | 1         | 6        | 1            | 2    |
-
-
-  Scenario: get ratings by id and group id
-    Given discipline with id *d1 exists
-    And groups with specific id exist
-      | discipline | group |
-      | *d1        | 1     |
-    Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
-      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | 2       | *ea2           |
-      | *d1          | *ex4   | 1         | *pe2           | 5     | 4         | 1       | *ea4           |
-      | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       | *ea3           |
-    When teacher gets ratings by discipline *d1, by exam null and by group 1
-    Then operation is successful
-    And ratings should be
-      | studentId | avgGrade | avgTimeSpent | rank |
-      | 1         | 7        | 3            | 1    |
-
-  Scenario: get ratings by id, exam id and group id
-    Given discipline with id *d1 exists
-    And groups with specific id exist
-      | discipline | group |
-      | *d1        | 1     |
-    Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
-      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | 1       | *ea1           |
-      | *d1          | *ex1   | 3         | *pe1           | 5     | 4         | 2       | *ea1           |
-      | *d1          | *ex1   | 4         | *pe1           | 6     | 2         | 2       | *ea1           |
-      | *d1          | *ex2   | 1         | *pe2           | 10    | 3         | 1       | *ea2           |
-      | *d1          | *ex2   | 2         | *pe2           | 5     | 3         | 1       | *ea2           |
-      | *d1          | *ex2   | 3         | *pe2           | 5     | 4         | 2       | *ea2           |
-      | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       | *ea2           |
-    When teacher gets ratings by discipline *d1, by exam *ex1 and by group 1
-    Then operation is successful
-    And ratings should be
-      | studentId | avgGrade | avgTimeSpent | rank |
-      | 1         | 10       | 3            | 1    |
-      | 2         | 5        | 3            | 2    |
-
-
   Scenario: When teacher requests students analytics then response with detailed information has to be returned
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
@@ -217,22 +148,74 @@ Feature: Analytics
       | *ex13   | 6         | 5.5                    | 4                           | 6                  | 4                       |
       | *ex14   | 15        | 13.5                   | 5                           | 15                 | 5                       |
 
-  Scenario: get ratings by id when personal exam id is null
+  Scenario: avg: get ratings by id
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
       | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
-      | *d1          | *ex2   | 1         | *pe2           | 5     | 3         | *ea2           |
-      | *d1          | *ex1   | 3         |                | 0     | 0         | *ea1           |
-      | *d1          | *ex2   | 4         | *pe3           | 6     | 2         | *ea2           |
-    When teacher gets ratings by discipline *d1, by exam null and by group null
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | *ea2           |
+      | *d2          | *ex1   | 1         | *pe1           | 7     | 4         | *ea1           |
+      | *d2          | *ex2   | 1         | *pe1           | 6     | 2         | *ea2           |
+    When user gets ratings by discipline *d1, by exam null and by group null and grade type average
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent | rank |
-      | 4         | 6        | 2            | 1    |
-      | 1         | 5.5      | 2            | 2    |
+      | 1         | 6        | 1            | 1    |
+      | 2         | 5        | 3            | 2    |
 
+  Scenario: avg: get ratings by id and exam id
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d3          | *ex5   | 1         | *pe1           | 6     | 1         | *ea1           |
+      | *d3          | *ex5   | 2         | *pe2           | 10    | 3         | *ea1           |
+      | *d4          | *ex5   | 1         | *pe1           | 7     | 4         | *ea2           |
+      | *d4          | *ex5   | 2         | *pe2           | 6     | 2         | *ea2           |
+    When user gets ratings by discipline *d3, by exam *ex5 and by group null and grade type average
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 2         | 10       | 3            | 1    |
+      | 1         | 6        | 1            | 2    |
 
-  Scenario: student: get ratings by id
+  Scenario: avg: get ratings by id and group id
+    Given discipline with id *d1 exists
+    And groups with specific id exist
+      | discipline | group |
+      | *d1        | 1     |
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
+      | *d1          | *ex2   | 2         | *pe1           | 5     | 3         | 2       | *ea2           |
+      | *d1          | *ex4   | 1         | *pe2           | 5     | 4         | 1       | *ea4           |
+      | *d1          | *ex3   | 1         | *pe1           | 6     | 2         | 1       | *ea3           |
+    When user gets ratings by discipline *d1, by exam null and by group 1 and grade type average
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 7        | 3            | 1    |
+
+  Scenario: avg: get ratings by id, exam id and group id
+    Given discipline with id *d1 exists
+    And groups with specific id exist
+      | discipline | group |
+      | *d1        | 1     |
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
+      | *d1          | *ex1   | 2         | *pe1           | 5     | 3         | 1       | *ea1           |
+      | *d1          | *ex1   | 3         | *pe1           | 5     | 4         | 2       | *ea1           |
+      | *d1          | *ex1   | 4         | *pe1           | 6     | 2         | 2       | *ea1           |
+      | *d1          | *ex2   | 1         | *pe2           | 10    | 3         | 1       | *ea2           |
+      | *d1          | *ex2   | 2         | *pe2           | 5     | 3         | 1       | *ea2           |
+      | *d1          | *ex2   | 3         | *pe2           | 5     | 4         | 2       | *ea2           |
+      | *d1          | *ex2   | 4         | *pe2           | 6     | 2         | 2       | *ea2           |
+    When user gets ratings by discipline *d1, by exam *ex1 and by group 1 and grade type average
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 1         | 10       | 3            | 1    |
+      | 2         | 5        | 3            | 2    |
+
+  Scenario: sum: get ratings by id
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
       | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
@@ -241,29 +224,28 @@ Feature: Analytics
       | *d1          | *ex2   | 2         | *pe2           | 8     | 5         | *ea2           |
       | *d2          | *ex1   | 1         | *pe1           | 7     | 4         | *ea2           |
       | *d2          | *ex1   | 2         | *pe1           | 6     | 2         | *ea2           |
-    When student gets ratings by discipline *d1, by exam null and by group null
+    When user gets ratings by discipline *d1, by exam null and by group null and grade type summary
     Then operation is successful
     And ratings should be
       | studentId | sumGrade | sumTimeSpent | rank |
       | 2         | 13       | 8            | 1    |
       | 1         | 12       | 2            | 2    |
 
-  Scenario: get ratings by id and exam id
+  Scenario: sum: get ratings by id and exam id
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
       | *d3          | *ex5   | 1         | *pe1           | 6     | 1         | *ea1           |
       | *d3          | *ex5   | 2         | *pe2           | 10    | 3         | *ea1           |
       | *d4          | *ex5   | 1         | *pe1           | 7     | 4         | *ea2           |
       | *d4          | *ex5   | 2         | *pe2           | 6     | 2         | *ea2           |
-    When teacher gets ratings by discipline *d3, by exam *ex5 and by group null
+    When user gets ratings by discipline *d3, by exam *ex5 and by group null and grade type summary
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent | rank |
       | 2         | 10       | 3            | 1    |
       | 1         | 6        | 1            | 2    |
 
-
-  Scenario: student: get ratings by id and group id
+  Scenario: sum: get ratings by id and group id
     Given discipline with id *d1 exists
     And groups with specific id exist
       | discipline | group |
@@ -277,13 +259,13 @@ Feature: Analytics
       | *d1          | *ex4   | 2         | *pe4           | 6     | 2         | 2       | *ea4           |
       | *d1          | *ex1   | 2         | *pe1           | 6     | 2         | 1       | *ea1           |
       | *d1          | *ex2   | 2         | *pe2           | 5     | 2         | 2       | *ea2           |
-    When student gets ratings by discipline *d1, by exam null and by group 1
+    When user gets ratings by discipline *d1, by exam null and by group 1 and grade type summary
     Then operation is successful
     And ratings should be
       | studentId | sumGrade | sumTimeSpent | rank |
       | 1         | 20       | 10           | 1    |
 
-  Scenario: student: get ratings by id, exam id and group id
+  Scenario: sum: get ratings by id, exam id and group id
     Given discipline with id *d1 exists
     And groups with specific id exist
       | discipline | group |
@@ -296,11 +278,23 @@ Feature: Analytics
       | *d1          | *ex2   | 1         | *pe1           | 5     | 3         | 1       | *ea2           |
       | *d1          | *ex2   | 3         | *pe1           | 5     | 2         | 2       | *ea2           |
       | *d1          | *ex4   | 3         | *pe2           | 6     | 2         | 2       | *ea4           |
-    When student gets ratings by discipline *d1, by exam *ex1 and by group 1
+    When user gets ratings by discipline *d1, by exam *ex1 and by group 1 and grade type summary
     Then operation is successful
     And ratings should be
       | studentId | avgGrade | avgTimeSpent | rank |
       | 1         | 10       | 3            | 1    |
       | 2         | 6        | 2            | 2    |
 
-
+  Scenario: student: get ratings by id when personal exam id is null
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 6     | 1         | *ea1           |
+      | *d1          | *ex2   | 1         | *pe2           | 5     | 3         | *ea2           |
+      | *d1          | *ex1   | 3         |                | 0     | 0         | *ea1           |
+      | *d1          | *ex2   | 4         | *pe3           | 6     | 2         | *ea2           |
+    When user gets ratings by discipline *d1, by exam null and by group null and grade type average
+    Then operation is successful
+    And ratings should be
+      | studentId | avgGrade | avgTimeSpent | rank |
+      | 4         | 6        | 2            | 1    |
+      | 1         | 5.5      | 2            | 2    |
