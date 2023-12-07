@@ -215,9 +215,16 @@ public class DataTableCommon {
         Student student = new Student();
         student.setId(Long.parseLong(entry.get("studentId")));
 
+
         AnalyticGrade analyticGrade = new AnalyticGrade();
-        analyticGrade.setGrade(Double.parseDouble(entry.get("avgGrade")));
-        analyticGrade.setTimeSpent(Long.parseLong(entry.get("avgTimeSpent")));
+        if(entry.get("avgGrade")!=null){
+            analyticGrade.setGrade(Double.parseDouble(entry.get("avgGrade")));
+            analyticGrade.setTimeSpent(Long.parseLong(entry.get("avgTimeSpent")));
+        }else{
+            analyticGrade.setGrade(Double.parseDouble(entry.get("sumGrade")));
+            analyticGrade.setTimeSpent(Long.parseLong(entry.get("sumTimeSpent")));
+        }
+
 
         Rating rating = new Rating();
         rating.setStudent(student);

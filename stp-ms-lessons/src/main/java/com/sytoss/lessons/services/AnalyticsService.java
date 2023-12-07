@@ -366,4 +366,57 @@ public class AnalyticsService extends AbstractService {
 
         return studentDisciplineStatistic;
     }
+
+    public List<Rating> getStudentSummaryRatingByDisciplineGroupExam(Long disciplineId, Long groupId, Long examId) {
+        if (disciplineId == null) {
+            throw new DisciplineNotFoundException(disciplineId);
+        }
+        List<AnalyticsSummaryDTO> analyticsSummaryDTOS;
+        List<Long> students = new ArrayList<>();
+        if (groupId != null) {
+            students = userConnector.getStudentOfGroup(groupId).stream().map(AbstractUser::getId).toList();
+        }
+        if (examId == null && groupId == null) {
+            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDiscipline(disciplineId);
+        } else if (groupId == null) {
+            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndExamId(disciplineId, examId);
+        } else if (examId == null) {
+            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupId(disciplineId, students);
+        } else {
+            analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDisciplineAndGroupIdAndExamId(disciplineId, students, examId);
+        }
+
+        List<Rating> ratings = new ArrayList<>();
+        for (AnalyticsSummaryDTO analyticsAverageDTO : analyticsSummaryDTOS) {
+            DisciplineDTO disciplineDTO = disciplineConnector.findById(disciplineId).orElse(null);
+
+            Rating rating = new Rating();
+
+            if (disciplineDTO != null) {
+                Discipline discipline = new Discipline();
+                discipline.setId(disciplineDTO.getId());
+                discipline.setName(disciplineDTO.getName());
+                rating.setDiscipline(discipline);
+            } else {
+                throw new DisciplineNotFoundException(disciplineId);
+            }
+
+            Student student = new Student();
+            student.setId(analyticsAverageDTO.getStudentId());
+            if (groupId != null) {
+                Group group = new Group();
+                group.setId(groupId);
+                student.setPrimaryGroup(group);
+            }
+            rating.setStudent(student);
+
+            AnalyticGrade analyticGrade = new AnalyticGrade();
+            analyticGrade.setGrade(analyticsAverageDTO.getSumGrade());
+            analyticGrade.setTimeSpent(analyticsAverageDTO.getSumTimeSpent());
+            rating.setGrade(analyticGrade);
+            rating.setRank(analyticsAverageDTO.getRank());
+            ratings.add(rating);
+        }
+        return ratings;
+    }
 }
