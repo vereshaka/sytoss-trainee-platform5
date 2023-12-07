@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -55,12 +56,13 @@ public class ScoreService {
 
             List<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon);
             List<TaskCondition> failedCondition = new ArrayList<>();
+
             for (TaskCondition condition : data.getConditions()) {
+                Pattern pattern = Pattern.compile("(?i).*\\b"+condition.getValue()+"\\b.*");
                 if ((condition.getType().equals(ConditionType.CONTAINS)
-                        && !data.getRequest().matches("(?i).*\\b"+condition.getValue()+"\\b.*")
+                        && !pattern.matcher(data.getRequest()).find())
                         || (condition.getType().equals(ConditionType.NOT_CONTAINS)
-                        && data.getRequest().matches("(?i).*\\b"+condition.getValue()+"\\b.*")
-                ))) {
+                        && pattern.matcher(data.getRequest()).find())) {
                     failedCondition.add(condition);
                 }
             }
