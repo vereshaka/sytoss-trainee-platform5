@@ -1,0 +1,64 @@
+table GroupSt{
+id: string <<PK>>
+DeanOffice: string
+}
+
+table Student{
+id: long <<PK>>
+NameStudent: string
+Address: string
+IdGroup: string <<FK GroupSt(id)>>
+Consultant: long <<FK Student(id)>>
+}
+
+table Subject{
+id: string <<PK>>
+NameSubject: string
+}
+
+table AcademicResults {
+IdStudent: long <<PK>> <<FK Student(id)>>
+IdSubject: string <<PK>> <<FK Subject(id)>>
+Semester: long <<PK>>
+Mark: long
+}
+
+data GroupSt {
+    |= Id   	 |= DeanOffice |
+    | ІТІНФ-22-1 | ІТМ         |
+    | ІТІНФ-22-2 | ІТМ         |
+    | ІТІНФ-22-3 | ІТМ         |
+    | ПІ-22-1 	 | КН          |
+    | ПІ-22-2 	 | КН          |
+    | СА-21-1 	 | ІТМ         |
+}
+
+data Student{
+    |= Id |= NameStudent	|= Address |= IdGroup	   |= Consultant |
+    | 1	  | Іванченко І.І	| А1	   | ІТІНФ-22-1    | 4           |
+    | 2	  | Іванченко І.І	| А2	   | ІТІНФ-22-1    | 4           |
+    | 3	  | Петренко П.П.	| А3	   | СА-21-1       | 2           |
+    | 4	  | Андрєєва А.А.	| А4	   | ІТІНФ-22-2    | NULL        |
+    | 5	  | Попов В.А.	    | А5	   | ПІ-22-1       | 3           |
+    | 6	  | Кукушкин В.В.	| А6	   | ІТІНФ-22-2    | 2           |
+}
+
+data Subject {
+    |= Id |= NameSubject    |
+    | К1  | Бази даних      |
+    | К2  | Вища математика |
+    | К3  | Фізика          |
+}
+
+data AcademicResults {
+    |= IdStudent |= IdSubject	|= Semester	|= Mark |
+    | 1	         | К1	        | 6	        | 75    |
+    | 1	         | К2	        | 1	        | 75    |
+    | 1	         | К2	        | 2	        | 66    |
+    | 2	         | К1	        | 6	        | 90    |
+    | 2	         | К3	        | 3	        | 75    |
+    | 4	         | К1	        | 6	        | 90    |
+    | 4	         | К2	        | 1	        | 90    |
+    | 4	         | К2	        | 3	        | 90    |
+    | 4	         | К3	        | 2	        | 75    |
+}
