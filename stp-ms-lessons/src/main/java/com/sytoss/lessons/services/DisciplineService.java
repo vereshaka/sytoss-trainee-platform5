@@ -261,4 +261,7 @@ public class DisciplineService extends AbstractService {
         return discipline;
     }
 
+    public List<Exam> getExamsByStudent(Long disciplineId) {
+        return examService.findExamsByStudent(disciplineId);
+    }
 }

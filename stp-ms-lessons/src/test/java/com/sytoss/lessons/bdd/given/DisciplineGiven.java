@@ -244,4 +244,17 @@ public class DisciplineGiven extends AbstractGiven {
             }
         }
     }
+
+    @Given("^\"(.*)\" discipline exists with id (.*)$")
+    public void disciplineExist(String disciplineName, String id) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        if (disciplineDTO == null) {
+            disciplineDTO = new DisciplineDTO();
+            disciplineDTO.setName(disciplineName);
+            disciplineDTO.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
+            disciplineDTO.setCreationDate(Timestamp.from(Instant.now()));
+            disciplineDTO = getDisciplineConnector().save(disciplineDTO);
+            getTestExecutionContext().registerId(id, disciplineDTO.getId());
+        }
+    }
 }

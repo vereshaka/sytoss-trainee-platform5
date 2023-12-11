@@ -3,6 +3,7 @@ package com.sytoss.lessons.controllers;
 import com.sytoss.domain.bom.exceptions.business.DisciplineExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.DisciplineNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Group;
@@ -188,6 +189,21 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<Discipline> result = doDelete("/api/discipline/1/delete", requestEntity, Discipline.class);
+        assertEquals(200, result.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldGetExamsByStudent() {
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        discipline.setName("SQL");
+        discipline.setTeacher(new Teacher());
+        when(disciplineService.getExamsByStudent(any())).thenReturn(List.of(new Exam()));
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Student"));
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<List<Exam>> result = doGet("/api/discipline/1/student/exams", requestEntity, new ParameterizedTypeReference<>() {});
         assertEquals(200, result.getStatusCode().value());
     }
 }

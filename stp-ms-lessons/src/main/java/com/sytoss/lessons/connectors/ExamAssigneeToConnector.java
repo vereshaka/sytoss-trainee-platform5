@@ -2,6 +2,7 @@ package com.sytoss.lessons.connectors;
 
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeToDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ public interface ExamAssigneeToConnector extends JpaRepository<ExamAssigneeToDTO
     List<ExamAssigneeToDTO> deleteAllByParent_Id(Long examAssigneeDTOId);
 
     List<ExamToGroupAssigneeDTO> findByGroupIdOrderByParent_RelevantFromDesc(Long groupId);
+
+    List<ExamToStudentAssigneeDTO> findByStudentId(Long studentId);
 }

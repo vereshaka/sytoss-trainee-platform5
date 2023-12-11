@@ -11,8 +11,11 @@ import io.cucumber.java.en.Given;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.mockito.Mockito.when;
 
 public class GroupGiven extends LessonsIntegrationTest {
 
@@ -109,6 +112,32 @@ public class GroupGiven extends LessonsIntegrationTest {
                     }
                 }
             }
+        }
+    }
+
+    @Given("student has such groups")
+    public void studentHasSuchGroups(DataTable dataTable) {
+        List<Map<String, String>> studentsToGroups = dataTable.asMaps();
+
+        Map<Long, List<Group>> studentListMap = new HashMap<>();
+
+        for (Map<String, String> studentToGroup : studentsToGroups) {
+            Long studentId = Long.parseLong(studentToGroup.get("studentId"));
+            Long groupId = Long.parseLong(studentToGroup.get("groupId"));
+
+            Group group = new Group();
+            group.setId(groupId);
+            if (studentListMap.get(studentId) != null) {
+                List<Group> groups = new ArrayList<>(studentListMap.get(studentId));
+                groups.add(group);
+                studentListMap.put(studentId, groups);
+            } else {
+                studentListMap.put(studentId, List.of(group));
+            }
+        }
+
+        for (Map.Entry<Long, List<Group>> student : studentListMap.entrySet()) {
+            when(getUserConnector().getGroupsOfStudent(student.getKey())).thenReturn(student.getValue());
         }
     }
 }

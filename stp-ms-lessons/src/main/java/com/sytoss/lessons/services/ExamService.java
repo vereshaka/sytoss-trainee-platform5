@@ -18,10 +18,7 @@ import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
-import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
+import com.sytoss.lessons.dto.exam.assignees.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -97,7 +94,7 @@ public class ExamService extends AbstractService {
         examConvertor.fromDTO(result, exam);
 
         List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(exam.getDiscipline().getId());
-        for (GroupReferenceDTO group: groups) {
+        for (GroupReferenceDTO group : groups) {
             analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
         }
 
@@ -354,11 +351,49 @@ public class ExamService extends AbstractService {
 
     public Exam getExamByExamAssignee(Long examAssigneeId) {
         ExamDTO examDTO = examConnector.findByExamAssignees_Id(examAssigneeId);
-        if(examDTO !=null){
+        if (examDTO != null) {
             Exam exam = new Exam();
-            examConvertor.fromDTO(examDTO,exam);
+            examConvertor.fromDTO(examDTO, exam);
             return exam;
         }
         throw new ExamNotFoundException("examAssigneeId: " + examAssigneeId);
+    }
+
+    public List<Exam> findExamsByStudent(Long disciplineId) {
+        AbstractUser abstractUser = getCurrentUser();
+        List<Long> groups = userConnector.getGroupsOfStudent(abstractUser.getId()).stream().map(Group::getId).toList();
+        List<ExamDTO> examDTOList = examConnector.findByDiscipline_Id(disciplineId);
+
+        if (Objects.isNull(examDTOList)) {
+            throw new DisciplineNotFoundException(disciplineId);
+        }
+
+        List<ExamDTO> filteredExams = new ArrayList<>();
+        for (ExamDTO examDTO : examDTOList) {
+            for (ExamAssigneeDTO examAssigneeDTO : examDTO.getExamAssignees()) {
+                List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeDTO.getExamAssigneeToDTOList();
+                for (ExamAssigneeToDTO examAssigneeToDTO : examAssigneeToDTOS) {
+                    if (examAssigneeToDTO instanceof ExamToStudentAssigneeDTO) {
+                        if (Objects.equals(((ExamToStudentAssigneeDTO) examAssigneeToDTO).getStudentId(), abstractUser.getId())
+                                && !filteredExams.stream().map(ExamDTO::getId).toList().contains(examDTO.getId())) {
+                            filteredExams.add(examDTO);
+                        }
+                    }
+                    else {
+                        if (groups.contains(((ExamToGroupAssigneeDTO) examAssigneeToDTO).getGroupId())
+                                && !filteredExams.stream().map(ExamDTO::getId).toList().contains(examDTO.getId())) {
+                            filteredExams.add(examDTO);
+                        }
+                    }
+                }
+            }
+
+        }
+
+        return filteredExams.stream().map(examDTO -> {
+            Exam exam = new Exam();
+            examConvertor.fromDTO(examDTO, exam);
+            return exam;
+        }).toList();
     }
 }

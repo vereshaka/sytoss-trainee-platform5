@@ -15,9 +15,14 @@ public class ExamAssigneeToView {
 
     private String studentId;
     private String assigneeId;
+    private String groupId;
 
     public ExamAssigneeToView(Map<String, String> input) {
+        if (input.get("studentId") != null) {
+            studentId = input.get("studentId");
+        } else if (input.get("groupId") != null) {
+            groupId = input.get("groupId");
+        }
         setAssigneeId(input.get("assigneeId"));
-        setStudentId(input.get("studentId"));
     }
 }
