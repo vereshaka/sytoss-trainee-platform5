@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -370,7 +371,7 @@ public class ExamService extends AbstractService {
 
         List<ExamDTO> filteredExams = new ArrayList<>();
         for (ExamDTO examDTO : examDTOList) {
-            for (ExamAssigneeDTO examAssigneeDTO : examDTO.getExamAssignees()) {
+            for (ExamAssigneeDTO examAssigneeDTO : examDTO.getExamAssignees().stream().filter(examAssigneeDTO -> Date.from(Instant.now()).after(examAssigneeDTO.getRelevantFrom())).toList()) {
                 List<ExamAssigneeToDTO> examAssigneeToDTOS = examAssigneeDTO.getExamAssigneeToDTOList();
                 for (ExamAssigneeToDTO examAssigneeToDTO : examAssigneeToDTOS) {
                     if (examAssigneeToDTO instanceof ExamToStudentAssigneeDTO) {

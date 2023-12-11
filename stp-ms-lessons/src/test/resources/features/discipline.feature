@@ -150,3 +150,37 @@ Feature: Discipline
       | name  | id   |
       | Exam1 | *ex1 |
       | Exam2 | *ex2 |
+
+  Scenario: STP-993 Retrieve exams by discipline for student when some exams are not started
+    Given "SQL-993-2" discipline exists with id *d2
+    And topics exist
+      | discipline | topic  |
+      | SQL-993-2  | Select |
+      | SQL-993-2  | Join   |
+    And "Trade23" task domain with "task-domain/prod-trade23-db.yml" db and "task-domain/prod-trade23-data.yml" data scripts exists for this discipline
+      | question                               | answer            | id  | topics       |
+      | What are the different subsets of SQL? | select  from dual | ta1 | Select, Join |
+      | "What is content of dual table?        | select  from dual | ta2 | Select       |
+    And this discipline has exams
+      | name  | tasks    | topic  | taskCount | maxGrade | id   |
+      | Exam1 | ta1, ta2 | Select | 2         | 2        | *ex3 |
+      | Exam2 | ta1, ta2 | Select | 2         | 2        | *ex4 |
+    And this exams have assignees
+      | relevantFrom               | relevantTo                 | examId | id   |
+      | 2023-10-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex3   | *as4 |
+      | 2023-12-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex4   | *as5 |
+      | 2023-12-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex4   | *as6 |
+    And this exam assignees have exam assignees to
+      | studentId | assigneeId | groupId |
+      | 0         | *as4       |         |
+      |           | *as5       | 1       |
+      |           | *as6       | 2       |
+    And student has such groups
+      | studentId | groupId |
+      | 0         | 1       |
+      | 0         | 2       |
+    When a student gets exams for this discipline
+    Then operation is successful
+    And exams should be
+      | name  | id   |
+      | Exam1 | *ex3 |
