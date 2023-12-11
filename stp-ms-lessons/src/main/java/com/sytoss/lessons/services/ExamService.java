@@ -362,7 +362,7 @@ public class ExamService extends AbstractService {
 
     public List<Exam> findExamsByStudent(Long disciplineId) {
         AbstractUser abstractUser = getCurrentUser();
-        List<Long> groups = userConnector.getGroupsOfStudent(abstractUser.getId()).stream().map(Group::getId).toList();
+        List<Long> groups = userConnector.getGroupsOfStudent().stream().map(Group::getId).toList();
         List<ExamDTO> examDTOList = examConnector.findByDiscipline_Id(disciplineId);
 
         if (Objects.isNull(examDTOList)) {

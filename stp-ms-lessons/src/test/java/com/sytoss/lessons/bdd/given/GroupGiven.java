@@ -137,7 +137,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         }
 
         for (Map.Entry<Long, List<Group>> student : studentListMap.entrySet()) {
-            when(getUserConnector().getGroupsOfStudent(student.getKey())).thenReturn(student.getValue());
+            when(getUserConnector().getGroupsOfStudent()).thenReturn(student.getValue());
         }
     }
 }
