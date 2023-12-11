@@ -11,10 +11,10 @@ import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
+import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamToStudentAssigneeDTO;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,7 +27,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -64,7 +63,7 @@ public class ExamServiceTest extends StpUnitTest {
     private TaskConnector taskConnector;
 
     @Spy
-    private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(),new TopicConvertor(new DisciplineConvertor()),
+    private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(), new TopicConvertor(new DisciplineConvertor()),
             new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
 
     @Spy
@@ -280,7 +279,7 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setId(1L);
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
-        exam.setTopics(List.of(t1,t2));
+        exam.setTopics(List.of(t1, t2));
         exam.setTeacher(teacher);
         exam.setDiscipline(discipline);
         Task task = new Task();
@@ -414,5 +413,107 @@ public class ExamServiceTest extends StpUnitTest {
         exam.setName(name);
         exam.setTopics(List.of(topicDTO));
         return exam;
+    }
+
+    @Test
+    void findExamsByStudent() {
+        Student student = new Student();
+        student.setId(1L);
+
+        Teacher teacher = createTeacher("John", "Teacher");
+        teacher.setId(1L);
+
+        Jwt principal = Jwt.withTokenValue("123").header("myHeader", "value").claim("user", student).build();
+        Object credential = null;
+        TestingAuthenticationToken authentication = new TestingAuthenticationToken(principal, credential);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Discipline discipline = new Discipline();
+        discipline.setId(1L);
+        discipline.setTeacher(teacher);
+
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("Exam");
+        exam.setNumberOfTasks(10);
+        exam.setTopics(List.of(new Topic(), new Topic()));
+        exam.setTeacher(teacher);
+        exam.setDiscipline(discipline);
+        Task task = new Task();
+        task.setTaskDomain(new TaskDomain());
+        exam.setTasks(List.of(task));
+        ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+
+        Exam exam2 = new Exam();
+        exam2.setId(2L);
+        exam2.setName("Exam 2");
+        exam2.setNumberOfTasks(10);
+        exam2.setTopics(List.of(new Topic(), new Topic()));
+        exam2.setTeacher(teacher);
+        exam2.setDiscipline(discipline);
+        exam2.setTasks(List.of(task));
+
+        ExamDTO examDTO2 = new ExamDTO();
+        examConvertor.toDTO(exam2, examDTO2);
+
+
+        Date date = new Date(222222222);
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setExam(exam);
+        examAssignee.setId(2L);
+        examAssignee.setRelevantTo(date);
+        examAssignee.setRelevantFrom(date);
+        date = new Date(33333333);
+        ExamAssignee examAssignee2 = new ExamAssignee();
+        examAssignee2.setExam(exam);
+        examAssignee2.setId(1L);
+        examAssignee2.setRelevantTo(date);
+        examAssignee2.setRelevantFrom(date);
+        ExamAssignee examAssignee3 = new ExamAssignee();
+        examAssignee3.setExam(exam2);
+        examAssignee3.setId(3L);
+        examAssignee3.setRelevantTo(new Date());
+        examAssignee3.setRelevantFrom(new Date());
+
+        ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee, examAssigneeDTO);
+        ExamAssigneeDTO examAssigneeDTO2 = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee2, examAssigneeDTO2);
+        ExamAssigneeDTO examAssigneeDTO3 = new ExamAssigneeDTO();
+        examAssigneeConvertor.toDTO(examAssignee3, examAssigneeDTO3);
+
+        ExamToStudentAssigneeDTO examToStudentAssigneeDTO = new ExamToStudentAssigneeDTO();
+        examToStudentAssigneeDTO.setStudentId(student.getId());
+        examToStudentAssigneeDTO.setParent(examAssigneeDTO);
+
+        Group group = new Group();
+        group.setId(1L);
+        group.setDiscipline(new Discipline());
+
+        ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
+        examToGroupAssigneeDTO.setGroupId(group.getId());
+        examToGroupAssigneeDTO.setParent(examAssigneeDTO2);
+
+        Group group2 = new Group();
+        group2.setId(2L);
+        group2.setDiscipline(new Discipline());
+
+        ExamToGroupAssigneeDTO examToGroupAssigneeDTO2 = new ExamToGroupAssigneeDTO();
+        examToGroupAssigneeDTO2.setGroupId(group2.getId());
+        examToGroupAssigneeDTO2.setParent(examAssigneeDTO3);
+
+        examAssigneeDTO.setExamAssigneeToDTOList(List.of(examToStudentAssigneeDTO));
+        examAssigneeDTO2.setExamAssigneeToDTOList(List.of(examToGroupAssigneeDTO));
+        examAssigneeDTO3.setExamAssigneeToDTOList(List.of(examToGroupAssigneeDTO2));
+
+        examDTO.setExamAssignees(List.of(examAssigneeDTO));
+        examDTO2.setExamAssignees(List.of(examAssigneeDTO2, examAssigneeDTO3));
+
+        when(userConnector.getGroupsOfStudent(student.getId())).thenReturn(List.of(group, group2));
+        when(examConnector.findByDiscipline_Id(any())).thenReturn(List.of(examDTO, examDTO2));
+
+        List<Exam> exams = examService.findExamsByStudent(discipline.getId());
+        assertEquals(2, exams.size());
     }
 }

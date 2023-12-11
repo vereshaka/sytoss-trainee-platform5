@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-@PreAuthorize("hasRole('Teacher')")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/discipline")
@@ -38,6 +37,7 @@ public class DisciplineController {
 
     private final TaskDomainService taskDomainService;
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that register a new discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -62,6 +62,7 @@ public class DisciplineController {
         return disciplineService.create(request);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that register a new topic", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -91,6 +92,7 @@ public class DisciplineController {
         return topicService.create(disciplineId, request);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve groups by discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -102,6 +104,7 @@ public class DisciplineController {
         return disciplineService.getGroups(disciplineId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -114,6 +117,7 @@ public class DisciplineController {
         return disciplineService.getById(disciplineId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that create a new task domain")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -127,6 +131,7 @@ public class DisciplineController {
         return taskDomainService.create(disciplineId, taskDomain);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve all task domains by discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK")
@@ -138,6 +143,7 @@ public class DisciplineController {
         return taskDomainService.findByDiscipline(disciplineId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that join group to discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -152,6 +158,7 @@ public class DisciplineController {
         disciplineService.assignGroupToDiscipline(disciplineId, groupId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve discipline's icon")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -164,6 +171,7 @@ public class DisciplineController {
         return disciplineService.getIcon(disciplineId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve information about topic")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),
@@ -174,6 +182,7 @@ public class DisciplineController {
         return topicService.findByDiscipline(discipleId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that assign groups to discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -185,6 +194,7 @@ public class DisciplineController {
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that update discipline")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -208,6 +218,7 @@ public class DisciplineController {
         return disciplineService.updateDiscipline(discipline);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that retrieve information about exams by discipline id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -221,7 +232,7 @@ public class DisciplineController {
         return disciplineService.getExams(disciplineId);
     }
 
-
+    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that delete discipline by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
@@ -233,5 +244,19 @@ public class DisciplineController {
             @PathVariable("disciplineId") Long disciplineId
     ) {
         return disciplineService.delete(disciplineId);
+    }
+
+    @PreAuthorize("hasRole('Student')")
+    @Operation(description = "Method that retrieve information about exams by discipline id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!")
+    })
+    @GetMapping(value = "/{disciplineId}/student/exams")
+    public List<Exam> getExamsByStudent(
+            @Parameter(description = "Id of discipline to get exams")
+            @PathVariable("disciplineId") Long disciplineId
+    ) {
+        return disciplineService.getExamsByStudent(disciplineId);
     }
 }

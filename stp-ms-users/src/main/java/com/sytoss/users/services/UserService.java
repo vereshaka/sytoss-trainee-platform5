@@ -3,7 +3,6 @@ package com.sytoss.users.services;
 import com.sytoss.common.AbstractStpService;
 import com.sytoss.domain.bom.exceptions.business.LoadImageException;
 import com.sytoss.domain.bom.exceptions.business.NotAllowedTeacherRegistrationException;
-import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.AbstractUser;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
@@ -24,7 +23,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -287,4 +285,19 @@ public class UserService extends AbstractStpService {
         }
     }
 
+    public List<Group> getGroupsByStudent(Long studentId) {
+        try {
+            StudentDTO studentDTO = (StudentDTO) userConnector.getReferenceById(studentId);
+            List<Group> groups = new ArrayList<>();
+            studentDTO.getGroups().forEach((groupDTO) -> {
+                Group group = new Group();
+                groupConvertor.fromDTO(groupDTO, group);
+                groups.add(group);
+            });
+            return groups;
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException("User not found", e);
+        }
+
+    }
 }
