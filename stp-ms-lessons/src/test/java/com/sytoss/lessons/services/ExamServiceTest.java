@@ -510,7 +510,7 @@ public class ExamServiceTest extends StpUnitTest {
         examDTO.setExamAssignees(List.of(examAssigneeDTO));
         examDTO2.setExamAssignees(List.of(examAssigneeDTO2, examAssigneeDTO3));
 
-        when(userConnector.getGroupsOfStudent(student.getId())).thenReturn(List.of(group, group2));
+        when(userConnector.getGroupsOfStudent()).thenReturn(List.of(group, group2));
         when(examConnector.findByDiscipline_Id(any())).thenReturn(List.of(examDTO, examDTO2));
 
         List<Exam> exams = examService.findExamsByStudent(discipline.getId());

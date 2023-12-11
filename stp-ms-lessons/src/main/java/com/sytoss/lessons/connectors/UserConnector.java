@@ -20,6 +20,6 @@ public interface UserConnector {
     @GetMapping("group/{groupId}/students")
     List<Student> getStudentOfGroup(@PathVariable("groupId") Long groupId);
 
-    @GetMapping("user/{studentId}/groups")
-    List<Group> getGroupsOfStudent(@PathVariable("studentId") Long studentId);
+    @GetMapping("user/me/groups")
+    List<Group> getGroupsOfStudent();
 }

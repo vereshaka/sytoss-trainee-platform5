@@ -284,20 +284,4 @@ public class UserService extends AbstractStpService {
             throw new RuntimeException("User not found", e);
         }
     }
-
-    public List<Group> getGroupsByStudent(Long studentId) {
-        try {
-            StudentDTO studentDTO = (StudentDTO) userConnector.getReferenceById(studentId);
-            List<Group> groups = new ArrayList<>();
-            studentDTO.getGroups().forEach((groupDTO) -> {
-                Group group = new Group();
-                groupConvertor.fromDTO(groupDTO, group);
-                groups.add(group);
-            });
-            return groups;
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException("User not found", e);
-        }
-
-    }
 }

@@ -104,13 +104,4 @@ public class UserController {
     public AbstractUser getById(@PathVariable("id") Long id) {
         return userService.getById(id);
     }
-
-    @Operation(description = "Method that retrieve user by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK")
-    })
-    @GetMapping("/{studentId}/groups")
-    public List<Group> getGroupsById(@PathVariable("studentId") Long studentId) {
-        return userService.getGroupsByStudent(studentId);
-    }
 }
