@@ -52,7 +52,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public StudentTestExecutionSummary mapTest(Map<String, String> row){
+    public StudentTestExecutionSummary mapTest(Map<String, String> row) {
 
         StudentTestExecutionSummary test = new StudentTestExecutionSummary();
 
@@ -73,7 +73,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public DisciplineSummary mapDisciplineSummary(Map<String, String> row){
+    public DisciplineSummary mapDisciplineSummary(Map<String, String> row) {
         DisciplineSummary disciplineSummary = new DisciplineSummary();
 
         SummaryGrade studentsGrade = new SummaryGrade();
@@ -93,7 +93,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public ExamSummary mapExamSummary(Map<String, String> row){
+    public ExamSummary mapExamSummary(Map<String, String> row) {
         ExamSummary examSummary = new ExamSummary();
         Exam exam = new Exam();
         exam.setId((Long) getTestExecutionContext().replaceId(row.get("exam id")));

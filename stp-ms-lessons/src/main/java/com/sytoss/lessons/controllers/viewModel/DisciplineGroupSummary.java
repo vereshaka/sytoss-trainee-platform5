@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class DisciplineSummary extends AbstractDisciplineSummary {
+public class DisciplineGroupSummary extends AbstractDisciplineSummary{
 
-    private List<ExamSummary> tests = new ArrayList<>();
+    private List<ExamGroupSummary> tests = new ArrayList<>();
 }
