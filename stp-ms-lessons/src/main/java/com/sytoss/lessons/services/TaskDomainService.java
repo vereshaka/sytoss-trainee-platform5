@@ -13,6 +13,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.lessons.bom.DatabaseImagesModel;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -23,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,5 +200,13 @@ public class TaskDomainService {
 
     public List<Exam> getExams(Long taskDomainId) {
         return examService.getExamsByTaskDomainId(taskDomainId);
+    }
+
+    public DatabaseImagesModel getImages(Long taskDomainId) {
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+        DatabaseImagesModel databaseImagesModel = new DatabaseImagesModel();
+        databaseImagesModel.setDbImageName(taskDomainDTO.getDbImageName());
+        databaseImagesModel.setDataImageName(taskDomainDTO.getDataImageName());
+        return databaseImagesModel;
     }
 }
