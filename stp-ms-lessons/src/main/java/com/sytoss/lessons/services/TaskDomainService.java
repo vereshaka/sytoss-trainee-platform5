@@ -23,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,5 +199,15 @@ public class TaskDomainService {
 
     public List<Exam> getExams(Long taskDomainId) {
         return examService.getExamsByTaskDomainId(taskDomainId);
+    }
+
+    public String getDbImage(Long taskDomainId) {
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+        return taskDomainDTO.getDbImageName();
+    }
+
+    public String getDataImage(Long taskDomainId) {
+        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
+        return taskDomainDTO.getDataImageName();
     }
 }

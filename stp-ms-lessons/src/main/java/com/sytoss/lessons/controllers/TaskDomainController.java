@@ -1,10 +1,10 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.lessons.bom.TaskDomainModel;
-import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.lessons.services.TaskDomainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,7 +56,7 @@ public class TaskDomainController {
     @PutMapping("/puml/{dataParameter}")
     public byte[] generatePngFromPuml(@Parameter(description = "id of the task domain to be searched by")
                                       @PathVariable(name = "dataParameter") ConvertToPumlParameters parameter,
-                                      @RequestBody (required = false) String puml) {
+                                      @RequestBody(required = false) String puml) {
         return taskDomainService.generatePngFromPuml(puml, parameter);
     }
 
@@ -78,7 +77,7 @@ public class TaskDomainController {
     })
     @GetMapping("/{taskDomainId}/tasks")
     public List<Task> getTasks(@Parameter(description = "id of the task domain to be searched by")
-                                           @PathVariable(value = "taskDomainId") Long taskDomainId) {
+                               @PathVariable(value = "taskDomainId") Long taskDomainId) {
         return taskDomainService.getTasks(taskDomainId);
     }
 
@@ -120,5 +119,27 @@ public class TaskDomainController {
             @PathVariable("taskDomainId") Long taskDomainId
     ) {
         return taskDomainService.getExams(taskDomainId);
+    }
+
+    @Operation(description = "Method returns image of db structure for task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/{taskDomainId}/dbStructure")
+    public String getDbStructureImage(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable("taskDomainId") Long taskDomainId) {
+        return taskDomainService.getDbImage(taskDomainId);
+    }
+
+    @Operation(description = "Method returns image of db data for task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @GetMapping("/{taskDomainId}/dbData")
+    public String getDbDataImage(
+            @Parameter(description = "id of personalExam to be searched")
+            @PathVariable("taskDomainId") Long taskDomainId) {
+        return taskDomainService.getDataImage(taskDomainId);
     }
 }
