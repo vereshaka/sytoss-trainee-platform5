@@ -13,6 +13,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
+import com.sytoss.lessons.bom.DatabaseImagesModel;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.convertors.TaskDomainConvertor;
@@ -201,13 +202,11 @@ public class TaskDomainService {
         return examService.getExamsByTaskDomainId(taskDomainId);
     }
 
-    public String getDbImage(Long taskDomainId) {
+    public DatabaseImagesModel getImages(Long taskDomainId) {
         TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
-        return taskDomainDTO.getDbImageName();
-    }
-
-    public String getDataImage(Long taskDomainId) {
-        TaskDomainDTO taskDomainDTO = taskDomainConnector.findById(taskDomainId).orElseThrow(() -> new TaskDomainNotFoundException(taskDomainId));
-        return taskDomainDTO.getDataImageName();
+        DatabaseImagesModel databaseImagesModel = new DatabaseImagesModel();
+        databaseImagesModel.setDbImageName(taskDomainDTO.getDbImageName());
+        databaseImagesModel.setDataImageName(taskDomainDTO.getDataImageName());
+        return databaseImagesModel;
     }
 }

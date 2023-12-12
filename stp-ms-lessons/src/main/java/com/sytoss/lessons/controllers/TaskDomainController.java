@@ -4,6 +4,7 @@ import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.lessons.bom.DatabaseImagesModel;
 import com.sytoss.lessons.bom.TaskDomainModel;
 import com.sytoss.lessons.services.TaskDomainService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -125,21 +126,10 @@ public class TaskDomainController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
-    @GetMapping("/{taskDomainId}/dbStructure")
-    public String getDbStructureImage(
+    @GetMapping("/{taskDomainId}/dbImages")
+    public DatabaseImagesModel getDbStructureImage(
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable("taskDomainId") Long taskDomainId) {
-        return taskDomainService.getDbImage(taskDomainId);
-    }
-
-    @Operation(description = "Method returns image of db data for task")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success|OK"),
-    })
-    @GetMapping("/{taskDomainId}/dbData")
-    public String getDbDataImage(
-            @Parameter(description = "id of personalExam to be searched")
-            @PathVariable("taskDomainId") Long taskDomainId) {
-        return taskDomainService.getDataImage(taskDomainId);
+        return taskDomainService.getImages(taskDomainId);
     }
 }
