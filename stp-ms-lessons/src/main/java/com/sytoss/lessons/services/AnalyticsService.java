@@ -346,7 +346,7 @@ public class AnalyticsService extends AbstractService {
             examGroupSummary.setStudentsGrade(examSummary.getStudentsGrade());
 
             if (examGroupSummary.getExam() != null) {
-                for (Long groupId : groupReferenceDTOS.stream().map(GroupReferenceDTO::getGroupId).toList()) {
+                for (Long groupId : groupReferenceDTOS.stream().map(GroupReferenceDTO::getGroupId).collect(Collectors.toSet())) {
                     List<Long> students = allStudents.stream().filter(student -> Objects.equals(student.getPrimaryGroup().getId(), groupId)).map(AbstractUser::getId).toList();
                     List<AnalyticGrade> analyticGrades = analyticsDTOSByExam.stream().filter(analyticsDTO -> students.contains(analyticsDTO.getStudentId())).map(analyticsDTO -> {
                         AnalyticGrade analyticGrade = new AnalyticGrade();
@@ -355,13 +355,15 @@ public class AnalyticsService extends AbstractService {
                         return analyticGrade;
                     }).toList();
 
-                    summaryGrade = setSummaryGrade(analyticGrades);
+                    if(analyticGrades.size()>0){
+                        summaryGrade = setSummaryGrade(analyticGrades);
 
-                    Group group = new Group();
-                    group.setId(groupId);
+                        Group group = new Group();
+                        group.setId(groupId);
 
-                    examGroupSummary.getGradesByGroup().put(group.getId(), summaryGrade);
-                    examGroupSummaries.add(examGroupSummary);
+                        examGroupSummary.getGradesByGroup().put(group.getId(), summaryGrade);
+                        examGroupSummaries.add(examGroupSummary);
+                    }
                 }
             }
             disciplineSummary.setTests(examGroupSummaries);
@@ -446,7 +448,8 @@ public class AnalyticsService extends AbstractService {
 
     private SummaryGrade setSummaryGrade(List<AnalyticGrade> grades) {
         SummaryGrade summaryGrade = new SummaryGrade();
-        AnalyticGrade analyticGrade = new AnalyticGrade(grades.stream().max(Comparator.comparing(AnalyticGrade::getGrade)).orElseThrow(null).getGrade(),
+
+        AnalyticGrade analyticGrade = new AnalyticGrade(grades.stream().max(Comparator.comparing(AnalyticGrade::getGrade)).orElse(null).getGrade(),
                 grades.stream().min(Comparator.comparing(AnalyticGrade::getTimeSpent)).orElseThrow(null).getTimeSpent());
         summaryGrade.setMax(analyticGrade);
         AnalyticGrade avg = new AnalyticGrade();
