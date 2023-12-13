@@ -330,39 +330,41 @@ public class AnalyticsService extends AbstractService {
             return analyticGrade;
         }).toList();
 
-        SummaryGrade summaryGrade = setSummaryGrade(grades);
-        disciplineSummary.setStudentsGrade(summaryGrade);
+        if (grades.size() > 0) {
+            SummaryGrade summaryGrade = setSummaryGrade(grades);
+            disciplineSummary.setStudentsGrade(summaryGrade);
 
-        List<ExamSummary> examSummaries = getDisciplineSummaryTests(disciplineId, allStudents.stream().map(AbstractUser::getId).collect(Collectors.toSet()));
-        List<ExamGroupSummary> examGroupSummaries = new ArrayList<>();
-        List<Long> exams = analyticsDTOS.stream().map(AnalyticsDTO::getExamId).distinct().toList();
-        for (Long examId : exams) {
-            List<AnalyticsDTO> analyticsDTOSByExam;
-            analyticsDTOSByExam = analyticsDTOS.stream().filter(analyticsDTO -> Objects.equals(analyticsDTO.getExamId(), examId)).toList();
-            ExamGroupSummary examGroupSummary = new ExamGroupSummary();
+            List<ExamSummary> examSummaries = getDisciplineSummaryTests(disciplineId, allStudents.stream().map(AbstractUser::getId).collect(Collectors.toSet()));
+            List<ExamGroupSummary> examGroupSummaries = new ArrayList<>();
+            List<Long> exams = analyticsDTOS.stream().map(AnalyticsDTO::getExamId).distinct().toList();
+            for (Long examId : exams) {
+                List<AnalyticsDTO> analyticsDTOSByExam;
+                analyticsDTOSByExam = analyticsDTOS.stream().filter(analyticsDTO -> Objects.equals(analyticsDTO.getExamId(), examId)).toList();
+                ExamGroupSummary examGroupSummary = new ExamGroupSummary();
 
-            ExamSummary examSummary = examSummaries.stream().filter(examSummary1 -> examSummary1.getExam().getId().equals(examId)).toList().get(0);
-            examGroupSummary.setExam(examSummary.getExam());
-            examGroupSummary.setStudentsGrade(examSummary.getStudentsGrade());
+                ExamSummary examSummary = examSummaries.stream().filter(examSummary1 -> examSummary1.getExam().getId().equals(examId)).toList().get(0);
+                examGroupSummary.setExam(examSummary.getExam());
+                examGroupSummary.setStudentsGrade(examSummary.getStudentsGrade());
 
-            if (examGroupSummary.getExam() != null) {
-                for (Long groupId : groupReferenceDTOS.stream().map(GroupReferenceDTO::getGroupId).collect(Collectors.toSet())) {
-                    List<Long> students = allStudents.stream().filter(student -> Objects.equals(student.getPrimaryGroup().getId(), groupId)).map(AbstractUser::getId).toList();
-                    List<AnalyticGrade> analyticGrades = analyticsDTOSByExam.stream().filter(analyticsDTO -> students.contains(analyticsDTO.getStudentId())).map(analyticsDTO -> {
-                        AnalyticGrade analyticGrade = new AnalyticGrade();
-                        analyticGrade.setGrade(analyticsDTO.getGrade());
-                        analyticGrade.setTimeSpent(analyticsDTO.getTimeSpent());
-                        return analyticGrade;
-                    }).toList();
+                if (examGroupSummary.getExam() != null) {
+                    for (Long groupId : groupReferenceDTOS.stream().map(GroupReferenceDTO::getGroupId).collect(Collectors.toSet())) {
+                        List<Long> students = allStudents.stream().filter(student -> Objects.equals(student.getPrimaryGroup().getId(), groupId)).map(AbstractUser::getId).toList();
+                        List<AnalyticGrade> analyticGrades = analyticsDTOSByExam.stream().filter(analyticsDTO -> students.contains(analyticsDTO.getStudentId())).map(analyticsDTO -> {
+                            AnalyticGrade analyticGrade = new AnalyticGrade();
+                            analyticGrade.setGrade(analyticsDTO.getGrade());
+                            analyticGrade.setTimeSpent(analyticsDTO.getTimeSpent());
+                            return analyticGrade;
+                        }).toList();
 
-                    if(analyticGrades.size()>0){
-                        summaryGrade = setSummaryGrade(analyticGrades);
+                        if (analyticGrades.size() > 0) {
+                            summaryGrade = setSummaryGrade(analyticGrades);
 
-                        Group group = new Group();
-                        group.setId(groupId);
+                            Group group = new Group();
+                            group.setId(groupId);
 
-                        examGroupSummary.getGradesByGroup().put(group.getId(), summaryGrade);
-                        examGroupSummaries.add(examGroupSummary);
+                            examGroupSummary.getGradesByGroup().put(group.getId(), summaryGrade);
+                            examGroupSummaries.add(examGroupSummary);
+                        }
                     }
                 }
             }
