@@ -11,10 +11,11 @@ import com.sytoss.domain.bom.personalexam.PersonalExam;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.given.AbstractGiven;
-import com.sytoss.lessons.controllers.viewModel.*;
+import com.sytoss.lessons.controllers.views.*;
 import com.sytoss.lessons.dto.AnalyticsDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +24,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 public class AnalyticsThen extends AbstractGiven {
     @Then("^updated analytic element should be$")
     public void gradeEquals(DataTable dataTable) {
@@ -211,8 +213,56 @@ public class AnalyticsThen extends AbstractGiven {
         }
     }
 
+    @Then("exam summaries by exams should be")
+    public void examSummariesByExamsShouldBe(DataTable expectedExamSummaries) {
+        DisciplineGroupSummary disciplineSummaryFromFeature = new DisciplineGroupSummary();
+
+        List<Map<String, String>> rows = expectedExamSummaries.asMaps();
+
+        for (Map<String, String> row : rows) {
+            Long examId = (Long) getTestExecutionContext().replaceId(row.get("exam id"));
+
+            SummaryGrade studentsGrade = new SummaryGrade();
+            AnalyticGrade averageGrade = new AnalyticGrade();
+            averageGrade.setGrade(Double.parseDouble(row.get("students average grade")));
+            averageGrade.setTimeSpent(Long.parseLong(row.get("students average spent time")));
+            studentsGrade.setAverage(averageGrade);
+
+            AnalyticGrade maxGrade = new AnalyticGrade();
+            maxGrade.setGrade(Double.parseDouble(row.get("max students grade")));
+            maxGrade.setTimeSpent(Long.parseLong(row.get("min students spent time")));
+            studentsGrade.setMax(maxGrade);
+
+            Exam exam = new Exam();
+            exam.setId(examId);
+
+            ExamGroupSummary examGroupSummary = new ExamGroupSummary();
+            examGroupSummary.setExam(exam);
+            examGroupSummary.setStudentsGrade(studentsGrade);
+        }
+
+        DisciplineGroupSummary disciplineSummary = (DisciplineGroupSummary) getTestExecutionContext().getResponse().getBody();
+
+        assert disciplineSummary != null;
+
+        for (ExamGroupSummary expectedExamSummary : disciplineSummaryFromFeature.getTests()) {
+            Optional<ExamGroupSummary> examSummary = disciplineSummary.getTests().stream().filter(test ->
+                            test.getExam().getId().equals(expectedExamSummary.getExam().getId())
+                                    && test.getStudentsGrade().getMax().getGrade() == expectedExamSummary.getStudentsGrade().getMax().getGrade()
+                                    && test.getStudentsGrade().getMax().getTimeSpent() == expectedExamSummary.getStudentsGrade().getMax().getTimeSpent()
+                                    && test.getStudentsGrade().getAverage().getGrade() == expectedExamSummary.getStudentsGrade().getAverage().getGrade()
+                                    && test.getStudentsGrade().getAverage().getTimeSpent() == expectedExamSummary.getStudentsGrade().getAverage().getTimeSpent()
+                    )
+                    .findFirst();
+            if(examSummary.isEmpty()){
+                log.error("Doesn't find appropriate value for"+expectedExamSummary.getExam().getId());
+            }
+            assertTrue(examSummary.isPresent());
+        }
+    }
+
     @Then("exam summaries by groups should be")
-    public void examSummariesShouldBe(DataTable expectedExamSummaries) {
+    public void examSummariesByGroupsShouldBe(DataTable expectedExamSummaries) {
         DisciplineGroupSummary disciplineSummaryFromFeature = new DisciplineGroupSummary();
 
         List<Map<String, String>> rows = expectedExamSummaries.asMaps();
@@ -237,16 +287,16 @@ public class AnalyticsThen extends AbstractGiven {
             if (disciplineSummaryFromFeature.getTests()!=null && disciplineSummaryFromFeature.getTests().stream().map(ExamGroupSummary::getExam).map(Exam::getId).toList().contains(examId)) {
                 ExamGroupSummary examSummary = disciplineSummaryFromFeature.getTests().stream().filter(examSummary1 -> Objects.equals(examSummary1.getExam().getId(), examId)).toList().get(0);
                 int index = disciplineSummaryFromFeature.getTests().indexOf(examSummary);
-                Map<Long,SummaryGrade> map = new HashMap<>(examSummary.getStudentsGrade());
+                Map<Long,SummaryGrade> map = new HashMap<>(examSummary.getGradesByGroup());
                 map.put(group.getId(), studentsGrade);
-                examSummary.setStudentsGrade(map);
+                examSummary.setGradesByGroup(map);
                 disciplineSummaryFromFeature.getTests().set(index,examSummary);
             } else {
                 ExamGroupSummary examSummary = new ExamGroupSummary();
                 Exam exam = new Exam();
                 exam.setId(examId);
                 examSummary.setExam(exam);
-                examSummary.setStudentsGrade(Map.of(group.getId(), studentsGrade));
+                examSummary.setGradesByGroup(Map.of(group.getId(), studentsGrade));
                 disciplineSummaryFromFeature.getTests().add(examSummary);
             }
         }
@@ -256,15 +306,18 @@ public class AnalyticsThen extends AbstractGiven {
         assert disciplineSummary != null;
 
         for (ExamGroupSummary expectedExamSummary : disciplineSummaryFromFeature.getTests()) {
-            for (Long groupId : expectedExamSummary.getStudentsGrade().keySet()) {
+            for (Long groupId : expectedExamSummary.getGradesByGroup().keySet()) {
                 Optional<ExamGroupSummary> examSummary = disciplineSummary.getTests().stream().filter(test ->
                                 test.getExam().getId().equals(expectedExamSummary.getExam().getId())
-                                        && test.getStudentsGrade().get(groupId).getMax().getGrade() == expectedExamSummary.getStudentsGrade().get(groupId).getMax().getGrade()
-                                        && test.getStudentsGrade().get(groupId).getMax().getTimeSpent() == expectedExamSummary.getStudentsGrade().get(groupId).getMax().getTimeSpent()
-                                        && test.getStudentsGrade().get(groupId).getAverage().getGrade() == expectedExamSummary.getStudentsGrade().get(groupId).getAverage().getGrade()
-                                        && test.getStudentsGrade().get(groupId).getAverage().getTimeSpent() == expectedExamSummary.getStudentsGrade().get(groupId).getAverage().getTimeSpent()
+                                        && test.getGradesByGroup().get(groupId).getMax().getGrade() == expectedExamSummary.getGradesByGroup().get(groupId).getMax().getGrade()
+                                        && test.getGradesByGroup().get(groupId).getMax().getTimeSpent() == expectedExamSummary.getGradesByGroup().get(groupId).getMax().getTimeSpent()
+                                        && test.getGradesByGroup().get(groupId).getAverage().getGrade() == expectedExamSummary.getGradesByGroup().get(groupId).getAverage().getGrade()
+                                        && test.getGradesByGroup().get(groupId).getAverage().getTimeSpent() == expectedExamSummary.getGradesByGroup().get(groupId).getAverage().getTimeSpent()
                         )
                         .findFirst();
+                if(examSummary.isEmpty()){
+                    log.error("Doesn't find appropriate value for"+expectedExamSummary.getExam().getId()+" and group "+groupId);
+                }
                 assertTrue(examSummary.isPresent());
             }
         }

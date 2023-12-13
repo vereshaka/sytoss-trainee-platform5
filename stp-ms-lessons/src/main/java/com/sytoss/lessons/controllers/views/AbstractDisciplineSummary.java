@@ -1,4 +1,4 @@
-package com.sytoss.lessons.controllers.viewModel;
+package com.sytoss.lessons.controllers.views;
 
 import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.lessons.Discipline;

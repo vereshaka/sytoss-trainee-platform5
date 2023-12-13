@@ -2,9 +2,9 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.analytics.Analytics;
 import com.sytoss.domain.bom.analytics.Rating;
-import com.sytoss.lessons.controllers.viewModel.DisciplineGroupSummary;
-import com.sytoss.lessons.controllers.viewModel.DisciplineSummary;
-import com.sytoss.lessons.controllers.viewModel.StudentDisciplineStatistic;
+import com.sytoss.lessons.controllers.views.DisciplineGroupSummary;
+import com.sytoss.lessons.controllers.views.DisciplineSummary;
+import com.sytoss.lessons.controllers.views.StudentDisciplineStatistic;
 import com.sytoss.lessons.services.AnalyticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

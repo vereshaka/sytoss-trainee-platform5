@@ -1,6 +1,6 @@
 package com.sytoss.lessons.connectors;
 
-import com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic;
+import com.sytoss.lessons.controllers.views.ExamSummaryStatistic;
 import com.sytoss.lessons.dto.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -46,7 +46,7 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "and a.personalExamId is not null ")
     SummaryGradeDTO getSummaryGrade(Long disciplineId, Long studentId);
 
-    @Query("SELECT new com.sytoss.lessons.controllers.viewModel.ExamSummaryStatistic(e.id, e.name, e.maxGrade, cast(max(a.grade) as Integer)) " +
+    @Query("SELECT new com.sytoss.lessons.controllers.views.ExamSummaryStatistic(e.id, e.name, e.maxGrade, cast(max(a.grade) as Integer)) " +
             "from ANALYTICS a, EXAM e " +
             "where e.id = :examId " +
             "and a.examId = e.id " +

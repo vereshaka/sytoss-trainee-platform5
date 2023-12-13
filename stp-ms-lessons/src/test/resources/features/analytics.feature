@@ -116,20 +116,28 @@ Feature: Analytics
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | groupId | examAssigneeId |
       | *d1          | *ex1   | 1         | *pe1           | 10    | 3         | 1       | *ea1           |
-      | *d1          | *ex1   | 2         | *pe2           | 5     | 3         | 2       | *ea1           |
-      | *d1          | *ex2   | 1         | *pe3           | 5     | 4         | 1       | *ea2           |
-      | *d1          | *ex2   | 2         | *pe4           | 4     | 2         | 2       | *ea2           |
+      | *d1          | *ex1   | 2         | *pe2           | 11    | 3         | 2       | *ea1           |
+      | *d1          | *ex1   | 3         | *pe3           | 3     | 1         | 1       | *ea1           |
+      | *d1          | *ex1   | 4         | *pe4           | 7     | 2         | 2       | *ea1           |
+      | *d1          | *ex1   | 5         | *pe5           | 8     | 5         | 1       | *ea1           |
+      | *d1          | *ex2   | 6         | *pe6           | 3     | 3         | 2       | *ea2           |
+      | *d1          | *ex2   | 7         | *pe7           | 5     | 4         | 1       | *ea2           |
+      | *d1          | *ex2   | 8         | *pe8           | 4     | 2         | 2       | *ea2           |
     When teacher requests discipline summary for discipline *d1
     Then operation is successful
     And full discipline summary should has values
       | average grade | average spent time | max grade | min spent time |
-      | 6             | 3                  | 10        | 2              |
+      | 6.375         | 2                  | 11        | 1              |
+    And exam summaries by exams should be
+      | exam id | max grade | students average grade | students average spent time | max students grade | min students spent time |
+      | *ex1    | 11        | 7.8                      | 2                           | 11                 | 1                       |
+      | *ex2    | 5         | 4.5                    | 3                           | 4                  | 1                       |
     And exam summaries by groups should be
       | exam id | group id | max grade | students average grade | students average spent time | max students grade | min students spent time |
-      | *ex1    | 1        | 10        | 10                     | 3                           | 10                 | 3                       |
-      | *ex1    | 2        | 5         | 5                      | 3                           | 5                  | 3                       |
+      | *ex1    | 1        | 10        | 7                      | 3                           | 10                 | 1                       |
+      | *ex1    | 2        | 11        | 9                      | 2                           | 11                 | 2                       |
       | *ex2    | 1        | 5         | 5                      | 4                           | 5                  | 4                       |
-      | *ex2    | 2        | 4         | 4                      | 2                           | 4                  | 2                       |
+      | *ex2    | 2        | 4         | 3.5                    | 2                           | 4                  | 2                       |
 
   Scenario: When teacher requests summary by discipline and group then response with detailed information has to be returned
     Given analytics elements exist

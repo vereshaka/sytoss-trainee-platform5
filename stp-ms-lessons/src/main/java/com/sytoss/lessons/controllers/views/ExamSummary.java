@@ -1,4 +1,4 @@
-package com.sytoss.lessons.controllers.viewModel;
+package com.sytoss.lessons.controllers.views;
 
 import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.lessons.Exam;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ExamSummary {
 
-    private Exam exam;
+    protected Exam exam;
 
-    private SummaryGrade studentsGrade;
+    protected SummaryGrade studentsGrade;
 }

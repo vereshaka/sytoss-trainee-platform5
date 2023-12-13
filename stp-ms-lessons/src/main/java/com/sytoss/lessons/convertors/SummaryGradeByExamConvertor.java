@@ -3,7 +3,7 @@ package com.sytoss.lessons.convertors;
 import com.sytoss.domain.bom.analytics.AnalyticGrade;
 import com.sytoss.domain.bom.analytics.SummaryGrade;
 import com.sytoss.domain.bom.lessons.Exam;
-import com.sytoss.lessons.controllers.viewModel.ExamSummary;
+import com.sytoss.lessons.controllers.views.ExamSummary;
 import com.sytoss.lessons.dto.SummaryGradeByExamDTO;
 import org.springframework.stereotype.Component;
 

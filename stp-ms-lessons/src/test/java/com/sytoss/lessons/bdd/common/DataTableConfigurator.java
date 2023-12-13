@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.controllers.viewModel.*;
+import com.sytoss.lessons.controllers.views.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;

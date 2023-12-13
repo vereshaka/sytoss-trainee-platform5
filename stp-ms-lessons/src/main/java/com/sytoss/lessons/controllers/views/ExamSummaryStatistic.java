@@ -1,4 +1,4 @@
-package com.sytoss.lessons.controllers.viewModel;
+package com.sytoss.lessons.controllers.views;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
