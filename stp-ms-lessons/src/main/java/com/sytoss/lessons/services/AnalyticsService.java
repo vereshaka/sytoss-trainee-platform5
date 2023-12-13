@@ -363,10 +363,10 @@ public class AnalyticsService extends AbstractService {
                             group.setId(groupId);
 
                             examGroupSummary.getGradesByGroup().put(group.getId(), summaryGrade);
-                            examGroupSummaries.add(examGroupSummary);
                         }
                     }
                 }
+                examGroupSummaries.add(examGroupSummary);
             }
             disciplineSummary.setTests(examGroupSummaries);
         }
