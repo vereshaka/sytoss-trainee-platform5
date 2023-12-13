@@ -448,7 +448,6 @@ public class AnalyticsService extends AbstractService {
 
     private SummaryGrade setSummaryGrade(List<AnalyticGrade> grades) {
         SummaryGrade summaryGrade = new SummaryGrade();
-
         AnalyticGrade analyticGrade = new AnalyticGrade(grades.stream().max(Comparator.comparing(AnalyticGrade::getGrade)).orElse(null).getGrade(),
                 grades.stream().min(Comparator.comparing(AnalyticGrade::getTimeSpent)).orElseThrow(null).getTimeSpent());
         summaryGrade.setMax(analyticGrade);
