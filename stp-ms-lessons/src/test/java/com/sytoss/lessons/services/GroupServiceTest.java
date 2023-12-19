@@ -50,9 +50,9 @@ class GroupServiceTest extends StpUnitTest {
         disciplineDTO2.setTeacherId(1L);
         disciplineDTO2.setId(2L);
 
-        GroupReferenceDTO group1 = new GroupReferenceDTO(1L, disciplineDTO1);
-        GroupReferenceDTO group2 = new GroupReferenceDTO(2L, disciplineDTO1);
-        GroupReferenceDTO group3 = new GroupReferenceDTO(1L, disciplineDTO2);
+        GroupReferenceDTO group1 = new GroupReferenceDTO(1L, disciplineDTO1, false);
+        GroupReferenceDTO group2 = new GroupReferenceDTO(2L, disciplineDTO1, false);
+        GroupReferenceDTO group3 = new GroupReferenceDTO(1L, disciplineDTO2, false);
         List<GroupReferenceDTO> input = List.of(group1, group2, group3);
         when(groupConnector.findByDisciplineId_TeacherId(1L)).thenReturn(input);
         List<Group> groups = groupService.findGroups();

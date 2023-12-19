@@ -86,8 +86,22 @@ public class AnalyticsService extends AbstractService {
     public void migrate(Long disciplineId) {
         try {
             log.info("Migration of discipline #" + disciplineId + " started");
-            log.info("Migration of discipline #" + disciplineId + ". Loading of students started");
+            log.info("Migration of discipline #" + disciplineId + ". Old analytics are started clearing");
             List<GroupReferenceDTO> groupReferenceDTOS = groupReferenceConnector.findByDisciplineId(disciplineId);
+            for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
+                try {
+                    List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
+                    studentsOfGroup.forEach(student -> {
+                        analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
+                    });
+                } catch (Exception e) {
+                    log.error("Fail to load group info. GroupId: " + groupReferenceDTO.getGroupId(), e);
+                }
+            }
+            log.info("Migration of discipline #" + disciplineId + ". Old analytics for these students clear");
+
+            log.info("Migration of discipline #" + disciplineId + ". Loading of students started");
+            groupReferenceDTOS = groupReferenceConnector.findByDisciplineIdAndIsExcluded(disciplineId, false);
             List<Student> students = new ArrayList<>();
             for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
                 try {
@@ -102,10 +116,9 @@ public class AnalyticsService extends AbstractService {
                 }
             }
             log.info("Migration of discipline #" + disciplineId + ". Loading of students finished");
-            for (Student student : students) {
-                analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
-            }
-            log.info("Migration of discipline #" + disciplineId + ". Old analytics for these students clear");
+
+
+
             List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
 
             List<Long> examAssigneesIds = new ArrayList<>();
@@ -141,7 +154,7 @@ public class AnalyticsService extends AbstractService {
                 analytic.setPersonalExam(personalExam);
                 analytic.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime() == null ? 0 : personalExam.getSpentTime()));
                 analytic.setStartDate(personalExam.getStartedDate() == null ? personalExam.getRelevantFrom() : personalExam.getStartedDate());
-                if(personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
+                if (personalExam.getStatus().equals(PersonalExamStatus.REVIEWED)) {
                     personalExam.summary();
                     updateAnalytic(analytic);
                 }
@@ -199,7 +212,7 @@ public class AnalyticsService extends AbstractService {
         if (groupId != null) {
             students = userConnector.getStudentOfGroup(groupId).stream().map(AbstractUser::getId).toList();
         }
-        if(Objects.equals(gradeType, "summary")){
+        if (Objects.equals(gradeType, "summary")) {
             List<AnalyticsSummaryDTO> analyticsSummaryDTOS;
             if (examId == null && groupId == null) {
                 analyticsSummaryDTOS = analyticsConnector.getSumStudentRatingsByDiscipline(disciplineId);
@@ -250,7 +263,7 @@ public class AnalyticsService extends AbstractService {
             rating.setStudent(student);
 
             AnalyticGrade analyticGrade = new AnalyticGrade();
-            if(analyticsDTO instanceof AnalyticsAverageDTO){
+            if (analyticsDTO instanceof AnalyticsAverageDTO) {
                 analyticGrade.setGrade(((AnalyticsAverageDTO) analyticsDTO).getAvgGrade());
                 analyticGrade.setTimeSpent(((AnalyticsAverageDTO) analyticsDTO).getAvgTimeSpent());
             } else {

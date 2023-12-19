@@ -230,4 +230,15 @@ public class DisciplineServiceTest extends StpUnitTest {
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
         verify(groupReferenceConnector, times(groupsIds.getGroupsIds().size())).save(any(GroupReferenceDTO.class));
     }
+
+    @Test
+    public void testExcludeGroupFromDiscipline() {
+        Long disciplineId = 1L;
+        Long groupId = 1L;
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        when(groupReferenceConnector.findByDisciplineIdAndGroupId(anyLong(),anyLong())).thenReturn(mock(GroupReferenceDTO.class));
+        disciplineService.excludeGroupFromDiscipline(disciplineId, groupId);
+        verify(groupReferenceConnector).save(any(GroupReferenceDTO.class));
+    }
 }

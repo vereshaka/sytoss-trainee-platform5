@@ -29,7 +29,7 @@ public class AnalyticsThen extends AbstractGiven {
     public void gradeEquals(DataTable dataTable) {
         Analytics analyticsFromResponse = getTestExecutionContext().getDetails().getAnalytics();
 
-        Map<String,String> analyticsMap = dataTable.asMaps().get(0);
+        Map<String, String> analyticsMap = dataTable.asMaps().get(0);
         Analytics analytics = new Analytics();
         Long disciplineId = Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("disciplineId").trim()).toString());
         Long examId = Long.parseLong(getTestExecutionContext().replaceId(analyticsMap.get("examId").trim()).toString());
@@ -92,13 +92,12 @@ public class AnalyticsThen extends AbstractGiven {
             AnalyticGrade grade = new AnalyticGrade();
             if (analyticsMap.get("grade") != null) {
                 grade.setGrade(Double.parseDouble(analyticsMap.get("grade").trim()));
-            }else{
+            } else {
                 grade.setGrade(0);
             }
             if (analyticsMap.get("timeSpent") != null) {
                 grade.setTimeSpent(Long.parseLong(analyticsMap.get("timeSpent").trim()));
-            }
-            else{
+            } else {
                 grade.setTimeSpent(0L);
             }
             if (analyticsMap.get("startDate") != null) {
@@ -124,7 +123,7 @@ public class AnalyticsThen extends AbstractGiven {
     @Then("ratings should be")
     public void ratingModelsShouldBe(List<Rating> ratings) {
         List<Rating> ratingsListFromResponse = (List<Rating>) getTestExecutionContext().getResponse().getBody();
-        assertEquals(ratings.size(),ratingsListFromResponse.size());
+        assertEquals(ratings.size(), ratingsListFromResponse.size());
         for (Rating rating : ratings) {
             for (Rating ratingFromResponse : ratingsListFromResponse) {
                 assertEquals(rating.getStudent().getId(), ratingFromResponse.getStudent().getId());
@@ -138,7 +137,7 @@ public class AnalyticsThen extends AbstractGiven {
     }
 
     @Then("StudentDisciplineStatistic object has to be returned")
-    public void analyticFullObjectHasToBeReturned(StudentDisciplineStatistic expectedDisciplineStatistic){
+    public void analyticFullObjectHasToBeReturned(StudentDisciplineStatistic expectedDisciplineStatistic) {
 
         StudentDisciplineStatistic disciplineStatistic = (StudentDisciplineStatistic) getTestExecutionContext().getResponse().getBody();
 

@@ -147,12 +147,11 @@ public class DisciplineService extends AbstractService {
     public void assignGroupToDiscipline(Long disciplineId, Long groupId) {
         getById(disciplineId);
         DisciplineDTO disciplineDTO = disciplineConnector.getReferenceById(disciplineId);
-        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO, false);
         groupReferenceConnector.save(groupReferenceDTO);
     }
 
     public List<Group> getGroups(Long disciplineId) {
-
         List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
         List<Group> result = new ArrayList<>();
         Discipline discipline = getById(disciplineId);
@@ -263,5 +262,12 @@ public class DisciplineService extends AbstractService {
 
     public List<Exam> getExamsByStudent(Long disciplineId) {
         return examService.findExamsByStudent(disciplineId);
+    }
+
+    public void excludeGroupFromDiscipline(Long disciplineId, Long groupId){
+        GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(disciplineId,groupId);
+        groupReferenceDTO.setIsExcluded(true);
+        groupReferenceConnector.save(groupReferenceDTO);
+        analyticsService.migrate(disciplineId);
     }
 }

@@ -259,4 +259,19 @@ public class DisciplineController {
     ) {
         return disciplineService.getExamsByStudent(disciplineId);
     }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that retrieve information about exams by discipline id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Discipline not found!")
+    })
+    @GetMapping(value = "/{disciplineId}/group/{groupId}/exclude")
+    public void excludeGroupFromRatings(
+            @Parameter(description = "Id of discipline to get exams")
+            @PathVariable("disciplineId") Long disciplineId,
+            @PathVariable("groupId") Long groupId
+    ) {
+        disciplineService.excludeGroupFromDiscipline(disciplineId,groupId);
+    }
 }

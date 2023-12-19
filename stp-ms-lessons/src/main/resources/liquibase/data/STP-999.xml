@@ -1,0 +1,15 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-999.xml">
+
+    <changeSet author="IvanL" id="STP-999-1">
+        <addColumn tableName="GROUP2DISCIPLINE">
+            <column name="IS_EXCLUDED" type="BOOLEAN" />
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="GROUP2DISCIPLINE" columnName="DATA_IMAGE_NAME" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

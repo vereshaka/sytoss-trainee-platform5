@@ -10,9 +10,13 @@ import java.util.List;
 @Repository
 public interface GroupReferenceConnector extends JpaRepository<GroupReferenceDTO, GroupReferencePK> {
 
-    List<GroupReferenceDTO> findByDisciplineId(Long discipline_id);
+    List<GroupReferenceDTO> findByDisciplineId(Long disciplineId);
 
     GroupReferenceDTO findByGroupId(Long groupId);
 
     List<GroupReferenceDTO> findByDisciplineId_TeacherId(Long teacherId);
+
+    GroupReferenceDTO findByDisciplineIdAndGroupId(Long disciplineId,Long groupId);
+
+    List<GroupReferenceDTO> findByDisciplineIdAndIsExcluded(Long disciplineId,Boolean isExcluded);
 }
