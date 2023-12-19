@@ -31,7 +31,6 @@ public class PersonalExamController {
     @Autowired
     private AnswerService answerService;
 
-    @PreAuthorize("hasRole('Teacher')")
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
