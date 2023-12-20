@@ -266,7 +266,7 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Discipline not found!")
     })
-    @GetMapping(value = "/{disciplineId}/group/{groupId}/exclude")
+    @PostMapping(value = "/{disciplineId}/group/{groupId}/exclude")
     public void excludeGroupFromRatings(
             @Parameter(description = "Id of discipline to get exams")
             @PathVariable("disciplineId") Long disciplineId,
