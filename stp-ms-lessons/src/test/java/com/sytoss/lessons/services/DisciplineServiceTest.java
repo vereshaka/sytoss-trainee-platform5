@@ -71,6 +71,9 @@ public class DisciplineServiceTest extends StpUnitTest {
     @Mock
     private TopicConnector topicConnector;
 
+    @Mock
+    private AnalyticsService analyticsService;
+
     @Test
     public void shouldSaveDiscipline() {
         Teacher user = new Teacher();

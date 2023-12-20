@@ -247,11 +247,16 @@ public class DisciplineService extends AbstractService {
 
     public List<Discipline> findDisciplinesByGroupId(Long groupId) {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findByGroupReferencesGroupId(groupId);
-        return disciplineDTOS.stream().map(disciplineDTO -> {
+        List<Discipline> disciplines  = disciplineDTOS.stream().map(disciplineDTO -> {
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
-        }).collect(Collectors.toList());
+        }).toList();
+        for(Discipline discipline: disciplines){
+            GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(discipline.getId(),groupId);
+            discipline.setExcluded(groupReferenceDTO.getIsExcluded());
+        }
+        return disciplines;
     }
 
     private Discipline convert(DisciplineDTO disciplineDTO){

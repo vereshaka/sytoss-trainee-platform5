@@ -32,4 +32,6 @@ public class Discipline {
     private byte[] icon;
 
     private Timestamp creationDate;
+
+    private boolean isExcluded;
 }
