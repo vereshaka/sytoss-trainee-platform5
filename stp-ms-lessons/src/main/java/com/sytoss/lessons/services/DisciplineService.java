@@ -7,7 +7,7 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
-import com.sytoss.lessons.bom.DisciplineModel;
+import com.sytoss.lessons.bom.GroupAssignment;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
@@ -241,24 +241,13 @@ public class DisciplineService extends AbstractService {
         return discipline;
     }
 
-    public List<DisciplineModel> findDisciplinesByGroupId(Long groupId) {
+    public List<Discipline> findDisciplinesByGroupId(Long groupId) {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findByGroupReferencesGroupId(groupId);
-        List<Discipline> disciplines = disciplineDTOS.stream().map(disciplineDTO -> {
+        return disciplineDTOS.stream().map(disciplineDTO -> {
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
         }).toList();
-        List<DisciplineModel> disciplineModels = new ArrayList<>();
-        for (Discipline discipline : disciplines) {
-            GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(discipline.getId(), groupId);
-            DisciplineModel disciplineModel = new DisciplineModel();
-            disciplineModel.setGroupId(groupId);
-            disciplineModel.setDiscipline(discipline);
-            disciplineModel.setExcluded(groupReferenceDTO.getIsExcluded());
-            disciplineModels.add(disciplineModel);
-        }
-
-        return disciplineModels;
     }
 
     private Discipline convert(DisciplineDTO disciplineDTO) {
@@ -276,5 +265,21 @@ public class DisciplineService extends AbstractService {
         groupReferenceDTO.setIsExcluded(true);
         groupReferenceConnector.save(groupReferenceDTO);
         analyticsService.removeAnalyticsByDisciplineAndGroup(disciplineId, groupId);
+    }
+
+    public List<GroupAssignment> getGroupsAssignment(Long disciplineId) {
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(disciplineId);
+        List<GroupAssignment> result = new ArrayList<>();
+        Discipline discipline = getById(disciplineId);
+        for (GroupReferenceDTO item : groups) {
+            GroupAssignment groupAssignment = new GroupAssignment();
+            Group group = new Group();
+            group.setId(item.getGroupId());
+            group.setDiscipline(discipline);
+            groupAssignment.setExcluded(item.getIsExcluded());
+            groupAssignment.setGroup(group);
+            result.add(groupAssignment);
+        }
+        return result;
     }
 }

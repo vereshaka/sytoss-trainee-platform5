@@ -5,7 +5,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Group;
+import com.sytoss.lessons.bom.GroupAssignment;
 import com.sytoss.lessons.dto.GroupsIds;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TaskDomainService;
@@ -98,10 +98,10 @@ public class DisciplineController {
             @ApiResponse(responseCode = "200", description = "Success|OK")
     })
     @GetMapping("/{disciplineId}/groups")
-    public List<Group> findByDiscipline(@Parameter(description = "id of the discipline to be searched by")
-                                        @PathVariable("disciplineId")
-                                        Long disciplineId) {
-        return disciplineService.getGroups(disciplineId);
+    public List<GroupAssignment> findAssignmentsByDiscipline(@Parameter(description = "id of the discipline to be searched by")
+                                                             @PathVariable("disciplineId")
+                                                             Long disciplineId) {
+        return disciplineService.getGroupsAssignment(disciplineId);
     }
 
     @PreAuthorize("hasRole('Teacher')")
@@ -272,6 +272,6 @@ public class DisciplineController {
             @PathVariable("disciplineId") Long disciplineId,
             @PathVariable("groupId") Long groupId
     ) {
-        disciplineService.excludeGroupFromDiscipline(disciplineId,groupId);
+        disciplineService.excludeGroupFromDiscipline(disciplineId, groupId);
     }
 }
