@@ -81,6 +81,9 @@ public class PersonalExam {
 
     private double sumOfCoef;
 
+    @JsonView({PersonalExam.Public.class})
+    private String comment;
+
     public void start() {
         if (status.equals(PersonalExamStatus.NOT_STARTED)) {
             status = PersonalExamStatus.IN_PROGRESS;

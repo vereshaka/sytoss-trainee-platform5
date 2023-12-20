@@ -193,7 +193,7 @@ public class PersonalExamService extends AbstractService {
                     answer.getTeacherGrade().setValue(answerToChange.getTeacherGrade().getValue());
                 }
         );
-
+        personalExam.setComment(personalExamToChange.getComment());
         personalExam.review();
         personalExam.summary();
         PersonalExam result = personalExamConnector.save(personalExam);

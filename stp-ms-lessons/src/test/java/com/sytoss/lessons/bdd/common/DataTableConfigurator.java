@@ -6,7 +6,7 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
-import com.sytoss.lessons.controllers.viewModel.*;
+import com.sytoss.lessons.controllers.views.*;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.java.DataTableType;
@@ -52,7 +52,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public StudentTestExecutionSummary mapTest(Map<String, String> row){
+    public StudentTestExecutionSummary mapTest(Map<String, String> row) {
 
         StudentTestExecutionSummary test = new StudentTestExecutionSummary();
 
@@ -73,7 +73,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public DisciplineSummary mapDisciplineSummary(Map<String, String> row){
+    public DisciplineSummary mapDisciplineSummary(Map<String, String> row) {
         DisciplineSummary disciplineSummary = new DisciplineSummary();
 
         SummaryGrade studentsGrade = new SummaryGrade();
@@ -93,7 +93,7 @@ public class DataTableConfigurator extends LessonsIntegrationTest {
     }
 
     @DataTableType
-    public ExamSummary mapExamSummary(Map<String, String> row){
+    public ExamSummary mapExamSummary(Map<String, String> row) {
         ExamSummary examSummary = new ExamSummary();
         Exam exam = new Exam();
         exam.setId((Long) getTestExecutionContext().replaceId(row.get("exam id")));
