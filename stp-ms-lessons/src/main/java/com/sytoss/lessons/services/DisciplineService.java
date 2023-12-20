@@ -7,15 +7,12 @@ import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.DisciplineModel;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.api.FilterItem;
 import com.sytoss.lessons.convertors.DisciplineConvertor;
 import com.sytoss.lessons.convertors.TaskConvertor;
-import com.sytoss.lessons.dto.GroupReferenceDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TaskDomainDTO;
-import com.sytoss.lessons.dto.TopicDTO;
-import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -225,7 +221,7 @@ public class DisciplineService extends AbstractService {
         Discipline discipline = getById(disciplineId);
         analyticsService.deleteByDiscipline(disciplineId);
         List<Exam> examList = examService.getExamsByDiscipline(disciplineId);
-        for (Exam exam: examList) {
+        for (Exam exam : examList) {
             examService.delete(exam.getId());
         }
 
@@ -245,21 +241,27 @@ public class DisciplineService extends AbstractService {
         return discipline;
     }
 
-    public List<Discipline> findDisciplinesByGroupId(Long groupId) {
+    public List<DisciplineModel> findDisciplinesByGroupId(Long groupId) {
         List<DisciplineDTO> disciplineDTOS = disciplineConnector.findByGroupReferencesGroupId(groupId);
-        List<Discipline> disciplines  = disciplineDTOS.stream().map(disciplineDTO -> {
+        List<Discipline> disciplines = disciplineDTOS.stream().map(disciplineDTO -> {
             Discipline discipline = new Discipline();
             disciplineConvertor.fromDTO(disciplineDTO, discipline);
             return discipline;
         }).toList();
-        for(Discipline discipline: disciplines){
-            GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(discipline.getId(),groupId);
-            discipline.setExcluded(groupReferenceDTO.getIsExcluded());
+        List<DisciplineModel> disciplineModels = new ArrayList<>();
+        for (Discipline discipline : disciplines) {
+            GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(discipline.getId(), groupId);
+            DisciplineModel disciplineModel = new DisciplineModel();
+            disciplineModel.setGroupId(groupId);
+            disciplineModel.setDiscipline(discipline);
+            disciplineModel.setExcluded(groupReferenceDTO.getIsExcluded());
+            disciplineModels.add(disciplineModel);
         }
-        return disciplines;
+
+        return disciplineModels;
     }
 
-    private Discipline convert(DisciplineDTO disciplineDTO){
+    private Discipline convert(DisciplineDTO disciplineDTO) {
         Discipline discipline = new Discipline();
         disciplineConvertor.fromDTO(disciplineDTO, discipline);
         return discipline;
@@ -269,10 +271,10 @@ public class DisciplineService extends AbstractService {
         return examService.findExamsByStudent(disciplineId);
     }
 
-    public void excludeGroupFromDiscipline(Long disciplineId, Long groupId){
-        GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(disciplineId,groupId);
+    public void excludeGroupFromDiscipline(Long disciplineId, Long groupId) {
+        GroupReferenceDTO groupReferenceDTO = groupReferenceConnector.findByDisciplineIdAndGroupId(disciplineId, groupId);
         groupReferenceDTO.setIsExcluded(true);
         groupReferenceConnector.save(groupReferenceDTO);
-        analyticsService.migrate(disciplineId);
+        analyticsService.removeAnalyticsByDisciplineAndGroup(disciplineId, groupId);
     }
 }

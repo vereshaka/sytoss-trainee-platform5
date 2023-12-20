@@ -91,9 +91,7 @@ public class AnalyticsService extends AbstractService {
             for (GroupReferenceDTO groupReferenceDTO : groupReferenceDTOS) {
                 try {
                     List<Student> studentsOfGroup = userConnector.getStudentOfGroup(groupReferenceDTO.getGroupId());
-                    studentsOfGroup.forEach(student -> {
-                        analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId());
-                    });
+                    studentsOfGroup.forEach(student -> analyticsConnector.deleteAnalyticsDTOByDisciplineIdAndStudentId(disciplineId, student.getId()));
                 } catch (Exception e) {
                     log.error("Fail to load group info. GroupId: " + groupReferenceDTO.getGroupId(), e);
                 }
@@ -395,5 +393,16 @@ public class AnalyticsService extends AbstractService {
         studentDisciplineStatistic.setSummaryGrade(summaryGrade);
 
         return studentDisciplineStatistic;
+    }
+
+    public void removeAnalyticsByDisciplineAndGroup(Long disciplineId,Long groupId){
+        List<Long> students = new ArrayList<>();
+        if (groupId != null) {
+            students = userConnector.getStudentOfGroup(groupId).stream().map(AbstractUser::getId).toList();
+        }
+
+        for(Long studentId: students){
+            analyticsConnector.deleteAllByDisciplineIdAndStudentId(disciplineId,studentId);
+        }
     }
 }

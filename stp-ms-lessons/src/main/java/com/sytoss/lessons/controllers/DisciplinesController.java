@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Task;
+import com.sytoss.lessons.bom.DisciplineModel;
 import com.sytoss.lessons.services.DisciplineService;
 import com.sytoss.lessons.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,8 +64,7 @@ public class DisciplinesController {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
     })
     @GetMapping("/byGroup/{groupId}")
-    public List<Discipline> findDisciplinesByGroupId(@PathVariable Long groupId) {
+    public List<DisciplineModel> findDisciplinesByGroupId(@PathVariable Long groupId) {
         return disciplineService.findDisciplinesByGroupId(groupId);
     }
-
 }
