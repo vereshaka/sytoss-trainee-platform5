@@ -117,8 +117,6 @@ public class AnalyticsService extends AbstractService {
             }
             log.info("Migration of discipline #" + disciplineId + ". Loading of students finished");
 
-
-
             List<ExamDTO> exams = examConnector.findByDiscipline_Id(disciplineId);
 
             List<Long> examAssigneesIds = new ArrayList<>();
