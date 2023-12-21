@@ -58,7 +58,7 @@ public class ScoreService {
             List<TaskCondition> failedCondition = new ArrayList<>();
 
             for (TaskCondition condition : data.getConditions()) {
-                Pattern pattern = Pattern.compile("(?i).*\\b"+condition.getValue()+"\\b.*");
+                Pattern pattern = Pattern.compile("(?i).*\\b"+condition.getValue().trim()+"\\b.*");
                 if ((condition.getType().equals(ConditionType.CONTAINS)
                         && !pattern.matcher(data.getRequest()).find())
                         || (condition.getType().equals(ConditionType.NOT_CONTAINS)

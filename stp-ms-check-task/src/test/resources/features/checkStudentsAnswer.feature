@@ -187,3 +187,30 @@ Feature: check answer
     Then request should be processed successfully
     And Grade value is 1
     And Grade message is ""
+
+  Scenario: STP-1011 Requiered commands aren't graded correctly - cause is spaces in required commands
+    Given Request contains database script as in "task-domain/sale.yml"
+    And multiline etalon SQL is:
+    """
+    select 1 as f, 2 as s, case
+    when IdProduct >= 1
+     then 'true'
+     else 'false'
+     end as result,
+     NameProduct from Product where IdProduct IN (Select IdProduct from Sale)
+  """
+    And multiline check SQL is:
+  """
+    select 1 as f, 2 as b,
+    case
+    when IdProduct >= 1
+     then 'true'
+     else 'false'
+     end as qq,
+     NameProduct from Product where IdProduct IN (Select IdProduct from Sale)
+  """
+    And answer should contains "CASE " condition with "CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""

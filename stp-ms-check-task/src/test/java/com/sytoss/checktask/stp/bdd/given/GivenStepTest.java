@@ -39,6 +39,11 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setEtalon(answer);
     }
 
+    @Given("multiline etalon SQL is:")
+    public void givenMultilineEtalonScript(String answer) {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setEtalon(answer);
+    }
+
     @Given("^answer should contains \"(.*)\" condition with \"(.*)\" type$")
     public void givenCondition(String condition, String conditionType) {
         TaskCondition taskCondition = new TaskCondition();
@@ -49,6 +54,11 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
 
     @Given("^check SQL is \"(.*)\"$")
     public void givenAnswerScript(String answer) {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
+    }
+
+    @Given("^multiline check SQL is:")
+    public void givenMultilineAnswerScript(String answer) {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
     }
 
