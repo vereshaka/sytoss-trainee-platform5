@@ -66,4 +66,14 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
     public void givenAnswerMultiLineScript(String answer) {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setRequest(answer);
     }
+
+    @Given("^sorting is relevant$")
+    public void sortingIsRelevant() {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setSortingRelevant(true);
+    }
+
+    @Given("^sorting is not relevant$")
+    public void sortingIsNotRelevant() {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setSortingRelevant(false);
+    }
 }

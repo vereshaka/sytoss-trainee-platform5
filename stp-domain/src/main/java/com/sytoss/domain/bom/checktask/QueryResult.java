@@ -1,14 +1,12 @@
 package com.sytoss.domain.bom.checktask;
 
 import com.sytoss.domain.bom.checktask.exceptions.*;
+import com.sytoss.domain.bom.personalexam.CheckRequestParameters;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class QueryResult {
@@ -38,8 +36,8 @@ public class QueryResult {
         return result;
     }
 
-    public List<Exception> compareWithEtalon(QueryResult etalon) {
-        List<Exception> result = new ArrayList<>();
+    public Set<Exception> compareWithEtalon(QueryResult etalon, CheckRequestParameters checkRequestParameters) {
+        Set<Exception> result = new HashSet<>();
         if (etalon.getResultMapList().size() != this.getResultMapList().size()) {
             result.add(new DifferentRowsAmountException());  // case #2
         } else {
@@ -51,13 +49,19 @@ public class QueryResult {
 
             List<String> absentColumns = new ArrayList<>();
             List<String> wrongOrderingColumns = new ArrayList<>();
+            WrongSortingException wrongSortingException = new WrongSortingException();
             for (int index : columnIndexMapping.keySet()) {
                 int answerIndex = columnIndexMapping.get(index);
                 if (answerIndex == -1) {
                     absentColumns.add(etalon.getHeader().get(index));
                 } else {
-                    if (!CollectionUtils.isEqualCollection(etalon.getColumnValue(index), getColumnValue(answerIndex))) {
+                    List<Object> etalonColumnValues = etalon.getColumnValue(index);
+                    List<Object> answerColumnValues = getColumnValue(answerIndex);
+                    if (!CollectionUtils.isEqualCollection(etalonColumnValues, answerColumnValues)) {
                         wrongOrderingColumns.add(etalon.getHeader().get(index));
+                    }
+                    if (checkRequestParameters.isSortingRelevant() && !etalonColumnValues.equals(answerColumnValues)){
+                        result.add(wrongSortingException);
                     }
                 }
             }

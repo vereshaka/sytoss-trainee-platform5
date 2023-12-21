@@ -13,6 +13,8 @@ public class CheckRequestParameters {
 
     private String checkAnswer;
 
+    private boolean isSortingRelevant;
+
     public boolean isQueryForUpdate(){
         if(request != null){
             return !request.toUpperCase().startsWith("SELECT");

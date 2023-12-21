@@ -214,3 +214,23 @@ Feature: check answer
     Then request should be processed successfully
     And Grade value is 1
     And Grade message is ""
+
+  Scenario: STP-1009-1 Sorting doesn't affect on check request result (sorting makes matter)
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale) order by IdProduct asc"
+    And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale) order by IdProduct desc"
+    And sorting is relevant
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 0.7
+    And Grade message is "Sorting is wrong."
+
+  Scenario: STP-1009-2 Sorting doesn't affect on check request result (sorting does not makes matter)
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale) order by IdProduct asc"
+    And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale) order by IdProduct desc"
+    And sorting is not relevant
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""
