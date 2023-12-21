@@ -23,4 +23,7 @@ public class GroupReferenceDTO extends Auditable {
     @ManyToOne
     @JsonIgnore
     private DisciplineDTO discipline;
+
+    @Column(name = "IS_EXCLUDED")
+    private Boolean isExcluded;
 }

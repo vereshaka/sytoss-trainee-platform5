@@ -25,7 +25,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
         for (Group group : groups) {
             DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(group.getDiscipline().getName(), 1L);
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(), disciplineDTO);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(group.getId(), disciplineDTO,false);
             groupReferenceDTOS.add(groupReferenceDTO);
         }
 
@@ -71,7 +71,7 @@ public class GroupGiven extends LessonsIntegrationTest {
         List<GroupReferenceDTO> groupReferenceDTOS = new ArrayList<>();
 
         for (Long groupId : groupIds) {
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO,false);
             groupReferenceDTOS.add(groupReferenceDTO);
             getGroupReferenceConnector().save(groupReferenceDTO);
         }
@@ -107,6 +107,12 @@ public class GroupGiven extends LessonsIntegrationTest {
                         GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO();
                         groupReferenceDTO.setDiscipline(disciplineDTO);
                         groupReferenceDTO.setGroupId(groupId);
+                        if(groupMap.get("isExcluded")!=null){
+                            boolean isExcluded = !groupMap.get("isExcluded").equals("false");
+                            groupReferenceDTO.setIsExcluded(isExcluded);
+                        } else{
+                            groupReferenceDTO.setIsExcluded(false);
+                        }
                         getGroupReferenceConnector().save(groupReferenceDTO);
                         getTestExecutionContext().registerId(groupKey, groupId);
                     }

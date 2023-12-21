@@ -100,14 +100,20 @@ public class PersonalExamGiven extends LessonsIntegrationTest {
 
             Group group = new Group();
             if (personalExamMap.get("groupId") != null) {
-                String groupKey = getTestExecutionContext().replaceId(personalExamMap.get("groupId")).toString();
-                if (groupKey != getTestExecutionContext().replaceId(personalExamMap.get("groupId"))) {
-                    group.setId(Long.parseLong(groupKey));
-                    group.setName(groupKey);
+                if(personalExamMap.get("isExcluded") == null || Objects.equals(personalExamMap.get("isExcluded"), "false")){
+                    String groupKey = getTestExecutionContext().replaceId(personalExamMap.get("groupId")).toString();
+                    if (groupKey != getTestExecutionContext().replaceId(personalExamMap.get("groupId"))) {
+                        group.setId(Long.parseLong(groupKey));
+                        group.setName(groupKey);
+                    }
+                    if (!groups.stream().map(Group::getId).toList().contains(group.getId())) {
+                        groups.add(group);
+                    }
                 }
-                if (!groups.stream().map(Group::getId).toList().contains(group.getId())) {
-                    groups.add(group);
+                else{
+                    continue;
                 }
+
             } else {
                 group.setId(1L);
                 group.setName("1");

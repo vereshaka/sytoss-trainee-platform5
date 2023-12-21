@@ -91,4 +91,5 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
     @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent),  row_number() over (order by SUM(a.grade) desc , SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.personalExamId is not null and a.studentId in :studentIds and a.examId = :examId group by a.studentId order by 2 desc, 3 asc")
     List<AnalyticsSummaryDTO> getSumStudentRatingsByDisciplineAndGroupIdAndExamId(Long disciplineId, @Param("studentIds") List<Long> studentsIds, Long examId);
 
+    List<AnalyticsDTO> deleteAllByDisciplineIdAndStudentId(Long disciplineId,Long studentId);
 }
