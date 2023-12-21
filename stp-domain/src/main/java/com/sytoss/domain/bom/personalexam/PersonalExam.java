@@ -110,6 +110,7 @@ public class PersonalExam {
                 spentTime += answer.getTimeSpent();
             }
         });
+        summaryGrade = Math.round(summaryGrade * 10.0) / 10.0;
     }
 
     public Answer getCurrentAnswer() {
