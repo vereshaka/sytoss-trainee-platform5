@@ -84,6 +84,7 @@ public class AnswerService extends AbstractService {
         }
         checkTaskParameters.setEtalon(task.getEtalonAnswer());
         checkTaskParameters.setConditions(task.getTaskConditions());
+        checkTaskParameters.setSortingRelevant(task.isSortingRelevant());
         String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
