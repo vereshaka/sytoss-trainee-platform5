@@ -276,6 +276,10 @@ public class DisciplineService extends AbstractService {
             Group group = new Group();
             group.setId(item.getGroupId());
             group.setDiscipline(discipline);
+            if(item.getIsExcluded() == null){
+                item.setIsExcluded(false);
+                groupReferenceConnector.save(item);
+            }
             groupAssignment.setExcluded(item.getIsExcluded());
             groupAssignment.setGroup(group);
             result.add(groupAssignment);
