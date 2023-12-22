@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -89,7 +91,8 @@ public class AnswerService extends AbstractService {
         String liquibase = pumlConvertor.convertToLiquibase(script);
         checkTaskParameters.setScript(liquibase);
         Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        double gradeValue = score.getValue() * (answer.getTask().getCoef() * (personalExam.getMaxGrade() / personalExam.getSumOfCoef()));
+        double gradeValue = score.getValue() * (answer.getTask().getCoef() * personalExam.getMaxGrade() / personalExam.getSumOfCoef());
+        gradeValue = new BigDecimal(gradeValue).setScale(1, RoundingMode.HALF_UP).doubleValue();
         Grade grade = new Grade();
         grade.setValue(gradeValue);
         grade.setComment(score.getComment());
