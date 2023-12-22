@@ -6,8 +6,8 @@ import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.lessons.Topic;
-import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
+import com.sytoss.lessons.bom.GroupAssignment;
 import com.sytoss.lessons.dto.GroupsIds;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -65,7 +65,7 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         when(disciplineService.getGroups(any())).thenReturn(new ArrayList<>());
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<>(null, httpHeaders);
-        ResponseEntity<List<Group>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<GroupAssignment>> result = doGet("/api/discipline/123/groups", requestEntity, new ParameterizedTypeReference<>() {
         });
         assertEquals(200, result.getStatusCode().value());
     }
@@ -203,7 +203,8 @@ public class DisciplineControllerTest extends LessonsControllerTest {
         httpHeaders.setBearerAuth(generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Student"));
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<List<Exam>> result = doGet("/api/discipline/1/student/exams", requestEntity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<List<Exam>> result = doGet("/api/discipline/1/student/exams", requestEntity, new ParameterizedTypeReference<>() {
+        });
         assertEquals(200, result.getStatusCode().value());
     }
 }
