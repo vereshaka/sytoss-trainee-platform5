@@ -13,4 +13,13 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="STP-1009-1" author="IgorI">
+        <addColumn tableName="TASK">
+            <column name="DATABASE_TYPE" type="VARCHAR2(100 BYTE)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="TASK" columnName="IS_SORTING_RELEVANT"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>
