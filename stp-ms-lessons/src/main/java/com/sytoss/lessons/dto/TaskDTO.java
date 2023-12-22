@@ -28,6 +28,12 @@ public class TaskDTO extends Auditable {
     @Column(name = "COEFFICIENT")
     private Double coef;
 
+    @Column(name = "IS_SORTING_RELEVANT")
+    private Boolean isSortingRelevant;
+
+    @Column(name = "DATABASE_TYPE")
+    private String databaseType;
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TASK_DOMAIN_ID", referencedColumnName = "ID")
     private TaskDomainDTO taskDomain;

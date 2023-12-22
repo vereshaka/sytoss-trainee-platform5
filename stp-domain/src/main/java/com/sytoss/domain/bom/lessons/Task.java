@@ -37,6 +37,8 @@ public class Task {
 
     private String requiredCommand;
 
+    private boolean isSortingRelevant;
+
     @JsonView({PersonalExam.TeacherOnly.class})
     private String code;
 

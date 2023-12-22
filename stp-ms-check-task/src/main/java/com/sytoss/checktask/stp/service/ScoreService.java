@@ -2,10 +2,7 @@ package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.checktask.exceptions.CompareConditionException;
-import com.sytoss.domain.bom.checktask.exceptions.DifferentRowsAmountException;
-import com.sytoss.domain.bom.checktask.exceptions.EtalonColumnsNotFoundException;
-import com.sytoss.domain.bom.checktask.exceptions.WrongDataException;
+import com.sytoss.domain.bom.checktask.exceptions.*;
 import com.sytoss.domain.bom.exceptions.business.CheckAnswerIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.lessons.ConditionType;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Service
@@ -37,6 +35,7 @@ public class ScoreService {
             checkRequestParameters.setScript(data.getScript());
             checkRequestParameters.setRequest(data.getRequest());
             checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
+            checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
 
             QueryResult queryResultAnswer;
             try {
@@ -54,7 +53,7 @@ public class ScoreService {
                 throw new WrongEtalonException("etalon isn't correct", e);
             }
 
-            List<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon);
+            Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkRequestParameters);
             List<TaskCondition> failedCondition = new ArrayList<>();
 
             for (TaskCondition condition : data.getConditions()) {
@@ -72,12 +71,12 @@ public class ScoreService {
             return grade(result);
     }
 
-    private Score grade(List<Exception> failedChecks) {
+    private Score grade(Set<Exception> failedChecks) {
         double grade = 1;
         String comment = "";
         if (failedChecks.size() > 0) {
             for (Exception failedCheck : failedChecks) {
-                if (failedCheck instanceof CompareConditionException) {
+                if (failedCheck instanceof CompareConditionException || failedCheck instanceof WrongSortingException) {
                     grade -= 0.3;
                 } else if (failedCheck instanceof DifferentRowsAmountException || failedCheck instanceof WrongDataException
                         || failedCheck instanceof EtalonColumnsNotFoundException) {
