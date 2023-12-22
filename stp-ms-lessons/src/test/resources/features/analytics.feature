@@ -309,3 +309,46 @@ Feature: Analytics
       | studentId | avgGrade | avgTimeSpent | rank |
       | 4         | 6        | 2            | 1    |
       | 1         | 5.5      | 2            | 2    |
+
+  Scenario: migration with excluded groups
+    Given disciplines with specific id exist
+      | id  | name |
+      | *d1 | d1   |
+      | *d2 | d2   |
+    And groups with specific id exist
+      | group | discipline | isExcluded |
+      | *g1   | *d1        | false      |
+      | *g2   | *d1        | true       |
+      | *g3   | *d2        | false      |
+    And exams with specific id exist
+      | id   | name | disciplineId |
+      | *ex1 | ex1  | *d1          |
+      | *ex2 | ex3  | *d1          |
+      | *ex3 | ex3  | *d2          |
+    And this exams have assignees
+      | id   | examId | relevantFrom               | relevantTo                 |
+      | *ea1 | *ex1   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea2 | *ex2   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea3 | *ex3   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+    And analytics elements exist
+      | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
+      | *d1          | *ex1   | *ea1           | *pe1           | 10    | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex1   | *ea1           | *pe2           | 12    | 30-11-2023T11:55:00 | 2         | *g2     |
+      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex1   | *ea2           | *pe4           | 8     | 30-11-2023T11:55:00 | 4         | *g2     |
+    And personal exams for migration exist
+      | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           | status   | isExcluded |
+      | *pe1           | *d1          | *ea1           | 1         | *g1     | 0            | 30-11-2023T11:55:00 | REVIEWED | false      |
+      | *pe2           | *d1          | *ea2           | 2         | *g2     | 7            | 30-11-2023T11:55:00 | REVIEWED | true       |
+      | *pe3           | *d1          | *ea1           | 3         | *g1     | 11           | 30-11-2023T11:55:00 | REVIEWED | false      |
+      | *pe4           | *d1          | *ea2           | 4         | *g2     | 0            | 30-11-2023T11:55:00 | REVIEWED | true       |
+      | *pe5           | *d2          | *ea3           | 4         | *g3     | 21           | 30-11-2023T11:55:00 | REVIEWED |            |
+      | *pe6           | *d2          | *ea3           | 5         | *g3     | 11           | 30-11-2023T11:55:00 | REVIEWED |            |
+    When teacher makes a migration for discipline *d1
+    Then operation is successful
+    And analytics elements should be
+      | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
+      | *d1          | *ex1   | *ea1           | *pe1           | 0     | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |

@@ -20,7 +20,7 @@ public class ExamGiven extends LessonsIntegrationTest {
     @Given("^\"(.*)\" discipline has group with id (.*)$")
     public void disciplineHasGroup(String disciplineName, Long groupId) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
-        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO);
+        GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(groupId, disciplineDTO, false);
         getGroupReferenceConnector().save(groupReferenceDTO);
         getTestExecutionContext().getDetails().setGroupReferenceId(groupId);
     }
@@ -51,7 +51,7 @@ public class ExamGiven extends LessonsIntegrationTest {
     public void disciplineHasAssigneedGroups(String groupIds) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
         Arrays.stream(groupIds.split(",")).forEach(item -> {
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO,false);
             getGroupReferenceConnector().save(groupReferenceDTO);
         });
     }

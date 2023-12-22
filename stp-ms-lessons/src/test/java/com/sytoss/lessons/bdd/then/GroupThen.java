@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.then;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bom.GroupAssignment;
 import com.sytoss.lessons.dto.DisciplineDTO;
 import io.cucumber.java.en.Then;
 
@@ -31,15 +32,15 @@ public class GroupThen extends LessonsIntegrationTest {
 
     @Then("^groups of discipline with id (.*) should be received$")
     public void groupsShouldBeReceived(String disciplineId, List<Group> groups) {
-        List<Group> results = (List<Group>) getTestExecutionContext().getResponse().getBody();
+        List<GroupAssignment> results = (List<GroupAssignment>) getTestExecutionContext().getResponse().getBody();
         assertNotNull(results);
         assertEquals(groups.size(), results.size());
 
         int quantityOfGroups = 0;
 
-        for (Group result : results) {
+        for (GroupAssignment result : results) {
             for (Group group : groups)
-                if (result.getId().equals(group.getId())) {
+                if (result.getGroup().getId().equals(group.getId())) {
                     quantityOfGroups++;
                 }
         }

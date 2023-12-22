@@ -66,5 +66,4 @@ public class DisciplinesController {
     public List<Discipline> findDisciplinesByGroupId(@PathVariable Long groupId) {
         return disciplineService.findDisciplinesByGroupId(groupId);
     }
-
 }

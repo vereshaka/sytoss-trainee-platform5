@@ -71,6 +71,9 @@ public class DisciplineServiceTest extends StpUnitTest {
     @Mock
     private TopicConnector topicConnector;
 
+    @Mock
+    private AnalyticsService analyticsService;
+
     @Test
     public void shouldSaveDiscipline() {
         Teacher user = new Teacher();
@@ -229,5 +232,16 @@ public class DisciplineServiceTest extends StpUnitTest {
         when(topicConnector.countDurationByDisciplineId(any())).thenReturn(1.0);
         disciplineService.assignGroupsToDiscipline(disciplineId, groupsIds.getGroupsIds());
         verify(groupReferenceConnector, times(groupsIds.getGroupsIds().size())).save(any(GroupReferenceDTO.class));
+    }
+
+    @Test
+    public void testExcludeGroupFromDiscipline() {
+        Long disciplineId = 1L;
+        Long groupId = 1L;
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineId);
+        when(groupReferenceConnector.findByDisciplineIdAndGroupId(anyLong(),anyLong())).thenReturn(mock(GroupReferenceDTO.class));
+        disciplineService.excludeGroupFromDiscipline(disciplineId, groupId);
+        verify(groupReferenceConnector).save(any(GroupReferenceDTO.class));
     }
 }

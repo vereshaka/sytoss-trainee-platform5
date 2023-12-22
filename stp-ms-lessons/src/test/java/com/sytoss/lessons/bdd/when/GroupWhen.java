@@ -2,6 +2,7 @@ package com.sytoss.lessons.bdd.when;
 
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bom.GroupAssignment;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,7 +23,7 @@ public class GroupWhen extends LessonsIntegrationTest {
         String url = "/api/discipline/" + getTestExecutionContext().getIdMapping().get(disciplineId) + "/groups";
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Group> httpEntity = new HttpEntity<>(null, httpHeaders);
-        ResponseEntity<List<Group>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+        ResponseEntity<List<GroupAssignment>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
