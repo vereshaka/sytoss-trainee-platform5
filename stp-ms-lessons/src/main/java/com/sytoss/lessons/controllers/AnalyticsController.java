@@ -122,4 +122,14 @@ public class AnalyticsController {
         return analyticsService.getDisciplineSummaryByGroup(disciplineId, groupId);
     }
 
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method deletes analitycs for test")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @DeleteMapping("/exam/{examId}/delete")
+    public List<Analytics> deleteByExamId(@PathVariable Long examId) {
+        return analyticsService.deleteByExam(examId);
+    }
+
 }

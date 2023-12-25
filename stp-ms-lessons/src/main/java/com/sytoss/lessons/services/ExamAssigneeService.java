@@ -2,6 +2,7 @@ package com.sytoss.lessons.services;
 
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.ScheduleModel;
+import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.personalexam.ExamConfiguration;
 import com.sytoss.lessons.connectors.ExamAssigneeConnector;
@@ -17,8 +18,10 @@ import com.sytoss.lessons.dto.exam.assignees.ExamToGroupAssigneeDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,6 +80,14 @@ public class ExamAssigneeService extends AbstractService {
             deleteAllExamAssigneeToByExamAssignee(examAssignee.getId());
         }
         examAssigneeConnector.deleteAll(examAssigneeDTOS);
+    }
+
+    public ExamAssignee deleteById(Long examAssigneeId) {
+        ExamAssigneeDTO examAssigneeDTO = examAssigneeConnector.getReferenceById(examAssigneeId);
+        examAssigneeConnector.deleteById(examAssigneeDTO.getId());
+        ExamAssignee assignee = new ExamAssignee();
+        examAssigneeConvertor.fromDTO(examAssigneeDTO, assignee);
+        return assignee;
     }
 
     public List<ExamAssignee> findExamAssigneesByGroup(Long groupId) {

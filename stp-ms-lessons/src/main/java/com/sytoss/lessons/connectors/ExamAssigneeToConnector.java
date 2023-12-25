@@ -13,6 +13,8 @@ public interface ExamAssigneeToConnector extends JpaRepository<ExamAssigneeToDTO
     List<ExamAssigneeToDTO> getAllByParent_IdOrderByParent_RelevantFromDesc(Long examAssigneeDTOId);
     List<ExamAssigneeToDTO> deleteAllByParent_Id(Long examAssigneeDTOId);
 
+    List<ExamAssigneeToDTO> findAllByParent_Id(Long examAssigneeDTOId);
+
     List<ExamToGroupAssigneeDTO> findByGroupIdOrderByParent_RelevantFromDesc(Long groupId);
 
     List<ExamToStudentAssigneeDTO> findByStudentId(Long studentId);
