@@ -10,7 +10,8 @@ public class DisciplineFilterSet implements FilterSet {
 
         FilterItem nameFilterItem = new FilterItem();
         nameFilterItem.setFieldName("name");
-
+        nameFilterItem.setType("string");
+        nameFilterItem.setShowOnTop(true);
         return List.of(nameFilterItem);
     }
 }
