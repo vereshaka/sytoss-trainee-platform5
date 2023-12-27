@@ -98,7 +98,7 @@ public class DisciplineService extends AbstractService {
 
         if (StringUtils.isNotEmpty(nameFilterItem.getValue())) {
             Specification<DisciplineDTO> disciplineNameSpec = (root, query, builder) ->
-                    builder.like(root.get("name"), "%" + nameFilterItem.getValue() + "%");
+                    builder.like(builder.upper(root.get("name")), "%" + nameFilterItem.getValue() + "%");
             teacherSpec = teacherSpec.and(disciplineNameSpec);
         }
 
