@@ -70,13 +70,13 @@ public interface AnalyticsConnector extends CrudRepository<AnalyticsDTO, Long> {
             "COALESCE(max(a.grade),0), " +
             "COALESCE(min(a.timeSpent),0), " +
             "COALESCE(avg(a.grade),0), " +
-            "cast(COALESCE(avg(a.timeSpent), 0) as Long), e.id, e.maxGrade, e.name) " +
+            "cast(COALESCE(avg(a.timeSpent), 0) as Long), e.id, e.maxGrade, e.name, e.creationDate) " +
             "from ANALYTICS a, EXAM e " +
             "where e.id = a.examId " +
             "and a.disciplineId = :disciplineId " +
             "and a.studentId in (:studentIds) " +
             "and a.personalExamId is not null " +
-            "group by e.id, e.maxGrade, e.name")
+            "group by e.id, e.maxGrade, e.name, e.creationDate")
     List<SummaryGradeByExamDTO> getStudentsGradeByExam(Long disciplineId, Set<Long> studentIds);
 
     @Query("SELECT new com.sytoss.lessons.dto.AnalyticsSummaryDTO(a.studentId, SUM(a.grade), SUM(a.timeSpent), row_number() over (order by SUM(a.grade) desc, SUM(a.timeSpent))) from ANALYTICS a where a.disciplineId = :disciplineId and a.personalExamId is not null group by a.studentId order by 2 desc, 3 asc")
