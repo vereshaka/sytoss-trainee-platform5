@@ -167,9 +167,9 @@ Feature: Discipline
       | Exam2 | ta1, ta2 | Select | 2         | 2        | *ex4 |
     And this exams have assignees
       | relevantFrom               | relevantTo                 | examId | id   |
-      | 2023-10-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex3   | *as4 |
-      | 2023-12-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex4   | *as5 |
-      | 2023-12-27 12:59:00.000000 | 2023-12-28 12:59:00.000000 | *ex4   | *as6 |
+      | 2023-10-27 12:59:00.000000 | 2024-12-28 12:59:00.000000 | *ex3   | *as4 |
+      | 2024-12-27 12:59:00.000000 | 2024-12-28 12:59:00.000000 | *ex4   | *as5 |
+      | 2024-12-27 12:59:00.000000 | 2024-12-28 12:59:00.000000 | *ex4   | *as6 |
     And this exam assignees have exam assignees to
       | studentId | assigneeId | groupId |
       | 0         | *as4       |         |
