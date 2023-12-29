@@ -36,12 +36,15 @@ public class PersonalExamWhen extends TestProducerIntegrationTest {
         List<Task> taskList = new ArrayList<>();
         Topic topic = new Topic();
         topic.setId(1L);
+        long id = 0;
         for (String task : tasks) {
             Task newTask = new Task();
+            newTask.setId(id);
             newTask.setCoef(1d);
             newTask.setQuestion(task);
             newTask.setTopics(List.of(topic));
             taskList.add(newTask);
+            ++id;
         }
 
         ExamConfiguration examConfiguration = new ExamConfiguration();
