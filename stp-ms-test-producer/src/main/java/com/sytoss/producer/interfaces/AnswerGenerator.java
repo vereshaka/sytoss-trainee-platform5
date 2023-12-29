@@ -45,7 +45,7 @@ public class AnswerGenerator implements GenerateAnswersStrategy {
                     int randomTaskIndex;
                     do {
                         randomTaskIndex = ANSWER_GENERATOR.nextInt(currentTasks.size());
-                    } while(selectedTasks.stream().map(Task::getId).toList().contains(currentTasks.get(randomTaskIndex).getId()) && selectedTasks.size() != currentTasks.size());
+                    } while(selectedTasks.stream().map(Task::getId).collect(Collectors.toList()).contains(currentTasks.get(randomTaskIndex).getId()));
                     Task selectedTask = currentTasks.remove(randomTaskIndex);
                     selectedTasks.add(selectedTask);
                     totalTasks++;
