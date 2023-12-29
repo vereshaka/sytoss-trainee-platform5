@@ -56,19 +56,50 @@ public class ScoreService {
             Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkRequestParameters);
             List<TaskCondition> failedCondition = new ArrayList<>();
 
-            for (TaskCondition condition : data.getConditions()) {
-                Pattern pattern = Pattern.compile("(?i).*\\b"+condition.getValue().trim()+"\\b.*");
-                if ((condition.getType().equals(ConditionType.CONTAINS)
-                        && !pattern.matcher(data.getRequest()).find())
-                        || (condition.getType().equals(ConditionType.NOT_CONTAINS)
-                        && pattern.matcher(data.getRequest()).find())) {
-                    failedCondition.add(condition);
-                }
-            }
-            if (failedCondition.size() > 0) {
+        String studentAnswer = data.getRequest().trim().toUpperCase()
+                .replaceAll(">", " > ")
+                .replaceAll("<", " < ")
+                .replaceAll("=", " = ")
+                .replaceAll("!", " ! ")
+                .replaceAll(";", " ; ")
+                .replaceAll("\\*", " * ")
+                .replaceAll("\\.", " . ")
+                .replaceAll(",", " , ")
+                .replaceAll("\\(", " ( ")
+                .replaceAll("\\)", " ) ")
+                .replaceAll("\\n", " ")
+                .replaceAll("'", "")
+                .replaceAll("( )+", " ");
+        List<String> answerWorlds = List.of(studentAnswer.split(" "));
+
+        answerWorlds = answerWorlds.stream().filter(item -> item.trim().length() > 0).toList();
+
+        for (TaskCondition condition : data.getConditions()) {
+            List<String> conditionWords = List.of(condition.getValue().trim().toUpperCase().replaceAll("( )+", " ").split(" "));
+
+            conditionWords = conditionWords.stream().filter(item -> item.trim().length() > 0).toList();
+
+            boolean conditionExists = hasCondition(answerWorlds, conditionWords);
+
+            if (condition.getType().equals(ConditionType.CONTAINS) && !conditionExists) {
+                failedCondition.add(condition);
+                result.add(new CompareConditionException(failedCondition)); // case #1
+            } else if (condition.getType().equals(ConditionType.NOT_CONTAINS) && conditionExists) {
+                failedCondition.add(condition);
                 result.add(new CompareConditionException(failedCondition)); // case #1
             }
-            return grade(result);
+        }
+
+        return grade(result);
+    }
+
+    private boolean hasCondition(List<String> answerWorlds, List<String> conditionWords) {
+        for (String conditionWord : conditionWords) {
+            if (!answerWorlds.contains(conditionWord)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Score grade(Set<Exception> failedChecks) {

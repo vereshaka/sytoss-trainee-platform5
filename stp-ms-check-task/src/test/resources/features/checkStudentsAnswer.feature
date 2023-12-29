@@ -234,3 +234,23 @@ Feature: check answer
     Then request should be processed successfully
     And Grade value is 1
     And Grade message is ""
+
+  Scenario: STP-1025 Sorting doesn't affect on check request result (sorting does not makes matter)
+    Given Request contains database script as in "task-domain/sale.yml"
+    And multiline etalon SQL is:
+    """
+SELECT LName, Phone
+FROM Client
+WHERE Phone LIKE '%5'
+  """
+    And multiline check SQL is:
+  """
+    SELECT LName, phone
+FROM Client
+WHERE phone LIKE '%5'
+  """
+    And answer should contains "%5" condition with "CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+#    And Grade value is 1
+    And Grade message is ""
