@@ -19,7 +19,6 @@ import org.springframework.util.MultiValueMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TopicWhen extends LessonsIntegrationTest {
@@ -116,6 +115,15 @@ public class TopicWhen extends LessonsIntegrationTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = doGet(url, requestEntity, byte[].class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("^teacher unassign task with id (.*) from this topic$")
+    public void teacherUnassignTaskWithIdTFromTopic(String taskId) {
+        String url = "/api/topic/" + getTestExecutionContext().getDetails().getTopicId() + "/unassign/" + getTestExecutionContext().replaceId(taskId);
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> requestEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Void> responseEntity = doPost(url, requestEntity, Void.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }

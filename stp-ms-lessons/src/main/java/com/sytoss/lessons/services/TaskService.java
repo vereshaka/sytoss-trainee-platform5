@@ -293,4 +293,16 @@ public class TaskService {
             throw new TopicNotFoundException(topicId);
         }
     }
+
+    public void unassignTask(Long topicId, Long taskId) {
+        Task task = getById(taskId);
+        if(task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
+            Topic topic = task.getTopics().stream().filter(topic1 -> Objects.equals(topic1.getId(), topicId)).toList().get(0);
+            task.getTopics().remove(topic);
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task,taskDTO);
+            taskConnector.save(taskDTO);
+        }
+
+    }
 }
