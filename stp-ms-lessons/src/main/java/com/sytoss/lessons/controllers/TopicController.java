@@ -145,7 +145,7 @@ public class TopicController {
             @ApiResponse(responseCode = "404", description = "Topic not found!")
     })
     @PostMapping("/{topicId}/unassign/{taskId}")
-    public void getExamsByTopic(@Parameter(description = "id of the topic to be searched by")
+    public void unassignTaskFromTopic(@Parameter(description = "id of the topic to be searched by")
                                 @PathVariable("topicId") Long topicId,
                                 @PathVariable("taskId") Long taskId) {
         taskService.unassignTask(topicId,taskId);
