@@ -252,5 +252,26 @@ WHERE phone LIKE '%5'
     And answer should contains "%5" condition with "CONTAINS" type
     When request coming to process
     Then request should be processed successfully
-#    And Grade value is 1
+    And Grade value is 1
+    And Grade message is ""
+
+  Scenario: STP-1034 Condition ">=" and "<=" works properly
+    Given Request contains database script as in "task-domain/sale.yml"
+    And multiline etalon SQL is:
+    """
+SELECT IdProduct, NameProduct, Price
+FROM Product
+WHERE Price >= 1000 And Price <= 2000
+  """
+    And multiline check SQL is:
+  """
+SELECT IdProduct, NameProduct, Price
+FROM Product
+WHERE Price >= 1000 and Price <= 2000
+  """
+    And answer should contains ">=" condition with "CONTAINS" type
+    And answer should contains "<=" condition with "CONTAINS" type
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
     And Grade message is ""

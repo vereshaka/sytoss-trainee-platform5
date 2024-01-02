@@ -69,6 +69,8 @@ public class ScoreService {
                 .replaceAll("\\)", " ) ")
                 .replaceAll("\\n", " ")
                 .replaceAll("'", "")
+                .replaceAll("< {2}=", " <= ")
+                .replaceAll("> {2}=", " >= ")
                 .replaceAll("( )+", " ");
         List<String> answerWorlds = List.of(studentAnswer.split(" "));
 
