@@ -4,11 +4,13 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
+import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,6 +213,31 @@ public class TaskGiven extends LessonsIntegrationTest {
                 taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(taskDTO.getTaskDomain().getId()));
                 getTaskConnector().save(taskDTO);
             }
+        }
+    }
+
+    @Given("^tasks for topic (.*) exist$")
+    public void tasksForTopicExist(String topicId, DataTable dataTable) {
+        List<Map<String, String>> taskRows = dataTable.asMaps();
+
+        DisciplineDTO disciplineDTO = new DisciplineDTO();
+        disciplineDTO.setId(getTestExecutionContext().getDetails().getDisciplineId());
+
+        TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
+        taskDomainDTO.setId(11L);
+        taskDomainDTO.setDiscipline(disciplineDTO);
+        taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
+
+        TopicDTO topicDTO = getTopicConnector().getReferenceById(getTestExecutionContext().getDetails().getTopicId());
+
+        for (Map<String, String> taskRow : taskRows) {
+            TaskDTO task = new TaskDTO();
+            task.setQuestion(taskRow.get("question"));
+            task.setCoef(0.0);
+            task.setTopics(List.of(topicDTO));
+            task.setTaskDomain(taskDomainDTO);
+            task = getTaskConnector().save(task);
+            getTestExecutionContext().registerId(taskRow.get("taskId"), task.getId().toString());
         }
     }
 }

@@ -51,3 +51,18 @@ Feature: Topic
     When receive this topic's icon
     Then operation is successful
     And topic's icon should be received
+
+  Scenario: unassign task from topic
+    Given "SQL" discipline exists
+    And this discipline has "Topic for unassign" topic
+    And tasks for topic "Join" exist
+      | taskId | question        |
+      | *t1    | What is select? |
+      | *t2    | What is join?   |
+      | *t3    | What is inner?  |
+    When teacher unassign task with id *t1 from this topic
+    Then operation is successful
+    And tasks for this topic
+      | taskId | question       |
+      | *t2    | What is join?  |
+      | *t3    | What is inner? |

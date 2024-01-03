@@ -134,7 +134,20 @@ public class TopicController {
     })
     @GetMapping("/{topicId}/exams")
     public List<Exam> getExamsByTopic(@Parameter(description = "id of the topic to be searched by")
-                                        @PathVariable("topicId") Long topicId) {
+                                      @PathVariable("topicId") Long topicId) {
         return examService.getExamsByTopic(topicId);
+    }
+
+    @Operation(description = "Method that unassign task from topic")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+            @ApiResponse(responseCode = "404", description = "Topic not found!")
+    })
+    @PostMapping("/{topicId}/unassign/{taskId}")
+    public void unassignTaskFromTopic(@Parameter(description = "id of the topic to be searched by")
+                                @PathVariable("topicId") Long topicId,
+                                @PathVariable("taskId") Long taskId) {
+        taskService.unassignTask(topicId,taskId);
     }
 }
