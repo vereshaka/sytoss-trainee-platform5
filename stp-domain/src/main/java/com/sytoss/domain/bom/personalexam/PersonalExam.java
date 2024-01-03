@@ -61,6 +61,7 @@ public class PersonalExam {
 
     private Integer time;
 
+    @JsonView({PersonalExam.Public.class, PersonalExam.TeacherOnly.class})
     @Setter(AccessLevel.NONE)
     private Long spentTime;
 
