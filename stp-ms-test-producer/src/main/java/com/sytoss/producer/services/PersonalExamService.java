@@ -212,6 +212,7 @@ public class PersonalExamService extends AbstractService {
         analytics.setStudent(new Student());
         analytics.getStudent().setId(personalExam.getStudent().getId());
         analytics.setGrade(new AnalyticGrade(personalExam.getSummaryGrade(), personalExam.getSpentTime()));
+        analytics.setStartDate(personalExam.getStartedDate());
 
         lessonsConnector.updateAnalytic(analytics);
 
