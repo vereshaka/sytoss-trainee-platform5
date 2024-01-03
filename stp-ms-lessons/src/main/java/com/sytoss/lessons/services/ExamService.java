@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -79,14 +76,10 @@ public class ExamService extends AbstractService {
         examConvertor.toDTO(exam, examDTO);
 
         examDTO.setTopics(new ArrayList<>());
-        exam.getTopics().forEach(topic -> {
-            examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId()));
-        });
+        exam.getTopics().forEach(topic -> examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId())));
 
         examDTO.setTasks(new ArrayList<>());
-        exam.getTasks().forEach(task -> {
-            examDTO.getTasks().add(taskConnector.getReferenceById(task.getId()));
-        });
+        exam.getTasks().forEach(task -> examDTO.getTasks().add(taskConnector.getReferenceById(task.getId())));
 
         if (exam.getDiscipline() != null) {
             examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
@@ -178,6 +171,7 @@ public class ExamService extends AbstractService {
 
     public List<Exam> getExamsByDiscipline(Long disciplineId) {
         List<ExamDTO> examDTOList = examConnector.findByDiscipline_Id(disciplineId);
+        examDTOList.sort((emp1, emp2) -> emp2.getCreationDate().compareTo(emp1.getCreationDate()));
 
         if (Objects.isNull(examDTOList)) {
             throw new DisciplineNotFoundException(disciplineId);

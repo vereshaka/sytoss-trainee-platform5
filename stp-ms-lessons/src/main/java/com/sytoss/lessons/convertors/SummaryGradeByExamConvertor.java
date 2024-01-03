@@ -16,6 +16,7 @@ public class SummaryGradeByExamConvertor {
         exam.setName(examDto.getName());
         exam.setMaxGrade(examDto.getExamMaxGrade());
         exam.setId(examDto.getExamId());
+        exam.setCreationDate(examDto.getCreationDate());
 
         AnalyticGrade averageGrade = new AnalyticGrade();
         averageGrade.setGrade(examDto.getAvgGrade());

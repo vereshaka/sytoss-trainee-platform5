@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -29,4 +30,6 @@ public class Exam {
     private List<Task> tasks;
 
     private List<ExamAssignee> examAssignees = new ArrayList<>();
+
+    private Date creationDate = new Date();
 }
