@@ -15,7 +15,6 @@ import com.sytoss.users.dto.UserDTO;
 import com.sytoss.users.model.ProfileModel;
 import com.sytoss.users.services.exceptions.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,6 +23,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -63,8 +63,8 @@ public class UserServiceTest extends StpUnitTest {
     }
 
     @Test
-    @Disabled
     public void shouldSaveTeacher() {
+        ReflectionTestUtils.setField(userService, "isAllowed", true);
         TeacherDTO dto = new TeacherDTO();
         dto.setId(1L);
         dto.setEmail("test@email.com");
