@@ -378,6 +378,7 @@ public class AnalyticsService extends AbstractService {
                 examGroupSummaries.add(examGroupSummary);
             }
             examGroupSummaries.sort((emp1, emp2) -> emp2.getExam().getCreationDate().compareTo(emp1.getExam().getCreationDate()));
+            Collections.reverse(examGroupSummaries);
             disciplineSummary.setTests(examGroupSummaries);
         }
 
