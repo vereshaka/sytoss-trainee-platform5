@@ -107,8 +107,7 @@ public class DisciplineService extends AbstractService {
 
 
     public List<Discipline> findDisciplines() {
-        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateDesc(getCurrentUser().getId());
-        disciplineDTOList.sort((emp1, emp2) -> emp2.getCreationDate().compareTo(emp1.getCreationDate()));;
+        List<DisciplineDTO> disciplineDTOList = disciplineConnector.findByTeacherIdOrderByCreationDateAsc(getCurrentUser().getId());
         List<Discipline> result = new ArrayList<>();
         for (DisciplineDTO disciplineDTO : disciplineDTOList) {
             Discipline discipline = new Discipline();
