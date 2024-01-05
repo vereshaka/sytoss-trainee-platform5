@@ -7,8 +7,11 @@ import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
+import com.sytoss.lessons.bdd.common.ExamView;
 import com.sytoss.lessons.bom.ExamModelForGroup;
 import com.sytoss.lessons.dto.DisciplineDTO;
+import com.sytoss.lessons.dto.TaskDTO;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -117,6 +120,55 @@ public class ExamWhen extends LessonsIntegrationTest {
         ResponseEntity<Exam> responseEntity = doPost("/api/exam/" +
                         getTestExecutionContext().replaceId(examId) + "/assign",
                 requestEntity, Exam.class);
+        getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("teacher updates exam to")
+    public void teacherUpdatesExamTo(DataTable examTable) {
+        ExamView examView = examTable.asMaps(String.class, String.class).stream().toList().stream().map(ExamView::new).toList().get(0);
+
+        Exam exam = new Exam();
+        exam.setId((long) getTestExecutionContext().replaceId(examView.getId()));
+        exam.setName(examView.getName());
+        exam.setMaxGrade(Integer.valueOf(examView.getMaxGrade()));
+        exam.setNumberOfTasks(Integer.valueOf(examView.getTaskCount()));
+        exam.setTasks(new ArrayList<>());
+        Discipline discipline = new Discipline();
+        discipline.setId(getTestExecutionContext().getDetails().getDisciplineId());
+        exam.setDiscipline(discipline);
+        Teacher teacher = new Teacher();
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+        exam.setTeacher(teacher);
+        List<String> taskIds = Arrays.stream(examView.getTasks().split(",")).map(String::trim).toList();
+        List<Topic> topics = new ArrayList<>();
+        for (String taskId : taskIds) {
+            Long id = (Long) getTestExecutionContext().replaceId(taskId);
+            TaskDTO taskDTO = getTaskConnector().findById(id).orElse(null);
+            if (taskDTO != null) {
+                Task task = new Task();
+                getTaskConvertor().fromDTO(taskDTO, task);
+                exam.getTasks().add(task);
+                for (Topic topic : task.getTopics()) {
+                    if (!topics.stream().map(Topic::getId).toList().contains(topic.getId())) {
+                        topics.add(topic);
+                    }
+                }
+            }
+
+        }
+        exam.setTopics(topics);
+        if (!topics.isEmpty()) {
+            exam.setDiscipline(topics.get(0).getDiscipline());
+        }
+
+        String url = "/api/exam/save";
+
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Exam> requestEntity = new HttpEntity<>(exam, httpHeaders);
+
+        ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);
         getTestExecutionContext().setResponse(responseEntity);
     }
 }
