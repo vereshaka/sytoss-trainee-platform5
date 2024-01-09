@@ -33,7 +33,7 @@ public class AnswerThen extends TestProducerIntegrationTest {
         assertEquals(answerStatus, personalExam.getAnswers().get(0).getStatus().toString());
     }
 
-    @Then("^answer with id (.*) of personal exam with id (.*) should have value \"(.*)\" and change status to (.*) and grade (.*)$")
+    @Then("^answer with id (.*) of personal exam with id (.*) should have value \"(.*)\" and change status to (.*)(| and grade (.*))$")
     public void taskWithNumberShouldHaveAnswer(String answerId, String examId, String string, String status, String grade) {
 
         PersonalExam personalExam = getPersonalExamConnector().getById(getTestExecutionContext().replaceId(examId).toString());
@@ -45,7 +45,9 @@ public class AnswerThen extends TestProducerIntegrationTest {
         Answer answer = foundAnswer.orElse(null);
 
         Assertions.assertEquals(answer.getValue(), string);
-        assertEquals(Double.valueOf(grade), answer.getGrade().getValue());
+        if (grade != null) {
+            assertEquals(Double.valueOf(grade), answer.getGrade().getValue());
+        }
         Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
     }
 
