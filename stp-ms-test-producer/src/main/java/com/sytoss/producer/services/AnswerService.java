@@ -29,13 +29,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class AnswerService extends AbstractService {
 
-    private final MetadataConnector metadataConnector;
-
     private final PersonalExamConnector personalExamConnector;
 
-    private final CheckTaskConnector checkTaskConnector;
-
-    private final PumlConvertor pumlConvertor;
+    private final CheckTaskService checkTaskService;
 
     public Question answer(String personalExamId, String taskAnswer, Date answerUIDate, Long timeSpent) {
         Long studentId = getCurrentUser().getId();
@@ -51,7 +47,6 @@ public class AnswerService extends AbstractService {
         answer.setAnswerUIDate(answerUIDate);
         answer.setTimeSpent(timeSpent);
         answer.answer(taskAnswer);
-        checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
         personalExamConnector.save(personalExam);
         if (answer == null) {
@@ -71,35 +66,10 @@ public class AnswerService extends AbstractService {
         taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
         taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
-
+        checkTaskService.checkAnswer(answer, personalExam);
         return firstTask;
     }
 
-    @Async
-    void checkAnswer(Answer answer, PersonalExam personalExam) {
-        Task task = answer.getTask();
-        TaskDomain taskDomain = task.getTaskDomain();
-        CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
-        checkTaskParameters.setRequest(answer.getValue());
-        if (task.getCheckAnswer() != null) {
-            checkTaskParameters.setCheckAnswer(task.getCheckAnswer());
-        }
-        checkTaskParameters.setEtalon(task.getEtalonAnswer());
-        checkTaskParameters.setConditions(task.getTaskConditions());
-        checkTaskParameters.setSortingRelevant(task.isSortingRelevant());
-        String script = taskDomain.getDatabaseScript() + StringUtils.LF + StringUtils.LF + taskDomain.getDataScript();
-        String liquibase = pumlConvertor.convertToLiquibase(script);
-        checkTaskParameters.setScript(liquibase);
-        Score score = checkTaskConnector.checkAnswer(checkTaskParameters);
-        double gradeValue = score.getValue() * (answer.getTask().getCoef() * personalExam.getMaxGrade() / personalExam.getSumOfCoef());
-        gradeValue = new BigDecimal(gradeValue).setScale(1, RoundingMode.HALF_UP).doubleValue();
-        Grade grade = new Grade();
-        grade.setValue(gradeValue);
-        grade.setComment(score.getComment());
-        answer.grade(grade);
-        answer.setScore(score);
-        personalExamConnector.save(personalExam);
-    }
 
     public String getDbImage(String personalExamId) {
         return getImage(personalExamId, ConvertToPumlParameters.DB);
@@ -117,39 +87,6 @@ public class AnswerService extends AbstractService {
             return answer.getTask().getTaskDomain().getDbImageName();
         } else {
             return answer.getTask().getTaskDomain().getDataImageName();
-        }
-    }
-
-    public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer, String checkAnswer) {
-        String parsedTaskAnswer = taskAnswer.replaceAll("\\n", " ");
-        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
-        Answer answer = personalExam.getCurrentAnswer();
-
-        return check(parsedTaskAnswer, answer,checkAnswer);
-    }
-
-    public QueryResult checkByAnswerId(String personalExamId, String taskAnswer, String answerId, String checkAnswer) {
-        PersonalExam personalExam = personalExamConnector.getById(personalExamId);
-        Answer answer = personalExam.getAnswerById(Long.valueOf(answerId));
-        return check(taskAnswer, answer,checkAnswer);
-    }
-
-    public QueryResult check(String taskAnswer, Answer answer, String checkAnswer) {
-        CheckRequestParameters request = new CheckRequestParameters();
-        String script = answer.getTask().getTaskDomain().getDatabaseScript() + "\n\n"
-                + answer.getTask().getTaskDomain().getDataScript();
-        String liquibaseScript = pumlConvertor.convertToLiquibase(script);
-        request.setRequest(taskAnswer);
-        request.setCheckAnswer(checkAnswer);
-        request.setScript(liquibaseScript);
-        try {
-            QueryResult queryResult = checkTaskConnector.testAnswer(request);
-            return queryResult;
-        } catch (Exception e) {
-            if (e instanceof FeignException) {
-                throw new RequestIsNotValidException(((FeignException) e).contentUTF8());
-            }
-            throw e;
         }
     }
 }

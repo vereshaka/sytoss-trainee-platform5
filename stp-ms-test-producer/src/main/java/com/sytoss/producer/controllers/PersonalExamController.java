@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.producer.bom.AnswersModel;
 import com.sytoss.producer.services.AnswerService;
+import com.sytoss.producer.services.CheckTaskService;
 import com.sytoss.producer.services.PersonalExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,9 @@ public class PersonalExamController {
 
     @Autowired
     private AnswerService answerService;
+
+    @Autowired
+    private CheckTaskService checkTaskService;
 
     @Operation(description = "Method that create personal exam")
     @ApiResponses(value = {
@@ -95,7 +99,7 @@ public class PersonalExamController {
             @Parameter(description = "id of personalExam to be searched")
             @PathVariable(value = "personalExamId") String personalExamId,
             @RequestBody AnswersModel answersModel) {
-        return answerService.checkCurrentAnswer(personalExamId, answersModel.getTaskAnswer(), answersModel.getCheckAnswer());
+        return checkTaskService.checkCurrentAnswer(personalExamId, answersModel.getTaskAnswer(), answersModel.getCheckAnswer());
     }
 
     @Operation(description = "Method for answering tasks")
@@ -109,7 +113,7 @@ public class PersonalExamController {
             @PathVariable(value = "personalExamId") String personalExamId,
             @PathVariable(value = "answerId") String answerId,
             @RequestBody AnswersModel answersModel) {
-        return answerService.checkByAnswerId(personalExamId, answersModel.getTaskAnswer(), answerId, answersModel.getCheckAnswer());
+        return checkTaskService.checkByAnswerId(personalExamId, answersModel.getTaskAnswer(), answerId, answersModel.getCheckAnswer());
     }
 
     @Operation(description = "Method returns image of db structure for task")
