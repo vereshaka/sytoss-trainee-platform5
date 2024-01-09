@@ -11,5 +11,5 @@ Feature: Answer
       | 3        | 14     | 24           | get all from topic table      |                     | NOT_STARTED | SELECT * FROM topic    |       | 3    |                  |
     When student calls answer with value "SELECT * FROM discipline" on personal exam with id *1
     Then operation is successful
-    And answer with id 2 of personal exam with id *1 should have value "SELECT * FROM discipline" and change status to GRADED and grade 2
+    And answer with id 2 of personal exam with id *1 should have value "SELECT * FROM discipline" and change status to ANSWERED
     And response should return next task with number 3
