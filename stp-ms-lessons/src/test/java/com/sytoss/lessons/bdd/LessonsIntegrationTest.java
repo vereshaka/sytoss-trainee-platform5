@@ -44,6 +44,9 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     private TopicConvertor topicConvertor;
 
     @Autowired
+    private ExamAssigneeConvertor examAssigneeConvertor;
+
+    @Autowired
     private TaskConditionConnector taskConditionConnector;
 
     @Autowired

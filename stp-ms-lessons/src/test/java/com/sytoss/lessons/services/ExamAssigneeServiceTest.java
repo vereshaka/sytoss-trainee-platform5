@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 public class ExamAssigneeServiceTest extends StpUnitTest {
@@ -59,6 +60,17 @@ public class ExamAssigneeServiceTest extends StpUnitTest {
         examAssigneeConvertor.fromDTO(expectedExamAssigneeDTO, expectedExamAssignee);
         when(examAssigneeConnector.getReferenceById(any())).thenReturn(exam.getExamAssignees().get(0));
         ExamAssignee examAssigneeActual = examAssigneeService.returnExamAssigneeById(1L);
+        assertEquals(expectedExamAssignee.getId(), examAssigneeActual.getId());
+    }
+
+    @Test
+    void deleteExamAssigneeById() {
+        ExamDTO exam = createExamDTO();
+        ExamAssigneeDTO expectedExamAssigneeDTO = exam.getExamAssignees().get(0);
+        ExamAssignee expectedExamAssignee = new ExamAssignee();
+        examAssigneeConvertor.fromDTO(expectedExamAssigneeDTO, expectedExamAssignee);
+        when(examAssigneeConnector.getReferenceById(any())).thenReturn(exam.getExamAssignees().get(0));
+        ExamAssignee examAssigneeActual = examAssigneeService.deleteById(1L);
         assertEquals(expectedExamAssignee.getId(), examAssigneeActual.getId());
     }
 
