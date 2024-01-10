@@ -56,4 +56,13 @@ class ExamAssigneeControllerTest extends LessonsControllerTest {
         ResponseEntity<ExamReportModel> response = doGet("/api/assignee/1/report", httpEntity, ExamReportModel.class);
         assertEquals(200, response.getStatusCode().value());
     }
+
+    @Test
+    void shouldDeleteExamAssignee() {
+        when(examAssigneeService.deleteById(anyLong())).thenReturn(new ExamAssignee());
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<ExamAssignee> response = doDelete("/api/assignee/delete/1", httpEntity, ExamAssignee.class);
+        assertEquals(200, response.getStatusCode().value());
+    }
 }

@@ -15,6 +15,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.lessons.connectors.*;
 import com.sytoss.lessons.controllers.views.*;
+import com.sytoss.lessons.convertors.AnalyticsConvertor;
 import com.sytoss.lessons.convertors.SummaryGradeByExamConvertor;
 import com.sytoss.lessons.convertors.SummaryGradeConvertor;
 import com.sytoss.lessons.dto.*;
@@ -191,8 +192,16 @@ public class AnalyticsService extends AbstractService {
         analyticsConnector.save(dto);
     }
 
-    public void deleteByExam(long examId) {
-        analyticsConnector.deleteAllByExamId(examId);
+    public List<Analytics> deleteByExam(long examId) {
+        AnalyticsConvertor convertor = new AnalyticsConvertor();
+        List<AnalyticsDTO> analyticsDTOS = analyticsConnector.deleteAllByExamId(examId);
+        List<Analytics> analyticsList = new ArrayList<>();
+        for (int i = 0; i < analyticsDTOS.size(); i++) {
+            Analytics analytics = new Analytics();
+            convertor.fromDTO(analyticsDTOS.get(i), analytics);
+            analyticsList.add(analytics);
+        }
+        return analyticsList;
     }
 
     public void deleteByDiscipline(long disciplineId) {

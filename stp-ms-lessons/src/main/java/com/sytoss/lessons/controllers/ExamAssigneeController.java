@@ -92,4 +92,14 @@ public class ExamAssigneeController {
     public List<ExamAssignee> getListOfExamAssigneeByGroup(@PathVariable Long groupId) {
         return examAssigneeService.findExamAssigneesByGroup(groupId);
     }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that deletes exam assignee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+    })
+    @DeleteMapping("/delete/{examAssigneeId}")
+    public ExamAssignee deleteById(@PathVariable Long examAssigneeId) {
+        return examAssigneeService.deleteById(examAssigneeId);
+    }
 }
