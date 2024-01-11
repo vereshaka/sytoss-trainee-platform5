@@ -77,6 +77,7 @@ public class ExamGiven extends LessonsIntegrationTest {
             ExamDTO dto = new ExamDTO();
             dto.setName(item.getName());
             dto.setMaxGrade(Integer.valueOf(item.getMaxGrade()));
+            dto.setNumberOfTasks(Integer.valueOf(item.getTaskCount()));
             dto.setTasks(new ArrayList<>());
             dto.setDiscipline(getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId()));
             dto.setTeacherId(getTestExecutionContext().getDetails().getTeacherId());
