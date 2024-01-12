@@ -44,6 +44,16 @@ public class ExamController {
         return examService.getById(examId);
     }
 
+    @Operation(description = "Method that updates exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Task not found!"),
+    })
+    @PutMapping
+    public Exam updateExam(@RequestBody Exam exam) {
+        return examService.updateExam(exam);
+    }
+
     @Operation(description = "Method that retrieve information about discipline of exam")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suceess|OK"),

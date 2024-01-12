@@ -89,6 +89,34 @@ public class ExamService extends AbstractService {
         return exam;
     }
 
+    public Exam updateExam(Exam exam) {
+        log.debug("Updating Exam with id [{}]", exam.getId());
+
+        Optional<ExamDTO> examDTO = examConnector.findById(exam.getId());
+        if (examDTO.isEmpty()) {
+            throw new ExamNotFoundException(exam.getId());
+        }
+
+        ExamDTO updateExamDTO = examDTO.get();
+
+        if (Objects.nonNull(exam.getName())) {
+            updateExamDTO.setName(exam.getName());
+        }
+
+        if (Objects.nonNull(exam.getMaxGrade())) {
+            updateExamDTO.setMaxGrade(exam.getMaxGrade());
+        }
+
+        if (Objects.nonNull(exam.getNumberOfTasks())) {
+            updateExamDTO.setNumberOfTasks(exam.getNumberOfTasks());
+        }
+
+        updateExamDTO = examConnector.save(updateExamDTO);
+        examConvertor.fromDTO(updateExamDTO, exam);
+
+        return exam;
+    }
+
     public List<Exam> findExams() {
         AbstractUser abstractUser = getCurrentUser();
 
