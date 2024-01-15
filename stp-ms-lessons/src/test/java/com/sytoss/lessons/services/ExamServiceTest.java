@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.controllers.views.ExamAssigneesStatus;
 import com.sytoss.lessons.convertors.*;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.dto.exam.assignees.ExamAssigneeDTO;
@@ -24,12 +25,9 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -77,6 +75,9 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Mock
     private DisciplineConnector disciplineConnector;
+
+    @Spy
+    private ExamAssigneesStatusConverter examAssigneesStatusConverter = new ExamAssigneesStatusConverter();
 
     @Test
     public void shouldSaveExam() {
@@ -515,5 +516,61 @@ public class ExamServiceTest extends StpUnitTest {
 
         List<Exam> exams = examService.findExamsByStudent(discipline.getId());
         assertEquals(2, exams.size());
+    }
+
+    @Test
+    public void shouldReturnExamAssigneesStatus() {
+        Date current = new Date();
+        Date past = addDays(current, -2);
+        Date future = addDays(current, 1);
+
+        ExamDTO examDTO = createExamDTO();
+        examDTO.setExamAssignees(List.of(createAssignee(past, future)));
+
+        when(examConnector.findById(1L)).thenReturn(Optional.of(examDTO));
+
+        ExamAssigneesStatus assigneesStatus = examService.getExamAssigneesStatusByExamId(1L);
+        assertEquals(0, assigneesStatus.getTaskCount());
+        assertEquals(2, assigneesStatus.getNumberOfTask());
+        assertTrue(assigneesStatus.getInProgress());
+        assertFalse(assigneesStatus.getNotStarted());
+    }
+
+    @Test
+    public void shouldReturnNotStartedExamAssigneesStatus() {
+        Date current = new Date();
+        Date future = addDays(current, 1);
+
+        ExamDTO examDTO = createExamDTO();
+        examDTO.setExamAssignees(List.of(createAssignee(future, future)));
+
+        when(examConnector.findById(1L)).thenReturn(Optional.of(examDTO));
+
+        ExamAssigneesStatus assigneesStatus = examService.getExamAssigneesStatusByExamId(1L);
+        assertFalse(assigneesStatus.getInProgress());
+        assertTrue(assigneesStatus.getNotStarted());
+    }
+
+    private Date addDays(Date initial, int daysToAdd) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(initial);
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);
+        return calendar.getTime();
+    }
+
+    private ExamDTO createExamDTO() {
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setNumberOfTasks(2);
+        examDTO.setTasks(Collections.emptyList());
+        return examDTO;
+    }
+
+    private ExamAssigneeDTO createAssignee(Date relevantFrom, Date relevantTo) {
+        ExamAssigneeDTO assigneeDTO = new ExamAssigneeDTO();
+        assigneeDTO.setDuration(125);
+        assigneeDTO.setRelevantFrom(relevantFrom);
+        assigneeDTO.setRelevantTo(relevantTo);
+
+        return assigneeDTO;
     }
 }
