@@ -135,6 +135,7 @@ public class PersonalExam {
             }
         }
         status = PersonalExamStatus.FINISHED;
+        countSpentTime();
         return null;
     }
 
@@ -158,10 +159,7 @@ public class PersonalExam {
             }
         });
 
-        spentTime = 0L;
-        answers.forEach(answer -> {
-            spentTime+=answer.getTimeSpent();
-        });
+        countSpentTime();
     }
 
     public void review() {
@@ -175,6 +173,14 @@ public class PersonalExam {
         } else {
             return false;
         }
+    }
+
+    private void countSpentTime(){
+        spentTime = 0L;
+        answers.forEach(answer -> {
+            spentTime+=answer.getTimeSpent();
+        });
+
     }
 
     public static class Public {
