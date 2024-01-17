@@ -177,10 +177,7 @@ public class PersonalExam {
 
     private void countSpentTime(){
         spentTime = 0L;
-        answers.forEach(answer -> {
-            spentTime+=answer.getTimeSpent();
-        });
-
+        answers.forEach(answer -> spentTime+=answer.getTimeSpent());
     }
 
     public static class Public {
