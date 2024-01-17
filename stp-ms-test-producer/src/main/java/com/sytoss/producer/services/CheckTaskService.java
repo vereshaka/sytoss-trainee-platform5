@@ -10,6 +10,7 @@ import com.sytoss.producer.connectors.CheckTaskConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
@@ -29,7 +30,7 @@ public class CheckTaskService {
 
     private final PumlConvertor pumlConvertor;
 
-    @Async
+
     public void checkAnswer(Answer answer, PersonalExam personalExam) {
         Task task = answer.getTask();
         TaskDomain taskDomain = task.getTaskDomain();
@@ -53,6 +54,7 @@ public class CheckTaskService {
         answer.grade(grade);
         answer.setScore(score);
         personalExamConnector.save(personalExam);
+        log.info("Answer with id "+answer.getId()+" is graded");
     }
 
     public QueryResult checkCurrentAnswer(String personalExamId, String taskAnswer, String checkAnswer) {

@@ -64,7 +64,7 @@ public class PostgresExecutor implements Executor {
             statement.close();
             log.info("Schema dropped: " + dbName);
         } catch (SQLException e) {
-            log.warn("drop schema error", e);
+            log.warn("drop schema "+dbName+" error", e);
         } finally {
             try {
                 if (statement != null) {

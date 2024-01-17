@@ -5,26 +5,32 @@ import com.sytoss.checktask.stp.service.db.Executor;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.Liquibase;
 import liquibase.ThreadLocalScopeManager;
+import liquibase.command.CommandScope;
+import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
+
+import static org.hsqldb.DatabaseManager.getDatabase;
 
 
 @Slf4j
@@ -34,18 +40,15 @@ import java.util.Random;
 @Setter
 public class DatabaseHelperService {
 
+    private final static Random DATABASE_GENERATOR = new Random();
+
     static {
         liquibase.Scope.setScopeManager(new ThreadLocalScopeManager());
     }
 
     private final QueryResultConvertor queryResultConvertor;
-
-    private Connection connection;
-
-    private final static Random DATABASE_GENERATOR = new Random();
-
     private final Executor executor;
-
+    private Connection connection;
     @Value("${custom.executor.username}")
     private String username;
 
@@ -58,7 +61,7 @@ public class DatabaseHelperService {
     private Connection getConnection() {
         if (connection == null) {
             try {
-              connection = executor.createConnection(username, password, serverPath, generateDatabaseName());
+                connection = executor.createConnection(username, password, serverPath, generateDatabaseName());
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);
             }
@@ -66,6 +69,7 @@ public class DatabaseHelperService {
         return connection;
     }
 
+    @Synchronized
     public void generateDatabase(String databaseScript) {
         try {
             File databaseFile = writeDatabaseScriptFile(databaseScript);
@@ -74,7 +78,7 @@ public class DatabaseHelperService {
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
             liquibase.update();
             databaseFile.deleteOnExit();
-            log.info("database was generated");
+            log.info(database.getDefaultSchemaName() + " database was generated");
         } catch (Exception e) {
             throw new DatabaseCommunicationException("Database creating error", e);
         }
@@ -123,16 +127,17 @@ public class DatabaseHelperService {
     public QueryResult getExecuteQueryResult(String query, String checkAnswer) throws SQLException {
         QueryResult queryResult = new QueryResult();
         ResultSet resultSet;
+        log.info("Query " + query + " is being executed");
         try (Statement statement = getConnection().createStatement()) {
-            if(query!=null && !query.trim().toLowerCase().startsWith("select")){
+            if (query != null && !query.trim().toLowerCase().startsWith("select")) {
                 int result = statement.executeUpdate(query);
                 queryResult.setAffectedRowsCount(result);
                 resultSet = statement.executeQuery(checkAnswer);
-            }else{
+            } else {
                 resultSet = statement.executeQuery(query);
             }
-
-            queryResultConvertor.convertFromResultSet(resultSet,queryResult);
+            log.info("Query " + query + " was executed");
+            queryResultConvertor.convertFromResultSet(resultSet, queryResult);
         }
         return queryResult;
     }

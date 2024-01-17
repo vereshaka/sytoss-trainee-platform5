@@ -15,7 +15,9 @@ public class TokenRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest().getHeader("Authorization");
-        requestTemplate.header("Authorization", token);
+        if(RequestContextHolder.getRequestAttributes() != null){
+            String token = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
+            requestTemplate.header("Authorization", token);
+        }
     }
 }

@@ -12,16 +12,16 @@ import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -31,30 +31,30 @@ public class ScoreService {
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
     public Score checkAndScore(CheckTaskParameters data) {
-            CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-            checkRequestParameters.setScript(data.getScript());
-            checkRequestParameters.setRequest(data.getRequest());
-            checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
-            checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
+        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+        checkRequestParameters.setScript(data.getScript());
+        checkRequestParameters.setRequest(data.getRequest());
+        checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
+        checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
 
-            QueryResult queryResultAnswer;
-            try {
-                queryResultAnswer = checkQuery(checkRequestParameters);
-            } catch (SQLException e) {
-                return new Score(0, e.getMessage());
-            }
+        QueryResult queryResultAnswer;
+        try {
+            queryResultAnswer = checkQuery(checkRequestParameters);
+        } catch (SQLException e) {
+            return new Score(0, e.getMessage());
+        }
 
-            checkRequestParameters.setRequest(data.getEtalon());
+        checkRequestParameters.setRequest(data.getEtalon());
 
-            QueryResult queryResultEtalon;
-            try {
-                queryResultEtalon = checkQuery(checkRequestParameters);
-            } catch (SQLException e) {
-                throw new WrongEtalonException("etalon isn't correct", e);
-            }
+        QueryResult queryResultEtalon;
+        try {
+            queryResultEtalon = checkQuery(checkRequestParameters);
+        } catch (SQLException e) {
+            throw new WrongEtalonException("etalon isn't correct", e);
+        }
 
-            Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkRequestParameters);
-            List<TaskCondition> failedCondition = new ArrayList<>();
+        Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkRequestParameters);
+        List<TaskCondition> failedCondition = new ArrayList<>();
 
         String studentAnswer = data.getRequest().trim().toUpperCase()
                 .replaceAll(">", " > ")
@@ -123,9 +123,10 @@ public class ScoreService {
     }
 
     private QueryResult checkQuery(CheckRequestParameters data) throws SQLException {
-        if(data.getCheckAnswer()==null || data.getCheckAnswer().toLowerCase().startsWith("select")){
+        if (data.getCheckAnswer() == null || data.getCheckAnswer().toLowerCase().startsWith("select")) {
             DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
             try {
+                log.info("Need to create db for " + data.getRequest());
                 helperServiceProviderObject.generateDatabase(data.getScript());
                 return helperServiceProviderObject.getExecuteQueryResult(data.getRequest(), data.getCheckAnswer());
             } catch (SQLException e) {
@@ -134,8 +135,8 @@ public class ScoreService {
             } finally {
                 helperServiceProviderObject.dropDatabase();
             }
-        } else{
-            throw new CheckAnswerIsNotValidException(data.getCheckAnswer()+" is not valid");
+        } else {
+            throw new CheckAnswerIsNotValidException(data.getCheckAnswer() + " is not valid");
         }
     }
 
