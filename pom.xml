@@ -196,16 +196,6 @@
                             cucumber.junit-platform.naming-strategy=long
                         </configurationParameters>
                     </properties>
-                    <argLine>--illegal-access=permit</argLine>
-                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED</argLine>
-                    <argLine>--add-opens=java.base/java.lang.ref=ALL-UNNAMED</argLine>
-                    <argLine>-Dillegal-access=permit</argLine>
-                    <argLine>
-                        --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
-                        --add-exports org.junit.platform.commons/org.junit.platform.commons.logging=ALL-UNNAMED
-                        --add-exports java.base/java.lang=ALL-UNNAMED
-                        --add-exports java.base/java.lang.ref=ALL-UNNAMED
-                    </argLine>
                 </configuration>
             </plugin>
         </plugins>

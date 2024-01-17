@@ -6,6 +6,7 @@ import com.sytoss.checktask.stp.service.db.PostgresExecutor;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.GlobalConfiguration;
 import liquibase.Liquibase;
+import liquibase.ScopeManager;
 import liquibase.ThreadLocalScopeManager;
 import liquibase.command.CommandScope;
 import liquibase.database.Database;
@@ -40,8 +41,10 @@ import java.util.Random;
 @Setter
 public class DatabaseHelperService {
 
+    private static final ScopeManager SCOPE_MANAGER = new ThreadLocalScopeManager();
+
     static {
-        liquibase.Scope.setScopeManager(new ThreadLocalScopeManager());
+        liquibase.Scope.setScopeManager(SCOPE_MANAGER);
         try {
             liquibase.Scope.enter(Map.of(liquibase.Scope.Attr.ui.name(), new LoggerUIService()));
         } catch (Exception e) {
@@ -88,8 +91,9 @@ public class DatabaseHelperService {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
-            cleanThreadLocals();
+           // cleanThreadLocals();
             liquibase.update();
+            ((ThreadLocalScopeManager)SCOPE_MANAGER).remove();
             databaseFile.deleteOnExit();
             log.info("Database was generated. DbName: " + dbName);
         } catch (Exception e) {
