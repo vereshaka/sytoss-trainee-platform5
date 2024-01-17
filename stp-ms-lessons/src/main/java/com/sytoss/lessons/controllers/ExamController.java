@@ -108,4 +108,14 @@ public class ExamController {
     public Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId) {
         return examService.getExamByExamAssignee(examAssigneeId);
     }
+
+    @Operation(description = "Method that updates an exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam no found!"),
+    })
+    @PutMapping("/{examId}")
+    public void update(@PathVariable(name = "examId") Long examId, @RequestBody Exam exam) {
+        examService.update(examId, exam);
+    }
 }

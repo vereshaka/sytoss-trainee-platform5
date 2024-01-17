@@ -1,6 +1,5 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
@@ -15,7 +14,6 @@ import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -94,7 +92,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         when(answerGenerator.generateAnswers(exam.getNumberOfTasks(), exam.getTasks())).thenReturn(answers);
 
-        PersonalExam personalExam = personalExamService.create(examConfiguration);
+        PersonalExam personalExam = personalExamService.createOrUpdate(examConfiguration);
         assertEquals(2, personalExam.getAnswers().size());
         assertEquals("1ada", personalExam.getId());
     }

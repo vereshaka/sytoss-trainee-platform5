@@ -10,7 +10,7 @@ import com.sytoss.domain.bom.users.Student;
 import com.sytoss.producer.connectors.LessonsConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.interfaces.AnswerGenerator;
+import com.sytoss.producer.convertor.PersonalExamConvertor;
 import com.sytoss.producer.writers.ExcelBuilder;
 import com.sytoss.producer.writers.GroupExcelBuilder;
 import com.sytoss.producer.bom.ScreenshotModel;
@@ -49,7 +49,7 @@ public class PersonalExamService extends AbstractService {
 
     private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
 
-    private final AnswerGenerator answerGenerator;
+    private final PersonalExamConvertor personalExamConvertor;
 
     private final UserConnector userConnector;
 
@@ -58,28 +58,19 @@ public class PersonalExamService extends AbstractService {
     @Value("${image-provider.image-folder}")
     private String imageUrl;
 
-    public PersonalExam create(ExamConfiguration examConfiguration) {
-        PersonalExam personalExam = new PersonalExam();
-        Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
-        Date relevantTo = examConfiguration.getExamAssignee().getRelevantTo();
-        personalExam.setName(examConfiguration.getExam().getName());
-        personalExam.setExamAssigneeId(examConfiguration.getExamAssignee().getId());
-        personalExam.setAssignedDate(new Date());
-        personalExam.setRelevantFrom(relevantFrom);
-        personalExam.setRelevantTo(relevantTo);
-        personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
-        personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
-        personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
-        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
-        List<Answer> answers = answerGenerator.generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
-        personalExam.setAnswers(answers);
-        double sumOfCoef = 0;
-        for (Answer answer : answers) {
-            sumOfCoef += answer.getTask().getCoef();
-        }
-        personalExam.setStudent(examConfiguration.getStudent());
-        personalExam.setSumOfCoef(sumOfCoef);
+    /**
+     * Creates or updates personal exam for student and exam assignee based on {@link ExamConfiguration}
+     *
+     * @param examConfiguration new configuration
+     * @return created or updated personal exam
+     */
+    public PersonalExam createOrUpdate(ExamConfiguration examConfiguration) {
+        Optional<PersonalExam> personalExamOpt = personalExamConnector.findByExamAssigneeIdAndStudent_Id(
+                examConfiguration.getExamAssignee().getId(), examConfiguration.getStudent().getId());
+
+        PersonalExam personalExam = personalExamOpt.orElse(new PersonalExam());
+
+        personalExamConvertor.fromExamConfiguration(examConfiguration, personalExam);
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;

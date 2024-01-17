@@ -25,7 +25,7 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
         Answer answer = new Answer();
         answer.setStatus(AnswerStatus.ANSWERED);
         personalExam.setAnswers(List.of(answer));
-        when(personalExamService.create(any())).thenReturn(personalExam);
+        when(personalExamService.createOrUpdate(any())).thenReturn(personalExam);
         HttpEntity<ExamConfiguration> requestEntity = new HttpEntity<>(new ExamConfiguration(), httpHeaders);
         ResponseEntity<PersonalExam> result = doPost("/api/personal-exam/create", requestEntity, PersonalExam.class);
         assertEquals(200, result.getStatusCode().value());

@@ -42,7 +42,7 @@ public class PersonalExamController {
     @PostMapping("/create")
     @JsonView({PersonalExam.Public.class})
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
-        return personalExamService.create(examConfiguration);
+        return personalExamService.createOrUpdate(examConfiguration);
     }
 
     @PreAuthorize("hasRole('Teacher')")
