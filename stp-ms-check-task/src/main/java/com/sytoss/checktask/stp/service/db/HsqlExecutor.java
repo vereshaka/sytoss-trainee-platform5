@@ -13,7 +13,7 @@ public class HsqlExecutor implements Executor {
     }
 
     @Override
-    public void dropDatabase(Connection connection) {
+    public void dropDatabase(Connection connection, String dbName) {
 
     }
 }

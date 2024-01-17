@@ -2,16 +2,22 @@ package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.service.db.Executor;
+import com.sytoss.checktask.stp.service.db.PostgresExecutor;
 import com.sytoss.domain.bom.checktask.QueryResult;
+import liquibase.GlobalConfiguration;
 import liquibase.Liquibase;
 import liquibase.ThreadLocalScopeManager;
+import liquibase.command.CommandScope;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
+import liquibase.ui.LoggerUIService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,11 +25,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.lang.ref.Reference;
+import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -36,7 +42,14 @@ public class DatabaseHelperService {
 
     static {
         liquibase.Scope.setScopeManager(new ThreadLocalScopeManager());
+        try {
+            liquibase.Scope.enter(Map.of(liquibase.Scope.Attr.ui.name(), new LoggerUIService()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
+
+    private static int NAME_COUNTER = 0;
 
     private final QueryResultConvertor queryResultConvertor;
 
@@ -55,10 +68,13 @@ public class DatabaseHelperService {
     @Value("${custom.executor.serverPath}")
     private String serverPath;
 
+    private String dbName;
+
     private Connection getConnection() {
         if (connection == null) {
             try {
-              connection = executor.createConnection(username, password, serverPath, generateDatabaseName());
+                connection = executor.createConnection(username, password, serverPath, dbName = generateDatabaseName());
+                log.info("Database created. DbName: " + dbName);
             } catch (Exception e) {
                 throw new CreateDbConnectionException("Could not create connection", e);
             }
@@ -72,41 +88,70 @@ public class DatabaseHelperService {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
             Liquibase liquibase = new Liquibase(databaseFile.getName(),
                     new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
+            cleanThreadLocals();
             liquibase.update();
             databaseFile.deleteOnExit();
-            log.info("database was generated");
+            log.info("Database was generated. DbName: " + dbName);
         } catch (Exception e) {
             throw new DatabaseCommunicationException("Database creating error", e);
         }
     }
 
+    private void cleanThreadLocals() {
+        try {
+            Thread thread = Thread.currentThread();
+            Field threadLocalsField = Thread.class.getDeclaredField("threadLocals");
+            threadLocalsField.setAccessible(true);
+            Object threadLocalTable = threadLocalsField.get(thread);
+
+            Class threadLocalMapClass = Class.forName("java.lang.ThreadLocal$ThreadLocalMap");
+            Field tableField = threadLocalMapClass.getDeclaredField("table");
+            tableField.setAccessible(true);
+            Object table = tableField.get(threadLocalTable);
+
+            Field referentField = Reference.class.getDeclaredField("referent");
+            referentField.setAccessible(true);
+
+            for (int i = 0; i < CollectionUtils.size(table); i++) {
+                Object entry = CollectionUtils.get(table, i);
+                if (entry != null) {
+                    ThreadLocal threadLocal = (ThreadLocal) referentField.get(entry);
+                    threadLocal.remove();
+                }
+            }
+            log.info("Thread Local variables removed. DbName: " + dbName);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     public void dropDatabase() {
         try {
-            executor.dropDatabase(getConnection());
-            log.info("database was dropped");
+            executor.dropDatabase(getConnection(), dbName);
+            log.info("Database was dropped. DbName: " + dbName);//, new RuntimeException());
         } catch (Exception e) {
             log.error("Error in database dropping", e);
         } finally {
-            connection = null;
             try {
                 if (!getConnection().isClosed()) {
                     getConnection().close();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                log.warn("Could not drop database. DbName: " + dbName, e);
             }
+            connection = null;
         }
     }
 
     private String generateDatabaseName() {
-        int databaseNameLength = 25;
+        int databaseNameLength = 10;
         char letter;
         StringBuilder name = new StringBuilder();
         for (int i = 0; i < databaseNameLength; i++) {
             letter = (char) (DATABASE_GENERATOR.nextInt(26) + 'a');
             name.append(letter);
         }
-        return "delme" + name.toString();
+        return "delme_" + (NAME_COUNTER++) + "_" + name; // TODO: yevgenyv-tmp: name.toString();
     }
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
@@ -124,16 +169,17 @@ public class DatabaseHelperService {
         QueryResult queryResult = new QueryResult();
         ResultSet resultSet;
         try (Statement statement = getConnection().createStatement()) {
-            if(query!=null && !query.trim().toLowerCase().startsWith("select")){
+            if (query != null && !query.trim().toLowerCase().startsWith("select")) {
                 int result = statement.executeUpdate(query);
                 queryResult.setAffectedRowsCount(result);
                 resultSet = statement.executeQuery(checkAnswer);
-            }else{
+            } else {
                 resultSet = statement.executeQuery(query);
             }
 
-            queryResultConvertor.convertFromResultSet(resultSet,queryResult);
+            queryResultConvertor.convertFromResultSet(resultSet, queryResult);
         }
+        log.info("Query executed. DbName: " + dbName);
         return queryResult;
     }
 

@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.ObjectProvider;
 
+import java.util.concurrent.Executors;
+
 import static com.sytoss.stp.test.FileUtils.readFromFile;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -73,7 +75,7 @@ class ScoreServiceTest extends StpUnitTest {
         checkTaskParameters.setEtalon("select * from Authors");
         checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
 
-        ScoreService scoreService = new ScoreService(objectProvider);
+        ScoreService scoreService = new ScoreService(objectProvider, Executors.newFixedThreadPool(5));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
         Assertions.assertEquals(0, score.getValue());

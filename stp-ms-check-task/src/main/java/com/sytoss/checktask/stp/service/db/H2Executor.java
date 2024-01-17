@@ -7,7 +7,6 @@ import java.sql.Statement;
 
 public class H2Executor implements Executor {
 
-
     private static final String ORACLE_MODE = "MODE=Oracle";
     private static final String MSSQL_MODE = "MODE=MSSQLServer";
 
@@ -18,7 +17,7 @@ public class H2Executor implements Executor {
     }
 
     @Override
-    public void dropDatabase(Connection connection) throws SQLException {
+    public void dropDatabase(Connection connection, String dbName) throws SQLException {
         Statement statement = connection.createStatement();
         statement.executeUpdate("DROP ALL OBJECTS DELETE FILES");
         statement.close();
