@@ -99,7 +99,6 @@ public class PersonalExam {
     public void summary() {
         summaryGrade = 0;
         systemGrade = 0;
-        spentTime = 0L;
 
         answers.forEach((answer) -> {
             if (answer.getStatus().equals(AnswerStatus.GRADED)) {
@@ -108,7 +107,6 @@ public class PersonalExam {
                     answer.setTeacherGrade(new Grade());
                 }
                 summaryGrade += answer.getTeacherGrade().getValue();
-                spentTime += answer.getTimeSpent();
             }
         });
         summaryGrade = Math.round(summaryGrade * 10.0) / 10.0;
@@ -158,6 +156,11 @@ public class PersonalExam {
                 answer.setAnswerDate(new Date());
                 answer.setTimeSpent(0L);
             }
+        });
+
+        spentTime = 0L;
+        answers.forEach(answer -> {
+            spentTime+=answer.getTimeSpent();
         });
     }
 
