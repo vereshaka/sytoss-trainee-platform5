@@ -158,7 +158,6 @@ public class PersonalExam {
                 answer.setTimeSpent(0L);
             }
         });
-
         countSpentTime();
     }
 
