@@ -109,6 +109,8 @@ public class PersonalExam {
                 }
                 summaryGrade += answer.getTeacherGrade().getValue();
                 spentTime += answer.getTimeSpent();
+            } else if (answer.getStatus().equals(AnswerStatus.ANSWERED)) {
+                spentTime += answer.getTimeSpent();
             }
         });
         summaryGrade = Math.round(summaryGrade * 10.0) / 10.0;
