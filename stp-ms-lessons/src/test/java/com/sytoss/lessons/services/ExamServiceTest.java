@@ -532,8 +532,8 @@ public class ExamServiceTest extends StpUnitTest {
         ExamAssigneesStatus assigneesStatus = examService.getExamAssigneesStatusByExamId(1L);
         assertEquals(0, assigneesStatus.getTaskCount());
         assertEquals(2, assigneesStatus.getNumberOfTask());
-        assertTrue(assigneesStatus.getInProgress());
-        assertFalse(assigneesStatus.getNotStarted());
+        assertTrue(assigneesStatus.isInProgress());
+        assertFalse(assigneesStatus.isNotStarted());
     }
 
     @Test
@@ -547,8 +547,8 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.findById(1L)).thenReturn(Optional.of(examDTO));
 
         ExamAssigneesStatus assigneesStatus = examService.getExamAssigneesStatusByExamId(1L);
-        assertFalse(assigneesStatus.getInProgress());
-        assertTrue(assigneesStatus.getNotStarted());
+        assertFalse(assigneesStatus.isInProgress());
+        assertTrue(assigneesStatus.isNotStarted());
     }
 
     private Date addDays(Date initial, int daysToAdd) {

@@ -397,7 +397,11 @@ public class ExamService extends AbstractService {
     }
 
     public ExamAssigneesStatus getExamAssigneesStatusByExamId(Long examId) {
-        Optional<ExamDTO> examDTO = examConnector.findById(examId);
-        return examDTO.map(examAssigneesStatusConverter::fromDTO).orElseThrow(() -> new ExamNotFoundException(examId));
+        Optional<ExamDTO> examDTOOpt = examConnector.findById(examId);
+        return examDTOOpt.map(examDTO -> {
+            ExamAssigneesStatus examAssigneesStatus = new ExamAssigneesStatus();
+            examAssigneesStatusConverter.fromDTO(examDTO, examAssigneesStatus);
+            return examAssigneesStatus;
+        }).orElseThrow(() -> new ExamNotFoundException(examId));
     }
 }

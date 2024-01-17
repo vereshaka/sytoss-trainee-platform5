@@ -6,8 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExamAssigneesStatus {
-    private Boolean inProgress;
-    private Boolean notStarted;
+
+    private boolean inProgress;
+    private boolean notStarted;
     private Integer taskCount;
     private Integer numberOfTask;
 }
