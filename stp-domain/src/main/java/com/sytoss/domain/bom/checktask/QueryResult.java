@@ -10,9 +10,12 @@ import java.util.*;
 
 @Getter
 public class QueryResult {
+
     private final List<Map<Integer, Object>> resultMapList = new ArrayList<>();
+
     @Setter
     private List<String> header = new ArrayList<>();
+
     @Setter
     private int affectedRowsCount = 0;
 
@@ -60,12 +63,12 @@ public class QueryResult {
                     if (!CollectionUtils.isEqualCollection(etalonColumnValues, answerColumnValues)) {
                         wrongOrderingColumns.add(etalon.getHeader().get(index));
                     }
-                    if (checkRequestParameters.isSortingRelevant() && !etalonColumnValues.equals(answerColumnValues)){
+                    if (checkRequestParameters.isSortingRelevant() && !etalonColumnValues.equals(answerColumnValues)) {
                         result.add(wrongSortingException);
                     }
                 }
             }
-            if (absentColumns.size() == etalon.getHeader().size()) {
+            if (absentColumns.size() > 0 && absentColumns.size() == etalon.getHeader().size()) {
                 result.add(new WrongDataException()); // case #3
             } else {
                 if (absentColumns.size() > 0) {

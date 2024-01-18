@@ -7,5 +7,5 @@ public interface Executor {
 
     Connection createConnection(String username, String password, String serverPath, String dbName) throws ClassNotFoundException, SQLException;
 
-    void dropDatabase(Connection connection) throws SQLException;
+    void dropDatabase(Connection connection, String dbName) throws SQLException;
 }

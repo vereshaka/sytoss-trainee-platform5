@@ -8,11 +8,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Configuration
 public class CheckTaskConfiguration {
 
     @Value("${custom.executor.executorType}")
     private String executorType;
+
+    @Value("#{new Integer(${custom.executor.poolSize})}")
+    private int poolSize;
+
 
     @Bean
     public Executor createExecutor() {
@@ -26,5 +33,10 @@ public class CheckTaskConfiguration {
             default:
                 throw new RuntimeException("Unknown value of executor type: " + executorType);
         }
+    }
+
+    @Bean
+    public ExecutorService createThreadPool(){
+        return Executors.newFixedThreadPool(poolSize);
     }
 }

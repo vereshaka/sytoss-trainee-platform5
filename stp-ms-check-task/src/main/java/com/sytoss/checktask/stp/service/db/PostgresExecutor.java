@@ -1,6 +1,9 @@
 package com.sytoss.checktask.stp.service.db;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,13 +16,11 @@ public class PostgresExecutor implements Executor {
     private String username;
     private String password;
     private String serverPath;
-    private String dbName;
 
     public Connection createConnection(String username, String password, String serverPath, String dbName) throws ClassNotFoundException, SQLException {
         this.username = username;
         this.password = password;
         this.serverPath = serverPath;
-        this.dbName = dbName;
 
         Class.forName("org.postgresql.Driver");
         Connection adminConnection = null;
@@ -37,14 +38,14 @@ public class PostgresExecutor implements Executor {
                     statement.close();
                 }
             } catch (Exception e) {
-                log.warn("close schema statement error", e);
+                log.warn("Close schema statement error", e);
             }
             try {
                 if (adminConnection != null) {
                     adminConnection.close();
                 }
             } catch (Exception e) {
-                log.warn("close admin connection error", e);
+                log.warn("Close admin connection error", e);
             }
         }
         String url = "jdbc:postgresql://" + serverPath + "?currentSchema=" + dbName;
@@ -52,7 +53,7 @@ public class PostgresExecutor implements Executor {
     }
 
     @Override
-    public void dropDatabase(Connection connection) throws SQLException {
+    public void dropDatabase(Connection connection, String dbName) throws SQLException {
         connection.close();
         String url = "jdbc:postgresql://" + serverPath + "?currentSchema=" + dbName;
         Connection adminConnection = null;
@@ -60,7 +61,7 @@ public class PostgresExecutor implements Executor {
         try {
             adminConnection = DriverManager.getConnection(url, username, password);
             statement = adminConnection.createStatement();
-            statement.execute("drop schema " + dbName + " cascade");
+            statement.execute("drop schema if exists " + dbName + " cascade");
             statement.close();
             log.info("Schema dropped: " + dbName);
         } catch (SQLException e) {
