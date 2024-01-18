@@ -8,7 +8,10 @@ import lombok.Setter;
 public class ExamAssigneesStatus {
 
     private boolean inProgress;
+
     private boolean notStarted;
+
     private Integer taskCount;
+
     private Integer numberOfTask;
 }
