@@ -5,10 +5,7 @@ import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bom.TaskDomainRequestParameters;
-import com.sytoss.lessons.dto.DisciplineDTO;
-import com.sytoss.lessons.dto.TaskConditionDTO;
-import com.sytoss.lessons.dto.TaskDTO;
-import com.sytoss.lessons.dto.TopicDTO;
+import com.sytoss.lessons.dto.*;
 import io.cucumber.java.en.When;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -205,6 +202,38 @@ public class TaskWhen extends LessonsIntegrationTest {
         } else {
             ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
             getTestExecutionContext().setResponse(responseEntity);
+        }
+    }
+
+    @When("^system create task for \"(.*)\" task domain with code \"(.*)\" and with question \"(.*)\"$")
+    public void systemCreateTaskWithCodeAndWithQuestion(String taskDomainName, String code, String question) {
+        String url = "/api/task";
+        Task task = new Task();
+        task.setQuestion(question);
+        TaskDomain taskDomain = new TaskDomain();
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName,getTestExecutionContext().getDetails().getDisciplineId());
+        if(taskDomainDTO != null){
+            taskDomain.setId(taskDomainDTO.getId());
+            task.setTaskDomain(taskDomain);
+            Topic topic = new Topic();
+            topic.setId(getTestExecutionContext().getDetails().getTopicId());
+            Discipline discipline = new Discipline();
+            discipline.setId(getTestExecutionContext().getDetails().getDisciplineId());
+            Teacher teacher = new Teacher();
+            teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+            discipline.setTeacher(teacher);
+            topic.setDiscipline(discipline);
+            task.setTopics(List.of(topic));
+            task.setCode(code);
+            HttpHeaders httpHeaders = getDefaultHttpHeaders();
+            HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
+            if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
+                ResponseEntity<Task> responseEntity = doPost(url, httpEntity, Task.class);
+                getTestExecutionContext().setResponse(responseEntity);
+            } else {
+                ResponseEntity<String> responseEntity = doPost(url, httpEntity, String.class);
+                getTestExecutionContext().setResponse(responseEntity);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.TaskAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
@@ -64,15 +65,18 @@ public class TaskService {
         }
     }
 
-
     public Task create(Task task) {
-        task.setCreateDate(new Date());
-        TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
-        TaskDTO taskDTO = new TaskDTO();
-        taskConvertor.toDTO(task, taskDTO);
-        taskDTO.setTaskDomain(taskDomainDTO);
-        taskDTO = taskConnector.save(taskDTO);
-        taskConvertor.fromDTO(taskDTO, task);
+        if(taskConnector.getByCodeAndTaskDomainId(task.getCode(), task.getTaskDomain().getId())==null){
+            task.setCreateDate(new Date());
+            TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
+            TaskDTO taskDTO = new TaskDTO();
+            taskConvertor.toDTO(task, taskDTO);
+            taskDTO.setTaskDomain(taskDomainDTO);
+            taskDTO = taskConnector.save(taskDTO);
+            taskConvertor.fromDTO(taskDTO, task);
+        } else{
+            throw new TaskAlreadyExistException("code",task.getCode());
+        }
         return task;
     }
 
