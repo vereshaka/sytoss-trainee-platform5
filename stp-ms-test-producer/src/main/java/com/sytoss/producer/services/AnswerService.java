@@ -35,6 +35,7 @@ public class AnswerService extends AbstractService {
         answer.setAnswerUIDate(answerUIDate);
         answer.setTimeSpent(timeSpent);
         answer.answer(taskAnswer);
+        checkTaskService.checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
         personalExamConnector.save(personalExam);
         if (answer == null) {
@@ -54,7 +55,7 @@ public class AnswerService extends AbstractService {
         taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
         taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
-        checkTaskService.checkAnswer(answer, personalExam);
+
         return firstTask;
     }
 
