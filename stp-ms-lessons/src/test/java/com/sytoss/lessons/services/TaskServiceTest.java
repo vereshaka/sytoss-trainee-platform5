@@ -91,13 +91,17 @@ public class TaskServiceTest extends StpUnitTest {
     @Mock
     private GroupReferenceConnector groupReferenceConnector;
 
+    @Mock
+    private ExamAssigneesStatusConverter examAssigneesStatusConverter = new ExamAssigneesStatusConverter();
+
     @Spy
     private ExamService examService = new ExamService(
             examConnector, examConvertor, userConnector,
             personalExamConnector, examAssigneeConvertor,
             examAssigneeConnector, disciplineConnector,
             examAssigneeConnectorTo, topicConnector,
-            taskConnector, analyticsService, groupReferenceConnector
+            taskConnector, analyticsService, groupReferenceConnector,
+            examAssigneesStatusConverter
     );
 
     @InjectMocks

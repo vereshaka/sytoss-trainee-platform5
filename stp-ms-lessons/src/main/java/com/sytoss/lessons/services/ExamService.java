@@ -13,7 +13,9 @@ import com.sytoss.domain.bom.users.Group;
 import com.sytoss.domain.bom.users.Student;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.connectors.*;
+import com.sytoss.lessons.controllers.views.ExamAssigneesStatus;
 import com.sytoss.lessons.convertors.ExamAssigneeConvertor;
+import com.sytoss.lessons.convertors.ExamAssigneesStatusConverter;
 import com.sytoss.lessons.convertors.ExamConvertor;
 import com.sytoss.lessons.dto.GroupReferenceDTO;
 import com.sytoss.lessons.dto.TaskDTO;
@@ -57,6 +59,8 @@ public class ExamService extends AbstractService {
     private final AnalyticsService analyticsService;
 
     private final GroupReferenceConnector groupReferenceConnector;
+
+    private final ExamAssigneesStatusConverter examAssigneesStatusConverter;
 
     public Exam save(Exam exam) {
         exam.setTeacher((Teacher) getCurrentUser());
@@ -390,5 +394,14 @@ public class ExamService extends AbstractService {
             examConvertor.fromDTO(examDTO, exam);
             return exam;
         }).toList();
+    }
+
+    public ExamAssigneesStatus getExamAssigneesStatusByExamId(Long examId) {
+        Optional<ExamDTO> examDTOOpt = examConnector.findById(examId);
+        return examDTOOpt.map(examDTO -> {
+            ExamAssigneesStatus examAssigneesStatus = new ExamAssigneesStatus();
+            examAssigneesStatusConverter.fromDTO(examDTO, examAssigneesStatus);
+            return examAssigneesStatus;
+        }).orElseThrow(() -> new ExamNotFoundException(examId));
     }
 }
