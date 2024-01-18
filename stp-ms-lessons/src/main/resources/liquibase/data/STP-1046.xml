@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-1009.xml">
+
+    <changeSet author="IvanL" id="STP-1046.1">
+        <addForeignKeyConstraint baseTableName="EXAM_ASSIGNEE" baseColumnNames="EXAM_ID"
+                                 constraintName="FK_ASSIGNEE2EXAM" referencedTableName="EXAM"
+                                 referencedColumnNames="ID"/>
+        <addUniqueConstraint tableName="ANALYTICS" columnNames="NAME" constraintName="UK_EXAM"/>
+    </changeSet>
+
+</databaseChangeLog>

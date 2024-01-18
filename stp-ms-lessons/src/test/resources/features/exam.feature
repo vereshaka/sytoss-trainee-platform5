@@ -66,3 +66,21 @@ Feature: Exam
     And exam is
       | name  | tasks      | taskCount | maxGrade | id   |
       | Exam2 | *ta1, *ta2 | 3         | 2        | *ex1 |
+
+  Scenario: teacher create exam with duplicate name
+    Given topics exist
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Select        |
+      | SQL        | Join          |
+      | Mongo      | Set of Tables |
+    And "SQL" discipline has group with id 8
+    And exam "Exam" with 5 tasks for "SQL" discipline exists
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Join          |
+    When a teacher create "Exam" exam with 3 tasks for "SQL" discipline
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Join          |
+    Then operation should be finished with 409 "Exam with this name is already exists" error

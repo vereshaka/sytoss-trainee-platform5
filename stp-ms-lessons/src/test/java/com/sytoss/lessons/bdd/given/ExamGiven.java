@@ -1,5 +1,8 @@
 package com.sytoss.lessons.bdd.given;
 
+import com.sytoss.domain.bom.lessons.*;
+import com.sytoss.domain.bom.users.Group;
+import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bdd.common.ExamAssigneeView;
 import com.sytoss.lessons.bdd.common.ExamView;
@@ -51,7 +54,7 @@ public class ExamGiven extends LessonsIntegrationTest {
     public void disciplineHasAssigneedGroups(String groupIds) {
         DisciplineDTO disciplineDTO = getDisciplineConnector().getReferenceById(getTestExecutionContext().getDetails().getDisciplineId());
         Arrays.stream(groupIds.split(",")).forEach(item -> {
-            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO,false);
+            GroupReferenceDTO groupReferenceDTO = new GroupReferenceDTO(Long.valueOf(item.trim()), disciplineDTO, false);
             getGroupReferenceConnector().save(groupReferenceDTO);
         });
     }
@@ -123,5 +126,50 @@ public class ExamGiven extends LessonsIntegrationTest {
                 getTestExecutionContext().registerId(examKey, examDTO.getId());
             }
         }
+    }
+
+    @Given("^exam \"(.*)\" with (.*) tasks for \"(.*)\" discipline exists$")
+    public void examExists(String examName, Integer numberOfTasks, String disciplineName, List<Topic> topics) {
+        Teacher teacher = new Teacher();
+        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        Discipline discipline = new Discipline();
+        discipline.setId(disciplineDTO.getId());
+        discipline.setName(disciplineDTO.getName());
+        discipline.setTeacher(teacher);
+
+        Group group = new Group();
+        group.setId(getTestExecutionContext().getDetails().getGroupReferenceId());
+
+
+        for (Topic topic : topics) {
+            if (topic.getDiscipline().getName().equals(disciplineName)) {
+                topic.setId(getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId()).getId());
+                topic.setDiscipline(discipline);
+            } else {
+                throw new RuntimeException("Wrong test data");
+            }
+            topic.getDiscipline().setTeacher(teacher);
+        }
+
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < numberOfTasks; i++) {
+            Task task = new Task();
+
+            task.setTaskDomain(new TaskDomain());
+        }
+
+        Exam exam = new Exam();
+        exam.setName(examName);
+        exam.setNumberOfTasks(numberOfTasks);
+        exam.setTopics(topics);
+        exam.setDiscipline(discipline);
+        exam.setTeacher(teacher);
+        exam.setTasks(tasks);
+
+        ExamDTO examDTO = new ExamDTO();
+        getExamConvertor().toDTO(exam, examDTO);
+        getExamConnector().save(examDTO);
     }
 }

@@ -18,6 +18,8 @@ import java.util.List;
 @Setter
 @Entity(name = "EXAM")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UK_EXAM", columnNames = {"NAME"})})
 public class ExamDTO extends Auditable {
 
     @Id
