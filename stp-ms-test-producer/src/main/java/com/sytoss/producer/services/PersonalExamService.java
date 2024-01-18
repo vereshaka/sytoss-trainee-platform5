@@ -11,6 +11,7 @@ import com.sytoss.producer.connectors.LessonsConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
 import com.sytoss.producer.convertor.PersonalExamConvertor;
+import com.sytoss.producer.interfaces.AnswerGenerator;
 import com.sytoss.producer.writers.ExcelBuilder;
 import com.sytoss.producer.writers.GroupExcelBuilder;
 import com.sytoss.producer.bom.ScreenshotModel;
@@ -49,7 +50,7 @@ public class PersonalExamService extends AbstractService {
 
     private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
 
-    private final PersonalExamConvertor personalExamConvertor;
+    private final AnswerGenerator answerGenerator;
 
     private final UserConnector userConnector;
 
@@ -70,7 +71,27 @@ public class PersonalExamService extends AbstractService {
 
         PersonalExam personalExam = personalExamOpt.orElse(new PersonalExam());
 
-        personalExamConvertor.fromExamConfiguration(examConfiguration, personalExam);
+        Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
+        Date relevantTo = examConfiguration.getExamAssignee().getRelevantTo();
+        personalExam.setName(examConfiguration.getExam().getName());
+        personalExam.setExamAssigneeId(examConfiguration.getExamAssignee().getId());
+        personalExam.setAssignedDate(new Date());
+        personalExam.setRelevantFrom(relevantFrom);
+        personalExam.setRelevantTo(relevantTo);
+        personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
+        personalExam.setTeacher(examConfiguration.getExam().getTeacher());
+        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
+        personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
+        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
+        List<Answer> answers = answerGenerator.generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
+        personalExam.setAnswers(answers);
+        double sumOfCoef = 0;
+        for (Answer answer : answers) {
+            sumOfCoef += answer.getTask().getCoef();
+        }
+        personalExam.setStudent(examConfiguration.getStudent());
+        personalExam.setSumOfCoef(sumOfCoef);
+
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
