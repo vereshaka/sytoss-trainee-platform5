@@ -264,7 +264,7 @@ public class ExamService extends AbstractService {
         }
         analyticsService.checkOrCreate(examId, exam.getDiscipline().getId(), examAssignee.getStudents());
 
-        createPersonalExams(exam);
+        createPersonalExams(exam, examAssignee);
 
         return exam;
     }
@@ -404,10 +404,8 @@ public class ExamService extends AbstractService {
                     examDTO.setMaxGrade(exam.getMaxGrade());
                     examConnector.save(examDTO);
 
-                    Exam updatedExam = new Exam();
-                    examConvertor.fromDTO(examDTO, updatedExam);
-
-                    createPersonalExams(updatedExam);
+                    examConvertor.fromDTO(examDTO, exam);
+                    exam.getExamAssignees().forEach(examAssignee -> createPersonalExams(exam, examAssignee));
                 },
                 () -> {
                     throw new ExamNotFoundException(exam.getId());
@@ -415,12 +413,12 @@ public class ExamService extends AbstractService {
     }
 
     // todo: check and sync with method com.sytoss.lessons.services.ExamService.assign
-    // error handling?
-    // POST or PUT?
-    // send single entity or list?
-    private void createPersonalExams(Exam exam) {
-        exam.getExamAssignees().forEach(examAssignee -> {
-            List<Student> students = examAssignee.getStudents();
+    // error handling? -> look for solution to return error details
+    // POST or PUT? -> both
+    // send single student entity or list? -> single, use futures
+    // User.id or uid -> use uid
+    private void createPersonalExams(Exam exam, ExamAssignee examAssignee) {
+            List<Student> students = new ArrayList<>(examAssignee.getStudents());
             examAssignee.getGroups().forEach(g ->
                     students.addAll(userConnector.getStudentOfGroup(g.getId())));
 
@@ -428,19 +426,8 @@ public class ExamService extends AbstractService {
                 try {
                     personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
                 } catch (Exception e) {
-                    log.error("Could not create a personal exam for student", e);
+                    log.error("Unable to create a personal exam for student", e);
                 }
             });
-        });
     }
-
-//    private boolean createPersonalExam(Exam exam, ExamAssignee examAssignee, Student student){
-//        try {
-//            personalExamConnector.create(new ExamConfiguration(exam, examAssignee, student));
-//            return true;
-//        } catch (Exception e) {
-//            log.error("Unable to update personal assignee", e);
-//            return false;
-//        }
-//    }
 }
