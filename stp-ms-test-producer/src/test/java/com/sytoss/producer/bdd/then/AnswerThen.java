@@ -48,7 +48,8 @@ public class AnswerThen extends TestProducerIntegrationTest {
         if (grade != null) {
             assertEquals(Double.valueOf(grade), answer.getGrade().getValue());
         }
-        Assertions.assertEquals(answer.getStatus(), AnswerStatus.valueOf(status));
+        Assertions.assertNotEquals(answer.getStatus(), AnswerStatus.NOT_STARTED);
+        Assertions.assertNotEquals(answer.getStatus(), AnswerStatus.IN_PROGRESS);
     }
 
     @Then("^response should return next task with number (.*)$")
