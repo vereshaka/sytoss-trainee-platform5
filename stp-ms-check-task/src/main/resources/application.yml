@@ -10,13 +10,14 @@ logging:
     org:
       springframework: WARN
       mongodb: WARN
-    liquibase: WARN
+    liquibase: ERROR
 custom:
   executor:
     username: ${EXE_USERNAME:admin}
     password: ${EXE_PASSWORD:password}
     serverPath: ${EXE_SERVER:192.168.160.26:8432/db}
     executorType: ${EXE_TYPE:POSTGRESQL}
+    poolSize: 1
 #feign:
 #  client:
 #    config:

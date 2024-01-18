@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
+import com.sytoss.lessons.controllers.views.ExamAssigneesStatus;
 import com.sytoss.lessons.services.ExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -107,6 +108,18 @@ public class ExamController {
     @GetMapping("/assignee/{examAssigneeId}")
     public Exam getExamByAssignee(@PathVariable(name = "examAssigneeId") Long examAssigneeId) {
         return examService.getExamByExamAssignee(examAssigneeId);
+    }
+
+    @Operation(description = "Method that retrieve exam assignees status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam not found!")
+    })
+    @GetMapping("/{examId}/assignees/status")
+    public ExamAssigneesStatus getExamAssigneesStatus(@Parameter(description = "id of the exam to be searched by")
+                                                      @PathVariable("examId")
+                                                      Long examId) {
+        return examService.getExamAssigneesStatusByExamId(examId);
     }
 
     @Operation(description = "Method that updates an exam")

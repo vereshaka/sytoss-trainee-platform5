@@ -12,6 +12,7 @@ import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.IsCheckEtalon;
 import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
@@ -21,6 +22,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 @Service
@@ -30,31 +34,47 @@ public class ScoreService {
 
     private final ObjectProvider<DatabaseHelperService> databaseHelperServiceProvider;
 
+    private final ExecutorService executor;
+
+    @SneakyThrows
     public Score checkAndScore(CheckTaskParameters data) {
-            CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
-            checkRequestParameters.setScript(data.getScript());
-            checkRequestParameters.setRequest(data.getRequest());
-            checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
-            checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
+        CheckRequestParameters checkRequestParameters = new CheckRequestParameters();
+        checkRequestParameters.setScript(data.getScript());
+        checkRequestParameters.setRequest(data.getRequest());
+        checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
+        checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
 
-            QueryResult queryResultAnswer;
+        CheckRequestParameters checkEtalonParameters = new CheckRequestParameters();
+        checkEtalonParameters.setScript(data.getScript());
+        checkEtalonParameters.setRequest(data.getEtalon());
+        checkEtalonParameters.setCheckAnswer(data.getCheckAnswer());
+        checkEtalonParameters.setSortingRelevant(data.isSortingRelevant());
+
+        List<Future<QueryResult>> futures = new ArrayList<>();
+        futures.add(executor.submit(() -> {
             try {
-                queryResultAnswer = checkQuery(checkRequestParameters);
-            } catch (SQLException e) {
-                return new Score(0, e.getMessage());
+                return checkQuery(checkRequestParameters);
+            } catch (Exception e) {
+                return null;
             }
-
-            checkRequestParameters.setRequest(data.getEtalon());
-
-            QueryResult queryResultEtalon;
+        }));
+        futures.add(executor.submit(() -> {
             try {
-                queryResultEtalon = checkQuery(checkRequestParameters);
-            } catch (SQLException e) {
-                throw new WrongEtalonException("etalon isn't correct", e);
+                return checkQuery(checkEtalonParameters);
+            } catch (Exception e) {
+                log.error("Query execution failed", e);
+                return null;
             }
+        }));
+        QueryResult queryResultAnswer = futures.get(0).get();
+        if (queryResultAnswer == null){
+            return new Score(0, "Query execution error");
+        }
+        QueryResult queryResultEtalon = futures.get(1).get();
 
-            Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkRequestParameters);
-            List<TaskCondition> failedCondition = new ArrayList<>();
+
+        Set<Exception> result = queryResultAnswer.compareWithEtalon(queryResultEtalon, checkEtalonParameters);
+        List<TaskCondition> failedCondition = new ArrayList<>();
 
         String studentAnswer = data.getRequest().trim().toUpperCase()
                 .replaceAll(">", " > ")
@@ -123,19 +143,18 @@ public class ScoreService {
     }
 
     private QueryResult checkQuery(CheckRequestParameters data) throws SQLException {
-        if(data.getCheckAnswer()==null || data.getCheckAnswer().toLowerCase().startsWith("select")){
+        if (data.getCheckAnswer() == null || data.getCheckAnswer().toLowerCase().startsWith("select")) {
             DatabaseHelperService helperServiceProviderObject = databaseHelperServiceProvider.getObject();
             try {
                 helperServiceProviderObject.generateDatabase(data.getScript());
                 return helperServiceProviderObject.getExecuteQueryResult(data.getRequest(), data.getCheckAnswer());
             } catch (SQLException e) {
-                log.error("check query failed", e);
                 throw e;
             } finally {
                 helperServiceProviderObject.dropDatabase();
             }
-        } else{
-            throw new CheckAnswerIsNotValidException(data.getCheckAnswer()+" is not valid");
+        } else {
+            throw new CheckAnswerIsNotValidException(data.getCheckAnswer() + " is not valid");
         }
     }
 
