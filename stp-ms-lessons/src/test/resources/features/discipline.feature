@@ -162,9 +162,9 @@ Feature: Discipline
       | What are the different subsets of SQL? | select  from dual | ta1 | Select, Join |
       | "What is content of dual table?        | select  from dual | ta2 | Select       |
     And this discipline has exams
-      | name  | tasks    | topic  | taskCount | maxGrade | id   |
-      | Exam1 | ta1, ta2 | Select | 2         | 2        | *ex3 |
-      | Exam2 | ta1, ta2 | Select | 2         | 2        | *ex4 |
+      | name   | tasks    | topic  | taskCount | maxGrade | id   |
+      | Exam10 | ta1, ta2 | Select | 2         | 2        | *ex3 |
+      | Exam11 | ta1, ta2 | Select | 2         | 2        | *ex4 |
     And this exams have assignees
       | relevantFrom               | relevantTo                 | examId | id   |
       | 2023-10-27 12:59:00.000000 | 2024-12-28 12:59:00.000000 | *ex3   | *as4 |
@@ -182,5 +182,5 @@ Feature: Discipline
     When a student gets exams for this discipline
     Then operation is successful
     And exams should be
-      | name  | id   |
-      | Exam1 | *ex3 |
+      | name   | id   |
+      | Exam10 | *ex3 |

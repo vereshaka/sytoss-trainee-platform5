@@ -21,10 +21,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -112,13 +109,16 @@ public class AnalyticsGiven extends AbstractGiven {
                     newExamKey = getTestExecutionContext().replaceId(examKey).toString();
                 }
                 Long examId;
-
                 if (!Objects.equals(newExamKey, examKey)) {
                     examId = Long.parseLong(newExamKey);
                     examDTO = getExamConnector().findById(examId).orElse(null);
                 } else {
-                    examDTO = new ExamDTO();
-                    examDTO.setName("Exam 1");
+                    examDTO=new ExamDTO();
+                    String examName;
+                    do{
+                        examName = generateExamName();
+                    }while (getExamConnector().getByName(examName)!=null);
+                    examDTO.setName(examName);
                     TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId("Topic1", disciplineDTO.getId());
                     if (topicDTO == null) {
                         topicDTO = new TopicDTO();
@@ -251,5 +251,17 @@ public class AnalyticsGiven extends AbstractGiven {
     @Given("^analytics is empty$")
     public void analyticsIsEmpty() {
         getAnalyticsConnector().deleteAll();
+    }
+
+    private String generateExamName() {
+        Random random = new Random();
+        int examNameLength = 10;
+        char letter;
+        StringBuilder name = new StringBuilder();
+        for (int i = 0; i < examNameLength; i++) {
+            letter = (char) (random.nextInt(26) + 'a');
+            name.append(letter);
+        }
+        return "exam " + name;
     }
 }

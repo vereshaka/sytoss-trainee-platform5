@@ -77,8 +77,11 @@ public class ExamGiven extends LessonsIntegrationTest {
     public void examExists(DataTable exams) {
         List<ExamView> examList = exams.asMaps(String.class, String.class).stream().toList().stream().map(ExamView::new).toList();
         for (ExamView item : examList) {
-            ExamDTO dto = new ExamDTO();
-            dto.setName(item.getName());
+            ExamDTO dto = getExamConnector().getByName(item.getName());
+            if(dto==null){
+                dto = new ExamDTO();
+                dto.setName(item.getName());
+            }
             dto.setMaxGrade(Integer.valueOf(item.getMaxGrade()));
             dto.setNumberOfTasks(Integer.valueOf(item.getTaskCount()));
             dto.setTasks(new ArrayList<>());
@@ -105,6 +108,7 @@ public class ExamGiven extends LessonsIntegrationTest {
             }
             dto = getExamConnector().save(dto);
             getTestExecutionContext().registerId(item.getId(), dto.getId());
+
         }
     }
 
@@ -130,46 +134,48 @@ public class ExamGiven extends LessonsIntegrationTest {
 
     @Given("^exam \"(.*)\" with (.*) tasks for \"(.*)\" discipline exists$")
     public void examExists(String examName, Integer numberOfTasks, String disciplineName, List<Topic> topics) {
-        Teacher teacher = new Teacher();
-        teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
+        if(getExamConnector().getByName(examName)==null){
+            Teacher teacher = new Teacher();
+            teacher.setId(getTestExecutionContext().getDetails().getTeacherId());
 
-        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
-        Discipline discipline = new Discipline();
-        discipline.setId(disciplineDTO.getId());
-        discipline.setName(disciplineDTO.getName());
-        discipline.setTeacher(teacher);
+            DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+            Discipline discipline = new Discipline();
+            discipline.setId(disciplineDTO.getId());
+            discipline.setName(disciplineDTO.getName());
+            discipline.setTeacher(teacher);
 
-        Group group = new Group();
-        group.setId(getTestExecutionContext().getDetails().getGroupReferenceId());
+            Group group = new Group();
+            group.setId(getTestExecutionContext().getDetails().getGroupReferenceId());
 
 
-        for (Topic topic : topics) {
-            if (topic.getDiscipline().getName().equals(disciplineName)) {
-                topic.setId(getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId()).getId());
-                topic.setDiscipline(discipline);
-            } else {
-                throw new RuntimeException("Wrong test data");
+            for (Topic topic : topics) {
+                if (topic.getDiscipline().getName().equals(disciplineName)) {
+                    topic.setId(getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId()).getId());
+                    topic.setDiscipline(discipline);
+                } else {
+                    throw new RuntimeException("Wrong test data");
+                }
+                topic.getDiscipline().setTeacher(teacher);
             }
-            topic.getDiscipline().setTeacher(teacher);
+
+            List<Task> tasks = new ArrayList<>();
+            for (int i = 0; i < numberOfTasks; i++) {
+                Task task = new Task();
+
+                task.setTaskDomain(new TaskDomain());
+            }
+
+            Exam exam = new Exam();
+            exam.setName(examName);
+            exam.setNumberOfTasks(numberOfTasks);
+            exam.setTopics(topics);
+            exam.setDiscipline(discipline);
+            exam.setTeacher(teacher);
+            exam.setTasks(tasks);
+
+            ExamDTO examDTO = new ExamDTO();
+            getExamConvertor().toDTO(exam, examDTO);
+            getExamConnector().save(examDTO);
         }
-
-        List<Task> tasks = new ArrayList<>();
-        for (int i = 0; i < numberOfTasks; i++) {
-            Task task = new Task();
-
-            task.setTaskDomain(new TaskDomain());
-        }
-
-        Exam exam = new Exam();
-        exam.setName(examName);
-        exam.setNumberOfTasks(numberOfTasks);
-        exam.setTopics(topics);
-        exam.setDiscipline(discipline);
-        exam.setTeacher(teacher);
-        exam.setTasks(tasks);
-
-        ExamDTO examDTO = new ExamDTO();
-        getExamConvertor().toDTO(exam, examDTO);
-        getExamConnector().save(examDTO);
     }
 }
