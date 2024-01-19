@@ -12,10 +12,8 @@ import com.sytoss.stp.test.FileUtils;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -139,22 +137,28 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
         taskDomainDTO.setDataScript(dataScriptFromFile);
         taskDomainDTO = getTaskDomainConnector().save(taskDomainDTO);
 
-        List<TaskView> tasksList= tasks.asMaps(String.class, String.class).stream().toList().stream().map(TaskView::new).toList();
+        List<TaskView> tasksList = tasks.asMaps(String.class, String.class).stream().toList().stream().map(TaskView::new).toList();
 
-        for (TaskView item : tasksList){
+        for (TaskView item : tasksList) {
             TaskDTO dto = new TaskDTO();
             dto.setTaskDomain(taskDomainDTO);
             dto.setQuestion(item.getQuestion());
             dto.setEtalonAnswer(item.getAnswer());
             dto.setCoef(1.0);
+            String code;
+            do {
+                code = generateCode();
+            } while (getTaskConnector().getByCodeAndTaskDomainId(code, taskDomainDTO.getId()) != null);
+            dto.setCode(code);
             dto.setTopics(new ArrayList<>());
             List<String> topicNames = Arrays.stream(item.getTopics().split(",")).map(el -> el.trim()).toList();
-            for (String topicName: topicNames){
+            for (String topicName : topicNames) {
                 TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId(topicName, disciplineDTO.getId());
                 dto.getTopics().add(topicDTO);
             }
             dto = getTaskConnector().save(dto);
             getTestExecutionContext().registerId(item.getId(), dto.getId());
+
         }
         getTestExecutionContext().getDetails().setTaskDomainId(taskDomainDTO.getId());
     }
@@ -186,12 +190,12 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK_DOMAIN WHERE ID = " + taskDomainId);
-            statement.execute("INSERT INTO TASK_DOMAIN (ID, NAME, DATABASE_SCRIPT, DATA_SCRIPT, DISCIPLINE_ID, SHORT_DESCRIPTION) VALUES(" + taskDomainId + ", 'task domain 2', 'db', 'data', " + getTestExecutionContext().getDetails().getDisciplineId() + ",'desc'"+")");
-            while(true){
+            statement.execute("INSERT INTO TASK_DOMAIN (ID, NAME, DATABASE_SCRIPT, DATA_SCRIPT, DISCIPLINE_ID, SHORT_DESCRIPTION) VALUES(" + taskDomainId + ", 'task domain 2', 'db', 'data', " + getTestExecutionContext().getDetails().getDisciplineId() + ",'desc'" + ")");
+            while (true) {
                 ResultSet rs = statement.executeQuery("select TASK_DOMAIN_SEQ.nextVal from Dual");
                 rs.next();
                 int id = rs.getInt(1);
-                if(id>=taskDomainId){
+                if (id >= taskDomainId) {
                     break;
                 }
             }
@@ -209,5 +213,4 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
         getTestExecutionContext().getDetails().setTaskDomainId(taskDomainId);
         getEntityManager().clear();
     }
-
 }

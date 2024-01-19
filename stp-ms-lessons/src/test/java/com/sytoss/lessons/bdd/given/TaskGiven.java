@@ -42,6 +42,11 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
             TopicDTO topicDTO = getTopicConnector().getReferenceById(getTestExecutionContext().getDetails().getTopicId());
             taskDTO = new TaskDTO();
+            String code;
+            do{
+                code = generateCode();
+            } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainDTO.getId())!=null);
+            taskDTO.setCode(code);
             taskDTO.setQuestion(question);
             taskDTO.setTopics(List.of(topicDTO));
             taskDTO.setEtalonAnswer("Etalon answer");
@@ -202,6 +207,11 @@ public class TaskGiven extends LessonsIntegrationTest {
         }
 
         for (Task task : tasks) {
+            String code;
+            do{
+                code = generateCode();
+            } while (getTaskConnector().getByCodeAndTaskDomainId(code,task.getTaskDomain().getId())!=null);
+            task.setCode(code);
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
@@ -230,6 +240,11 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO task = new TaskDTO();
             task.setQuestion(taskRow.get("question"));
             task.setCoef(0.0);
+            String code;
+            do{
+                code = generateCode();
+            } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainDTO.getId())!=null);
+            task.setCode(code);
             task.setTopics(List.of(topicDTO));
             task.setTaskDomain(taskDomainDTO);
             task = getTaskConnector().save(task);
