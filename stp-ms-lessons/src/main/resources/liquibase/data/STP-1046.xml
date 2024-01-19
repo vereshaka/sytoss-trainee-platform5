@@ -5,15 +5,16 @@
                    logicalFilePath="data/STP-1046.xml">
 
     <changeSet author="IvanL" id="STP-1046-1">
-        <sql>
-            update exam
-            set name = exam.name || '-' || rn from (
-         select *, row_number() over (partition by name order by name) rn
-         from exam
-        ) subquery
-            where subquery.rn
-                > 1
-              and subquery.Id = exam.Id;
+        <sql dbms="H2, POSTGRESQL">
+            <![CDATA[
+            UPDATE EXAM
+            SET NAME = EXAM.NAME || '-' || SUBQUERY.RN
+                FROM (
+                    SELECT ID, NAME, ROW_NUMBER() OVER (PARTITION BY NAME ORDER BY ID) AS RN
+                    FROM EXAM
+                ) AS SUBQUERY
+            WHERE SUBQUERY.RN > 1 AND SUBQUERY.ID = EXAM.ID;
+            ]]>
         </sql>
     </changeSet>
 

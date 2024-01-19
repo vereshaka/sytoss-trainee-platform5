@@ -64,7 +64,7 @@ public class ExamService extends AbstractService {
     private final ExamAssigneesStatusConverter examAssigneesStatusConverter;
 
     public Exam save(Exam exam) {
-        if(examConnector.getByName(exam.getName())==null){
+        if(examConnector.getByNameAndDiscipline_Id(exam.getName(),exam.getDiscipline().getId())==null){
             exam.setTeacher((Teacher) getCurrentUser());
             List<Task> distinctTasks = new ArrayList<>();
             for (Task task : exam.getTasks()) {

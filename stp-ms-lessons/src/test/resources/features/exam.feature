@@ -88,21 +88,20 @@ Feature: Exam
   Scenario: STP-1046 teacher create exam with duplicate name in another discipline
     Given topics exist
       | discipline | topic         |
-      | SQL2        | Set of Tables |
-      | SQL2        | Select        |
-      | SQL2        | Join          |
-    And "SQL2" discipline has group with id 8
-    And exam "Exam 5" with 5 tasks for "SQL2" discipline exists
-      | discipline | topic         |
       | SQL2       | Set of Tables |
-      | SQL2        | Join          |
+      | SQL        | Select        |
+      | SQL2       | Join          |
+    And "SQL2" discipline has group with id 8
+    And exam "Exam 5" with 5 tasks for "SQL" discipline exists
+      | discipline | topic  |
+      | SQL        | Select |
     When a teacher create "Exam 5" exam with 3 tasks for "SQL2" discipline
       | discipline | topic         |
-      | SQL2        | Set of Tables |
-      | SQL2        | Join          |
+      | SQL2       | Set of Tables |
+      | SQL2       | Join          |
     Then operation is successful
-    And "Exam 1" exam should have 5 tasks for this group
-    And "Exam 1" exam for this group should have topics
+    And "Exam 5" exam for "SQL2" discipline should have 3 tasks for this group
+    And "Exam 5" exam for this group should have topics for "SQL2" discipline
       | discipline | topic         |
-      | SQL2        | Set of Tables |
-      | SQL2        | Join          |
+      | SQL2       | Set of Tables |
+      | SQL2       | Join          |
