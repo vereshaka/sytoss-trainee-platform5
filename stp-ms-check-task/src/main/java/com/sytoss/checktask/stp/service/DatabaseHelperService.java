@@ -2,29 +2,19 @@ package com.sytoss.checktask.stp.service;
 
 import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.service.db.Executor;
-import com.sytoss.checktask.stp.service.db.PostgresExecutor;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import liquibase.*;
 import liquibase.command.CommandScope;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.SearchPathResourceAccessor;
 import liquibase.ui.LoggerUIService;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.HashMap;
@@ -39,15 +29,17 @@ import java.util.Random;
 @Setter
 public class DatabaseHelperService {
 
-    public static final ThreadLocalScopeManager SCOPE_MANAGER = new ThreadLocalScopeManager();
+    public static final ThreadLocalScopeManager SCOPE_MANAGER = createThreadLocalScopeManager();
 
-    static {
-        liquibase.Scope.setScopeManager(SCOPE_MANAGER);
+    private static ThreadLocalScopeManager createThreadLocalScopeManager() {
         try {
             liquibase.Scope.enter(Map.of(liquibase.Scope.Attr.ui.name(), new LoggerUIService()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        ThreadLocalScopeManager threadLocalScopeManager = new ThreadLocalScopeManager();
+        liquibase.Scope.setScopeManager(threadLocalScopeManager);
+        return threadLocalScopeManager;
     }
 
     private static int NAME_COUNTER = 0;
@@ -84,31 +76,31 @@ public class DatabaseHelperService {
     }
 
     public void generateDatabase(String databaseScript) {
-        Database database;
+        File databaseFile = null;
         try {
-            database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
-            File databaseFile = writeDatabaseScriptFile(databaseScript);
+            getConnection(); // YevgenyV: this is required code for initialization of schema
+            databaseFile = writeDatabaseScriptFile(databaseScript);
             Map<String, Object> values = new HashMap<>();
             values.put(liquibase.Scope.Attr.resourceAccessor.name(), new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()));
             values.put(liquibase.Scope.Attr.ui.name(), new LoggerUIService());
             CustomScope scope = new CustomScope(SCOPE_MANAGER.getRootScope(), values);
             SCOPE_MANAGER.setCurrentScope(scope);
-            try {
-                new CommandScope("update")
-                        .addArgumentValue("changeLogFile", databaseFile.getName())
-                        .addArgumentValue("url", executor.getJdbcUrl(dbName))
-                        .addArgumentValue("driver", executor.getDriverName())
-                        .addArgumentValue("username", username)
-                        .addArgumentValue("password", password)
-                        .execute();
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-            databaseFile.deleteOnExit();
+            new CommandScope("update")
+                    .addArgumentValue("changeLogFile", databaseFile.getName())
+                    .addArgumentValue("url", executor.getJdbcUrl(dbName))
+                    .addArgumentValue("driver", executor.getDriverName())
+                    .addArgumentValue("username", username)
+                    .addArgumentValue("password", password)
+                    .execute();
             log.info("Database was generated. DbName: " + dbName);
         } catch (Exception e) {
             throw new DatabaseCommunicationException("Database creating error", e);
+        } finally {
+            SCOPE_MANAGER.remove();
+            // cleanThreadLocals();
+            if (databaseFile != null) {
+                databaseFile.deleteOnExit();
+            }
         }
     }
 
@@ -117,27 +109,10 @@ public class DatabaseHelperService {
             Thread thread = Thread.currentThread();
             Field threadLocalsField = Thread.class.getDeclaredField("threadLocals");
             threadLocalsField.setAccessible(true);
-            //Object threadLocalTable = threadLocalsField.get(thread);
             threadLocalsField.set(thread, null);
-
-           /* Class threadLocalMapClass = Class.forName("java.lang.ThreadLocal$ThreadLocalMap");
-            Field tableField = threadLocalMapClass.getDeclaredField("table");
-            tableField.setAccessible(true);
-            Object table = tableField.get(threadLocalTable);
-
-            Field referentField = Reference.class.getDeclaredField("referent");
-            referentField.setAccessible(true);
-
-            for (int i = 0; i < CollectionUtils.size(table); i++) {
-                Object entry = CollectionUtils.get(table, i);
-                if (entry != null) {
-                    ThreadLocal threadLocal = (ThreadLocal) referentField.get(entry);
-                    threadLocal.remove();
-                }
-            }*/
             log.info("Thread Local variables removed. DbName: " + dbName);
         } catch (Exception e) {
-            throw new IllegalStateException(e);
+            log.warn("Thread Local variables could not be removed. DbName: " + dbName, e);
         }
     }
 

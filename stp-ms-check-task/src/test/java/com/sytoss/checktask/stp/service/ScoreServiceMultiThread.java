@@ -37,6 +37,10 @@ public class ScoreServiceMultiThread {
 
     private static int cnt = 0;
 
+    synchronized static void done(){
+        cnt++;
+    }
+
     @Test
     public void runMultipleCheckScore() {
         assertNotNull(scoreService);
@@ -55,9 +59,8 @@ public class ScoreServiceMultiThread {
                     try {
                         Score result = scoreService.checkAndScore(checkTaskParameters);
                         assertEquals(1.0, result.getValue());
-                        cnt++;
+                        done();
                     } catch (Exception e) {
-                        e.printStackTrace();
                         log.error("Failed. Message: " + e.getMessage());
                     }
                 }
