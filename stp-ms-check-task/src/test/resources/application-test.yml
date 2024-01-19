@@ -1,6 +1,6 @@
 custom:
   executor:
-    username: ${EXE_USERNAME:admin}
-    password: ${EXE_PASSWORD:password}
-    serverPath: ${EXE_SERVER:}
-    executorType: ${EXE_TYPE:H2}
+    username: admin
+    password: password
+    executorType: H2
+    #poolSize: 1

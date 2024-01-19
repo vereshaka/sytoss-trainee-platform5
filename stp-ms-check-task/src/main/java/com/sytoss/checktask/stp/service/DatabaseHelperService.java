@@ -4,10 +4,7 @@ import com.sytoss.checktask.stp.exceptions.DatabaseCommunicationException;
 import com.sytoss.checktask.stp.service.db.Executor;
 import com.sytoss.checktask.stp.service.db.PostgresExecutor;
 import com.sytoss.domain.bom.checktask.QueryResult;
-import liquibase.GlobalConfiguration;
-import liquibase.Liquibase;
-import liquibase.ScopeManager;
-import liquibase.ThreadLocalScopeManager;
+import liquibase.*;
 import liquibase.command.CommandScope;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -30,6 +27,7 @@ import java.io.*;
 import java.lang.ref.Reference;
 import java.lang.reflect.Field;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -41,7 +39,7 @@ import java.util.Random;
 @Setter
 public class DatabaseHelperService {
 
-    private static final ScopeManager SCOPE_MANAGER = new ThreadLocalScopeManager();
+    public static final ThreadLocalScopeManager SCOPE_MANAGER = new ThreadLocalScopeManager();
 
     static {
         liquibase.Scope.setScopeManager(SCOPE_MANAGER);
@@ -86,14 +84,27 @@ public class DatabaseHelperService {
     }
 
     public void generateDatabase(String databaseScript) {
+        Database database;
         try {
+            database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
             File databaseFile = writeDatabaseScriptFile(databaseScript);
-            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(getConnection()));
-            Liquibase liquibase = new Liquibase(databaseFile.getName(),
-                    new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()), database);
-           // cleanThreadLocals();
-            liquibase.update();
-            ((ThreadLocalScopeManager)SCOPE_MANAGER).remove();
+            Map<String, Object> values = new HashMap<>();
+            values.put(liquibase.Scope.Attr.resourceAccessor.name(), new SearchPathResourceAccessor(databaseFile.getParentFile().getAbsolutePath()));
+            values.put(liquibase.Scope.Attr.ui.name(), new LoggerUIService());
+            CustomScope scope = new CustomScope(SCOPE_MANAGER.getRootScope(), values);
+            SCOPE_MANAGER.setCurrentScope(scope);
+            try {
+                new CommandScope("update")
+                        .addArgumentValue("changeLogFile", databaseFile.getName())
+                        .addArgumentValue("url", executor.getJdbcUrl(dbName))
+                        .addArgumentValue("driver", executor.getDriverName())
+                        .addArgumentValue("username", username)
+                        .addArgumentValue("password", password)
+                        .execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
             databaseFile.deleteOnExit();
             log.info("Database was generated. DbName: " + dbName);
         } catch (Exception e) {
@@ -106,9 +117,10 @@ public class DatabaseHelperService {
             Thread thread = Thread.currentThread();
             Field threadLocalsField = Thread.class.getDeclaredField("threadLocals");
             threadLocalsField.setAccessible(true);
-            Object threadLocalTable = threadLocalsField.get(thread);
+            //Object threadLocalTable = threadLocalsField.get(thread);
+            threadLocalsField.set(thread, null);
 
-            Class threadLocalMapClass = Class.forName("java.lang.ThreadLocal$ThreadLocalMap");
+           /* Class threadLocalMapClass = Class.forName("java.lang.ThreadLocal$ThreadLocalMap");
             Field tableField = threadLocalMapClass.getDeclaredField("table");
             tableField.setAccessible(true);
             Object table = tableField.get(threadLocalTable);
@@ -122,7 +134,7 @@ public class DatabaseHelperService {
                     ThreadLocal threadLocal = (ThreadLocal) referentField.get(entry);
                     threadLocal.remove();
                 }
-            }
+            }*/
             log.info("Thread Local variables removed. DbName: " + dbName);
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -159,7 +171,7 @@ public class DatabaseHelperService {
     }
 
     private File writeDatabaseScriptFile(String databaseScript) throws IOException {
-        File scriptFile = File.createTempFile("script", ".yml");
+        File scriptFile = File.createTempFile(dbName, ".yml");
         try (OutputStreamWriter myWriter = new FileWriter(scriptFile)) {
             myWriter.write(databaseScript);
             myWriter.flush();
