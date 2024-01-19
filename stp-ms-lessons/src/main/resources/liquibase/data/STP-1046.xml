@@ -10,9 +10,9 @@
             UPDATE EXAM
             SET NAME = EXAM.NAME || '-' || SUBQUERY.RN
                 FROM (
-                    SELECT ID, NAME, ROW_NUMBER() OVER (PARTITION BY NAME ORDER BY ID) AS RN
-                    FROM EXAM
-                ) AS SUBQUERY
+                SELECT ID, NAME, DISCIPLINE_ID, ROW_NUMBER() OVER (PARTITION BY NAME, discipline_id ORDER BY ID) AS RN
+                FROM EXAM
+            ) AS SUBQUERY
             WHERE SUBQUERY.RN > 1 AND SUBQUERY.ID = EXAM.ID;
             ]]>
         </sql>
