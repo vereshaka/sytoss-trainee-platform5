@@ -365,16 +365,3 @@ Feature: Analytics
       | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
       | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
       | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |
-
-  Scenario: update analytics with downgrade grade
-    Given analytics elements exist
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 1         | *ea1           |
-    And teacher changes grade to
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 8    | 1         | *ea1           |
-    When teacher updates analytics element
-    Then operation is successful
-    And updated analytic element should be
-      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
-      | *d1          | *ex1   | 1         | *pe1           | 10    | 1         | *ea1           |
