@@ -178,6 +178,7 @@ public class AnalyticsService extends AbstractService {
             dto.setDisciplineId(analytics.getDiscipline().getId());
             dto.setExamId(analytics.getExam().getId());
             dto.setStudentId(analytics.getStudent().getId());
+            dto.setStartDate(analytics.getStartDate());
         }
         AnalyticGrade grade = analytics.getGrade();
         if (dto.getPersonalExamId() == null
@@ -187,7 +188,6 @@ public class AnalyticsService extends AbstractService {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
             dto.setGrade(analytics.getGrade().getGrade());
             dto.setTimeSpent(analytics.getGrade().getTimeSpent());
-            dto.setStartDate(analytics.getStartDate());
         }
         analyticsConnector.save(dto);
     }
