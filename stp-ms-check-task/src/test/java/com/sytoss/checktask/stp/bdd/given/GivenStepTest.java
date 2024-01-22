@@ -76,4 +76,9 @@ public class GivenStepTest extends CheckTaskIntegrationTest {
     public void sortingIsNotRelevant() {
         getTestExecutionContext().getDetails().getCheckTaskParameters().setSortingRelevant(false);
     }
+
+    @Given("^mode is \"(.*)\"")
+    public void modeIs(String mode) {
+        getTestExecutionContext().getDetails().getCheckTaskParameters().setMode(mode);
+    }
 }

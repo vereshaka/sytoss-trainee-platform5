@@ -1,6 +1,5 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.stp.exceptions.WrongEtalonException;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.checktask.exceptions.*;
 import com.sytoss.domain.bom.exceptions.business.CheckAnswerIsNotValidException;
@@ -14,18 +13,16 @@ import com.sytoss.domain.bom.personalexam.Score;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +40,14 @@ public class ScoreService {
         checkRequestParameters.setRequest(data.getRequest());
         checkRequestParameters.setCheckAnswer(data.getCheckAnswer());
         checkRequestParameters.setSortingRelevant(data.isSortingRelevant());
+        checkRequestParameters.setMode(data.getMode());
 
         CheckRequestParameters checkEtalonParameters = new CheckRequestParameters();
         checkEtalonParameters.setScript(data.getScript());
         checkEtalonParameters.setRequest(data.getEtalon());
         checkEtalonParameters.setCheckAnswer(data.getCheckAnswer());
         checkEtalonParameters.setSortingRelevant(data.isSortingRelevant());
+        checkEtalonParameters.setMode(data.getMode());
 
         List<Future<QueryResult>> futures = new ArrayList<>();
         futures.add(executor.submit(() -> {
@@ -94,12 +93,12 @@ public class ScoreService {
                 .replaceAll("( )+", " ");
         List<String> answerWorlds = List.of(studentAnswer.split(" "));
 
-        answerWorlds = answerWorlds.stream().filter(item -> item.trim().length() > 0).toList();
+        answerWorlds = answerWorlds.stream().filter(item -> !item.trim().isEmpty()).toList();
 
         for (TaskCondition condition : data.getConditions()) {
             List<String> conditionWords = List.of(condition.getValue().trim().toUpperCase().replaceAll("( )+", " ").split(" "));
 
-            conditionWords = conditionWords.stream().filter(item -> item.trim().length() > 0).toList();
+            conditionWords = conditionWords.stream().filter(item -> !item.trim().isEmpty()).toList();
 
             boolean conditionExists = hasCondition(answerWorlds, conditionWords);
 
@@ -109,9 +108,14 @@ public class ScoreService {
             } else if (condition.getType().equals(ConditionType.NOT_CONTAINS) && conditionExists) {
                 failedCondition.add(condition);
                 result.add(new CompareConditionException(failedCondition)); // case #1
+            } else {
+                if(Objects.equals(data.getMode(), "OR")){
+                    failedCondition.clear();
+                    result.clear();
+                    break;
+                }
             }
         }
-
         return grade(result);
     }
 

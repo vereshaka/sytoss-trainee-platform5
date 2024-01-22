@@ -203,6 +203,7 @@ public class TaskService {
             updateTaskDTO.setCheckAnswer(task.getCheckAnswer());
         }
 
+        updateTaskDTO.setMode(task.getMode());
         updateTaskDTO.setIsSortingRelevant(task.isSortingRelevant());
 
         updateTaskDTO.getConditions().clear();

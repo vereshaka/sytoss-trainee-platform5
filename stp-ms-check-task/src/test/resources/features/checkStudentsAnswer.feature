@@ -23,6 +23,7 @@ Feature: check answer
     And etalon SQL is "select * from Discipline ORDER BY id"
     And check SQL is "select * from Discipline"
     And answer should contains "ORDER BY" condition with "CONTAINS" type
+    And mode is "AND"
     When request coming to process
     Then request should be processed successfully
     And Grade value is 0.7
@@ -152,6 +153,7 @@ Feature: check answer
     And answer should contains "IN" condition with "NOT_CONTAINS" type
     And answer should contains "EXISTS" condition with "NOT_CONTAINS" type
     And answer should contains "NULL" condition with "NOT_CONTAINS" type
+    And mode is "AND"
     When request coming to process
     Then request should be processed successfully
     And Grade value is 0.7
@@ -183,6 +185,7 @@ Feature: check answer
     And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
     And answer should contains "IN" condition with "CONTAINS" type
     And answer should contains "JOIN" condition with "NOT_CONTAINS" type
+    And mode is "AND"
     When request coming to process
     Then request should be processed successfully
     And Grade value is 1
@@ -271,6 +274,19 @@ WHERE Price >= 1000 and Price <= 2000
   """
     And answer should contains ">=" condition with "CONTAINS" type
     And answer should contains "<=" condition with "CONTAINS" type
+    And mode is "AND"
+    When request coming to process
+    Then request should be processed successfully
+    And Grade value is 1
+    And Grade message is ""
+
+  Scenario: STP-1031 Check incorrect student's answer with with task conditions
+    Given Request contains database script as in "task-domain/sale.yml"
+    And etalon SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    And check SQL is "select IdProduct, NameProduct from Product where IdProduct IN (Select IdProduct from Sale)"
+    And answer should contains "IN" condition with "CONTAINS" type
+    And answer should contains "JOIN" condition with "CONTAINS" type
+    And mode is "OR"
     When request coming to process
     Then request should be processed successfully
     And Grade value is 1

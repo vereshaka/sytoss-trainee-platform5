@@ -15,6 +15,8 @@ public class CheckRequestParameters {
 
     private boolean isSortingRelevant;
 
+    private String mode;
+
     public boolean isQueryForUpdate(){
         if(request != null){
             return !request.toUpperCase().startsWith("SELECT");
