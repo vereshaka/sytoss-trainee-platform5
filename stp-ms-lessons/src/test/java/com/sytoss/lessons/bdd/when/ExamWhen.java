@@ -173,7 +173,7 @@ public class ExamWhen extends LessonsIntegrationTest {
         getTestExecutionContext().setResponse(responseEntity);
     }
 
-    @When("a teacher updates an exam")
+    @When("^a teacher updates an exam$")
     public void aTeacherUpdatesAnExam(DataTable examTable) {
         ExamView examView = examTable.asMaps(String.class, String.class).stream().map(ExamView::new).toList().get(0);
         Exam exam = new Exam();
