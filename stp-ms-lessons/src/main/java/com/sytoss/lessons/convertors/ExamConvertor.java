@@ -83,6 +83,7 @@ public class ExamConvertor {
             destination.setTasks(tasksList);
         }
         destination.setNumberOfTasks(source.getNumberOfTasks());
+        destination.setLastModifiedDate(source.getLastModifiedDate());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);

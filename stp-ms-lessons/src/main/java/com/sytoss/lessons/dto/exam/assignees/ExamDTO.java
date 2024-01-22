@@ -8,7 +8,6 @@ import com.sytoss.lessons.dto.TopicDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,10 +59,7 @@ public class ExamDTO extends Auditable {
     @JoinColumn(name = "DISCIPLINE_ID", referencedColumnName = "ID")
     private DisciplineDTO discipline;
 
+    // todo: AnastasiiaKravchuk: Auditable entity already has createdDate attribute, do we need to keep this one?
     @Column(name = "CREATION_DATE")
     private Date creationDate = new Date();
-
-    @Column(name = "UPDATE_DATE")
-    @LastModifiedDate
-    private Date updateDate;
 }
