@@ -42,7 +42,7 @@ public class PersonalExamController {
     @PostMapping("/create")
     @JsonView({PersonalExam.Public.class})
     public PersonalExam createExam(@RequestBody ExamConfiguration examConfiguration) {
-        return personalExamService.createOrUpdate(examConfiguration);
+        return personalExamService.create(examConfiguration);
     }
 
     @PreAuthorize("hasRole('Teacher')")
@@ -320,5 +320,17 @@ public class PersonalExamController {
         return personalExamService.getListOfStudentsPersonalExam(personalExamByStudentsModel.getDisciplineId(),
                 personalExamByStudentsModel.getExamAssignees(),
                 personalExamByStudentsModel.getStudents());
+    }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that updates personal exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Personal exam not found!"),
+            @ApiResponse(responseCode = "409", description = "Personal exam already started!")
+    })
+    @PutMapping("/update")
+    public void update(@RequestBody ExamConfiguration examConfiguration) {
+        personalExamService.update(examConfiguration);
     }
 }

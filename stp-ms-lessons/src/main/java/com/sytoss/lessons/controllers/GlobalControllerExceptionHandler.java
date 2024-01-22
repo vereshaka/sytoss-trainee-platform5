@@ -116,4 +116,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(ExamAssigneeNotFoundException examAssigneeNotFoundException) {
         return ResponseEntity.status(404).body(new ApplicationError((examAssigneeNotFoundException)));
     }
+
+    @ExceptionHandler(PersonalExamIntegrationException.class)
+    public ResponseEntity<ApplicationError> handlePersonalExamIntegrationException(PersonalExamIntegrationException personalExamIntegrationException) {
+        return ResponseEntity.status(400).body(new ApplicationError((personalExamIntegrationException)));
+    }
 }

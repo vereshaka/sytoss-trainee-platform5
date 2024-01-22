@@ -29,5 +29,8 @@ public interface PersonalExamConnector {
 
     @PostMapping("personal-exam/students")
     List<PersonalExam> getListOfPersonalExamByStudents(PersonalExamByStudentsModel personalExamByStudentsModel);
+
+    @PutMapping("personal-exam/update")
+    void update(@RequestBody ExamConfiguration examConfiguration);
 }
 

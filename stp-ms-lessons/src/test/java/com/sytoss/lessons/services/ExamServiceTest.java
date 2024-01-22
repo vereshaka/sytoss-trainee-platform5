@@ -62,7 +62,8 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Spy
     private ExamConvertor examConvertor = new ExamConvertor(new DisciplineConvertor(), new TopicConvertor(new DisciplineConvertor()),
-            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(), new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
+            new TaskConvertor(new TaskDomainConvertor(new DisciplineConvertor()), new TaskConditionConvertor(),
+                    new TopicConvertor(new DisciplineConvertor())), new ExamAssigneeConvertor());
 
     @Spy
     private ExamAssigneeConvertor examAssigneeConvertor = new ExamAssigneeConvertor();
@@ -78,6 +79,9 @@ public class ExamServiceTest extends StpUnitTest {
 
     @Spy
     private ExamAssigneesStatusConverter examAssigneesStatusConverter = new ExamAssigneesStatusConverter();
+
+    @Mock
+    private PersonalExamService personalExamService;
 
     @Test
     public void shouldSaveExam() {
@@ -549,6 +553,43 @@ public class ExamServiceTest extends StpUnitTest {
         ExamAssigneesStatus assigneesStatus = examService.getExamAssigneesStatusByExamId(1L);
         assertFalse(assigneesStatus.isInProgress());
         assertTrue(assigneesStatus.isNotStarted());
+    }
+
+    @Test
+    public void shouldUpdateExam() {
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("Updated exam name");
+
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setId(1L);
+
+        Group group = new Group();
+        group.setId(1L);
+
+        Student firstStudent = new Student();
+        firstStudent.setUid("1");
+        firstStudent.setId(1L);
+
+        ExamAssignee examAssignee = new ExamAssignee();
+        examAssignee.setStudents(List.of(firstStudent));
+        examAssignee.setExam(exam);
+        examAssignee.setGroups(List.of(group));
+
+        when(examConnector.findById(1L)).thenReturn(Optional.of(examDTO));
+        doNothing().when(examConvertor).fromDTO(any(), any());
+
+        examService.update(1L, exam);
+
+        verify(examConnector, times(1)).save(examDTO);
+        verify(personalExamService, times(1)).updatePersonalExams(anyList());
+    }
+
+    @Test
+    public void examUpdateShouldFailWithNotFoundException() {
+        when(examConnector.findById(1L)).thenReturn(Optional.empty());
+        ExamNotFoundException exception = assertThrows(ExamNotFoundException.class, () -> examService.update(1L, new Exam()));
+        assertEquals("exam with id \"1\" not found", exception.getMessage());
     }
 
     private Date addDays(Date initial, int daysToAdd) {

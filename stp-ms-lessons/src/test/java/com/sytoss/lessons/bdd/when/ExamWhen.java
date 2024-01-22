@@ -33,6 +33,7 @@ public class ExamWhen extends LessonsIntegrationTest {
         HttpEntity requestEntity = new HttpEntity<>(null, httpHeaders);
 
         ResponseEntity<List<Exam>> responseEntity = doGet("/api/teacher/my/exams", requestEntity, new ParameterizedTypeReference<>() {
+
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -170,5 +171,23 @@ public class ExamWhen extends LessonsIntegrationTest {
 
         ResponseEntity<Exam> responseEntity = doPost(url, requestEntity, Exam.class);
         getTestExecutionContext().setResponse(responseEntity);
+    }
+
+    @When("a teacher updates an exam")
+    public void aTeacherUpdatesAnExam(DataTable examTable) {
+        ExamView examView = examTable.asMaps(String.class, String.class).stream().map(ExamView::new).toList().get(0);
+        Exam exam = new Exam();
+        exam.setName(examView.getName());
+        exam.setMaxGrade(Integer.valueOf(examView.getMaxGrade()));
+        exam.setNumberOfTasks(Integer.valueOf(examView.getTaskCount()));
+
+        long examId = (long) getTestExecutionContext().replaceId(examView.getId());
+
+        String url = "/api/exam/" + examId;
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<Exam> requestBody = new HttpEntity<>(exam, httpHeaders);
+        ResponseEntity<Void> response = doPut(url, requestBody, Void.class);
+        getTestExecutionContext().setResponse(response);
     }
 }

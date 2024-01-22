@@ -1,6 +1,6 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.lessons.Discipline;
+import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
@@ -11,7 +11,7 @@ import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.producer.connectors.ImageConnector;
 import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.interfaces.AnswerGenerator;
+import com.sytoss.producer.convertor.PersonalExamConvertor;
 import com.sytoss.stp.test.StpUnitTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +48,7 @@ public class PersonalExamServiceTest extends StpUnitTest {
     private ImageConnector imageConnector;
 
     @Mock
-    private AnswerGenerator answerGenerator;
+    private PersonalExamConvertor personalExamConvertor;
 
     @Test
     public void createExam() {
@@ -62,39 +62,54 @@ public class PersonalExamServiceTest extends StpUnitTest {
 
         ExamConfiguration examConfiguration = new ExamConfiguration();
 
-        Discipline discipline = new Discipline();
-        discipline.setId(1L);
-        discipline.setName("SQL");
-        List<Long> topics = new ArrayList<>();
-        topics.add(1L);
-        topics.add(2L);
+        doNothing().when(personalExamConvertor).fromExamConfiguration(eq(examConfiguration), any(PersonalExam.class));
 
-        List<Task> taskList = new ArrayList<>();
-        Student student = new Student();
-        student.setUid("notLongId");
-        examConfiguration.setStudent(student);
-        ExamAssignee examAssignee = new ExamAssignee();
-        examAssignee.setRelevantFrom(Date.from(Instant.now()));
-        examAssignee.setRelevantTo(Date.from(Instant.now()));
-
-
-        List<Answer> answers = List.of(
-                createAnswer("select * from products", 1, "answer correct", AnswerStatus.GRADED, 1L),
-                createAnswer("select * from owners", 0, "answer correct", AnswerStatus.ANSWERED, 2L)
-        );
-
-        examConfiguration.setExamAssignee(examAssignee);
-        Exam exam = new Exam();
-        exam.setMaxGrade(10);
-        exam.setNumberOfTasks(10);
-        exam.setTasks(taskList);
-        examConfiguration.setExam(exam);
-
-        when(answerGenerator.generateAnswers(exam.getNumberOfTasks(), exam.getTasks())).thenReturn(answers);
-
-        PersonalExam personalExam = personalExamService.createOrUpdate(examConfiguration);
-        assertEquals(2, personalExam.getAnswers().size());
+        PersonalExam personalExam = personalExamService.create(examConfiguration);
+        verify(personalExamConvertor, times(1)).fromExamConfiguration(eq(examConfiguration), any(PersonalExam.class));
+        verify(personalExamConnector, times(1)).save(any(PersonalExam.class));
         assertEquals("1ada", personalExam.getId());
+    }
+
+    @Test
+    public void shouldUpdatePersonalExam() {
+        ExamConfiguration examConfiguration = createExamConfiguration();
+        PersonalExam personalExam = new PersonalExam();
+
+        when(personalExamConnector.findByExamAssigneeIdAndStudentUid(eq(1L), eq("sddf"))).thenReturn(Optional.of(personalExam));
+        doNothing().when(personalExamConvertor).fromExamConfiguration(eq(examConfiguration), eq(personalExam));
+        when(personalExamConnector.save(any())).thenReturn(personalExam);
+
+        personalExamService.update(examConfiguration);
+
+        assertEquals(PersonalExamStatus.NOT_STARTED, personalExam.getStatus());
+        verify(personalExamConnector, times(1)).save(personalExam);
+    }
+
+    @Test
+    public void personalExamUpdateShouldFailForAlreadyStartedExam(){
+        ExamConfiguration examConfiguration = createExamConfiguration();
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.start();
+
+        when(personalExamConnector.findByExamAssigneeIdAndStudentUid(eq(1L), eq("sddf"))).thenReturn(Optional.of(personalExam));
+
+        assertThrows(PersonalExamAlreadyStartedException.class, () -> personalExamService.update(examConfiguration));
+    }
+
+    @Test
+    public void personalExamShouldNotBeUpdatedForAlreadyFinishedExam() {
+        ExamConfiguration examConfiguration = createExamConfiguration();
+        PersonalExam personalExam = new PersonalExam();
+        personalExam.start();
+        personalExam.finish();
+
+        when(personalExamConnector.findByExamAssigneeIdAndStudentUid(eq(1L), eq("sddf"))).thenReturn(Optional.of(personalExam));
+
+        personalExamService.update(examConfiguration);
+
+        verifyNoInteractions(personalExamConvertor);
+        verify(personalExamConnector, times(0)).save(personalExam);
+
     }
 
     @Test
@@ -416,5 +431,19 @@ public class PersonalExamServiceTest extends StpUnitTest {
         Assertions.assertEquals(2, personalExams.get(0).getAnswers().size());
         Assertions.assertEquals(2.0, personalExams.get(0).getSystemGrade());
         Assertions.assertEquals(4.0, personalExams.get(0).getSummaryGrade());
+    }
+
+    private ExamConfiguration createExamConfiguration() {
+        ExamAssignee assignee = new ExamAssignee();
+        assignee.setId(1L);
+
+        Student student = new Student();
+        student.setUid("sddf");
+
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+        examConfiguration.setExamAssignee(assignee);
+        examConfiguration.setStudent(student);
+
+        return examConfiguration;
     }
 }

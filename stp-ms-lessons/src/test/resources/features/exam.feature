@@ -46,6 +46,7 @@ Feature: Exam
     When a teacher request exam list
     Then operation is successful
 
+# todo AnastasiiaKravchuk: method POST shouldn't allow to update resource
   Scenario: STP-785 Update exam
     Given topics exist
       | discipline | topic  |
@@ -66,3 +67,24 @@ Feature: Exam
     And exam is
       | name  | tasks      | taskCount | maxGrade | id   |
       | Exam2 | *ta1, *ta2 | 3         | 2        | *ex1 |
+
+    Scenario: STP-1062 Update exam
+      Given disciplines with specific id exist
+        | id  | name |
+        | *d1 | d1   |
+      And groups with specific id exist
+        | group | discipline |
+        | *g1   | *d1        |
+      And exams with specific id exist
+        | id   | name | disciplineId |
+        | *ex1 | ex1  | *d1          |
+      And this exams have assignees
+        | id   | examId | relevantFrom               | relevantTo                 |
+        | *as1 | *ex1   | 2024-10-27 12:59:00.000000 | 2024-10-28 12:59:00.000000 |
+      And this exam assignees have exam assignees to
+        | studentId | assigneeId |
+        | 1         | *as1       |
+      When a teacher updates an exam
+        | name  | taskCount | maxGrade | id   |
+        | Exam2 | 3         | 2        | *ex1 |
+      Then operation is successful
