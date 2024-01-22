@@ -1,9 +1,6 @@
 package com.sytoss.checktask.stp.service.db;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +19,7 @@ public class PostgresExecutor implements Executor {
         this.password = password;
         this.serverPath = serverPath;
 
-        Class.forName("org.postgresql.Driver");
+        Class.forName(getDriverName());
         Connection adminConnection = null;
         Statement statement = null;
         try {
@@ -48,8 +45,7 @@ public class PostgresExecutor implements Executor {
                 log.warn("Close admin connection error", e);
             }
         }
-        String url = "jdbc:postgresql://" + serverPath + "?currentSchema=" + dbName;
-        return DriverManager.getConnection(url, username, password);
+        return DriverManager.getConnection(getJdbcUrl(dbName), username, password);
     }
 
     @Override
@@ -82,5 +78,15 @@ public class PostgresExecutor implements Executor {
                 log.warn("close admin connection error", e);
             }
         }
+    }
+
+    @Override
+    public String getJdbcUrl(String dbName) {
+        return  "jdbc:postgresql://" + serverPath + "?currentSchema=" + dbName;
+    }
+
+    @Override
+    public String getDriverName() {
+        return "org.postgresql.Driver";
     }
 }
