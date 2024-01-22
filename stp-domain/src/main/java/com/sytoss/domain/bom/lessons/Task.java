@@ -43,4 +43,6 @@ public class Task {
     private String code;
 
     private Date createDate;
+
+    private String mode;
 }

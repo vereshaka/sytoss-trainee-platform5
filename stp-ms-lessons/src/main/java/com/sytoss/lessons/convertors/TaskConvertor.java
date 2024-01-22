@@ -30,6 +30,7 @@ public class TaskConvertor {
         destination.setCode(source.getCode() == null ? "" : source.getCode());
         destination.setCreateDate(source.getCreateDate());
         destination.setCheckAnswer(source.getCheckAnswer());
+        destination.setMode(source.getMode());
         if (source.getIsSortingRelevant() != null) {
             destination.setSortingRelevant(source.getIsSortingRelevant());
         }
@@ -71,6 +72,7 @@ public class TaskConvertor {
         destination.setCreateDate(source.getCreateDate());
         destination.setCheckAnswer(source.getCheckAnswer());
         destination.setIsSortingRelevant(source.isSortingRelevant());
+        destination.setMode(source.getMode());
         TaskDomainDTO taskDomainDTO = new TaskDomainDTO();
         taskDomainConvertor.toDTO(source.getTaskDomain(), taskDomainDTO);
         destination.setTaskDomain(taskDomainDTO);

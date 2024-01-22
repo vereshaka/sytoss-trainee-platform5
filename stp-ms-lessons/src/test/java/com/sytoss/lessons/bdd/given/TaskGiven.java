@@ -4,13 +4,11 @@ import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.ConditionType;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskDomain;
-import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.*;
 import com.sytoss.lessons.services.TaskService;
 import com.sytoss.stp.test.common.DataTableCommon;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +45,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             taskDTO.setQuestion(question);
             taskDTO.setTopics(List.of(topicDTO));
             taskDTO.setEtalonAnswer("Etalon answer");
+            taskDTO.setMode("AND");
             taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO = getTaskConnector().save(taskDTO);
         }
@@ -124,9 +123,9 @@ public class TaskGiven extends LessonsIntegrationTest {
             Connection connection = getDataSource().getConnection();
             Statement statement = connection.createStatement();
             statement.execute("DELETE FROM TASK WHERE ID = " + taskId);
-            statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER) " +
+            statement.execute("INSERT INTO TASK (ID, TASK_DOMAIN_ID, QUESTION, ETALON_ANSWER, MODE) " +
                     "VALUES(" + taskId + ", " + getTestExecutionContext().getDetails().getTaskDomainId() +
-                    ", 'Generic Question#" + taskId + "', 'Generic Answer')");
+                    ", 'Generic Question#" + taskId + "', 'Generic Answer', 'AND')");
             while (true) {
                 ResultSet rs = statement.executeQuery("select TASK_SEQ.nextVal from Dual");
                 rs.next();
@@ -171,6 +170,7 @@ public class TaskGiven extends LessonsIntegrationTest {
     public void taskWithQuestionExistsForThisTaskDomain(String question) {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setQuestion(question);
+        taskDTO.setMode("AND");
         taskDTO.setEtalonAnswer("select * from dual");
         TaskDomainDTO taskDomain = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
         taskDTO.setTaskDomain(taskDomain);
@@ -202,6 +202,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDomain taskDomain = new TaskDomain();
             taskDomain.setId((Long) getTestExecutionContext().getIdMapping().get(id));
             task.setTaskDomain(taskDomain);
+            task.setMode("AND");
             tasks.add(task);
         }
 
@@ -209,6 +210,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
+                taskDTO.setMode("AND");
                 getTaskConvertor().toDTO(task, taskDTO);
                 taskDTO.setTaskDomain(getTaskDomainConnector().getReferenceById(taskDTO.getTaskDomain().getId()));
                 getTaskConnector().save(taskDTO);
@@ -235,6 +237,7 @@ public class TaskGiven extends LessonsIntegrationTest {
             task.setQuestion(taskRow.get("question"));
             task.setCoef(0.0);
             task.setTopics(List.of(topicDTO));
+            task.setMode("AND");
             task.setTaskDomain(taskDomainDTO);
             task = getTaskConnector().save(task);
             getTestExecutionContext().registerId(taskRow.get("taskId"), task.getId().toString());

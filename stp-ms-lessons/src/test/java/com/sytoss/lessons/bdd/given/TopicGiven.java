@@ -64,6 +64,7 @@ public class TopicGiven extends AbstractGiven {
             TaskDTO result = existsTasks.stream().filter(item -> item.getQuestion().equalsIgnoreCase(taskName)).findFirst().orElse(null);
             if (result == null) {
                 result = new TaskDTO();
+                result.setMode("AND");
                 result.setQuestion(taskName);
                 result.setTopics(List.of(topic));
                 result.setCode(taskCode);

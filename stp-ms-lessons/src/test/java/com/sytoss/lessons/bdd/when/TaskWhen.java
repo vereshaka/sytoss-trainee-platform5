@@ -68,6 +68,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         discipline.setTeacher(teacher);
         topic.setDiscipline(discipline);
         task.setTopics(List.of(topic));
+        task.setMode("AND");
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> httpEntity = new HttpEntity<>(task, httpHeaders);
         if (getTaskConnector().getByQuestionAndTopicsDisciplineId(question, getTestExecutionContext().getDetails().getDisciplineId()) == null) {
@@ -184,6 +185,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         String url = "/api/task";
         Task task = new Task();
         task.setQuestion(question);
+        task.setMode("AND");
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(getTestExecutionContext().getDetails().getTaskDomainId());
         task.setTaskDomain(taskDomain);

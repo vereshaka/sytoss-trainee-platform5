@@ -12,10 +12,8 @@ import com.sytoss.stp.test.FileUtils;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -147,6 +145,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             dto.setQuestion(item.getQuestion());
             dto.setEtalonAnswer(item.getAnswer());
             dto.setCoef(1.0);
+            dto.setMode("AND");
             dto.setTopics(new ArrayList<>());
             List<String> topicNames = Arrays.stream(item.getTopics().split(",")).map(el -> el.trim()).toList();
             for (String topicName: topicNames){

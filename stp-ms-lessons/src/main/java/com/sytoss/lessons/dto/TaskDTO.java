@@ -57,4 +57,7 @@ public class TaskDTO extends Auditable {
 
     @Column(name = "CHECK_ANSWER")
     private String checkAnswer;
+
+    @Column(name = "MODE")
+    private String mode;
 }
