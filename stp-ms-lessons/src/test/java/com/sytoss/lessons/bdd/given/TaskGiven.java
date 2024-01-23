@@ -207,11 +207,7 @@ public class TaskGiven extends LessonsIntegrationTest {
         }
 
         for (Task task : tasks) {
-            String code;
-            do{
-                code = generateCode();
-            } while (getTaskConnector().getByCodeAndTaskDomainId(code,task.getTaskDomain().getId())!=null);
-            task.setCode(code);
+            task.setCode(generateUniqueCode(task.getTaskDomain().getId()));
             TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(task.getQuestion(), task.getTaskDomain().getId());
             if (taskDTO == null) {
                 taskDTO = new TaskDTO();
@@ -240,13 +236,9 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDTO task = new TaskDTO();
             task.setQuestion(taskRow.get("question"));
             task.setCoef(0.0);
-            String code;
-            do{
-                code = generateCode();
-            } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainDTO.getId())!=null);
-            task.setCode(code);
             task.setTopics(List.of(topicDTO));
             task.setTaskDomain(taskDomainDTO);
+            task.setCode(generateUniqueCode(task.getTaskDomain().getId()));
             task = getTaskConnector().save(task);
             getTestExecutionContext().registerId(taskRow.get("taskId"), task.getId().toString());
         }
@@ -259,5 +251,13 @@ public class TaskGiven extends LessonsIntegrationTest {
             taskDTO.setCode(code);
             getTaskConnector().save(taskDTO);
         }
+    }
+
+    private String generateUniqueCode(Long taskDomainId){
+        String code;
+        do{
+            code = generateCode();
+        } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainId)!=null);
+        return code;
     }
 }

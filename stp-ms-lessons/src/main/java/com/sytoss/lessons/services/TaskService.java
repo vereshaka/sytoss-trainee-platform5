@@ -66,7 +66,9 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        if(taskConnector.getByCodeAndTaskDomainId(task.getCode(), task.getTaskDomain().getId())==null){
+        if (taskConnector.getByCodeAndTaskDomainId(task.getCode(), task.getTaskDomain().getId()) != null) {
+            throw new TaskAlreadyExistException("code", task.getCode());
+        } else {
             task.setCreateDate(new Date());
             TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
             TaskDTO taskDTO = new TaskDTO();
@@ -74,10 +76,8 @@ public class TaskService {
             taskDTO.setTaskDomain(taskDomainDTO);
             taskDTO = taskConnector.save(taskDTO);
             taskConvertor.fromDTO(taskDTO, task);
-        } else{
-            throw new TaskAlreadyExistException("code",task.getCode());
+            return task;
         }
-        return task;
     }
 
     public Task removeCondition(Long taskId, Long conditionId) {
@@ -300,11 +300,11 @@ public class TaskService {
 
     public void unassignTask(Long topicId, Long taskId) {
         Task task = getById(taskId);
-        if(task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
+        if (task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
             Topic topic = task.getTopics().stream().filter(topic1 -> Objects.equals(topic1.getId(), topicId)).toList().get(0);
             task.getTopics().remove(topic);
             TaskDTO taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task,taskDTO);
+            taskConvertor.toDTO(task, taskDTO);
             taskConnector.save(taskDTO);
         }
 
