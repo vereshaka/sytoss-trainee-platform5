@@ -42,15 +42,11 @@ public class TaskGiven extends LessonsIntegrationTest {
             TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getReferenceById(getTestExecutionContext().getDetails().getTaskDomainId());
             TopicDTO topicDTO = getTopicConnector().getReferenceById(getTestExecutionContext().getDetails().getTopicId());
             taskDTO = new TaskDTO();
-            String code;
-            do{
-                code = generateCode();
-            } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainDTO.getId())!=null);
-            taskDTO.setCode(code);
             taskDTO.setQuestion(question);
             taskDTO.setTopics(List.of(topicDTO));
             taskDTO.setEtalonAnswer("Etalon answer");
             taskDTO.setTaskDomain(taskDomainDTO);
+            taskDTO.setCode(generateUniqueCode(taskDTO.getTaskDomain().getId()));
             taskDTO = getTaskConnector().save(taskDTO);
         }
         getTestExecutionContext().getDetails().setTaskId(taskDTO.getId());
