@@ -117,8 +117,8 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(404).body(new ApplicationError((examAssigneeNotFoundException)));
     }
 
-    @ExceptionHandler({ExamAlreadyExists.class})
-    public ResponseEntity<ApplicationError> handleValidationException(ExamAlreadyExists examAlreadyExists) {
-        return ResponseEntity.status(409).body(new ApplicationError((examAlreadyExists)));
+    @ExceptionHandler({ExamAlreadyExistsException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(ExamAlreadyExistsException examAlreadyExistsException) {
+        return ResponseEntity.status(409).body(new ApplicationError((examAlreadyExistsException)));
     }
 }

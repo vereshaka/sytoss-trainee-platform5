@@ -1,6 +1,6 @@
 package com.sytoss.lessons.services;
 
-import com.sytoss.domain.bom.exceptions.business.ExamAlreadyExists;
+import com.sytoss.domain.bom.exceptions.business.ExamAlreadyExistsException;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
 import com.sytoss.domain.bom.lessons.Exam;
@@ -64,43 +64,40 @@ public class ExamService extends AbstractService {
     private final ExamAssigneesStatusConverter examAssigneesStatusConverter;
 
     public Exam save(Exam exam) {
-        if(examConnector.getByNameAndDiscipline_Id(exam.getName(),exam.getDiscipline().getId())==null){
-            exam.setTeacher((Teacher) getCurrentUser());
-            List<Task> distinctTasks = new ArrayList<>();
-            for (Task task : exam.getTasks()) {
-                if (!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())) {
-                    distinctTasks.add(task);
-                }
-            }
-            if (exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()) {
-                exam.setNumberOfTasks(distinctTasks.size());
-            }
-            exam.setTasks(distinctTasks);
-            //TODO: yevgenyv: re think it
-            exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
-            final ExamDTO examDTO = new ExamDTO();
-            examConvertor.toDTO(exam, examDTO);
-
-            examDTO.setTopics(new ArrayList<>());
-            exam.getTopics().forEach(topic -> examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId())));
-
-            examDTO.setTasks(new ArrayList<>());
-            exam.getTasks().forEach(task -> examDTO.getTasks().add(taskConnector.getReferenceById(task.getId())));
-
-            if (exam.getDiscipline() != null) {
-                examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
-            }
-            ExamDTO result = examConnector.save(examDTO);
-            examConvertor.fromDTO(result, exam);
-
-            List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(exam.getDiscipline().getId());
-            for (GroupReferenceDTO group : groups) {
-                analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
-            }
-
+        if(examConnector.getByNameAndDiscipline_Id(exam.getName(),exam.getDiscipline().getId())!=null){
+            throw new ExamAlreadyExistsException(exam.getName());
         }
-        else{
-            throw new ExamAlreadyExists(exam.getName());
+        exam.setTeacher((Teacher) getCurrentUser());
+        List<Task> distinctTasks = new ArrayList<>();
+        for (Task task : exam.getTasks()) {
+            if (!distinctTasks.stream().map(Task::getId).toList().contains(task.getId())) {
+                distinctTasks.add(task);
+            }
+        }
+        if (exam.getTasks().size() == exam.getNumberOfTasks() && distinctTasks.size() < exam.getNumberOfTasks()) {
+            exam.setNumberOfTasks(distinctTasks.size());
+        }
+        exam.setTasks(distinctTasks);
+        //TODO: yevgenyv: re think it
+        exam.setDiscipline(exam.getTopics().get(0).getDiscipline());
+        final ExamDTO examDTO = new ExamDTO();
+        examConvertor.toDTO(exam, examDTO);
+
+        examDTO.setTopics(new ArrayList<>());
+        exam.getTopics().forEach(topic -> examDTO.getTopics().add(topicConnector.getReferenceById(topic.getId())));
+
+        examDTO.setTasks(new ArrayList<>());
+        exam.getTasks().forEach(task -> examDTO.getTasks().add(taskConnector.getReferenceById(task.getId())));
+
+        if (exam.getDiscipline() != null) {
+            examDTO.setDiscipline(disciplineConnector.getReferenceById(exam.getDiscipline().getId()));
+        }
+        ExamDTO result = examConnector.save(examDTO);
+        examConvertor.fromDTO(result, exam);
+
+        List<GroupReferenceDTO> groups = groupReferenceConnector.findByDisciplineId(exam.getDiscipline().getId());
+        for (GroupReferenceDTO group : groups) {
+            analyticsService.checkOrCreate(exam.getId(), exam.getDiscipline().getId(), group.getGroupId());
         }
 
         return exam;
