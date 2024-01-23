@@ -185,8 +185,8 @@ public class TaskWhen extends LessonsIntegrationTest {
         task.setQuestion(question);
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(getTestExecutionContext().getDetails().getTaskDomainId());
-        task.setCode(generateUniqueCode(task.getTaskDomain().getId()));
         task.setTaskDomain(taskDomain);
+        task.setCode(generateUniqueCode(task.getTaskDomain().getId()));
         Topic topic = new Topic();
         topic.setId(getTestExecutionContext().getDetails().getTopicId());
         Discipline discipline = new Discipline();
