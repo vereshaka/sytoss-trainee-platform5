@@ -181,9 +181,9 @@ public class AnalyticsService extends AbstractService {
         }
         AnalyticGrade grade = analytics.getGrade();
         if (dto.getPersonalExamId() == null
-                || (dto.getPersonalExamId().equals(analytics.getPersonalExam().getId()))
-                || grade.getGrade() > dto.getGrade()
-                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())) {
+                || (dto.getPersonalExamId().equals(analytics.getPersonalExam().getId())
+                && (grade.getGrade() > dto.getGrade()
+                || (grade.getGrade() == dto.getGrade() && grade.getTimeSpent() < dto.getTimeSpent())))) {
             dto.setPersonalExamId(analytics.getPersonalExam().getId());
             dto.setGrade(analytics.getGrade().getGrade());
             dto.setTimeSpent(analytics.getGrade().getTimeSpent());

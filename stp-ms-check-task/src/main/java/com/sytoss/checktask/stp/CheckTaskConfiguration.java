@@ -4,12 +4,14 @@ import com.sytoss.checktask.stp.service.db.Executor;
 import com.sytoss.checktask.stp.service.db.H2Executor;
 import com.sytoss.checktask.stp.service.db.HsqlExecutor;
 import com.sytoss.checktask.stp.service.db.PostgresExecutor;
+import liquibase.ThreadLocalScopeManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+
+import static com.sytoss.checktask.stp.service.DatabaseHelperService.SCOPE_MANAGER;
 
 @Configuration
 public class CheckTaskConfiguration {
@@ -37,6 +39,18 @@ public class CheckTaskConfiguration {
 
     @Bean
     public ExecutorService createThreadPool(){
-        return Executors.newFixedThreadPool(poolSize);
+        return new ThreadPoolExecutor(poolSize, poolSize,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>()) {
+
+            @Override
+            protected void afterExecute(Runnable r, Throwable t) {
+                //Thread.currentThread().threadLocals = null;
+                ((ThreadLocalScopeManager)SCOPE_MANAGER).remove();
+                super.afterExecute(r, t);
+            }
+        };
+        //ExecutorService executorService = Executors.newFixedThreadPool(poolSize);
+        //return executorService;
     }
 }

@@ -19,10 +19,10 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
     public void studentsAnswerIsCheckingWith() {
         String url = "/api/task/check";
 
-        HttpHeaders  httpHeaders = new HttpHeaders();
-         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<CheckTaskParameters> request = new HttpEntity<>(getTestExecutionContext().getDetails().getCheckTaskParameters(),  httpHeaders);
+        HttpEntity<CheckTaskParameters> request = new HttpEntity<>(getTestExecutionContext().getDetails().getCheckTaskParameters(), httpHeaders);
 
         ResponseEntity<Score> responseEntity = doPost(url, request, Score.class);
         getTestExecutionContext().setResponse(responseEntity);
@@ -32,11 +32,11 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
     public void requestSentCheckEtalonAnswer() throws JsonProcessingException {
         String url = "/api/task/check-etalon";
 
-        HttpHeaders  httpHeaders = new HttpHeaders();
-         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
-        HttpEntity<String> request = new HttpEntity<>(requestLine,  httpHeaders);
+        HttpEntity<String> request = new HttpEntity<>(requestLine, httpHeaders);
 
         ResponseEntity<IsCheckEtalon> responseEntity = doPost(url, request, IsCheckEtalon.class);
         getTestExecutionContext().setResponse(responseEntity);
@@ -46,11 +46,11 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
     public void requestSentCheckRequest() throws JsonProcessingException {
         String url = "/api/task/check-request";
 
-        HttpHeaders  httpHeaders = new HttpHeaders();
-         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
-        HttpEntity<String> request = new HttpEntity<>(requestLine,  httpHeaders);
+        HttpEntity<String> request = new HttpEntity<>(requestLine, httpHeaders);
 
         ResponseEntity<QueryResult> responseEntity = doPost(url, request, QueryResult.class);
         getTestExecutionContext().setResponse(responseEntity);
@@ -60,11 +60,11 @@ public class WhenStepTest extends CheckTaskIntegrationTest {
     public void requestSentToCheckIncorrectScript() throws JsonProcessingException {
         String url = "/api/task/check-request";
 
-        HttpHeaders  httpHeaders = new HttpHeaders();
-         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
         String requestLine = new ObjectMapper().writeValueAsString(getTestExecutionContext().getDetails().getCheckTaskParameters());
-        HttpEntity<String> request = new HttpEntity<>(requestLine,  httpHeaders);
+        HttpEntity<String> request = new HttpEntity<>(requestLine, httpHeaders);
 
         ResponseEntity<String> responseEntity = doPost(url, request, String.class);
         getTestExecutionContext().setResponse(responseEntity);

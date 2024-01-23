@@ -11,9 +11,8 @@ public class H2Executor implements Executor {
     private static final String MSSQL_MODE = "MODE=MSSQLServer";
 
     public Connection createConnection(String username, String password, String serverPath, String dbName) throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        String url = "jdbc:h2:mem:" + dbName + ";" + MSSQL_MODE;
-        return DriverManager.getConnection(url, username, password);
+        Class.forName(getDriverName());
+        return DriverManager.getConnection(getJdbcUrl(dbName), username, password);
     }
 
     @Override
@@ -21,5 +20,15 @@ public class H2Executor implements Executor {
         Statement statement = connection.createStatement();
         statement.executeUpdate("DROP ALL OBJECTS DELETE FILES");
         statement.close();
+    }
+
+    @Override
+    public String getJdbcUrl(String dbName) {
+        return "jdbc:h2:mem:" + dbName + ";" + MSSQL_MODE;
+    }
+
+    @Override
+    public String getDriverName() {
+        return "org.h2.Driver";
     }
 }

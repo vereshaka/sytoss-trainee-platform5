@@ -99,6 +99,9 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Autowired
     private AnalyticsConvertor analyticsConvertor;
 
+    @Autowired
+    private ExamConvertor examConvertor;
+
     @Override
     protected LessonsDetails createDetails() {
         return new LessonsDetails();

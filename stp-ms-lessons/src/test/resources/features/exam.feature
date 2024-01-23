@@ -11,13 +11,13 @@ Feature: Exam
       | SQL        | Join          |
       | Mongo      | Set of Tables |
     And "SQL" discipline has group with id 8
-    When a teacher create "Exam" exam with 5 tasks for "SQL" discipline
+    When a teacher create "Exam 1" exam with 5 tasks for "SQL" discipline
       | discipline | topic         |
       | SQL        | Set of Tables |
       | SQL        | Join          |
     Then operation is successful
-    And "Exam" exam should have 5 tasks for this group
-    And "Exam" exam for this group should have topics
+    And "Exam 1" exam should have 5 tasks for this group
+    And "Exam 1" exam for this group should have topics
       | discipline | topic         |
       | SQL        | Set of Tables |
       | SQL        | Join          |
@@ -42,7 +42,7 @@ Feature: Exam
       | "What is content of dual table?        | select * from dual | *ta2 | Select       |
     And this discipline has exams
       | name  | tasks      | taskCount | maxGrade | id   |
-      | Exam1 | *ta1, *ta2 | 2         | 2        | *ex1 |
+      | Exam7 | *ta1, *ta2 | 2         | 2        | *ex1 |
     When a teacher request exam list
     Then operation is successful
 
@@ -58,11 +58,50 @@ Feature: Exam
     And this discipline has assigned groups: 1,2
     And this discipline has exams
       | name  | tasks      | taskCount | maxGrade | id   |
-      | Exam1 | *ta1, *ta2 | 2         | 2        | *ex1 |
+      | Exam3 | *ta1, *ta2 | 2         | 2        | *ex1 |
     When teacher updates exam to
       | name  | tasks      | taskCount | maxGrade | id   |
-      | Exam2 | *ta1, *ta2 | 3         | 2        | *ex1 |
+      | Exam4 | *ta1, *ta2 | 3         | 2        | *ex1 |
     Then operation is successful
     And exam is
       | name  | tasks      | taskCount | maxGrade | id   |
-      | Exam2 | *ta1, *ta2 | 3         | 2        | *ex1 |
+      | Exam4 | *ta1, *ta2 | 3         | 2        | *ex1 |
+
+  Scenario: STP-1046 teacher create exam with duplicate name
+    Given topics exist
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Select        |
+      | SQL        | Join          |
+      | Mongo      | Set of Tables |
+    And "SQL" discipline has group with id 8
+    And exam "Exam 5" with 5 tasks for "SQL" discipline exists
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Join          |
+    When a teacher create "Exam 5" exam with 3 tasks for "SQL" discipline
+      | discipline | topic         |
+      | SQL        | Set of Tables |
+      | SQL        | Join          |
+    Then operation should be finished with 409 "Exam with this name is already exists" error
+
+  Scenario: STP-1046 teacher create exam with duplicate name in another discipline
+    Given topics exist
+      | discipline | topic         |
+      | SQL2       | Set of Tables |
+      | SQL        | Select        |
+      | SQL2       | Join          |
+    And "SQL2" discipline has group with id 8
+    And exam "Exam 5" with 5 tasks for "SQL" discipline exists
+      | discipline | topic  |
+      | SQL        | Select |
+    When a teacher create "Exam 5" exam with 3 tasks for "SQL2" discipline
+      | discipline | topic         |
+      | SQL2       | Set of Tables |
+      | SQL2       | Join          |
+    Then operation is successful
+    And "Exam 5" exam for "SQL2" discipline should have 3 tasks for this group
+    And "Exam 5" exam for this group should have topics for "SQL2" discipline
+      | discipline | topic         |
+      | SQL2       | Set of Tables |
+      | SQL2       | Join          |
