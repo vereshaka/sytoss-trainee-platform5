@@ -145,11 +145,7 @@ public class TaskDomainGiven extends LessonsIntegrationTest {
             dto.setQuestion(item.getQuestion());
             dto.setEtalonAnswer(item.getAnswer());
             dto.setCoef(1.0);
-            String code;
-            do {
-                code = generateCode();
-            } while (getTaskConnector().getByCodeAndTaskDomainId(code, taskDomainDTO.getId()) != null);
-            dto.setCode(code);
+            dto.setCode(generateUniqueCode(dto.getTaskDomain().getId()));
             dto.setTopics(new ArrayList<>());
             List<String> topicNames = Arrays.stream(item.getTopics().split(",")).map(el -> el.trim()).toList();
             for (String topicName : topicNames) {

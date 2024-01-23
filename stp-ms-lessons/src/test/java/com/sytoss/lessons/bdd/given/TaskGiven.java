@@ -248,12 +248,4 @@ public class TaskGiven extends LessonsIntegrationTest {
             getTaskConnector().save(taskDTO);
         }
     }
-
-    private String generateUniqueCode(Long taskDomainId){
-        String code;
-        do{
-            code = generateCode();
-        } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomainId)!=null);
-        return code;
-    }
 }

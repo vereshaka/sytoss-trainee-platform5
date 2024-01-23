@@ -87,11 +87,6 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Autowired
     private ExamAssigneeToConnector examAssigneeToConnector;
 
-    @Override
-    protected LessonsDetails createDetails() {
-        return new LessonsDetails();
-    }
-
     @Autowired
     private EntityManager entityManager;
 
@@ -105,12 +100,25 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     private AnalyticsConvertor analyticsConvertor;
 
     @Override
+    protected LessonsDetails createDetails() {
+        return new LessonsDetails();
+    }
+
+    @Override
     protected String getToken() {
         //TODO: yevgenyv: we should take token from execution context
         return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Teacher");
     }
 
-    protected String generateCode() {
+    protected String generateUniqueCode(Long taskDomainId) {
+        String code;
+        do {
+            code = generateCode();
+        } while (getTaskConnector().getByCodeAndTaskDomainId(code, taskDomainId) != null);
+        return code;
+    }
+
+    private String generateCode() {
         Random codeGenerator = new Random();
         int databaseNameLength = 10;
         char letter;

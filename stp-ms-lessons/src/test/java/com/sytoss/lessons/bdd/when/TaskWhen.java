@@ -82,6 +82,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -94,6 +95,7 @@ public class TaskWhen extends LessonsIntegrationTest {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<List<Task>> responseEntity = doGet(url, httpEntity, new ParameterizedTypeReference<>() {
+
         });
         getTestExecutionContext().setResponse(responseEntity);
     }
@@ -164,9 +166,9 @@ public class TaskWhen extends LessonsIntegrationTest {
 
     @When("^teacher updates this task with question \"(.*)\" question to \"(.*)\"$")
     public void teacherUpdatesThisTaskQuestionTo(String oldQuestion, String newQuestion) {
-        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(oldQuestion,getTestExecutionContext().getDetails().getTaskDomainId());
+        TaskDTO taskDTO = getTaskConnector().getByQuestionAndTaskDomainId(oldQuestion, getTestExecutionContext().getDetails().getTaskDomainId());
         Task task = new Task();
-        getTaskConvertor().fromDTO(taskDTO,task);
+        getTaskConvertor().fromDTO(taskDTO, task);
         task.setQuestion(newQuestion);
 
         String url = "/api/task";
@@ -177,17 +179,13 @@ public class TaskWhen extends LessonsIntegrationTest {
     }
 
     @When("^system create task with a question \"(.*)\" and required command \"(.*)\"$")
-    public void requestSendCreateTaskWithRequiredCommand(String question,String requiredCommand) {
+    public void requestSendCreateTaskWithRequiredCommand(String question, String requiredCommand) {
         String url = "/api/task";
         Task task = new Task();
         task.setQuestion(question);
         TaskDomain taskDomain = new TaskDomain();
         taskDomain.setId(getTestExecutionContext().getDetails().getTaskDomainId());
-        String code;
-        do{
-            code = generateCode();
-        } while (getTaskConnector().getByCodeAndTaskDomainId(code,taskDomain.getId())!=null);
-        task.setCode(code);
+        task.setCode(generateUniqueCode(task.getTaskDomain().getId()));
         task.setTaskDomain(taskDomain);
         Topic topic = new Topic();
         topic.setId(getTestExecutionContext().getDetails().getTopicId());
@@ -216,8 +214,8 @@ public class TaskWhen extends LessonsIntegrationTest {
         Task task = new Task();
         task.setQuestion(question);
         TaskDomain taskDomain = new TaskDomain();
-        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName,getTestExecutionContext().getDetails().getDisciplineId());
-        if(taskDomainDTO != null){
+        TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(taskDomainName, getTestExecutionContext().getDetails().getDisciplineId());
+        if (taskDomainDTO != null) {
             taskDomain.setId(taskDomainDTO.getId());
             task.setTaskDomain(taskDomain);
             Topic topic = new Topic();
