@@ -57,7 +57,7 @@ public class AnalyticsThen extends AbstractGiven {
         }
         analytics.setGrade(grade);
 
-        assertEquals(analyticsFromResponse.getGrade().getGrade(), analytics.getGrade().getGrade());
+        assertEquals(analytics.getGrade().getGrade(),analyticsFromResponse.getGrade().getGrade());
     }
 
     @Then("analytics elements should be")

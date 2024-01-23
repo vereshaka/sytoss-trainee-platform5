@@ -1,24 +1,24 @@
 package com.sytoss.checktask.stp.service;
 
-import com.sytoss.checktask.stp.service.db.PostgresExecutor;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.personalexam.CheckTaskParameters;
 import com.sytoss.domain.bom.personalexam.Score;
+import io.cucumber.java.en_old.Ac;
 import io.micrometer.core.instrument.util.IOUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import static com.sytoss.stp.test.FileUtils.readFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @Slf4j
 @Disabled
@@ -36,6 +36,10 @@ public class ScoreServiceMultiThread {
     private ScoreService scoreService;
 
     private static int cnt = 0;
+
+    synchronized static void done(){
+        cnt++;
+    }
 
     @Test
     public void runMultipleCheckScore() {
@@ -55,7 +59,7 @@ public class ScoreServiceMultiThread {
                     try {
                         Score result = scoreService.checkAndScore(checkTaskParameters);
                         assertEquals(1.0, result.getValue());
-                        cnt++;
+                        done();
                     } catch (Exception e) {
                         log.error("Failed. Message: " + e.getMessage());
                     }

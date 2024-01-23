@@ -1,25 +1,13 @@
 package com.sytoss.producer.services;
 
-import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.enums.ConvertToPumlParameters;
-import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
 import com.sytoss.domain.bom.exceptions.business.StudentDontHaveAccessToPersonalExam;
-import com.sytoss.domain.bom.lessons.Task;
-import com.sytoss.domain.bom.lessons.TaskDomain;
 import com.sytoss.domain.bom.personalexam.*;
-import com.sytoss.producer.connectors.CheckTaskConnector;
-import com.sytoss.producer.connectors.MetadataConnector;
 import com.sytoss.producer.connectors.PersonalExamConnector;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +35,7 @@ public class AnswerService extends AbstractService {
         answer.setAnswerUIDate(answerUIDate);
         answer.setTimeSpent(timeSpent);
         answer.answer(taskAnswer);
+        checkTaskService.checkAnswer(answer, personalExam);
         answer = personalExam.getNextAnswer();
         personalExamConnector.save(personalExam);
         if (answer == null) {
@@ -66,7 +55,7 @@ public class AnswerService extends AbstractService {
         taskModel.setQuestionNumber((int) (processedQuestionsNum + 1L));
         taskModel.setNeedCheckQuery(answer.getTask().getCheckAnswer() != null);
         firstTask.setTask(taskModel);
-        checkTaskService.checkAnswer(answer, personalExam);
+
         return firstTask;
     }
 

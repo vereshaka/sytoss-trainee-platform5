@@ -16,6 +16,19 @@ Feature: Analytics
       | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
       | *d1          | *ex1   | 1         | *pe1           | 12    | 1         | *ea1           |
 
+  Scenario: update analytics with grade downgrade
+    Given analytics elements exist
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         | *ea1           |
+    And teacher changes grade to
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 10    | 1         | *ea1           |
+    When teacher updates analytics element
+    Then operation is successful
+    And updated analytic element should be
+      | disciplineId | examId | studentId | personalExamId | grade | timeSpent | examAssigneeId |
+      | *d1          | *ex1   | 1         | *pe1           | 12    | 1         | *ea1           |
+
   Scenario: migration
     Given analytics elements exist
       | disciplineId | examId | studentId | personalExamId | grade | examAssigneeId | startDate           |
@@ -348,7 +361,7 @@ Feature: Analytics
     Then operation is successful
     And analytics elements should be
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
-      | *d1          | *ex21   | *ea1           | *pe1           | 0     | 30-11-2023T11:55:00 | 1         | *g1     |
-      | *d1          | *ex21   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
-      | *d1          | *ex22   | *ea2           |                |       |                     | 1         | *g1     |
-      | *d1          | *ex22   | *ea2           |                |       |                     | 3         | *g1     |
+      | *d1          | *ex1   | *ea1           | *pe1           | 0     | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
+      | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |

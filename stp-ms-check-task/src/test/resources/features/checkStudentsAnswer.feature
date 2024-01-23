@@ -83,7 +83,7 @@ Feature: check answer
     When request sent to check
     Then request should be processed successfully
     And query result should be
-      | C1 | C2 |
+      | C1 | C2  |
       | 28 | 4.0 |
 
   Scenario: STP-XX Duplicate column names
@@ -93,9 +93,9 @@ Feature: check answer
     Then request should be processed successfully
     And query result should be
       | IDCLIENT | LNAME    | FNAME  | MNAME    | COMPANY       | CITYCLIENT | PHONE         | IDSALE | IDCLIENT1 | IDPRODUCT | QUANTITY | DATESALE   |
-      | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4          | 3         | 5        | 2022-09-15 |
+      | 4        | Азаренко | Тетяна | Петрівна | ТОВ Відпустка | Львів      | +380505723577 | 6      | 4         | 3         | 5        | 2022-09-15 |
 
-    @Bug
+  @Bug @PostgresQL-only
   Scenario: STP-791 GROUP BY exception
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "Select Company, sum(Quantity)   from Client c inner join Sale s on c.IdClient=s.IdProduct  group by c.IdClient "
@@ -158,14 +158,14 @@ Feature: check answer
     And Grade message is ""!NULL" condition are failed to check"
 
 
-  @Bug
+  @Bug @PostgresQL-only
   Scenario: STP-975 GROUP BY grouping set
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is "Select idclient, idproduct, count(*) as cnt from sale group by grouping sets (idclient, idproduct) "
     When request sent to check
     Then request should be processed successfully
 
-  @Bug
+  @Bug @PostgresQL-only
   Scenario: STP-975 GROUP BY grouping set #3
     Given Request contains database script from "task-domain/prod-trade23.yml" puml
     And check SQL is

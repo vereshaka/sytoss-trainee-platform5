@@ -30,9 +30,14 @@ public class ThreadLocalScopeManager extends ScopeManager {
     }
 
     @Override
-    protected synchronized void setCurrentScope(Scope scope) {
+    public synchronized void setCurrentScope(Scope scope) {
         this.threadLocalScopes.set(scope);
     }
+
+    public Scope getRootScope(){
+        return rootScope;
+    }
+
     @Override
     protected Scope init(Scope scope) throws Exception {
         return rootScope;
