@@ -130,17 +130,14 @@ class ScoreServiceTest extends StpUnitTest {
         map22.put("ID", 2L);
         etalonResult.addValues(map22);
 
-        when(objectProvider.getObject()).thenReturn(
-                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor()),
-                new DatabaseHelperService(new QueryResultConvertor(), new H2Executor())
-        );
+        when(executorService.submit(any(Callable.class)))
+                .thenReturn(getFutureFor(answerResult))
+                .thenReturn(getFutureFor(etalonResult));
 
         CheckTaskParameters checkTaskParameters = new CheckTaskParameters();
         checkTaskParameters.setRequest("select * from Books");
         checkTaskParameters.setEtalon("select * from Authors");
         checkTaskParameters.setScript(readFromFile("task-domain/script1.json"));
-
-        ScoreService scoreService = new ScoreService(objectProvider, Executors.newFixedThreadPool(5));
 
         Score score = scoreService.checkAndScore(checkTaskParameters);
         Assertions.assertEquals(0, score.getValue());

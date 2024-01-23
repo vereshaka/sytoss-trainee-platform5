@@ -21,10 +21,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.mockito.Mockito.when;
 
@@ -39,7 +36,7 @@ public class AnalyticsGiven extends AbstractGiven {
         List<Group> groups = new ArrayList<>();
         Long groupId = 1L;
         Long studentId;
-        for(Map<String, String> analytics : analyticsList){
+        for (Map<String, String> analytics : analyticsList) {
             if (analytics.get("groupId") != null) {
                 groupId = Long.valueOf(getTestExecutionContext().replaceId(analytics.get("groupId")).toString());
             }
@@ -68,15 +65,15 @@ public class AnalyticsGiven extends AbstractGiven {
             }
             final Long finalGroupId = groupId;
             String examKey = analytics.get("examId");
-            if(examKey!=null){
+            if (examKey != null) {
                 examKey = examKey.trim();
             }
             String examAssigneeKey = analytics.get("examAssigneeId");
             if (examAssigneeKey != null) {
                 examAssigneeKey = examAssigneeKey.trim();
             }
-            String personalExamId =null;
-            if( analytics.get("personalExamId")!=null){
+            String personalExamId = null;
+            if (analytics.get("personalExamId") != null) {
                 personalExamId = analytics.get("personalExamId").trim().replace("*", "");
             }
 
@@ -106,19 +103,22 @@ public class AnalyticsGiven extends AbstractGiven {
                 disciplineId = (Long) getTestExecutionContext().replaceId(disciplineKey);
             }
             ExamDTO examDTO = null;
-            if(examKey!=null){
+            if (examKey != null) {
                 String newExamKey = examKey;
                 if (getTestExecutionContext().replaceId(examKey) != null) {
                     newExamKey = getTestExecutionContext().replaceId(examKey).toString();
                 }
                 Long examId;
-
                 if (!Objects.equals(newExamKey, examKey)) {
                     examId = Long.parseLong(newExamKey);
                     examDTO = getExamConnector().findById(examId).orElse(null);
                 } else {
                     examDTO = new ExamDTO();
-                    examDTO.setName("Exam 1");
+                    String examName;
+                    do {
+                        examName = generateExamName();
+                    } while (getExamConnector().getByName(examName) != null);
+                    examDTO.setName(examName);
                     TopicDTO topicDTO = getTopicConnector().getByNameAndDisciplineId("Topic1", disciplineDTO.getId());
                     if (topicDTO == null) {
                         topicDTO = new TopicDTO();
@@ -138,7 +138,7 @@ public class AnalyticsGiven extends AbstractGiven {
 
 
             studentId = Long.valueOf(analytics.get("studentId"));
-            ExamAssigneeDTO examAssigneeDTO=new ExamAssigneeDTO();
+            ExamAssigneeDTO examAssigneeDTO = new ExamAssigneeDTO();
             if (examAssigneeKey != null) {
                 String newExamAssigneeKey = examAssigneeKey;
                 if (getTestExecutionContext().replaceId(examAssigneeKey) != null) {
@@ -147,23 +147,22 @@ public class AnalyticsGiven extends AbstractGiven {
 
                 if (Objects.equals(examAssigneeKey, newExamAssigneeKey)) {
                     examAssigneeDTO = new ExamAssigneeDTO();
-                    if(examDTO!=null){
+                    if (examDTO != null) {
                         examAssigneeDTO.setExam(examDTO);
                     }
 
                     List<ExamAssigneeToDTO> examAssigneeToDTOS = new ArrayList<>();
                     examAssigneeDTO = getExamAssigneeConnector().save(examAssigneeDTO);
-                    if(groups.isEmpty()){
-                        for(Student student: students){
+                    if (groups.isEmpty()) {
+                        for (Student student : students) {
                             ExamToStudentAssigneeDTO examToStudentAssigneeDTO = new ExamToStudentAssigneeDTO();
                             examToStudentAssigneeDTO.setStudentId(student.getId());
                             examToStudentAssigneeDTO.setParent(examAssigneeDTO);
                             getExamAssigneeToConnector().save(examToStudentAssigneeDTO);
                             examAssigneeToDTOS.add(examToStudentAssigneeDTO);
                         }
-                    }
-                    else{
-                        for(Group group : groups){
+                    } else {
+                        for (Group group : groups) {
                             ExamToGroupAssigneeDTO examToGroupAssigneeDTO = new ExamToGroupAssigneeDTO();
                             examToGroupAssigneeDTO.setGroupId(group.getId());
                             examToGroupAssigneeDTO.setParent(examAssigneeDTO);
@@ -174,8 +173,7 @@ public class AnalyticsGiven extends AbstractGiven {
 
                     examAssigneeDTO.setExamAssigneeToDTOList(examAssigneeToDTOS);
                     getTestExecutionContext().registerId(examAssigneeKey, examAssigneeDTO.getId());
-                }
-                else{
+                } else {
                     examAssigneeDTO = getExamAssigneeConnector().getReferenceById(Long.parseLong(newExamAssigneeKey));
                 }
             }
@@ -251,5 +249,17 @@ public class AnalyticsGiven extends AbstractGiven {
     @Given("^analytics is empty$")
     public void analyticsIsEmpty() {
         getAnalyticsConnector().deleteAll();
+    }
+
+    private String generateExamName() {
+        Random random = new Random();
+        int examNameLength = 10;
+        char letter;
+        StringBuilder name = new StringBuilder();
+        for (int i = 0; i < examNameLength; i++) {
+            letter = (char) (random.nextInt(26) + 'a');
+            name.append(letter);
+        }
+        return "exam " + name;
     }
 }

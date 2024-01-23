@@ -1,0 +1,28 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
+                   logicalFilePath="data/STP-1046.xml">
+
+    <changeSet author="IvanL" id="STP-1046-1">
+        <sql dbms="H2, POSTGRESQL">
+            <![CDATA[
+            UPDATE EXAM
+            SET NAME = EXAM.NAME || '-' || SUBQUERY.RN
+                FROM (
+                SELECT ID, NAME, DISCIPLINE_ID, ROW_NUMBER() OVER (PARTITION BY NAME, discipline_id ORDER BY ID) AS RN
+                FROM EXAM
+            ) AS SUBQUERY
+            WHERE SUBQUERY.RN > 1 AND SUBQUERY.ID = EXAM.ID;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="IvanL" id="STP-1046-2">
+        <addUniqueConstraint tableName="EXAM" columnNames="NAME, DISCIPLINE_ID" constraintName="UK_EXAM"/>
+        <rollback>
+            <dropUniqueConstraint  tableName="EXAM" constraintName="UK_EXAM"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

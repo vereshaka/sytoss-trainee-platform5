@@ -67,7 +67,7 @@ Feature: Analytics
     And exams with specific id exist
       | id   | name | disciplineId |
       | *ex1 | ex1  | *d1          |
-      | *ex2 | ex3  | *d1          |
+      | *ex2 | ex2  | *d1          |
       | *ex3 | ex3  | *d2          |
     And this exams have assignees
       | id   | examId | relevantFrom               | relevantTo                 |
@@ -116,10 +116,10 @@ Feature: Analytics
       | disciplineId | studentId | average grade | average spent time | max grade | min spent time |
       | *d12         | 1         | 7             | 3                  | 15        | 1              |
     And StudentDisciplineStatistic should has tests
-      | examId | examName | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
-      | *ex12  | Exam 1   | 3            | 1                 | 1                     | *pe16          |
-      | *ex13  | Exam 1   | 6            | 5                 | 4                     | *pe17          |
-      | *ex14  | Exam 1   | 15           | 15                | 5                     | *pe18          |
+      | examId | examMaxGrade | personalExamGrade | personalExamSpentTime | personalExamId |
+      | *ex12  | 3            | 1                 | 1                     | *pe16          |
+      | *ex13  | 6            | 5                 | 4                     | *pe17          |
+      | *ex14  | 15           | 15                | 5                     | *pe18          |
 
   Scenario: When teacher requests summary by discipline then response with detailed information has to be returned
     And groups with specific id exist
@@ -143,7 +143,7 @@ Feature: Analytics
       | 6.375         | 2                  | 11        | 1              |
     And exam summaries by exams should be
       | exam id | max grade | students average grade | students average spent time | max students grade | min students spent time |
-      | *ex1    | 11        | 7.8                      | 2                           | 11                 | 1                       |
+      | *ex1    | 11        | 7.8                    | 2                           | 11                 | 1                       |
       | *ex2    | 5         | 4.5                    | 3                           | 4                  | 1                       |
     And exam summaries by groups should be
       | exam id | group id | max grade | students average grade | students average spent time | max students grade | min students spent time |
@@ -334,21 +334,21 @@ Feature: Analytics
       | *g2   | *d1        | true       |
       | *g3   | *d2        | false      |
     And exams with specific id exist
-      | id   | name | disciplineId |
-      | *ex1 | ex1  | *d1          |
-      | *ex2 | ex3  | *d1          |
-      | *ex3 | ex3  | *d2          |
+      | id    | name | disciplineId |
+      | *ex21 | ex21 | *d1          |
+      | *ex22 | ex22 | *d1          |
+      | *ex23 | ex23 | *d2          |
     And this exams have assignees
       | id   | examId | relevantFrom               | relevantTo                 |
-      | *ea1 | *ex1   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
-      | *ea2 | *ex2   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
-      | *ea3 | *ex3   | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea1 | *ex21  | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea2 | *ex22  | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
+      | *ea3 | *ex23  | 2023-10-27 12:59:00.000000 | 2023-10-28 12:59:00.000000 |
     And analytics elements exist
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
-      | *d1          | *ex1   | *ea1           | *pe1           | 10    | 30-11-2023T11:55:00 | 1         | *g1     |
-      | *d1          | *ex1   | *ea1           | *pe2           | 12    | 30-11-2023T11:55:00 | 2         | *g2     |
-      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
-      | *d1          | *ex1   | *ea2           | *pe4           | 8     | 30-11-2023T11:55:00 | 4         | *g2     |
+      | *d1          | *ex21  | *ea1           | *pe1           | 10    | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex21  | *ea1           | *pe2           | 12    | 30-11-2023T11:55:00 | 2         | *g2     |
+      | *d1          | *ex21  | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex21  | *ea2           | *pe4           | 8     | 30-11-2023T11:55:00 | 4         | *g2     |
     And personal exams for migration exist
       | personalExamId | disciplineId | examAssigneeId | studentId | groupId | summaryGrade | startDate           | status   | isExcluded |
       | *pe1           | *d1          | *ea1           | 1         | *g1     | 0            | 30-11-2023T11:55:00 | REVIEWED | false      |
@@ -361,7 +361,7 @@ Feature: Analytics
     Then operation is successful
     And analytics elements should be
       | disciplineId | examId | examAssigneeId | personalExamId | grade | startDate           | studentId | groupId |
-      | *d1          | *ex1   | *ea1           | *pe1           | 0     | 30-11-2023T11:55:00 | 1         | *g1     |
-      | *d1          | *ex1   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
-      | *d1          | *ex2   | *ea2           |                |       |                     | 1         | *g1     |
-      | *d1          | *ex2   | *ea2           |                |       |                     | 3         | *g1     |
+      | *d1          | *ex21   | *ea1           | *pe1           | 0     | 30-11-2023T11:55:00 | 1         | *g1     |
+      | *d1          | *ex21   | *ea1           | *pe3           | 11    | 30-11-2023T11:55:00 | 3         | *g1     |
+      | *d1          | *ex22   | *ea2           |                |       |                     | 1         | *g1     |
+      | *d1          | *ex22   | *ea2           |                |       |                     | 3         | *g1     |

@@ -7,6 +7,7 @@ import com.sytoss.domain.bom.lessons.Topic;
 import com.sytoss.domain.bom.users.Teacher;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.bdd.common.ExamView;
+import com.sytoss.lessons.dto.DisciplineDTO;
 import com.sytoss.lessons.dto.TaskDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import com.sytoss.lessons.dto.exam.assignees.ExamDTO;
@@ -112,5 +113,28 @@ public class ExamThen extends LessonsIntegrationTest {
         assertEquals(exam.getTopics().size(), examFromResponse.getTopics().size());
         assertEquals(exam.getDiscipline().getId(), examFromResponse.getDiscipline().getId());
         assertEquals(exam.getTeacher().getId(), examFromResponse.getTeacher().getId());
+    }
+
+    @Then("^\"(.*)\" exam for \"(.*)\" discipline should have (.*) tasks for this group$")
+    public void examShouldBeWithParams(String examName, String disciplineName, Integer numberOfTasks) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        ExamDTO examDTO = getExamConnector().getByNameAndDiscipline_Id(examName, disciplineDTO.getId());
+
+        Assertions.assertEquals(examName, examDTO.getName());
+        Assertions.assertEquals(numberOfTasks, examDTO.getNumberOfTasks());
+    }
+
+    @Then("^\"(.*)\" exam for this group should have topics for \"(.*)\" discipline$")
+    public void examShouldHaveTopic(String examName, String disciplineName, List<TopicDTO> topicDTOList) {
+        DisciplineDTO disciplineDTO = getDisciplineConnector().getByNameAndTeacherId(disciplineName, getTestExecutionContext().getDetails().getTeacherId());
+        ExamDTO examDTO = getExamConnector().getByNameAndDiscipline_Id(examName, disciplineDTO.getId());
+
+        Assertions.assertTrue(topicDTOList.stream()
+                .allMatch(expectedTopic -> examDTO.getTopics().stream()
+                        .anyMatch(actualTopic -> Objects.equals(actualTopic.getName(), expectedTopic.getName()) &&
+                                Objects.equals(actualTopic.getDiscipline().getName(), expectedTopic.getDiscipline().getName())
+                        )
+                )
+        );
     }
 }
