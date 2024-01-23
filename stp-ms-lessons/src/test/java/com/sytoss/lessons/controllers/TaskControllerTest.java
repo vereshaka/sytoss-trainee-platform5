@@ -1,7 +1,7 @@
 package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.checktask.QueryResult;
-import com.sytoss.domain.bom.exceptions.business.TaskExistException;
+import com.sytoss.domain.bom.exceptions.business.TaskAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskNotFoundException;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.Task;
@@ -53,7 +53,7 @@ public class TaskControllerTest extends LessonsControllerTest {
 
     @Test
     public void shouldNotCreateTaskWhenItExists() {
-        when(taskService.create(any(Task.class))).thenThrow(new TaskExistException("Test"));
+        when(taskService.create(any(Task.class))).thenThrow(new TaskAlreadyExistException("question","Test"));
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
         HttpEntity<Task> requestEntity = new HttpEntity<>(new Task(), httpHeaders);
         ResponseEntity<String> result = doPost("/api/task", requestEntity, String.class);
