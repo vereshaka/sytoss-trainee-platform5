@@ -11,8 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "TASK")
-@Table(uniqueConstraints = {
-        @UniqueConstraint(name = "UK_TASK", columnNames = {"TASK_DOMAIN_ID","CODE"})})
 public class TaskDTO extends Auditable {
 
     @Id

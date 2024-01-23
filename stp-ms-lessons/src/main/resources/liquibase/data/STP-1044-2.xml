@@ -4,11 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-1044-2.xml">
 
-    <changeSet author="IvanL" id="STP-1044-2-0">
+    <changeSet author="IvanL" id="STP-1044-2-1">
         <sql>
             <![CDATA[
             UPDATE task
-            SET code = md5(random()::text)
+            SET code = task.id
             WHERE code IS NULL OR code = '';
 
             UPDATE task
