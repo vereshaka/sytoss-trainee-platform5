@@ -6,13 +6,21 @@
 
     <changeSet id="STP-1031-1" author="IvanL">
         <addColumn tableName="TASK">
-            <column name="MODE" type="VARCHAR2(100 BYTE)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="MODE" type="VARCHAR2(100 BYTE)"/>
         </addColumn>
         <rollback>
             <dropColumn tableName="TASK" columnName="MODE"/>
         </rollback>
+    </changeSet>
+
+    <!--<changeSet id="STP-1031-2" author="IvanL">
+        <sql>
+            UPDATE TASK SET MODE = 'AND'
+        </sql>
+    </changeSet>-->
+
+    <changeSet id="STP-1031-3" author="IvanL">
+        <addNotNullConstraint tableName="TASK" columnName="MODE" defaultNullValue="AND" constraintName="NOT_NULL_MODE"/>
     </changeSet>
 
 </databaseChangeLog>
