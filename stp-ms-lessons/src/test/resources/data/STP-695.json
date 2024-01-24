@@ -2,6 +2,22 @@
   "name": "Exam Without Group",
   "numberOfTasks": "1",
   "maxGrade": "100",
+  "discipline": {
+    "id": 1,
+    "name": "discipline",
+    "teacher": {
+      "id": 4,
+      "firstName": null,
+      "middleName": null,
+      "lastName": null,
+      "email": null,
+      "imageName": null,
+      "uid": null,
+      "type": "teacher",
+      "valid": false,
+      "moderated": false
+    }
+  },
   "topics": [
     {
       "id": 6,

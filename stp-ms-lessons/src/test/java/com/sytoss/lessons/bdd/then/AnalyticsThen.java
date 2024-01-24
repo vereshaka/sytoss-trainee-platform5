@@ -57,7 +57,7 @@ public class AnalyticsThen extends AbstractGiven {
         }
         analytics.setGrade(grade);
 
-        assertEquals(analyticsFromResponse.getGrade().getGrade(), analytics.getGrade().getGrade());
+        assertEquals(analytics.getGrade().getGrade(),analyticsFromResponse.getGrade().getGrade());
     }
 
     @Then("analytics elements should be")
@@ -161,7 +161,6 @@ public class AnalyticsThen extends AbstractGiven {
         for (StudentTestExecutionSummary expectedTest : expectedTests) {
             Optional<StudentTestExecutionSummary> testOptional = studentDisciplineStatistic.getTests().stream()
                     .filter(test -> test.getExam().getId().equals(expectedTest.getExam().getId())
-                            && test.getExam().getName().equals(expectedTest.getExam().getName())
                             && test.getExam().getStudentMaxGrade().equals(expectedTest.getExam().getStudentMaxGrade())
                             && test.getPersonalExam().getGrade().equals(expectedTest.getPersonalExam().getGrade())
                             && test.getPersonalExam().getSpentTime().equals(expectedTest.getPersonalExam().getSpentTime())

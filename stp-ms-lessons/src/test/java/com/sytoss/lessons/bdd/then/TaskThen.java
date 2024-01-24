@@ -6,6 +6,7 @@ import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.lessons.TaskCondition;
 import com.sytoss.lessons.bdd.LessonsIntegrationTest;
 import com.sytoss.lessons.dto.TaskDTO;
+import com.sytoss.lessons.dto.TaskDomainDTO;
 import com.sytoss.lessons.dto.TopicDTO;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
@@ -136,6 +137,17 @@ public class TaskThen extends LessonsIntegrationTest {
     @Then("^required command should be \"(.*)\"$")
     public void requiredCommandShouldBe(String requiredCommandEtalon) {
         String requiredCommand = ((Task) getTestExecutionContext().getResponse().getBody()).getRequiredCommand();
-        assertEquals(requiredCommandEtalon,requiredCommand);
+        assertEquals(requiredCommandEtalon, requiredCommand);
+    }
+
+    @Then("tasks with code exist")
+    public void tasksWithCodeExist(DataTable dataTable) {
+        List<Map<String, String>> tasks = dataTable.asMaps();
+        for(Map<String, String> task : tasks){
+            TaskDomainDTO taskDomainDTO = getTaskDomainConnector().getByNameAndDisciplineId(task.get("taskDomain"),getTestExecutionContext().getDetails().getDisciplineId());
+            assertNotNull(taskDomainDTO);
+            TaskDTO taskDTO = getTaskConnector().getByCodeAndTaskDomainId(task.get("code"), taskDomainDTO.getId());
+            assertNotNull(taskDTO);
+        }
     }
 }

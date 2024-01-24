@@ -111,4 +111,19 @@ Feature: Task
       | EXISTS   | NOT_CONTAINS |
     And required command should be "!NULL,DISTINCT,JOIN,!IN,!EXISTS"
 
+  Scenario: STP-1044 system create new task with duplicate code in one domain
+    Given task with question "What are the different subsets of SQL?" exists
+    And this task has code "1"
+    When system create task for "First Domain" task domain with code "1" and with question "What are the different subsets of SQL?"
+    Then operation should be finished with 409 "Task with code "1" already exists" error
 
+  Scenario: STP-1044 system create new task with duplicate code in different domains
+    Given task with question "What are the different subsets of SQL?" exists
+    And this task has code "1"
+    And "Second Domain" task domain exists
+    When system create task for "Second Domain" task domain with code "1" and with question "What are the different subsets of SQL?"
+    Then operation is successful
+    And tasks with code exist
+      | taskDomain    | code |
+      | First Domain  | 1    |
+      | Second Domain | 1    |

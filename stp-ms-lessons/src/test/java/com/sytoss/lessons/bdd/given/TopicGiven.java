@@ -61,7 +61,7 @@ public class TopicGiven extends AbstractGiven {
             String taskName = tasksData.row(i).get(0).trim();
             String taskCode = tasksData.row(i).get(1).trim();
             tasks.add(taskName);
-            TaskDTO result = existsTasks.stream().filter(item -> item.getQuestion().equalsIgnoreCase(taskName)).findFirst().orElse(null);
+            TaskDTO result = getTaskConnector().getByCodeAndTaskDomainId(taskCode, taskDomain.getId());
             if (result == null) {
                 result = new TaskDTO();
                 result.setQuestion(taskName);

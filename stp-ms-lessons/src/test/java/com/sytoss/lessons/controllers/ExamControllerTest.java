@@ -2,6 +2,7 @@ package com.sytoss.lessons.controllers;
 
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIntegrationException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
+import com.sytoss.domain.bom.lessons.Discipline;
 import com.sytoss.domain.bom.lessons.Exam;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
 import com.sytoss.domain.bom.users.Group;
@@ -29,6 +30,8 @@ public class ExamControllerTest extends LessonsControllerTest {
     @Test
     public void shouldSaveExam() {
         HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        Exam exam = new Exam();
+        exam.setDiscipline(new Discipline());
         HttpEntity<Exam> httpEntity = new HttpEntity<>(new Exam(), httpHeaders);
         ResponseEntity<Exam> response = doPost("/api/exam/save", httpEntity, Exam.class);
         assertEquals(200, response.getStatusCode().value());

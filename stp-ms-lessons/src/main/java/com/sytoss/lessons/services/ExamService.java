@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.ExamAlreadyExistsException;
 import com.sytoss.domain.bom.exceptions.business.UserNotIdentifiedException;
 import com.sytoss.domain.bom.exceptions.business.notfound.*;
 import com.sytoss.domain.bom.lessons.Exam;
@@ -66,6 +67,9 @@ public class ExamService extends AbstractService {
     private final PersonalExamService personalExamService;
 
     public Exam save(Exam exam) {
+        if(examConnector.getByNameAndDiscipline_Id(exam.getName(),exam.getDiscipline().getId())!=null){
+            throw new ExamAlreadyExistsException(exam.getName());
+        }
         exam.setTeacher((Teacher) getCurrentUser());
         List<Task> distinctTasks = new ArrayList<>();
         for (Task task : exam.getTasks()) {

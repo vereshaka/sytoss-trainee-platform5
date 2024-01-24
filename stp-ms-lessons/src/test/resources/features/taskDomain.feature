@@ -29,24 +29,24 @@ Feature: Task Domain
   Scenario: Retrieve information about task domain by discipline name
     Given task domains exist
       | discipline  | task domain   |
-      | SQL         | Join          |
+      | SQL3         | Join          |
       | POSTGRE_SQL | Join          |
-      | SQL         | Select        |
+      | SQL3         | Select        |
       | Mongo       | Join          |
-      | SQL         | Set of Tables |
-    When receive all task domains by "SQL" discipline
+      | SQL3         | Set of Tables |
+    When receive all task domains by "SQL3" discipline
     Then operation is successful
     And task domains should received
       | discipline | task domain   |
-      | SQL        | Join          |
-      | SQL        | Select        |
-      | SQL        | Set of Tables |
+      | SQL3        | Join          |
+      | SQL3        | Select        |
+      | SQL3        | Set of Tables |
 
   Scenario: Update task domain
-    Given "First Domain" task domain exists
-    When teacher updates "First Domain" task domain to "Second Domain"
+    Given "First Domain1" task domain exists
+    When teacher updates "First Domain1" task domain to "Second Domain2"
     Then operation is successful
-    And "Second Domain" task domain should exists
+    And "Second Domain2" task domain should exists
 
   Scenario: Update task domain when task domain does not exist
     Given "First Domain" task domain doesnt exist

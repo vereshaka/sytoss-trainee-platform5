@@ -15,7 +15,7 @@ Feature: Exam Assignee
     And this discipline has assigned groups: 1,2
     And this discipline has exams
       | name  | tasks      | taskCount | maxGrade | id   |
-      | Exam1 | *ta1, *ta2 | 2         | 2        | *ex1 |
+      | Exam | *ta1, *ta2 | 2         | 2        | *ex1 |
     When a teacher assign *ex1 exam to groups: 1
     Then operation is successful
 

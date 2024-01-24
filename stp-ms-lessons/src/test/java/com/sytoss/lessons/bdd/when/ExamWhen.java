@@ -72,7 +72,6 @@ public class ExamWhen extends LessonsIntegrationTest {
         Group group = new Group();
         group.setId(getTestExecutionContext().getDetails().getGroupReferenceId());
 
-
         for (Topic topic : topics) {
             if (topic.getDiscipline().getName().equals(disciplineName)) {
                 topic.setId(getTopicConnector().getByNameAndDisciplineId(topic.getName(), disciplineDTO.getId()).getId());

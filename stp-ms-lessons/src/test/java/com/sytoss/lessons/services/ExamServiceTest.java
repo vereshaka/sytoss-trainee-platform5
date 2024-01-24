@@ -125,6 +125,7 @@ public class ExamServiceTest extends StpUnitTest {
         Exam exam = new Exam();
         exam.setName("Exam");
         exam.setNumberOfTasks(10);
+        exam.setDiscipline(discipline);
         Topic t1 = new Topic();
         t1.setId(1L);
         t1.setDiscipline(discipline);
