@@ -4,11 +4,11 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-1046.xml">
 
-    <changeSet author="IvanL" id="STP-1046-1">
-        <sql dbms="H2, POSTGRESQL">
+    <changeSet author="IvanL" id="STP-1046-1-6">
+        <sql dbms="H2, postgresql">
             <![CDATA[
             UPDATE EXAM
-            SET NAME = EXAM.NAME || '-' || SUBQUERY.RN
+            SET NAME = EXAM.NAME || '-' || EXAM.ID
                 FROM (
                 SELECT ID, NAME, DISCIPLINE_ID, ROW_NUMBER() OVER (PARTITION BY NAME, discipline_id ORDER BY ID) AS RN
                 FROM EXAM
@@ -16,13 +16,10 @@
             WHERE SUBQUERY.RN > 1 AND SUBQUERY.ID = EXAM.ID;
             ]]>
         </sql>
-    </changeSet>
 
-    <changeSet author="IvanL" id="STP-1046-2">
         <addUniqueConstraint tableName="EXAM" columnNames="NAME, DISCIPLINE_ID" constraintName="UK_EXAM"/>
         <rollback>
             <dropUniqueConstraint  tableName="EXAM" constraintName="UK_EXAM"/>
         </rollback>
     </changeSet>
-
 </databaseChangeLog>
