@@ -67,7 +67,7 @@ public class ExamService extends AbstractService {
     private final PersonalExamService personalExamService;
 
     public Exam save(Exam exam) {
-        if(examConnector.getByNameAndDiscipline_Id(exam.getName(),exam.getDiscipline().getId())!=null){
+        if (examConnector.getByNameAndDiscipline_Id(exam.getName(), exam.getDiscipline().getId()) != null) {
             throw new ExamAlreadyExistsException(exam.getName());
         }
         exam.setTeacher((Teacher) getCurrentUser());
@@ -406,6 +406,10 @@ public class ExamService extends AbstractService {
 
     public void update(Long examId, Exam exam) {
         ExamDTO examDTO = examConnector.findById(examId).orElseThrow(() -> new ExamNotFoundException(examId));
+
+        if (examConnector.getByNameAndDiscipline_IdAndIdIsNot(exam.getName(), examDTO.getDiscipline().getId(), examId) != null) {
+            throw new ExamAlreadyExistsException(exam.getName());
+        }
 
         if (StringUtils.isNotBlank(exam.getName())) {
             examDTO.setName(exam.getName());

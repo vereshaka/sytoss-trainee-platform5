@@ -1,5 +1,6 @@
 package com.sytoss.lessons.services;
 
+import com.sytoss.domain.bom.exceptions.business.ExamAlreadyExistsException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.lessons.examassignee.ExamAssignee;
@@ -564,6 +565,7 @@ public class ExamServiceTest extends StpUnitTest {
 
         ExamDTO examDTO = new ExamDTO();
         examDTO.setId(1L);
+        examDTO.setDiscipline(new DisciplineDTO());
 
         Group group = new Group();
         group.setId(1L);
@@ -591,6 +593,23 @@ public class ExamServiceTest extends StpUnitTest {
         when(examConnector.findById(1L)).thenReturn(Optional.empty());
         ExamNotFoundException exception = assertThrows(ExamNotFoundException.class, () -> examService.update(1L, new Exam()));
         assertEquals("exam with id \"1\" not found", exception.getMessage());
+    }
+
+    @Test
+    public void examUpdateShouldFailWithExamAlreadyExistsException() {
+        Exam exam = new Exam();
+        exam.setId(1L);
+        exam.setName("name");
+        ExamDTO examDTO = new ExamDTO();
+        examDTO.setDiscipline(new DisciplineDTO());
+        examDTO.getDiscipline().setId(1L);
+
+        when(examConnector.findById(1L)).thenReturn(Optional.of(examDTO));
+        when(examConnector.getByNameAndDiscipline_IdAndIdIsNot(eq("name"), eq(1L), eq(1L)))
+                .thenReturn(examDTO);
+
+        ExamAlreadyExistsException exception = assertThrows(ExamAlreadyExistsException.class, () -> examService.update(1L, exam));
+        assertEquals("Exam with name \"name\" already exist", exception.getMessage());
     }
 
     private Date addDays(Date initial, int daysToAdd) {

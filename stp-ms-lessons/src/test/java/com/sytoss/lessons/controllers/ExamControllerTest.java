@@ -1,5 +1,6 @@
 package com.sytoss.lessons.controllers;
 
+import com.sytoss.domain.bom.exceptions.business.ExamAlreadyExistsException;
 import com.sytoss.domain.bom.exceptions.business.PersonalExamIntegrationException;
 import com.sytoss.domain.bom.exceptions.business.notfound.ExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Discipline;
@@ -136,5 +137,18 @@ public class ExamControllerTest extends LessonsControllerTest {
         HttpEntity<?> httpEntity = new HttpEntity<>(exam, httpHeaders);
         ResponseEntity<Exam> response = doPut("/api/exam/" + exam.getId(), httpEntity, Exam.class);
         assertEquals(400, response.getStatusCode().value());
+    }
+
+    @Test
+    public void examUpdateShouldFailWith409() {
+        Exam exam = new Exam();
+        exam.setId(1L);
+
+        doThrow(ExamAlreadyExistsException.class).when(examService).update(eq(1L), any(Exam.class));
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<?> httpEntity = new HttpEntity<>(exam, httpHeaders);
+        ResponseEntity<Exam> response = doPut("/api/exam/" + exam.getId(), httpEntity, Exam.class);
+        assertEquals(409, response.getStatusCode().value());
     }
 }

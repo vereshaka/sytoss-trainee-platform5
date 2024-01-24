@@ -126,7 +126,8 @@ public class ExamController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success|OK"),
             @ApiResponse(responseCode = "404", description = "Exam no found!"),
-            @ApiResponse(responseCode = "400", description = "Bad request!")
+            @ApiResponse(responseCode = "400", description = "Bad request!"),
+            @ApiResponse(responseCode = "409", description = "Exam with provided name already exists!")
     })
     @PutMapping("/{examId}")
     public void update(@PathVariable(name = "examId") Long examId, @RequestBody Exam exam) {
