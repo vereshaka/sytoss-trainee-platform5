@@ -4,22 +4,23 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-1044.xml">
 
-
-    <changeSet author="IvanL" id="STP-1044-1">
-        <sql dbms="H2, POSTGRESQL">
-             <![CDATA[
+    <changeSet author="IvanL" id="STP-1044-1-1">
+        <sql dbms="H2, postgresql">
+            <![CDATA[
             UPDATE task
-            SET code = task.code || '-' || SUBQUERY.RN
+            SET code = id
+            WHERE code IS NULL OR code = '';
+
+            UPDATE task
+            SET code = task.code || '-' || task.id
                 FROM (
-                SELECT id, task_domain_id, code, ROW_NUMBER() OVER (PARTITION BY task_domain_id, code ORDER BY id) AS RN
-                FROM task
-            ) AS SUBQUERY
+                     SELECT id, task_domain_id, code, ROW_NUMBER() OVER (PARTITION BY task_domain_id, code ORDER BY id) AS RN
+                     FROM task
+                 ) AS SUBQUERY
             WHERE SUBQUERY.RN > 1 AND SUBQUERY.id = task.id;
             ]]>
         </sql>
-    </changeSet>
 
-    <changeSet author="IvanL" id="STP-1044-2">
         <addUniqueConstraint tableName="TASK" columnNames="TASK_DOMAIN_ID, CODE" constraintName="UK_TASK"/>
         <rollback>
             <dropUniqueConstraint tableName="TASK" constraintName="UK_TASK"/>
