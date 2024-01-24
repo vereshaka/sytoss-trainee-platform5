@@ -3,6 +3,7 @@ package com.sytoss.lessons.services;
 import com.sytoss.domain.bom.checktask.QueryResult;
 import com.sytoss.domain.bom.convertors.PumlConvertor;
 import com.sytoss.domain.bom.exceptions.business.RequestIsNotValidException;
+import com.sytoss.domain.bom.exceptions.business.TaskAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskConditionAlreadyExistException;
 import com.sytoss.domain.bom.exceptions.business.TaskDontHasConditionException;
 import com.sytoss.domain.bom.exceptions.business.notfound.TaskDomainNotFoundException;
@@ -64,8 +65,10 @@ public class TaskService {
         }
     }
 
-
     public Task create(Task task) {
+        if (taskConnector.getByCodeAndTaskDomainId(task.getCode(), task.getTaskDomain().getId()) != null) {
+            throw new TaskAlreadyExistException("code", task.getCode());
+        }
         task.setCreateDate(new Date());
         TaskDomainDTO taskDomainDTO = taskDomainConnector.getReferenceById(task.getTaskDomain().getId());
         TaskDTO taskDTO = new TaskDTO();
@@ -296,11 +299,11 @@ public class TaskService {
 
     public void unassignTask(Long topicId, Long taskId) {
         Task task = getById(taskId);
-        if(task.getTopics().stream().map(Topic::getId).toList().contains(topicId)){
+        if (task.getTopics().stream().map(Topic::getId).toList().contains(topicId)) {
             Topic topic = task.getTopics().stream().filter(topic1 -> Objects.equals(topic1.getId(), topicId)).toList().get(0);
             task.getTopics().remove(topic);
             TaskDTO taskDTO = new TaskDTO();
-            taskConvertor.toDTO(task,taskDTO);
+            taskConvertor.toDTO(task, taskDTO);
             taskConnector.save(taskDTO);
         }
 

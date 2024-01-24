@@ -57,9 +57,9 @@ public class GlobalControllerExceptionHandler {
         return ResponseEntity.status(404).body(new ApplicationError(taskDomainNotFoundException));
     }
 
-    @ExceptionHandler({TaskExistException.class})
-    public ResponseEntity<ApplicationError> handleValidationException(TaskExistException taskExistException) {
-        return ResponseEntity.status(409).body(new ApplicationError(taskExistException));
+    @ExceptionHandler({TaskAlreadyExistException.class})
+    public ResponseEntity<ApplicationError> handleValidationException(TaskAlreadyExistException taskAlreadyExistException) {
+        return ResponseEntity.status(409).body(new ApplicationError(taskAlreadyExistException));
     }
 
     @ExceptionHandler({TaskConditionNotFoundException.class})
@@ -120,5 +120,10 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({ExamAlreadyExistsException.class})
     public ResponseEntity<ApplicationError> handleValidationException(ExamAlreadyExistsException examAlreadyExistsException) {
         return ResponseEntity.status(409).body(new ApplicationError((examAlreadyExistsException)));
+    }
+
+    @ExceptionHandler(PersonalExamIntegrationException.class)
+    public ResponseEntity<ApplicationError> handlePersonalExamIntegrationException(PersonalExamIntegrationException personalExamIntegrationException) {
+        return ResponseEntity.status(400).body(new ApplicationError((personalExamIntegrationException)));
     }
 }

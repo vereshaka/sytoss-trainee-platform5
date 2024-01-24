@@ -7,14 +7,11 @@ import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundEx
 import com.sytoss.domain.bom.lessons.*;
 import com.sytoss.domain.bom.personalexam.*;
 import com.sytoss.domain.bom.users.Student;
-import com.sytoss.producer.connectors.LessonsConnector;
-import com.sytoss.producer.connectors.MetadataConnector;
-import com.sytoss.producer.connectors.PersonalExamConnector;
-import com.sytoss.producer.interfaces.AnswerGenerator;
-import com.sytoss.producer.writers.ExcelBuilder;
-import com.sytoss.producer.writers.GroupExcelBuilder;
 import com.sytoss.producer.bom.ScreenshotModel;
 import com.sytoss.producer.connectors.*;
+import com.sytoss.producer.convertor.PersonalExamConvertor;
+import com.sytoss.producer.writers.ExcelBuilder;
+import com.sytoss.producer.writers.GroupExcelBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -27,7 +24,10 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
@@ -49,7 +49,7 @@ public class PersonalExamService extends AbstractService {
 
     private final ObjectProvider<GroupExcelBuilder> groupExcelBuilderFactory;
 
-    private final AnswerGenerator answerGenerator;
+    private final PersonalExamConvertor personalExamConvertor;
 
     private final UserConnector userConnector;
 
@@ -60,29 +60,29 @@ public class PersonalExamService extends AbstractService {
 
     public PersonalExam create(ExamConfiguration examConfiguration) {
         PersonalExam personalExam = new PersonalExam();
-        Date relevantFrom = examConfiguration.getExamAssignee().getRelevantFrom();
-        Date relevantTo = examConfiguration.getExamAssignee().getRelevantTo();
-        personalExam.setName(examConfiguration.getExam().getName());
-        personalExam.setExamAssigneeId(examConfiguration.getExamAssignee().getId());
-        personalExam.setAssignedDate(new Date());
-        personalExam.setRelevantFrom(relevantFrom);
-        personalExam.setRelevantTo(relevantTo);
-        personalExam.setDiscipline(examConfiguration.getExam().getDiscipline());
-        personalExam.setTeacher(examConfiguration.getExam().getTeacher());
-        personalExam.setTime((int) TimeUnit.MILLISECONDS.toSeconds(relevantTo.getTime() - relevantFrom.getTime()));
-        personalExam.setAmountOfTasks(examConfiguration.getExam().getNumberOfTasks());
-        personalExam.setMaxGrade(examConfiguration.getExam().getMaxGrade());
-        List<Answer> answers = answerGenerator.generateAnswers(examConfiguration.getExam().getNumberOfTasks(), examConfiguration.getExam().getTasks());
-        personalExam.setAnswers(answers);
-        double sumOfCoef = 0;
-        for (Answer answer : answers) {
-            sumOfCoef += answer.getTask().getCoef();
-        }
-        personalExam.setStudent(examConfiguration.getStudent());
-        personalExam.setSumOfCoef(sumOfCoef);
+
+        personalExamConvertor.fromExamConfiguration(examConfiguration, personalExam);
+
         personalExam = personalExamConnector.save(personalExam);
         log.info("Personal exam created. Id: " + personalExam.getId());
         return personalExam;
+    }
+
+    public void update(ExamConfiguration examConfiguration) {
+        PersonalExam personalExam = personalExamConnector.findByExamAssigneeIdAndStudentUid(
+                        examConfiguration.getExamAssignee().getId(), examConfiguration.getStudent().getUid())
+                .orElseThrow(PersonalExamNotFoundException::new);
+
+        switch (personalExam.getStatus()) {
+            case NOT_STARTED -> {
+                personalExamConvertor.fromExamConfiguration(examConfiguration, personalExam);
+                personalExamConnector.save(personalExam);
+                log.info("Personal exam updated. Id: " + personalExam.getId());
+            }
+            case IN_PROGRESS -> throw new PersonalExamAlreadyStartedException();
+            default -> log.warn("Personal exam with id {} will not be updated as it is already finished",
+                    personalExam.getId());
+        }
     }
 
     public boolean taskDomainIsUsed(Long taskDomainId) {
@@ -439,33 +439,33 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> updateTask(Task task) {
         List<PersonalExam> personalExams = personalExamConnector.getAllByAnswersTaskIdAndStatusIs(task.getId(), PersonalExamStatus.NOT_STARTED);
-        for(PersonalExam personalExam : personalExams){
-           for(Answer answer : personalExam.getAnswers()){
-               if(Objects.equals(answer.getTask().getId(), task.getId())){
-                   answer.setTask(task);
-               }
-           }
+        for (PersonalExam personalExam : personalExams) {
+            for (Answer answer : personalExam.getAnswers()) {
+                if (Objects.equals(answer.getTask().getId(), task.getId())) {
+                    answer.setTask(task);
+                }
+            }
         }
         return personalExams;
     }
 
 
-    public void makeScreenshot(String pictureCode, String personalExamId){
+    public void makeScreenshot(String pictureCode, String personalExamId) {
         //pictureCode = pictureCode.substring(16);
         ScreenshotModel screenshotModel = new ScreenshotModel();
         Date currentDate = new Date();
 
-       // Long userId = userConnector.getByUid(getCurrentUser().getUid()).getId();
+        // Long userId = userConnector.getByUid(getCurrentUser().getUid()).getId();
         Long userId = getCurrentUser().getId();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyddMMhh24mmss");
         String formattedDate = simpleDateFormat.format(currentDate);
-        String imageName = personalExamId+"-"+userId+"-"+formattedDate+".jpg";
+        String imageName = personalExamId + "-" + userId + "-" + formattedDate + ".jpg";
 
         byte[] picture = Base64.getMimeDecoder().decode(pictureCode);
         byte[] decodedPicture = Arrays.copyOfRange(picture, 15, picture.length);
 
         try {
-            File imageFile = new File(imageUrl+imageName);
+            File imageFile = new File(imageUrl + imageName);
             FileOutputStream fis = new FileOutputStream(imageFile);
             fis.write(decodedPicture);
             fis.flush();
@@ -486,11 +486,11 @@ public class PersonalExamService extends AbstractService {
 
     public List<PersonalExam> getListOfStudentsPersonalExam(Long disciplineId, List<Long> examAssignees, List<Student> students) {
         List<PersonalExam> personalExams = new ArrayList<>();
-        for(Student student : students){
+        for (Student student : students) {
             List<PersonalExam> personalExamsByStudent = personalExamConnector.getAllByStudent_Id(student.getId());
-            for(PersonalExam personalExam : personalExamsByStudent){
-                if(personalExam.getDiscipline()!=null && Objects.equals(personalExam.getDiscipline().getId(), disciplineId)
-                        && examAssignees.contains(personalExam.getExamAssigneeId())){
+            for (PersonalExam personalExam : personalExamsByStudent) {
+                if (personalExam.getDiscipline() != null && Objects.equals(personalExam.getDiscipline().getId(), disciplineId)
+                        && examAssignees.contains(personalExam.getExamAssigneeId())) {
                     personalExam.summary();
                     personalExams.add(personalExam);
                 }

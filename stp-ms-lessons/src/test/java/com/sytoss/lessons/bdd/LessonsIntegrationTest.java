@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Random;
 
 @Getter
 @CucumberContextConfiguration
@@ -86,11 +87,6 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     @Autowired
     private ExamAssigneeToConnector examAssigneeToConnector;
 
-    @Override
-    protected LessonsDetails createDetails() {
-        return new LessonsDetails();
-    }
-
     @Autowired
     private EntityManager entityManager;
 
@@ -107,8 +103,33 @@ public class LessonsIntegrationTest extends StpIntegrationTest<LessonsDetails> {
     private ExamConvertor examConvertor;
 
     @Override
+    protected LessonsDetails createDetails() {
+        return new LessonsDetails();
+    }
+
+    @Override
     protected String getToken() {
         //TODO: yevgenyv: we should take token from execution context
         return generateJWT(new ArrayList<>(), "John", "Johnson", "test@test.com", "Teacher");
+    }
+
+    protected String generateUniqueCode(Long taskDomainId) {
+        String code;
+        do {
+            code = generateCode();
+        } while (getTaskConnector().getByCodeAndTaskDomainId(code, taskDomainId) != null);
+        return code;
+    }
+
+    private String generateCode() {
+        Random codeGenerator = new Random();
+        int databaseNameLength = 10;
+        char letter;
+        StringBuilder name = new StringBuilder();
+        for (int i = 0; i < databaseNameLength; i++) {
+            letter = (char) (codeGenerator.nextInt(26) + 'a');
+            name.append(letter);
+        }
+        return "code-" + name;
     }
 }

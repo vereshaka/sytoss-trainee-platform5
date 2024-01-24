@@ -27,16 +27,21 @@ public class ExamConvertor {
 
     public void toDTO(Exam source, ExamDTO destination) {
         destination.setId(source.getId());
-        destination.setName(source.getName());
 
+        destination.setName(source.getName());
         destination.setNumberOfTasks(source.getNumberOfTasks());
-        destination.setTeacherId(source.getTeacher().getId());
         destination.setMaxGrade(source.getMaxGrade());
 
-        DisciplineDTO disciplineDTO = new DisciplineDTO();
-        disciplineConvertor.toDTO(source.getDiscipline(), disciplineDTO);
+        if (source.getTeacher() != null) {
+            destination.setTeacherId(source.getTeacher().getId());
+        }
 
-        destination.setDiscipline(disciplineDTO);
+        if (source.getDiscipline() != null) {
+            DisciplineDTO disciplineDTO = new DisciplineDTO();
+            disciplineConvertor.toDTO(source.getDiscipline(), disciplineDTO);
+
+            destination.setDiscipline(disciplineDTO);
+        }
 
         if (!source.getExamAssignees().isEmpty()) {
             for (ExamAssignee examAssignee : source.getExamAssignees()) {
@@ -78,6 +83,7 @@ public class ExamConvertor {
             destination.setTasks(tasksList);
         }
         destination.setNumberOfTasks(source.getNumberOfTasks());
+        destination.setLastModifiedDate(source.getLastModifiedDate());
         Teacher teacher = new Teacher();
         teacher.setId(source.getTeacherId());
         destination.setTeacher(teacher);

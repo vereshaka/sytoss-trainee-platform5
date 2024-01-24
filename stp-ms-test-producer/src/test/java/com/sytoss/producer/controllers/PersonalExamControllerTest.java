@@ -1,5 +1,7 @@
 package com.sytoss.producer.controllers;
 
+import com.sytoss.domain.bom.exceptions.business.PersonalExamAlreadyStartedException;
+import com.sytoss.domain.bom.exceptions.business.notfound.PersonalExamNotFoundException;
 import com.sytoss.domain.bom.lessons.Task;
 import com.sytoss.domain.bom.personalexam.*;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PersonalExamControllerTest extends TestProducerControllerTest {
 
@@ -223,5 +225,31 @@ public class PersonalExamControllerTest extends TestProducerControllerTest {
 
         ResponseEntity<List<PersonalExam>> result = doPost("/api/personal-exam/task/update", httpEntity, new ParameterizedTypeReference<>() {});
         assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    public void personalExamUpdateShouldFailWith404() {
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+
+        doThrow(PersonalExamNotFoundException.class).when(personalExamService).update(any());
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<ExamConfiguration> requestBody = new HttpEntity<>(examConfiguration, httpHeaders);
+
+        ResponseEntity<Void> response = doPut("/api/personal-exam/update", requestBody, Void.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void personalExamUpdateShouldFailWith409() {
+        ExamConfiguration examConfiguration = new ExamConfiguration();
+
+        doThrow(PersonalExamAlreadyStartedException.class).when(personalExamService).update(any());
+
+        HttpHeaders httpHeaders = getDefaultHttpHeaders();
+        HttpEntity<ExamConfiguration> requestBody = new HttpEntity<>(examConfiguration, httpHeaders);
+
+        ResponseEntity<Void> response = doPut("/api/personal-exam/update", requestBody, Void.class);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
     }
 }
