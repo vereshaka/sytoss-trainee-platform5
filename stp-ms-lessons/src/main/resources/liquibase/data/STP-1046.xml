@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd"
                    logicalFilePath="data/STP-1046.xml">
 
-    <changeSet author="IvanL" id="STP-1046-1-3">
+    <changeSet author="IvanL" id="STP-1046-1-5">
         <sql dbms="H2, postgresql">
             <![CDATA[
             UPDATE EXAM
