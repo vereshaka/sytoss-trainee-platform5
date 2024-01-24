@@ -5,6 +5,7 @@ import com.sytoss.domain.bom.personalexam.PersonalExamStatus;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PersonalExamConnector extends MongoRepository<PersonalExam, String> {
 
@@ -25,4 +26,6 @@ public interface PersonalExamConnector extends MongoRepository<PersonalExam, Str
     List<PersonalExam> getAllByAnswersTaskIdAndStatusIs(Long taskId, PersonalExamStatus status);
 
     List<PersonalExam> getAllByStudent_Id(Long studentId);
+
+    Optional<PersonalExam> findByExamAssigneeIdAndStudentUid(Long examAssigneeId, String studentUid);
 }

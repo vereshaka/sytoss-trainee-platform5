@@ -26,6 +26,8 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.sytoss.common.SSLUtil.disableSSL;
 
@@ -81,5 +83,10 @@ public class AppConfig {
     @Bean
     public PumlConvertor pumlConvertor() {
         return new PumlConvertor();
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newCachedThreadPool();
     }
 }

@@ -321,4 +321,16 @@ public class PersonalExamController {
                 personalExamByStudentsModel.getExamAssignees(),
                 personalExamByStudentsModel.getStudents());
     }
+
+    @PreAuthorize("hasRole('Teacher')")
+    @Operation(description = "Method that updates personal exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Personal exam not found!"),
+            @ApiResponse(responseCode = "409", description = "Personal exam already started!")
+    })
+    @PutMapping("/update")
+    public void update(@RequestBody ExamConfiguration examConfiguration) {
+        personalExamService.update(examConfiguration);
+    }
 }

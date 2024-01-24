@@ -121,4 +121,9 @@ public class GlobalControllerExceptionHandler {
     public ResponseEntity<ApplicationError> handleValidationException(ExamAlreadyExistsException examAlreadyExistsException) {
         return ResponseEntity.status(409).body(new ApplicationError((examAlreadyExistsException)));
     }
+
+    @ExceptionHandler(PersonalExamIntegrationException.class)
+    public ResponseEntity<ApplicationError> handlePersonalExamIntegrationException(PersonalExamIntegrationException personalExamIntegrationException) {
+        return ResponseEntity.status(400).body(new ApplicationError((personalExamIntegrationException)));
+    }
 }

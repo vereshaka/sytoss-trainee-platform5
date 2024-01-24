@@ -29,4 +29,6 @@ public interface ExamConnector extends JpaRepository<ExamDTO, Long> {
     List<ExamDTO> getAllByTopicsContaining(TopicDTO topic);
 
     ExamDTO getByNameAndDiscipline_Id(String name, Long disciplineId);
+
+    ExamDTO getByNameAndDiscipline_IdAndIdIsNot(String name, Long disciplineId, Long id);
 }

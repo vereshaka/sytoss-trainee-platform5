@@ -32,4 +32,6 @@ public class Exam {
     private List<ExamAssignee> examAssignees = new ArrayList<>();
 
     private Date creationDate = new Date();
+
+    private Date lastModifiedDate;
 }

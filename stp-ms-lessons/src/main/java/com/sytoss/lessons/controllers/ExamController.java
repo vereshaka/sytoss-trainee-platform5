@@ -121,4 +121,16 @@ public class ExamController {
                                                       Long examId) {
         return examService.getExamAssigneesStatusByExamId(examId);
     }
+
+    @Operation(description = "Method that updates an exam")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success|OK"),
+            @ApiResponse(responseCode = "404", description = "Exam no found!"),
+            @ApiResponse(responseCode = "400", description = "Bad request!"),
+            @ApiResponse(responseCode = "409", description = "Exam with provided name already exists!")
+    })
+    @PutMapping("/{examId}")
+    public void update(@PathVariable(name = "examId") Long examId, @RequestBody Exam exam) {
+        examService.update(examId, exam);
+    }
 }

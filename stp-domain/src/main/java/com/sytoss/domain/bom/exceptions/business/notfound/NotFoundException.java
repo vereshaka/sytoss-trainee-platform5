@@ -4,6 +4,10 @@ import com.sytoss.domain.bom.exceptions.business.BusinessException;
 
 public class NotFoundException extends BusinessException {
 
+    public NotFoundException(String exceptionMessage) {
+        super(exceptionMessage);
+    }
+
     public NotFoundException(String objectName, String name) {
 
         super(objectName + " with name \"" + name + "\" not found");
